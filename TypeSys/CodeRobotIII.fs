@@ -18,7 +18,6 @@ open Util.FileSys
 open Util.Db
 open Util.DbQuery
 open Util.DbTx
-open Util.Orm
 
 open TypeSys.TypeSys
 open TypeSys.CodeRobotI
