@@ -1,0 +1,24 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="Orm.fs" />
+    <Compile Include="SrOrm.fs" />
+    <Compile Include="TypeSys.fs" />
+    <Compile Include="LangPackTypeScript.fs" />
+    <Compile Include="CodeRobotI.fs" />
+    <Compile Include="CodeRobotIIFs.fs" />
+    <Compile Include="CodeRobotIITs.fs" />
+    <Compile Include="CodeRobotIII.fs" />
+    <Compile Include="CodeRobot.fs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Common\Util\Util.fsproj" />
+  </ItemGroup>
+
+</Project>
