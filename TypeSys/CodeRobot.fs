@@ -20,7 +20,7 @@ open Util.DbQuery
 open Util.DbTx
 
 open TypeSys.Orm
-open TypeSys.TypeSys
+open TypeSys.MetaType
 open TypeSys.CodeRobotI
 open TypeSys.CodeRobotIIFs
 open TypeSys.CodeRobotIITs

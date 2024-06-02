@@ -20,7 +20,7 @@ open Util.Db
 open Util.DbQuery
 open Util.DbTx
 
-open TypeSys.TypeSys
+open TypeSys.MetaType
 open TypeSys.CodeRobotI
 
 let rec t__binImpl (w:TextBlockWriter) indent t = 

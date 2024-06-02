@@ -9,7 +9,7 @@
   <ItemGroup>
     <Compile Include="Orm.fs" />
     <Compile Include="SrOrm.fs" />
-    <Compile Include="TypeSys.fs" />
+    <Compile Include="MetaType.fs" />
     <Compile Include="LangPackTypeScript.fs" />
     <Compile Include="CodeRobotI.fs" />
     <Compile Include="CodeRobotIIFs.fs" />

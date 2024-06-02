@@ -1,4 +1,4 @@
-﻿module TypeSys.TypeSys
+﻿module TypeSys.MetaType
 
 open System
 open System.IO

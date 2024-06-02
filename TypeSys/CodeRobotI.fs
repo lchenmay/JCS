@@ -20,7 +20,7 @@ open Util.DbQuery
 open Util.DbTx
 
 open TypeSys.Orm
-open TypeSys.TypeSys
+open TypeSys.MetaType
 
 type Src = {
 lang: ProgrammingLang

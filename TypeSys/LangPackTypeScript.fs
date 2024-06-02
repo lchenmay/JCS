@@ -5,7 +5,7 @@ open System.Text
 
 open Util.Text
 
-open TypeSys.TypeSys
+open TypeSys.MetaType
 
 let rec type__annotation tc t = 
     match t.tEnum with
