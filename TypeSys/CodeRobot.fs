@@ -26,14 +26,24 @@ open TypeSys.CodeRobotIIFs
 open TypeSys.CodeRobotIITs
 open TypeSys.CodeRobotIII
 
-let pattern__path pattern = 
-    let mutable dir = Environment.CurrentDirectory
-    while dir.EndsWith @"\Util" = false && dir.EndsWith @"\JustTest" = false do
-        dir <- dir |> path__parent
-    dir <- dir |> path__parent
-    dir <- dir |> path__parent
-    dir <- dir + pattern
-    dir 
+type RobotConfig = {
+mainDir: string
+JsDir: string }
+
+type Robot = {
+srcs: Src[]
+ot: Src
+otTypeScript: Src
+om: Src
+omTypeScript: Src
+cm: Src
+typeTypeScript: Src
+cmTypeScript: Src
+config: RobotConfig
+output: string -> unit }
+
+let robot__srcs robot = 
+    robot.srcs,robot.ot,robot.otTypeScript,robot.om,robot.omTypeScript,robot.cm,robot.typeTypeScript,robot.cmTypeScript
 
 let create__Src (pattern:string) = 
     let buffer = new List<string>()
@@ -48,8 +58,7 @@ let create__Src (pattern:string) =
                 ProgrammingLang.FSharp
         buffer = buffer
         w = new TextBlockWriter(buffer)
-        filename = pattern |> pattern__path }
-
+        filename = pattern }
 
 let buildTypeCat output
     (tables:SortedDictionary<string,Table>) 
@@ -133,7 +142,7 @@ let buildTypeCat output
 
     tc
 
-let load output (dirDesign,fileCustomTypes:string) =
+let load robot =
 
     let tables = new SortedDictionary<string,Table>()
 
@@ -152,7 +161,7 @@ let load output (dirDesign,fileCustomTypes:string) =
     let jsonTables = 
 
         let jsontxt = 
-            dirDesign
+            robot.config.mainDir
             |> Directory.GetFiles
             |> Array.filter(fun i -> i.Contains "Design-" && i.EndsWith ".json")
             |> Array.map (Util.FileSys.try_read_string >> snd)
@@ -249,22 +258,20 @@ let load output (dirDesign,fileCustomTypes:string) =
 
     let cTypes = 
         let dict = new Dictionary<string,Type>()
-        if fileCustomTypes.Length > 0 then
-            fileCustomTypes
-            |> Util.FileSys.filename__lines
-            |> findInLines("//[TypeManaged]{","//}")
-            |> Array.map(fun line -> 
-                let index = line.IndexOf "//"
-                if index >= 0 then
-                    line.Substring(0,index)
-                else
-                    line)
-            |> parseCustomTypes 
-            |> Array.iter(fun i -> dict.Add(i.name,i))
+        robot.config.mainDir + @"\Types.fs"
+        |> Util.FileSys.filename__lines
+        |> findInLines("//[TypeManaged]{","//}")
+        |> Array.map(fun line -> 
+            let index = line.IndexOf "//"
+            if index >= 0 then
+                line.Substring(0,index)
+            else
+                line)
+        |> parseCustomTypes 
+        |> Array.iter(fun i -> dict.Add(i.name,i))
         dict
 
-    cTypes,buildTypeCat output tables cTypes
-
+    cTypes,buildTypeCat robot.output tables cTypes
 
 let save srcs = 
     srcs
@@ -275,25 +282,6 @@ let save srcs =
         |> ignore)
 
 let addMulti line = Array.iter(fun src -> src.buffer.Add line)
-
-let ot = create__Src @"\WebService\BizType\OrmTypes.fs"
-let otTypeScript = create__Src @"\WebFrontend\Vue\src\lib\gfuns\robot\OrmTypes.d.ts"
-
-let om = create__Src @"\WebService\BizType\OrmMor.fs"
-let omTypeScript = create__Src @"\WebFrontend\Vue\src\lib\gfuns\robot\OrmMor.ts"
-
-let cm = create__Src @"\WebService\BizType\CustomMor.fs"
-let typeTypeScript = create__Src @"\WebFrontend\Vue\src\lib\gfuns\robot\Types.d.ts"
-let cmTypeScript = create__Src @"\WebFrontend\Vue\src\lib\gfuns\robot\CustomMor.ts"
-
-let allSrcs = 
-    [|  ot 
-        otTypeScript
-        om
-        omTypeScript
-        cm
-        typeTypeScript
-        cmTypeScript |]
 
 let fSharpHeader src m opens = 
     [|  "module " + m
@@ -321,7 +309,10 @@ let fSharpHeader src m opens =
 
     opens |> src.w.multiLine
 
-let buildTableEnums (t:Table) (name,lines:(string * string)[]) =
+let buildTableEnums robot (t:Table) (name,lines:(string * string)[]) =
+
+    let srcs,ot,otTypeScript,om,omTypeScript,cm,typeTypeScript,cmTypeScript =
+        robot__srcs robot
 
     let enumName = t.typeName.ToLower() + name + "Enum"
 
@@ -416,7 +407,10 @@ let buildTableEnums (t:Table) (name,lines:(string * string)[]) =
 
     addMulti "" [| ot; otTypeScript |]
 
-let buildTableType (t:Table) (fieldNames:string[],fields) =
+let buildTableType robot (t:Table) (fieldNames:string[],fields) =
+
+    let srcs,ot,otTypeScript,om,omTypeScript,cm,typeTypeScript,cmTypeScript =
+        robot__srcs robot
 
     fieldNames
     |> Array.map(fun i -> 
@@ -511,7 +505,7 @@ let buildTableType (t:Table) (fieldNames:string[],fields) =
 
     ot.w.newlineBlank()
 
-let buildTableMor (t:Table) (fieldNames:string[],fields) =
+let buildTableMor om (t:Table) (fieldNames:string[],fields) =
 
     om.w.newlineBlank()
     "let db__p" + t.typeName + "(line:Object[]): p" + t.typeName + " =" |> om.w.newline
@@ -642,12 +636,15 @@ let buildTableMor (t:Table) (fieldNames:string[],fields) =
 
     om.w.newlineBlank()
 
-let buildTable (t:Table) =
+let buildTable robot (t:Table) =
+
+    let srcs,ot,otTypeScript,om,omTypeScript,cm,typeTypeScript,cmTypeScript =
+        robot__srcs robot
 
     "// [" + t.tableName + "] (" + t.typeName + ")" |> addMulti <| [| ot; otTypeScript |]
     addMulti "" [| ot; otTypeScript |]
 
-    handleEnumFields (buildTableEnums t) t
+    handleEnumFields (buildTableEnums robot t) t
 
     "type p" + t.typeName + " = {" |> ot.w.newline
     "export type p" + t.typeName + " = {" |> otTypeScript.w.newline
@@ -655,16 +652,19 @@ let buildTable (t:Table) =
     let fieldNames = t |> table__fieldKeys
     let fields = fieldNames |> Array.map(fun i -> t.fields[i])
 
-    buildTableType t (fieldNames,fields)
-    buildTableMor t (fieldNames,fields)
+    buildTableType robot t (fieldNames,fields)
+    buildTableMor om t (fieldNames,fields)
 
-let buildTables tables =
+let buildTables robot tables =
+
+    let srcs,ot,otTypeScript,om,omTypeScript,cm,typeTypeScript,cmTypeScript =
+        robot__srcs robot
 
     om.w.newlineBlank()
     "let mutable conn = \"\"" |> om.w.newline
 
     tables
-    |> Array.iter buildTable
+    |> Array.iter (buildTable robot)
 
     om.w.newlineBlank()
     "type MetadataEnum = " |> om.w.newline
@@ -797,7 +797,6 @@ let buildType src t =
         //CodeRobotIITs.json__tImpl tbw 0 t
     | _ -> ()
 
-
 let buildCustomTypes tc src (cTypes:Dictionary<string,Type>) = 
 
     [|  "declare global {"
@@ -820,14 +819,60 @@ let buildCustomTypes tc src (cTypes:Dictionary<string,Type>) =
         "" |]
     |> src.w.multiLine
 
-let go output = 
+let prepareRobot output config= 
 
-    let cTypes,tc = 
-        let dirDesign = 
-            Path.Combine((DirectoryInfo  Environment.CurrentDirectory).Parent.Parent.Parent.Parent.FullName,"SrOrm")
-        let fileCustomTypes = @"\WebService\BizType\Types.fs" |> pattern__path
-        (dirDesign,fileCustomTypes)
-        |> load output 
+    let ot =
+        config.mainDir + "\OrmTypes.fs"
+        |> create__Src // @"\WebService\BizType\OrmTypes.fs"
+    let otTypeScript = 
+        config.JsDir + "\OrmTypes.d.ts"
+        |> create__Src // @"\WebFrontend\Vue\src\lib\gfuns\robot\OrmTypes.d.ts"
+
+    let om = 
+        config.mainDir + "\OrmMor.fs"
+        |> create__Src // @"\WebService\BizType\OrmMor.fs"
+    let omTypeScript = 
+        config.JsDir + "\OrmMor.ts"
+        |> create__Src // @"\WebFrontend\Vue\src\lib\gfuns\robot\OrmMor.ts"
+
+    let cm = 
+        config.mainDir + "\CustomMor.fs"
+        |> create__Src // @"\WebService\BizType\CustomMor.fs"
+    let typeTypeScript = 
+        config.JsDir + "\Types.d.ts"
+        |> create__Src // @"\WebFrontend\Vue\src\lib\gfuns\robot\Types.d.ts"
+    let cmTypeScript = 
+        config.JsDir + "\CustomMor.ts"
+        |> create__Src // @"\WebFrontend\Vue\src\lib\gfuns\robot\CustomMor.ts"
+
+    {
+        srcs =
+            [|  ot 
+                otTypeScript
+                om
+                omTypeScript
+                cm
+                typeTypeScript
+                cmTypeScript |]
+        ot = ot
+        otTypeScript = otTypeScript
+        om = om
+        omTypeScript = omTypeScript
+        cm = cm
+        typeTypeScript = typeTypeScript
+        cmTypeScript = cmTypeScript
+        config = config
+        output = output }
+
+
+let go output config = 
+
+    let robot = prepareRobot output config
+
+    let cTypes,tc = load robot
+
+    let srcs,ot,otTypeScript,om,omTypeScript,cm,typeTypeScript,cmTypeScript =
+        robot__srcs robot
 
     [|  "declare global {"
         "" |]
@@ -855,13 +900,13 @@ let go output =
     
     sorted
     |> filter<Type,Table> matchOrm
-    |> buildTables
+    |> buildTables robot
 
     [|  ""
         "}" |]
     |> otTypeScript.w.multiLine
 
-    save allSrcs
+    save srcs
 
     "Done" |> output
         
