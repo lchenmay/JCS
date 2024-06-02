@@ -34,7 +34,7 @@ The main contributions of this paper include:
 We discusses type systems intensively using **category theory**.
 We advocate strong-typed functional programming languages that have been equipped with much better type induction and error-correction capabilities.
 
-Full-text of the paper: [Zenodo 11397406](https://doi.org/10.5281/zenodo.11397406)
-Cite DOI: 10.5281/zenodo.11397406
+- Full-text of the paper: [Zenodo 11397406](https://doi.org/10.5281/zenodo.11397406)
+- Cite DOI: 10.5281/zenodo.11397406
 
 
