@@ -137,8 +137,8 @@ let renderCaption (ctx:Canvas2DContext) field =
 
         "#" + s
     
-        //"#00220a"
-    let textColor = "#aaaa33"
+    //let textColor = "#aaaa33"
+    let textColor = "white"
 
     task{
         do! ctx.ClearRectAsync(0, 0, field.width, field.height)

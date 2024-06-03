@@ -3,10 +3,16 @@
 open System
 open System.Collections.Generic
 
+open Blazor.Extensions
+open Blazor.Extensions.Canvas
+open Blazor.Extensions.Canvas.Canvas2D
+
 open Util.Bin
 open Util.Json
 open Util.Text
 open Util.IA
+
+open UtilBlazor.Graphics
 
 open BizShared.OrmTypes
 open BizShared.Types
@@ -16,10 +22,10 @@ open WebLogics.Common
 open WebLogics.DataService
 
 
-//let empty__Stroke (strokeSize,color) = {
-//    points = new List<float32 * float32>()
-//    strokeSize = strokeSize
-//    color = color }
+let empty__Stroke (strokeSize,color) = {
+    points = new List<float32 * float32>()
+    strokeSize = strokeSize
+    color = color }
 
 //let facts__strokes facts = 
 
@@ -34,66 +40,27 @@ open WebLogics.DataService
 //    buffer.ToArray()
 
 
+let drawStroke (ctx:Canvas2DContext) s = 
 
-//let drawStroke (canvas:SKCanvas) s = 
+    task{
+        do! s.color 
+            |> uint32__color 
+            |> ctx.SetStrokeStyleAsync
+        do! ctx.SetLineWidthAsync s.strokeSize
+        do! s.points.ToArray() 
+            |> Array.map(fun (x,y) -> float x,float y)
+            |>  drawPath ctx
+    }
 
-//    let paint = new SKPaint(Color = s.color,Style = SKPaintStyle.Stroke)
-//    paint.StrokeWidth <- s.strokeSize
+type ColorInPalette = {
+mutable rect: Rect
+color: string }
 
-//    if s.points.Count > 0 then
-
-//        let p__p (x,y) = new SKPoint(x,y)
-
-//        let ps = s.points.ToArray()
-//        let mutable p = ps[0] |> p__p
-//        [| 1 .. ps.Length - 1|]
-//        |> Array.iter(fun i ->
-//            let next = ps[i] |> p__p
-
-//            canvas.DrawLine(p,next,paint)
-
-//            p <- next)
-
-
-//type ColorInPalette = {
-//mutable rect:Rect
-//color:uint32 }
-
-//let cips = 
-//    [|  Colors.Red
-//        Colors.Green
-//        Colors.Blue
-//        Colors.Yellow
-//        Colors.Orange
-//        Colors.Purple
-//        Colors.Pink
-//        Colors.Cyan
-//        Colors.Crimson
-//        Colors.MediumVioletRed
-//        Colors.DarkMagenta
-//        Colors.Indigo
-//        Colors.DarkSlateBlue
-//        Colors.MediumBlue
-//        Colors.MidnightBlue
-//        Colors.Navy
-//        Colors.DarkSlateGray
-//        Colors.DarkGreen
-//        Colors.DarkOliveGreen
-//        Colors.SaddleBrown
-//        Colors.Sienna
-//        Colors.Maroon
-//        Colors.Gray
-//        Colors.DimGray
-//        Colors.Black |]
-//    |> Array.map(fun c -> {
-//        rect = new Rect()
-//        color = c.ToUint() })
-
-//let senderCaptionCandidates = 
-//    [|  "李大嘴"
-//        "王二狗"
-//        "Bob"
-//        "张三丰" |]
+let cips = 
+    palette
+    |> Array.map(fun c -> {
+        rect = empty__Rect()
+        color = c })
 
 //type Whiteboard =
 
@@ -234,14 +201,14 @@ open WebLogics.DataService
 //    mainCanvas.SizeChanged.Add(fun e -> 
 //        whiteboard.bitmap.Value <- new SKBitmap(int mainCanvas.Width,int mainCanvas.Height)
 //        use bitmapCanvas = new SKCanvas(whiteboard.bitmap.Value)
-//        bitmapCanvas.Clear SKColors.AliceBlue)
+//        bitmapCanvas.Clear SK"AliceBlue)
 
 //    mainCanvas.PaintSurface.Add(fun e -> 
 //        let canvas,w,h = e |> skPaintSurfaceE__info
 
 //        //e.Surface.Canvas.DrawBitmap(whiteboard.bitmap,0.0f,0.0f)
 
-//        let paint = new SKPaint(Color = SKColors.Magenta,Style = SKPaintStyle.Stroke)
+//        let paint = new SKPaint(Color = SK"Magenta,Style = SKPaintStyle.Stroke)
 //        canvas.DrawRect(new SKRect(0.0f,0.0f,float32 w - 1.0f,float32 h - 1.0f),paint)
  
 //        lock whiteboard.facts (fun _ -> 
