@@ -83,6 +83,8 @@ let move field =
             if ball.y > h then
                 ball.y <- h)
 
+let cycle = 100
+
 let renderCaption (ctx:Canvas2DContext) field = 
 
     let fps = 1.0 / (DateTime.UtcNow - field.lastRender).TotalSeconds
@@ -90,9 +92,9 @@ let renderCaption (ctx:Canvas2DContext) field =
 
     let backColor = 
 
-        let cycle = 100
 
-        if field.interpolate = cycle then
+        if field.interpolate >= cycle then
+            field.interpolate <- 0
             field.colorSrc <- field.colorDst
             field.colorDst <- generalColor()
 
@@ -134,7 +136,12 @@ let renderCaption (ctx:Canvas2DContext) field =
         cursor.Value <- cursor.Value + 20
 
         do! ctx.SetFontAsync("16px consolas")
-        do! ctx.FillTextAsync(backColor + " fps = " + fps.ToString("0.00"), 10, cursor.Value)
+
+        do! [|  "% " + (100.0 * (float field.interpolate)/(float cycle)).ToString("000.00")
+                " " + backColor
+                " fps = " + fps.ToString("0.00")    |]
+            |> String.Concat
+            |> drawText ctx (10, cursor.Value)
         cursor.Value <- cursor.Value + 20
 
         do! [|  "w = " + field.width.ToString("0")
