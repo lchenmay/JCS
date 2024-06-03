@@ -1,4 +1,4 @@
-﻿module BlazorLogics.Whiteboard
+﻿module WebLogics.Whiteboard
 
 open System
 open System.Collections.Generic
@@ -12,26 +12,26 @@ open BizShared.OrmTypes
 open BizShared.Types
 open BizShared.CustomMor
 
-open BlazorLogics.Common
-open BlazorLogics.DataService
+open WebLogics.Common
+open WebLogics.DataService
 
 
-let empty__Stroke (strokeSize,color) = {
-    points = new List<float32 * float32>()
-    strokeSize = strokeSize
-    color = color }
+//let empty__Stroke (strokeSize,color) = {
+//    points = new List<float32 * float32>()
+//    strokeSize = strokeSize
+//    color = color }
 
-let facts__strokes facts = 
+//let facts__strokes facts = 
 
-    let buffer = new List<Stroke>()
+//    let buffer = new List<Stroke>()
 
-    facts
-    |> List.iter(fun f -> 
-        match f.action with
-        | ActionWhiteboard.Stroke s -> buffer.Add s
-        | _ -> ())
+//    facts
+//    |> List.iter(fun f -> 
+//        match f.action with
+//        | ActionWhiteboard.Stroke s -> buffer.Add s
+//        | _ -> ())
 
-    buffer.ToArray()
+//    buffer.ToArray()
 
 
 

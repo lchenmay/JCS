@@ -16,7 +16,7 @@
     <ProjectReference Include="..\..\Common\UtilBlazor\UtilBlazor.fsproj" />
     <ProjectReference Include="..\..\Common\Util\Util.fsproj" />
     <ProjectReference Include="..\BizShared\BizShared.fsproj" />
-    <ProjectReference Include="..\BlazorLogics\BlazorLogics.fsproj" />
+    <ProjectReference Include="..\WebLogics\WebLogics.fsproj" />
   </ItemGroup>
 
 </Project>
