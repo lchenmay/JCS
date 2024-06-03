@@ -14,6 +14,22 @@ enum: number,
 val: any
 }
 
+// [FactWhiteboard]
+export type FactWhiteboard = {
+action:ActionWhiteboard,
+actor:string,
+clientId:number,
+serverId:number,
+clientTimestamp:DateTime,
+serverTimestamp:DateTime
+}
+
+// [FactBroadcast]
+export type FactBroadcast = {
+enum: number,
+val: any
+}
+
 }
 
 export {}

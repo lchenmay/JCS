@@ -224,3 +224,199 @@ let json__ActionWhiteboardo (json:Json):ActionWhiteboard option =
             | _ -> None
         | None -> None
     | None -> None
+
+// [FactWhiteboard] Structure
+
+let FactWhiteboard__bin (bb:BytesBuilder) (v:FactWhiteboard) =
+
+    ActionWhiteboard__bin bb v.action
+    str__bin bb v.actor
+    int64__bin bb v.clientId
+    int64__bin bb v.serverId
+    DateTime__bin bb v.clientTimestamp
+    DateTime__bin bb v.serverTimestamp
+
+let bin__FactWhiteboard (bi:BinIndexed):FactWhiteboard =
+    let bin,index = bi
+
+    {
+        action =
+            bi
+            |> bin__ActionWhiteboard
+        actor =
+            bi
+            |> bin__str
+        clientId =
+            bi
+            |> bin__int64
+        serverId =
+            bi
+            |> bin__int64
+        clientTimestamp =
+            bi
+            |> bin__DateTime
+        serverTimestamp =
+            bi
+            |> bin__DateTime
+    }
+
+let FactWhiteboard__json (v:FactWhiteboard) =
+
+    [|  ("action",ActionWhiteboard__json v.action)
+        ("actor",str__json v.actor)
+        ("clientId",int64__json v.clientId)
+        ("serverId",int64__json v.serverId)
+        ("clientTimestamp",DateTime__json v.clientTimestamp)
+        ("serverTimestamp",DateTime__json v.serverTimestamp)
+         |]
+    |> Json.Braket
+
+let FactWhiteboard__jsonTbw (w:TextBlockWriter) (v:FactWhiteboard) =
+    json__str w (FactWhiteboard__json v)
+
+let FactWhiteboard__jsonStr (v:FactWhiteboard) =
+    (FactWhiteboard__json v) |> json__strFinal
+
+
+let json__FactWhiteboardo (json:Json):FactWhiteboard option =
+    let fields = json |> json__items
+
+    let mutable passOptions = true
+
+    let actiono =
+        match json__tryFindByName json "action" with
+        | None ->
+            passOptions <- false
+            None
+        | Some v -> 
+            match v |> json__ActionWhiteboardo with
+            | Some res -> Some res
+            | None ->
+                passOptions <- false
+                None
+
+    let actoro =
+        match json__tryFindByName json "actor" with
+        | None ->
+            passOptions <- false
+            None
+        | Some v -> 
+            match v |> json__stro with
+            | Some res -> Some res
+            | None ->
+                passOptions <- false
+                None
+
+    let clientIdo =
+        match json__tryFindByName json "clientId" with
+        | None ->
+            passOptions <- false
+            None
+        | Some v -> 
+            match v |> json__int64o with
+            | Some res -> Some res
+            | None ->
+                passOptions <- false
+                None
+
+    let serverIdo =
+        match json__tryFindByName json "serverId" with
+        | None ->
+            passOptions <- false
+            None
+        | Some v -> 
+            match v |> json__int64o with
+            | Some res -> Some res
+            | None ->
+                passOptions <- false
+                None
+
+    let clientTimestampo =
+        match json__tryFindByName json "clientTimestamp" with
+        | None ->
+            passOptions <- false
+            None
+        | Some v -> 
+            match v |> json__DateTimeo with
+            | Some res -> Some res
+            | None ->
+                passOptions <- false
+                None
+
+    let serverTimestampo =
+        match json__tryFindByName json "serverTimestamp" with
+        | None ->
+            passOptions <- false
+            None
+        | Some v -> 
+            match v |> json__DateTimeo with
+            | Some res -> Some res
+            | None ->
+                passOptions <- false
+                None
+
+    if passOptions then
+        {
+            action = actiono.Value
+            actor = actoro.Value
+            clientId = clientIdo.Value
+            serverId = serverIdo.Value
+            clientTimestamp = clientTimestampo.Value
+            serverTimestamp = serverTimestampo.Value} |> Some
+    else
+        None
+
+// [FactBroadcast] Structure
+
+let FactBroadcast__bin (bb:BytesBuilder) (v:FactBroadcast) =
+
+    match v with
+    | FactBroadcast.Whiteboard v ->
+        int32__bin bb 0
+        FactWhiteboard__bin bb v
+    | FactBroadcast.Undefined ->
+        int32__bin bb 1
+
+let bin__FactBroadcast (bi:BinIndexed):FactBroadcast =
+    let bin,index = bi
+
+    match bin__int32 bi with
+    | 1 -> FactBroadcast.Undefined
+    | _ -> bin__FactWhiteboard bi |> FactBroadcast.Whiteboard
+
+let FactBroadcast__json (v:FactBroadcast) =
+
+    let items = new List<string * Json>()
+
+    match v with
+    | FactBroadcast.Whiteboard v ->
+        ("enum",int32__json 0) |> items.Add
+        ("Whiteboard",FactWhiteboard__json v) |> items.Add
+    | FactBroadcast.Undefined ->
+        ("enum",int32__json 1) |> items.Add
+
+    items.ToArray() |> Json.Braket
+
+let FactBroadcast__jsonTbw (w:TextBlockWriter) (v:FactBroadcast) =
+    json__str w (FactBroadcast__json v)
+
+let FactBroadcast__jsonStr (v:FactBroadcast) =
+    (FactBroadcast__json v) |> json__strFinal
+
+
+let json__FactBroadcasto (json:Json):FactBroadcast option =
+    let fields = json |> json__items
+
+    match json__tryFindByName json "enum" with
+    | Some json ->
+        match json__int32o json with
+        | Some i ->
+            match i with
+            | 0 -> 
+                match json__FactWhiteboardo json with
+                | Some v -> v |> FactBroadcast.Whiteboard |> Some
+                | None -> None
+            | 1 -> FactBroadcast.Undefined |> Some
+            | _ -> None
+        | None -> None
+    | None -> None

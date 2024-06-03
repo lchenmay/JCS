@@ -6,11 +6,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="Common.fs" />
+    <Compile Include="DataService.fs" />
     <Compile Include="Graphics.fs" />
+    <Compile Include="Whiteboard.fs" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Blazor.Extensions.Canvas" Version="1.1.1" />
+    <PackageReference Include="Microsoft.Maui.Controls" Version="8.0.40" />
   </ItemGroup>
 
   <ItemGroup>

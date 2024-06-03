@@ -15,6 +15,18 @@ type ActionWhiteboard =
 | Clear of uint32
 | Msg of string
 
+type FactWhiteboard = {
+action: ActionWhiteboard
+actor: string
+clientId: int64
+mutable serverId: int64
+clientTimestamp: DateTime
+mutable serverTimestamp: DateTime }
+
+type FactBroadcast =
+| Whiteboard of FactWhiteboard
+| Undefined
+
 
 //}
     

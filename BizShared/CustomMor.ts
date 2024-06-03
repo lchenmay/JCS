@@ -50,3 +50,46 @@ export const bin__ActionWhiteboard:ActionWhiteboard = (bi:BinIndexed) => {
     | 1 -> bin__uint32 bi |> ActionWhiteboard.Clear
     | _ -> bin__Stroke bi |> ActionWhiteboard.Stroke
 }
+
+// [FactWhiteboard] Structure
+
+export const FactWhiteboard__bin = (bb:BytesBuilder) => (v:FactWhiteboard) {
+
+    ActionWhiteboard__bin (bb) (v.action)
+    str__bin (bb) (v.actor)
+    int64__bin (bb) (v.clientId)
+    int64__bin (bb) (v.serverId)
+    DateTime__bin (bb) (v.clientTimestamp)
+    DateTime__bin (bb) (v.serverTimestamp)
+}
+
+export const bin__FactWhiteboard:FactWhiteboard = (bi:BinIndexed) => {
+
+    return {
+        action: bin__ActionWhiteboard (bi),
+        actor: bin__str (bi),
+        clientId: bin__int64 (bi),
+        serverId: bin__int64 (bi),
+        clientTimestamp: bin__DateTime (bi),
+        serverTimestamp: bin__DateTime (bi),
+    }
+}
+
+// [FactBroadcast] Structure
+
+export const FactBroadcast__bin = (bb:BytesBuilder) => (v:FactBroadcast) {
+
+    match v with
+    | FactBroadcast.Whiteboard v ->
+        int32__bin (bb) (0)
+        FactWhiteboard__bin (bb) (v)
+    | FactBroadcast.Undefined ->
+        int32__bin (bb) (1)
+}
+
+export const bin__FactBroadcast:FactBroadcast = (bi:BinIndexed) => {
+
+    match bin__int32 bi with
+    | 1 -> FactBroadcast.Undefined
+    | _ -> bin__FactWhiteboard bi |> FactBroadcast.Whiteboard
+}
