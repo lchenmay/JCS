@@ -59,14 +59,9 @@ let r0 =
     @"(\(\*|0x220x220x22|0x22|//)" 
     |> string__regex
 
-
-let lex (src:string) = 
+let mask (src:string) (tokens:List<Token>) = 
 
     let index = ref 0
-
-    let mask = Array.zeroCreate src.Length
-
-    let tokens = new List<Token>()
 
     let maskNext 
         (index:int ref)
@@ -120,6 +115,31 @@ let lex (src:string) =
             |> Array.map Token.Undefined
             |> tokens.AddRange
         | _ -> tokens.Add t)
+
+let indent (tokens:List<Token>) = 
+
+    let items = tokens.ToArray()
+
+    tokens.Clear()
+
+    items
+    |> Array.iter(fun t -> 
+        match t with
+        | Token.Undefined s -> 
+            s.Length - s.TrimStart().Length
+            |> Token.Newline
+            |> tokens.Add
+        | _ -> ()
+        t |> tokens.Add)
+
+let lex (src:string) = 
+
+    let index = ref 0
+
+    let tokens = new List<Token>()
+    
+    mask src tokens
+    indent tokens
 
     tokens.ToArray()
 

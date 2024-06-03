@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="Graphics.fs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Blazor.Extensions.Canvas" Version="1.1.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Common\UtilBlazor\UtilBlazor.fsproj" />
+    <ProjectReference Include="..\..\Common\Util\Util.fsproj" />
+    <ProjectReference Include="..\BizShared\BizShared.fsproj" />
+  </ItemGroup>
+
+</Project>
