@@ -16,11 +16,11 @@ type Notification =
 | Ping
 
 type Ball = {
-color: string
+mutable color: string
 r: float
+mutable hit: bool
 mutable x: float
 mutable y: float 
-mutable a: float
 mutable vx: float
 mutable vy: float }
 

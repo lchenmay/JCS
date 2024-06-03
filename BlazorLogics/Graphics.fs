@@ -24,11 +24,12 @@ let field__balls n (w,h) =
 
     [| 0 .. n - 1 |]
     |> Array.map(fun i -> {
-        color = String.Format("#{0:X6}", r.Next(0xFFFFFF))
-        r = 5.0 + 5.0 * r.NextDouble()
+        //color = "#ffffcc"
+        color = rand__color()
+        r = 5.0 + 15.0 * r.NextDouble()
+        hit = false
         x = w * r.NextDouble()
         y = h * r.NextDouble()
-        a = 1.0
         vx = v()
         vy = v() })
 
@@ -45,8 +46,8 @@ let move field =
 
     field.balls
     |> Array.iter(fun ball -> 
-        ball.x <- ball.x + ball.vx * ball.a
-        ball.y <- ball.y + ball.vy * ball.a
+        ball.x <- ball.x + ball.vx
+        ball.y <- ball.y + ball.vy
 
         match field.mouse with
         | Some (x,y) -> 
@@ -55,9 +56,9 @@ let move field =
             let disy = ball.y - y
 
             if disx * disx + disy * disy < 10.0 * 10.0 then
-                ball.a <- ball.a
+                ball.hit <- true
             else
-                ball.a <- ball.a
+                ball.hit <- false
 
         | None -> ()
 
@@ -125,13 +126,12 @@ let renderCaption (ctx:Canvas2DContext) field =
     }
 
 let renderBall (ctx:Canvas2DContext) ball = 
-    task{
-        do! ctx.BeginPathAsync()
-        do! ctx.ArcAsync(ball.x, ball.y, ball.r, 0, 2.0 * System.Math.PI, false)
-        do! ctx.SetFillStyleAsync("#33FF33")
-        do! ctx.FillAsync()
-        do! ctx.StrokeAsync()
-    }
+    let color = 
+        if ball.hit then
+            "#ffffff"
+        else
+            ball.color
+    drawCircle ctx color ball.r (ball.x, ball.y)
 
 let render (ctx:Canvas2DContext) field = 
 
