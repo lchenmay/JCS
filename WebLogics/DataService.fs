@@ -16,13 +16,13 @@ open BizShared.CustomMor
 open WebLogics.Common
 
 
-//let client = {
-//    wsClient = "ws://" + server + ":" + port.ToString() |> create__WsClient 5000
-//    Fact__bin = FactBroadcast__bin
-//    bin__Fact = bin__FactBroadcast
-//    incomingFacts = new List<IncomingFacts<FactBroadcast>>() }
+let client = {
+    wsClient = "ws://" + server + ":" + port.ToString() |> create__WsClient 5000
+    Fact__bin = FactBroadcast__bin
+    bin__Fact = bin__FactBroadcast
+    incomingFacts = new List<IncomingFacts<FactBroadcast>>() }
 
 
-//let init() = 
-//    connect client
-//    ()
+let init() = 
+    connect client
+    ()

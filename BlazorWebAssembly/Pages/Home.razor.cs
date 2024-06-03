@@ -8,7 +8,7 @@ using BizShared;
 using Microsoft.JSInterop;
 using Microsoft.AspNetCore.Components.Web;
 
-//using BlazorLogics;
+using WebLogics;
 
 namespace BlazorWebAssembly.Pages
 {
@@ -17,7 +17,7 @@ namespace BlazorWebAssembly.Pages
         private Canvas2DContext ctx;
         protected BECanvasComponent CanvasRef;
 
-        //private Graphics.Field field = Graphics.createField(10, 400.0, 300.0);
+        private Graphics.Field field = Graphics.createField(10, 400.0, 300.0);
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
@@ -27,25 +27,25 @@ namespace BlazorWebAssembly.Pages
         }
 
         protected void MouseMove(MouseEventArgs e) {
-            //field.mouse = new Tuple<double, double>(e.OffsetX, e.OffsetY);
+            field.mouse = new Tuple<double, double>(e.OffsetX, e.OffsetY);
         }
 
         protected void MouseLeave(MouseEventArgs e)
         {
-            //field.mouse = FSharpOption<Tuple<double, double>>.None;
+            field.mouse = FSharpOption<Tuple<double, double>>.None;
         }
 
         [JSInvokable]
         public void ResizeInBlazor(double width, double height)
         {
-            //this.field.width = width;
-            //this.field.height = height;
+            this.field.width = width;
+            this.field.height = height;
         }
 
         [JSInvokable]
         public async ValueTask RenderInBlazor(float timeStamp)
         {
-            //BlazorLogics.Graphics.render(this.ctx, this.field);
+            Graphics.render(this.ctx, this.field);
         }
 
     }
