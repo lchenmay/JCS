@@ -1,0 +1,21 @@
+﻿.box {
+    aspect-ratio: 1/1;
+    width: 500px;
+    background: pink;
+    border-radius: 10px;
+    box-shadow: 10px 10px 5px grey;
+}
+
+.canvas-container {
+    position: fixed;
+    opacity: 1;
+    background-color: black;
+    width: 100%;
+    height: 100%
+}
+
+.canvas {
+    border: 1px solid black;
+}
+
+

@@ -1,0 +1,35 @@
+﻿@page "/typesharing"
+
+@using Util;
+@using BizShared;
+
+<PageTitle>Contact</PageTitle>
+
+<script>hljs.highlightAll();</script>
+
+<h1>Type Sharing</h1>
+
+<pre><code class="language-fsharp">
+
+module BizType.Types
+
+open System
+
+//[TypeManaged]{
+
+type User = {
+caption: string
+id: int64 }
+
+type Notification = 
+| DirectMsg of User * string
+| SysMsg of string
+
+//}
+
+let creatRobot() = {
+    caption = "Robot"
+    id = DateTime.UtcNow.Ticks }
+
+</code></pre>
+
