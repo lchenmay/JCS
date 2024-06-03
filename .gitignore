@@ -5,3 +5,9 @@
 /.vs
 /TypeSys/bin/Debug/net8.0
 /TypeSys/obj
+/BizShared/obj
+/BlazorWebAssembly/bin/Debug/net8.0
+/BlazorWebAssembly/obj
+/BizShared/bin/Debug/net8.0
+/BlazorLogics/bin/Debug/net8.0
+/BlazorLogics/obj
