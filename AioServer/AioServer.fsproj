@@ -10,9 +10,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\BizType\BizType.fsproj" />
-    <ProjectReference Include="..\..\..\GNodeServiceSDK\GNodeServiceSDK.fsproj" />
-    <ProjectReference Include="..\..\..\Util\Util.fsproj" />
     <ProjectReference Include="..\..\Common\Util\Util.fsproj" />
     <ProjectReference Include="..\BizShared\BizShared.fsproj" />
   </ItemGroup>

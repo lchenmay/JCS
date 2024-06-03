@@ -10,23 +10,16 @@ open Util.HttpClient
 open Util.Console
 open Util.Zmq
 
-open GNodeServiceSDK.Types
-open GNodeServiceSDK.IPC
-
-open BizType.OrmTypes
-open BizType.Types
-open BizType.CustomMor
+open BizShared.OrmTypes
+open BizShared.Types
+open BizShared.CustomMor
 
 
 Console.OutputEncoding <- System.Text.Encoding.Unicode
 let output (s:string) = Console.WriteLine s
 
-let mutable appRuntimeo = None
-
 [<EntryPoint>]
 let main args =
-
-    appRuntimeo <- createIPC output args
 
     let port = 12077
 
@@ -56,7 +49,7 @@ let main args =
         None
 
     zweb.disconnector.Add(fun bin -> ())
-    lauchWebServer output (httpHandler (httpEcho () branch)) wsHandler zweb
+    lauchWebServer output (httpHandler (httpEcho @"C:\Dev\JCS\AioServer" () branch)) wsHandler zweb
 
     Util.Runtime.halt output "" ""
 

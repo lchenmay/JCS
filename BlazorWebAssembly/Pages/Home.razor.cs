@@ -8,6 +8,7 @@ using BizShared;
 using Microsoft.JSInterop;
 using Microsoft.AspNetCore.Components.Web;
 
+using BlazorLogics;
 
 namespace BlazorWebAssembly.Pages
 {
@@ -16,7 +17,7 @@ namespace BlazorWebAssembly.Pages
         private Canvas2DContext ctx;
         protected BECanvasComponent CanvasRef;
 
-        private Types.Field field = BlazorLogics.Graphics.createField(10, 400.0, 300.0);
+        private Graphics.Field field = Graphics.createField(10, 400.0, 300.0);
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
