@@ -25,6 +25,9 @@ mutable vx: float
 mutable vy: float }
 
 type Field = {
+mutable colorSrc: float * float * float
+mutable colorDst: float * float * float
+mutable interpolate: int
 mutable width: float
 mutable height: float 
 mutable mouse: (float * float) option

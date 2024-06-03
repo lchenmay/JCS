@@ -33,7 +33,14 @@ let field__balls n (w,h) =
         vx = v()
         vy = v() })
 
+let generalColor() = 
+    let r = new Random()
+    r.NextDouble(),r.NextDouble(),r.NextDouble()
+
 let createField n (w,h) = {
+    colorSrc = generalColor()
+    colorDst = generalColor()
+    interpolate = 0
     width = w
     height = h
     mouse = None
@@ -81,7 +88,35 @@ let renderCaption (ctx:Canvas2DContext) field =
     let fps = 1.0 / (DateTime.UtcNow - field.lastRender).TotalSeconds
     field.lastRender <- DateTime.UtcNow
 
-    let backColor = "#006633"
+    let backColor = 
+
+        let cycle = 100
+
+        if field.interpolate = cycle then
+            field.colorSrc <- field.colorDst
+            field.colorDst <- generalColor()
+
+        field.interpolate <- field.interpolate + 1
+
+        let s1,s2,s3 = field.colorSrc
+        let d1,d2,d3 = field.colorDst
+
+        let c(s,d) = 
+            let v = s + (d-s) * (float field.interpolate)/(float cycle)
+            v * 0.3 * 256.0
+            |> uint8
+
+        let s = 
+            [|  c(s1,d1)
+                c(s2,d2)
+                c(s3,d3) |]
+            |> Array.map(fun b -> 
+                b.ToString("X").PadLeft(2,'0'))
+            |> String.Concat
+
+        "#" + s
+    
+        //"#00220a"
     let textColor = "#aaaa33"
 
     task{
@@ -99,7 +134,7 @@ let renderCaption (ctx:Canvas2DContext) field =
         cursor.Value <- cursor.Value + 20
 
         do! ctx.SetFontAsync("16px consolas")
-        do! ctx.FillTextAsync("fps = " + fps.ToString("0.00"), 10, cursor.Value)
+        do! ctx.FillTextAsync(backColor + " fps = " + fps.ToString("0.00"), 10, cursor.Value)
         cursor.Value <- cursor.Value + 20
 
         do! [|  "w = " + field.width.ToString("0")
