@@ -11,6 +11,25 @@ open UtilBlazor.Graphics
 open BizShared.Types
 
 
+type Ball = {
+mutable color: string
+r: float
+mutable hit: bool
+mutable x: float
+mutable y: float 
+mutable vx: float
+mutable vy: float }
+
+type Field = {
+mutable colorSrc: float * float * float
+mutable colorDst: float * float * float
+mutable interpolate: int
+mutable width: float
+mutable height: float 
+mutable mouse: (float * float) option
+balls: Ball[]
+mutable lastRender: DateTime }
+
 let field__balls n (w,h) = 
 
     let r = new Random()

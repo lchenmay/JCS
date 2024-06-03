@@ -8,8 +8,6 @@
 
   <ItemGroup>
     <Compile Include="FSharp.fs" />
-    <Compile Include="Orm.fs" />
-    <Compile Include="SrOrm.fs" />
     <Compile Include="MetaType.fs" />
     <Compile Include="LangPackTypeScript.fs" />
     <Compile Include="CodeRobotI.fs" />

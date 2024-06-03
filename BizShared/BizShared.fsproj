@@ -6,7 +6,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="PreOrm.fs" />
+    <Compile Include="OrmTypes.fs" />
     <Compile Include="Types.fs" />
+    <Compile Include="OrmMor.fs" />
+    <Compile Include="CustomMor.fs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Common\Util\Util.fsproj" />
   </ItemGroup>
 
 </Project>

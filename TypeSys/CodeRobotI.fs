@@ -18,8 +18,8 @@ open Util.FileSys
 open Util.Db
 open Util.DbQuery
 open Util.DbTx
+open Util.Orm
 
-open TypeSys.Orm
 open TypeSys.MetaType
 
 type Src = {

@@ -17,8 +17,7 @@ open Util.FileSys
 open Util.Db
 open Util.DbQuery
 open Util.DbTx
-
-open TypeSys.Orm
+open Util.Orm
 
 type ProgrammingLang = 
 | FSharp

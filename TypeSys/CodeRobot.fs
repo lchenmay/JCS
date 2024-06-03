@@ -18,8 +18,8 @@ open Util.FileSys
 open Util.Db
 open Util.DbQuery
 open Util.DbTx
+open Util.Orm
 
-open TypeSys.Orm
 open TypeSys.MetaType
 open TypeSys.CodeRobotI
 open TypeSys.CodeRobotIIFs
@@ -27,6 +27,7 @@ open TypeSys.CodeRobotIITs
 open TypeSys.CodeRobotIII
 
 type RobotConfig = {
+ns: string
 mainDir: string
 JsDir: string }
 
@@ -667,10 +668,11 @@ let buildTables robot tables =
     |> Array.iter (buildTable robot)
 
     om.w.newlineBlank()
-    "type MetadataEnum = " |> om.w.newline
-    [| 0 .. tables.Length - 1 |]
-    |> Array.map(fun i -> "| " + tables[i].typeName + " = " + i.ToString())
-    |> Array.iter om.w.newline
+    if tables.Length > 0 then
+        "type MetadataEnum = " |> om.w.newline
+        [| 0 .. tables.Length - 1 |]
+        |> Array.map(fun i -> "| " + tables[i].typeName + " = " + i.ToString())
+        |> Array.iter om.w.newline
 
     om.w.newlineBlank()
     "let tablenames = [|" |> om.w.newline
@@ -694,6 +696,7 @@ let buildTables robot tables =
         "match singlevalue_query conn (str__sql \"SELECT COUNT(ID) FROM [" + t.tableName + "]\") with" |> om.w.newlineIndent 1
         "| Some v -> " + t.typeName + "_count.Value <- v :?> int32" |> om.w.newlineIndent 1
         "| None -> ()" |> om.w.newlineIndent 1)
+    "()" |> om.w.newlineIndent 1
 
 let buildType src t = 
 
@@ -823,27 +826,27 @@ let prepareRobot output config=
 
     let ot =
         config.mainDir + "\OrmTypes.fs"
-        |> create__Src // @"\WebService\BizType\OrmTypes.fs"
+        |> create__Src
     let otTypeScript = 
         config.JsDir + "\OrmTypes.d.ts"
-        |> create__Src // @"\WebFrontend\Vue\src\lib\gfuns\robot\OrmTypes.d.ts"
+        |> create__Src
 
     let om = 
         config.mainDir + "\OrmMor.fs"
-        |> create__Src // @"\WebService\BizType\OrmMor.fs"
+        |> create__Src
     let omTypeScript = 
         config.JsDir + "\OrmMor.ts"
-        |> create__Src // @"\WebFrontend\Vue\src\lib\gfuns\robot\OrmMor.ts"
+        |> create__Src
 
     let cm = 
         config.mainDir + "\CustomMor.fs"
-        |> create__Src // @"\WebService\BizType\CustomMor.fs"
+        |> create__Src
     let typeTypeScript = 
         config.JsDir + "\Types.d.ts"
-        |> create__Src // @"\WebFrontend\Vue\src\lib\gfuns\robot\Types.d.ts"
+        |> create__Src
     let cmTypeScript = 
         config.JsDir + "\CustomMor.ts"
-        |> create__Src // @"\WebFrontend\Vue\src\lib\gfuns\robot\CustomMor.ts"
+        |> create__Src
 
     {
         srcs =
@@ -877,10 +880,19 @@ let go output config =
     [|  "declare global {"
         "" |]
     |> otTypeScript.w.multiLine
-
-    fSharpHeader ot "BizType.OrmTypes" [||]
-    fSharpHeader om "BizType.OrmMor" [| "open System.Data.SqlClient"; "open System.Threading"; "open Util.Bin"; "open BizType.OrmTypes"; "open BizType.Types" |]
-    fSharpHeader cm "BizType.CustomMor" [| "open Util.Bin"; "open BizType.OrmTypes"; "open BizType.Types"; "open BizType.OrmMor" |]
+    
+    fSharpHeader ot (config.ns + ".OrmTypes") [||]
+    [|  "open System.Data.SqlClient"
+        "open System.Threading"
+        "open Util.Bin"
+        "open " + config.ns + ".OrmTypes"
+        "open " + config.ns + ".Types" |]
+    |> fSharpHeader om (config.ns + ".OrmMor")
+    [|  "open Util.Bin"
+        "open " + config.ns + ".OrmTypes"
+        "open " + config.ns + ".Types"
+        "open " + config.ns + ".OrmMor" |]
+    |> fSharpHeader cm (config.ns + ".CustomMor")
 
     let sorted = tc |> tc__sorted
 
