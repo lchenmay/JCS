@@ -135,7 +135,7 @@ let move field =
             if ball.y > h then
                 ball.y <- h)
 
-let cycle = 100
+let cycle = 500
 
 let renderCaption (ctx:Canvas2DContext) field = 
 

@@ -6,12 +6,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Include="Bin.ts" />
+    <None Include="CustomMor.ts" />
+    <None Include="Types.d.ts" />
     <Compile Include="PreOrm.fs" />
     <Compile Include="OrmTypes.fs" />
     <Compile Include="Types.fs" />
     <Compile Include="OrmMor.fs" />
     <Compile Include="CustomMor.fs" />
   </ItemGroup>
+
+  <ItemGroup />
 
   <ItemGroup>
     <ProjectReference Include="..\..\Common\Util\Util.fsproj" />
