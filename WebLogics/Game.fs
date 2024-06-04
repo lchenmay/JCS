@@ -1,6 +1,8 @@
-﻿module WebLogics.Graphics
+﻿module WebLogics.Game
 
 open System
+open System.Collections.Generic
+open System.Threading.Tasks
 
 open Blazor.Extensions
 open Blazor.Extensions.Canvas
@@ -20,7 +22,14 @@ mutable y: float
 mutable vx: float
 mutable vy: float }
 
+type Whiteboard = {
+strokes: List<Stroke>
+mutable currentStrokeWidth: float32
+mutable currentColor: string
+mutable currentStroke: Stroke }
+
 type Field = {
+whiteboard: Whiteboard
 mutable colorSrc: float * float * float
 mutable colorDst: float * float * float
 mutable interpolate: int
@@ -57,6 +66,14 @@ let generalColor() =
     r.NextDouble(),r.NextDouble(),r.NextDouble()
 
 let createField n (w,h) = {
+    whiteboard = {
+        strokes = new List<Stroke>()
+        currentStrokeWidth = 3f
+        currentColor = "Red"
+        currentStroke = {
+            points = new List<float32 * float32>()
+            strokeSize = 3f
+            color = "Red"}}
     colorSrc = generalColor()
     colorDst = generalColor()
     interpolate = 0
@@ -65,6 +82,22 @@ let createField n (w,h) = {
     mouse = None
     balls = field__balls n (w,h)
     lastRender = DateTime.UtcNow }
+
+let pushStrokePoint field = 
+    match field.mouse with
+    | Some (x,y) -> 
+        (x |> float32,y |> float32) 
+        |> field.whiteboard.currentStroke.points.Add
+    | None -> ()
+
+let closeStroke field = 
+    let whiteboard = field.whiteboard
+    if whiteboard.currentStroke.points.Count > 0 then
+        whiteboard.currentStroke |> whiteboard.strokes.Add
+        whiteboard.currentStroke <- {
+            points = new List<float32 * float32>()
+            strokeSize = whiteboard.currentStrokeWidth
+            color = whiteboard.currentColor }
 
 let move field = 
 
@@ -184,6 +217,11 @@ let renderCaption (ctx:Canvas2DContext) field =
                 |> drawLine ctx
             
         | None -> ()
+
+        do! [|  "Current stroke points = " + field.whiteboard.currentStroke.points.Count.ToString()  |]
+            |> String.Concat
+            |> drawText ctx (10, cursor.Value)
+        cursor.Value <- cursor.Value + 20
     }
 
 let renderBall (ctx:Canvas2DContext) ball = 
@@ -193,6 +231,28 @@ let renderBall (ctx:Canvas2DContext) ball =
         else
             ball.color
     drawCircle ctx color ball.r (ball.x, ball.y)
+
+
+let drawStroke (ctx:Canvas2DContext) (s:Stroke) = 
+
+    task{
+        do! s.color 
+            |> ctx.SetStrokeStyleAsync
+        do! ctx.SetLineWidthAsync s.strokeSize
+        do! s.points.ToArray() 
+            |> Array.map(fun (x,y) -> float x,float y)
+            |>  drawPath ctx
+    }
+
+let renderWhiteboard (ctx:Canvas2DContext) whiteboard = 
+    task{
+        let! tasks = 
+            whiteboard.strokes.ToArray()
+            |> Array.map(drawStroke ctx)
+            |> Task.WhenAll
+    
+        do! drawStroke ctx whiteboard.currentStroke
+    }
 
 let render (ctx:Canvas2DContext) field = 
 
@@ -207,7 +267,9 @@ let render (ctx:Canvas2DContext) field =
             let! tasks = 
                 field.balls
                 |> Array.map(renderBall ctx)
-                |> System.Threading.Tasks.Task.WhenAll
+                |> Task.WhenAll
+
+            do! renderWhiteboard ctx field.whiteboard
 
             do! ctx.EndBatchAsync()
         }

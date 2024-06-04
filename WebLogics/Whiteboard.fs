@@ -40,18 +40,6 @@ let empty__Stroke (strokeSize,color) = {
 //    buffer.ToArray()
 
 
-let drawStroke (ctx:Canvas2DContext) s = 
-
-    task{
-        do! s.color 
-            |> uint32__color 
-            |> ctx.SetStrokeStyleAsync
-        do! ctx.SetLineWidthAsync s.strokeSize
-        do! s.points.ToArray() 
-            |> Array.map(fun (x,y) -> float x,float y)
-            |>  drawPath ctx
-    }
-
 type ColorInPalette = {
 mutable rect: Rect
 color: string }

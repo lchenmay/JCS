@@ -35,7 +35,7 @@ let Stroke__bin (bb:BytesBuilder) (v:Stroke) =
         float32__bin bb v0
         float32__bin bb v1)) bb v.points
     float32__bin bb v.strokeSize
-    uint32__bin bb v.color
+    str__bin bb v.color
 
 let bin__Stroke (bi:BinIndexed):Stroke =
     let bin,index = bi
@@ -57,7 +57,7 @@ let bin__Stroke (bi:BinIndexed):Stroke =
             |> bin__float32
         color =
             bi
-            |> bin__uint32
+            |> bin__str
     }
 
 let Stroke__json (v:Stroke) =
@@ -70,7 +70,7 @@ let Stroke__json (v:Stroke) =
             let json1 = float32__json v1
             [| json0;json1 |] |> Json.Ary)) v.points)
         ("strokeSize",float32__json v.strokeSize)
-        ("color",uint32__json v.color)
+        ("color",str__json v.color)
          |]
     |> Json.Braket
 
@@ -140,7 +140,7 @@ let json__Strokeo (json:Json):Stroke option =
             passOptions <- false
             None
         | Some v -> 
-            match v |> json__uint32o with
+            match v |> json__stro with
             | Some res -> Some res
             | None ->
                 passOptions <- false

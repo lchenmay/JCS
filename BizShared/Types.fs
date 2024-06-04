@@ -8,7 +8,7 @@ open System.Collections.Generic
 type Stroke = {
 points: List<float32 * float32>
 strokeSize: float32
-color: uint32 }
+color: string }
 
 type ActionWhiteboard =
 | Stroke of Stroke

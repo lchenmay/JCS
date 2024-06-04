@@ -17,7 +17,7 @@ namespace BlazorWebAssembly.Pages
         private Canvas2DContext ctx;
         protected BECanvasComponent CanvasRef;
 
-        private Graphics.Field field = Graphics.createField(10, 400.0, 300.0);
+        private Game.Field field = Game.createField(10, 400.0, 300.0);
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
@@ -28,11 +28,18 @@ namespace BlazorWebAssembly.Pages
 
         protected void MouseMove(MouseEventArgs e) {
             field.mouse = new Tuple<double, double>(e.OffsetX, e.OffsetY);
+            if (e.Buttons == 1) {
+                Game.pushStrokePoint(field);
+            }
+        }
+        protected void MouseUp(MouseEventArgs e)
+        {
+            Game.closeStroke(field);
         }
 
         protected void MouseLeave(MouseEventArgs e)
         {
-            field.mouse = FSharpOption<Tuple<double, double>>.None;
+            field.mouse = null;
         }
 
         [JSInvokable]
@@ -45,7 +52,7 @@ namespace BlazorWebAssembly.Pages
         [JSInvokable]
         public async ValueTask RenderInBlazor(float timeStamp)
         {
-            Graphics.render(this.ctx, this.field);
+            Game.render(this.ctx, this.field);
         }
 
     }

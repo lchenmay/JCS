@@ -11,7 +11,7 @@ export const Stroke__bin = (bb:BytesBuilder) => (v:Stroke) {
         let v1 = v.v1
         float32__bin (bb) (v1)})) (bb) (v.points)
     float32__bin (bb) (v.strokeSize)
-    uint32__bin (bb) (v.color)
+    str__bin (bb) (v.color)
 }
 
 export const bin__Stroke:Stroke = (bi:BinIndexed) => {
@@ -23,7 +23,7 @@ export const bin__Stroke:Stroke = (bi:BinIndexed) => {
                 
                         return {v0:v0,v1:v1}})) (bi),
         strokeSize: bin__float32 (bi),
-        color: bin__uint32 (bi),
+        color: bin__str (bi),
     }
 }
 

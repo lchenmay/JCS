@@ -5,7 +5,7 @@ declare global {
 export type Stroke = {
 points:any[],
 strokeSize:float32,
-color:uint32
+color:string
 }
 
 // [ActionWhiteboard]
