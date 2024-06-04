@@ -15,3 +15,7 @@
 /AioServer/obj
 /WebLogics/bin/Debug/net8.0
 /WebLogics/obj
+/BlazorWebAssembly/bin/Release/net8.0
+/BizShared/bin/Release/net8.0
+/WebDeploy
+/WebLogics/bin/Release/net8.0
