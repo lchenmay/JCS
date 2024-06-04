@@ -1,8 +1,11 @@
 ﻿@page "/contact"
 
+@inject IJSRuntime JsRuntime;
+
 <PageTitle>Contact</PageTitle>
 
 <h1>Contact</h1>
+
 
 <style>
     input,textarea,select{
@@ -22,9 +25,9 @@
     //let port = theInstance.invokeMethodAsync('BlazorWebAssembly', 'GetPort');
     //let port = DotNet.invokeMethodc('GetPort');
 
-    //let server = 'localhost'; 
+    let server = 'localhost';
     //let server = '147.185.239.30';
-    let server = 'jcatsys.com';
+    //let server = 'jcatsys.com';
     let port = 8880;
 
     let url = "ws://" + server + ":" + port;
@@ -39,8 +42,8 @@
         console.log("Message from server ", event.data);
     });
 
-    function send() {
-        alert.send("AAA");
+    function wsSend() {
+        socket.send('OK');
     }
 
 </script>
@@ -66,11 +69,14 @@
         <span>Allow email notification.</span>
     </label>
 
-    <button onclick="send">Send</button>
+    <button onclick="@Send">Send</button>
 
 </div>
 
 @code{
+
+    string port = "8800";
+
     string name = "Name";
     string email = "Email *";
     string msg = "Message";
@@ -82,6 +88,13 @@
         return BizShared.PreOrm.port;
     }
 
+    private async void Send()
+    {
+        this.name = this.port + " sending";
+
+        await JsRuntime.InvokeAsync<object>("wsSend");
+
+    }
 }
 
 <div>

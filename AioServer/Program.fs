@@ -18,11 +18,13 @@ open BizShared.CustomMor
 
 Console.OutputEncoding <- System.Text.Encoding.Unicode
 let output (s:string) = 
-    [|  Util.Text.now_date() 
+    [|  Util.Text.now_time() 
         " - "
         s|]
     |> String.Concat
     |> Console.WriteLine
+
+let outputRawStr (s:string) = Console.WriteLine s
 
 [<EntryPoint>]
 let main args =
@@ -44,6 +46,10 @@ let main args =
 
         "<< Client: " + wsp.client.ToString() + " << incoming " + wsp.bin.Length.ToString() + " bytes"
         |> output
+
+        wsp.bin
+        |> Encoding.UTF8.GetString
+        |> outputRawStr
 
         //wsp.bin |> binPushWsToAll zweb
 
