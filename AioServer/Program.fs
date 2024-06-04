@@ -49,7 +49,7 @@ let main args =
         None
 
     zweb.disconnector.Add(fun bin -> ())
-    lauchWebServer output (httpHandler (httpEcho @"C:\Dev\JCS\AioServer" () branch)) wsHandler zweb
+    lauchWebServer output (httpHandler (httpEcho @"C:\Dev\JCS\WebDeploy\wwwroot" () branch)) wsHandler zweb
 
     Util.Runtime.halt output "" ""
 
