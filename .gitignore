@@ -19,3 +19,4 @@
 /BizShared/bin/Release/net8.0
 /WebDeploy
 /WebLogics/bin/Release/net8.0
+/BlazorWebAssembly/Properties/PublishProfiles/IISProfile.pubxml.user
