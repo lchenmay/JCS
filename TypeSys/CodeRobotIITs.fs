@@ -43,25 +43,22 @@ let rec t__binImpl (w:TextBlockWriter) indent t =
             t__binCall w (indent + 2) tt)
 
     | TypeEnum.Sum items -> 
-        "match v with" |> w.newlineIndent (indent + 1)
+        "int32__bin (bb) (v.e)" |> w.newlineIndent (indent + 1)
+        "switch (v.e) {" |> w.newlineIndent (indent + 1)
         [| 0 .. items.Length - 1 |]
         |> Array.iter(fun i -> 
             let n,o = items[i]
-            "| " + t.name + "." + n |> w.newlineIndent (indent + 1)
-            match o with
-            | Some tt -> " v ->" |> w.appendEnd
-            | None -> " ->" |> w.appendEnd
-            
-            "int32__bin (bb) (" + i.ToString() + ")" |> w.newlineIndent (indent + 2)
+            "case " + i.ToString() + ":" |> w.newlineIndent (indent + 2)
 
             match o with
             | Some tt -> 
-                w.newlineBlankIndent (indent + 2)
-                t__binCall w (indent + 2) tt
+                w.newlineBlankIndent (indent + 3)
+                t__binCall w (indent + 3) tt
                 " (bb) (v)" |> w.appendEnd
             | None -> ()
 
-            ())
+            "break" |> w.newlineIndent (indent + 3))
+        "}" |> w.newlineIndent (indent + 1)
 
     | TypeEnum.Enum v -> 
 
@@ -171,20 +168,23 @@ let rec bin__tImpl (w:TextBlockWriter) indent t =
 
     | TypeEnum.Sum items -> 
 
-        "match bin__int32 bi with" |> w.newlineIndent (indent + 1)
+        "let v:" + t.name + " = {}" |> w.newlineIndent (indent + 1)
+        "v.e = bin__int32 (bi)" |> w.newlineIndent (indent + 1)
+        "switch (v.e) {" |> w.newlineIndent (indent + 1)
         [| 0 .. items.Length - 1 |]
         |> Array.rev
         |> Array.iter(fun i -> 
             let n,o = items[i]
-            if i = 0 then
-                "| _ -> " |> w.newlineIndent (indent + 1)
-            else
-                "| " + i.ToString() + " -> " |> w.newlineIndent (indent + 1)
+            "case " + i.ToString() + ":" |> w.newlineIndent (indent + 2)
             match o with
             | Some tt -> 
-                bin__tCall w (indent + 2) tt
-                " bi |> " + t.name + "." + n |> w.appendEnd
-            | None -> t.name + "." + n |> w.appendEnd)
+                "v.val = " |> w.newlineIndent (indent + 3)
+                bin__tCall w (indent + 3) tt
+                " (bi) " |> w.appendEnd
+            | None -> ()
+            "break" |> w.newlineIndent (indent + 3))
+        "}" |> w.newlineIndent (indent + 1)
+        "return v" |> w.newlineIndent (indent + 1)
 
 
     | TypeEnum.Enum v -> ()
@@ -328,7 +328,7 @@ let rec t__jsonImpl (w:TextBlockWriter) indent t =
             match o with
             | Some tt -> " v ->" |> w.appendEnd
             | None ->  " ->" |> w.appendEnd
-            "(\"enum\",int32__json " + i.ToString() + ") |> items.Add" |> w.newlineIndent (indent + 2)
+            "(\"e\",int32__json " + i.ToString() + ") |> items.Add" |> w.newlineIndent (indent + 2)
             match o with
             | Some tt -> 
                 w.newlineBlankIndent (indent + 2)
@@ -482,7 +482,7 @@ let rec json__tImpl (w:TextBlockWriter) indent t =
         
     | TypeEnum.Sum items ->
 
-        "match json__tryFindByName json \"enum\" with" |> w.newlineIndent (indent + 1)
+        "match json__tryFindByName json \"e\" with" |> w.newlineIndent (indent + 1)
         "| Some json ->" |> w.newlineIndent (indent + 1)
         "match json__int32o json with" |> w.newlineIndent (indent + 2)
         "| Some i ->" |> w.newlineIndent (indent + 2)

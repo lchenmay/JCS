@@ -6,6 +6,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Include="OrmMor.js" />
+    <None Include="CustomMor.js" />
     <None Include="Bin.ts" />
     <None Include="CustomMor.ts" />
     <None Include="Types.d.ts" />

@@ -1,7 +1,7 @@
 
 // [Stroke] Structure
 
-export const Stroke__bin = (bb:BytesBuilder) => (v:Stroke) {
+export const Stroke__bin = (bb:BytesBuilder) => (v:Stroke) => {
 
     
     List__bin (((bb:BytesBuilder) => (v:any) => {
@@ -29,31 +29,43 @@ export const bin__Stroke:Stroke = (bi:BinIndexed) => {
 
 // [ActionWhiteboard] Structure
 
-export const ActionWhiteboard__bin = (bb:BytesBuilder) => (v:ActionWhiteboard) {
+export const ActionWhiteboard__bin = (bb:BytesBuilder) => (v:ActionWhiteboard) => {
 
-    match v with
-    | ActionWhiteboard.Stroke v ->
-        int32__bin (bb) (0)
-        Stroke__bin (bb) (v)
-    | ActionWhiteboard.Clear v ->
-        int32__bin (bb) (1)
-        uint32__bin (bb) (v)
-    | ActionWhiteboard.Msg v ->
-        int32__bin (bb) (2)
-        str__bin (bb) (v)
+    int32__bin (bb) (v.e)
+    switch (v.e) {
+        case 0:
+            Stroke__bin (bb) (v)
+            break
+        case 1:
+            uint32__bin (bb) (v)
+            break
+        case 2:
+            str__bin (bb) (v)
+            break
+    }
 }
 
 export const bin__ActionWhiteboard:ActionWhiteboard = (bi:BinIndexed) => {
 
-    match bin__int32 bi with
-    | 2 -> bin__str bi |> ActionWhiteboard.Msg
-    | 1 -> bin__uint32 bi |> ActionWhiteboard.Clear
-    | _ -> bin__Stroke bi |> ActionWhiteboard.Stroke
+    let v:ActionWhiteboard = {}
+    v.e = bin__int32 (bi)
+    switch (v.e) {
+        case 2:
+            v.val = bin__str (bi) 
+            break
+        case 1:
+            v.val = bin__uint32 (bi) 
+            break
+        case 0:
+            v.val = bin__Stroke (bi) 
+            break
+    }
+    return v
 }
 
 // [FactWhiteboard] Structure
 
-export const FactWhiteboard__bin = (bb:BytesBuilder) => (v:FactWhiteboard) {
+export const FactWhiteboard__bin = (bb:BytesBuilder) => (v:FactWhiteboard) => {
 
     ActionWhiteboard__bin (bb) (v.action)
     str__bin (bb) (v.actor)
@@ -77,19 +89,28 @@ export const bin__FactWhiteboard:FactWhiteboard = (bi:BinIndexed) => {
 
 // [FactBroadcast] Structure
 
-export const FactBroadcast__bin = (bb:BytesBuilder) => (v:FactBroadcast) {
+export const FactBroadcast__bin = (bb:BytesBuilder) => (v:FactBroadcast) => {
 
-    match v with
-    | FactBroadcast.Whiteboard v ->
-        int32__bin (bb) (0)
-        FactWhiteboard__bin (bb) (v)
-    | FactBroadcast.Undefined ->
-        int32__bin (bb) (1)
+    int32__bin (bb) (v.e)
+    switch (v.e) {
+        case 0:
+            FactWhiteboard__bin (bb) (v)
+            break
+        case 1:
+            break
+    }
 }
 
 export const bin__FactBroadcast:FactBroadcast = (bi:BinIndexed) => {
 
-    match bin__int32 bi with
-    | 1 -> FactBroadcast.Undefined
-    | _ -> bin__FactWhiteboard bi |> FactBroadcast.Whiteboard
+    let v:FactBroadcast = {}
+    v.e = bin__int32 (bi)
+    switch (v.e) {
+        case 1:
+            break
+        case 0:
+            v.val = bin__FactWhiteboard (bi) 
+            break
+    }
+    return v
 }

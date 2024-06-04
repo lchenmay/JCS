@@ -711,7 +711,7 @@ let buildType src t =
         [|  ""; 
             match src.lang with
             | ProgrammingLang.FSharp -> "let " + t.name + "__bin (bb:BytesBuilder) (v:" + t.name + ") ="
-            | ProgrammingLang.TypeScript -> "export const " + t.name + "__bin = (bb:BytesBuilder) => (v:" + t.name + ") {"
+            | ProgrammingLang.TypeScript -> "export const " + t.name + "__bin = (bb:BytesBuilder) => (v:" + t.name + ") => {"
             | _ -> ()
             "" |] 
         |> tbw.multiLine

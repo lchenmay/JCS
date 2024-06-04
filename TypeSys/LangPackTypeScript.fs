@@ -13,8 +13,10 @@ let rec type__annotation tc t =
         match t.name with
         | "int64"
         | "int"
-        | "float" -> "number"
+        | "float"
+        | "float32" -> "number"
         | "bool" -> "boolean"
+        | "DateTime" -> "Date"
         | _ -> t.name
     | TypeEnum.Orm v -> t.name
     | TypeEnum.List v -> "any[]"
@@ -40,11 +42,11 @@ let type__TypeScript tc (w:TextBlockWriter) t =
             "v" + i.ToString() + ":" + (t |> type__annotation tc))
 
     | TypeEnum.Sum items ->
-        [|  "enum: number"
+        [|  "e: number"
             "val: any" |]
 
     | TypeEnum.Enum items -> 
-        [|  "enum: number" |]
+        [|  "e: number" |]
 
     | _ -> [| |]
     |> w.multiLineConcate ("," + crlf)

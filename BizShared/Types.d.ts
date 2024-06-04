@@ -4,13 +4,13 @@ declare global {
 // [Stroke]
 export type Stroke = {
 points:any[],
-strokeSize:float32,
+strokeSize:number,
 color:string
 }
 
 // [ActionWhiteboard]
 export type ActionWhiteboard = {
-enum: number,
+e: number,
 val: any
 }
 
@@ -20,13 +20,13 @@ action:ActionWhiteboard,
 actor:string,
 clientId:number,
 serverId:number,
-clientTimestamp:DateTime,
-serverTimestamp:DateTime
+clientTimestamp:Date,
+serverTimestamp:Date
 }
 
 // [FactBroadcast]
 export type FactBroadcast = {
-enum: number,
+e: number,
 val: any
 }
 
