@@ -52,7 +52,7 @@ namespace BlazorWebAssembly.Pages
         [JSInvokable]
         public async ValueTask RenderInBlazor(float timeStamp)
         {
-            Game.render(this.ctx, this.field);
+            await Game.render(this.ctx, this.field);
         }
 
     }

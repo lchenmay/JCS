@@ -18,15 +18,35 @@
 
 <style>
     canvas {
-        width: 100%;
+/*         width: 100%;
         height: 100%;
-        background-color: magenta
+ */        background-color: magenta
     }
 
 </style>
 
 <script>
-@UtilBlazor.Graphics.essential
+    function renderJS(timeStamp) {
+        theInstance.invokeMethodAsync('RenderInBlazor', timeStamp);
+        window.requestAnimationFrame(renderJS);
+    }
+
+    function resizeCanvasToFitWindow() {
+        var holder = document.getElementById('canvasHolder');
+        var canvas = holder.querySelector('canvas');
+        if (canvas) {
+            //canvas.width = window.innerWidth;
+            //canvas.height = window.innerHeight;
+            theInstance.invokeMethodAsync('ResizeInBlazor', canvas.width, canvas.height);
+        }
+    }
+
+    window.initRenderJS = (instance) => {
+        window.theInstance = instance;
+        window.addEventListener("resize", resizeCanvasToFitWindow);
+        resizeCanvasToFitWindow();
+        window.requestAnimationFrame(renderJS);
+    };
 </script>
 
 <div id="canvasHolder" 
@@ -34,7 +54,7 @@
     @onmouseleave="MouseLeave"
     @onmouseup="MouseUp"
     class="canvas">
-    <BECanvas Width="300" Height="200" @ref="CanvasRef"></BECanvas>
+    <BECanvas Width="800" Height="600" @ref="CanvasRef"></BECanvas>
 </div>
 
 <div>Mission</div>

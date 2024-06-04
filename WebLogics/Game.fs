@@ -108,18 +108,18 @@ let move field =
         ball.x <- ball.x + ball.vx
         ball.y <- ball.y + ball.vy
 
-        match field.mouse with
-        | Some (x,y) -> 
+        //match field.mouse with
+        //| Some (x,y) -> 
 
-            let disx = ball.x - x
-            let disy = ball.y - y
+        //    let disx = ball.x - x
+        //    let disy = ball.y - y
 
-            if disx * disx + disy * disy < 10.0 * 10.0 then
-                ball.hit <- true
-            else
-                ball.hit <- false
+        //    if disx * disx + disy * disy < 10.0 * 10.0 then
+        //        ball.hit <- true
+        //    else
+        //        ball.hit <- false
 
-        | None -> ()
+        //| None -> ()
 
         if ball.x < 0 || ball.x > w then
             ball.vx <- - ball.vx
@@ -139,7 +139,7 @@ let cycle = 100
 
 let renderCaption (ctx:Canvas2DContext) field = 
 
-    let fps = 1.0 / (DateTime.UtcNow - field.lastRender).TotalSeconds
+    let elapse = (DateTime.UtcNow - field.lastRender).TotalSeconds
     field.lastRender <- DateTime.UtcNow
 
     let backColor = 
@@ -189,9 +189,9 @@ let renderCaption (ctx:Canvas2DContext) field =
 
         do! ctx.SetFontAsync("16px consolas")
 
-        do! [|  "% " + (100.0 * (float field.interpolate)/(float cycle)).ToString("000.00")
+        do! [|  "Transiting %" + (100.0 * (float field.interpolate)/(float cycle)).ToString("00.00")
                 " " + backColor
-                " fps = " + fps.ToString("0.00")    |]
+                " Elapse = " + elapse.ToString("0.00") + "s"   |]
             |> String.Concat
             |> drawText ctx (10, cursor.Value)
         cursor.Value <- cursor.Value + 20
@@ -211,6 +211,7 @@ let renderCaption (ctx:Canvas2DContext) field =
             cursor.Value <- cursor.Value + 20
 
             do! ctx.SetStrokeStyleAsync "#cccccc"
+            do! ctx.SetLineWidthAsync 1.0f
             do! (x,0.0,x,field.height) 
                 |> drawLine ctx
             do! (0.0,y,field.width,y) 
@@ -274,4 +275,5 @@ let render (ctx:Canvas2DContext) field =
             do! ctx.EndBatchAsync()
         }
 
-    t.RunSynchronously()
+    //t.RunSynchronously()
+    t
