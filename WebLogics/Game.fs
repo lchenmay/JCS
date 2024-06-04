@@ -184,7 +184,7 @@ let renderCaption (ctx:Canvas2DContext) field =
         let cursor = ref 30
 
         do! ctx.SetFontAsync("26px Segoe UI")
-        do! ctx.FillTextAsync("Blazaor WebAssembly + HTML Canvas", 10, cursor.Value)
+        do! ctx.FillTextAsync("IA: DB + Server <<== WebSocket ==>> Blazaor WebAssembly + HTML Canvas", 10, cursor.Value)
         cursor.Value <- cursor.Value + 20
 
         do! ctx.SetFontAsync("16px consolas")
