@@ -4,6 +4,83 @@
 
 <h1>Contact</h1>
 
+<style>
+    input,textarea,select{
+        width:100%;
+    }
+
+    .contact-form{
+        width: 60%;
+        text-align: center;
+        background-color:antiquewhite;
+    }
+
+</style>
+
+<script>
+    
+    //let port = theInstance.invokeMethodAsync('BlazorWebAssembly', 'GetPort');
+    //let port = DotNet.invokeMethodc('GetPort');
+    let server = 'localhost';
+    let port = 12077;
+
+    let url = "ws://localhost:" + port;
+
+    const socket = new WebSocket(url);
+
+    socket.addEventListener("open", (event) => {
+        socket.send("Hello Server!");
+    });
+
+    socket.addEventListener("message", (event) => {
+        console.log("Message from server ", event.data);
+    });
+
+    function send() {
+        socket.send("AAA");
+    }
+
+</script>
+
+<div class="contact-form">
+
+    <input type="text" @bind="name" />
+
+    <input type="text" @bind="email" />
+
+    <textarea @bind="msg" />
+
+    <select>
+        <option>a</option>
+        <option>b</option>
+        <option>c</option>
+    </select>
+
+    <input type="text" @bind="tel" />
+
+    <label>
+        <input type="checkbox" />
+        <span>Allow email notification.</span>
+    </label>
+
+    <button onclick="send">Send</button>
+
+</div>
+
+@code{
+    string name = "Name";
+    string email = "Email *";
+    string msg = "Message";
+    string tel = "Phone Number";
+
+    [JSInvokable]
+    public static int GetPort()
+    {
+        return BizShared.PreOrm.port;
+    }
+
+}
+
 <div>
     <a href="https://www.linkedin.com/in/lchenmay" target="_blank">
         <img width="100" src="https://cdn.uconnectlabs.com/wp-content/uploads/sites/46/2022/08/Linkedin-Logo-e1660320077673.png" />

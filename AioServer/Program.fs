@@ -10,6 +10,7 @@ open Util.HttpClient
 open Util.Console
 open Util.Zmq
 
+open BizShared.PreOrm
 open BizShared.OrmTypes
 open BizShared.Types
 open BizShared.CustomMor
@@ -20,8 +21,6 @@ let output (s:string) = Console.WriteLine s
 
 [<EntryPoint>]
 let main args =
-
-    let port = 12077
 
     let zweb = create__ZWeb 2 port LogLevel.All false [||]
 

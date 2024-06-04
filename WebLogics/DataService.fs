@@ -9,6 +9,7 @@ open Util.Bin
 open Util.Zmq
 open Util.IA
 
+open BizShared.PreOrm
 open BizShared.OrmTypes
 open BizShared.Types
 open BizShared.CustomMor
@@ -25,4 +26,7 @@ let client = {
 
 let init() = 
     connect client
+
+    //let bin = [| |]
+    //WsPush client.wsClient (WsMsgType.Binary, bin)
     ()

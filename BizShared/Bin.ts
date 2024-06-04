@@ -1,33 +1,37 @@
 ﻿
-export type BinIndexed = {
-    bin: ArrayBuffer,
-    index: number
-}
+declare global {
 
-export class BytesBuilder {
-
-    count: number
-    buffer: ArrayBuffer[]
-
-    constructor() {
-        this.buffer = []
-        this.count = 0
+    export type BinIndexed = {
+        bin: ArrayBuffer,
+        index: number
     }
 
-    append(bin: ArrayBuffer) {
-        this.buffer.push(bin)
-        this.count += bin.byteLength
+    export class BytesBuilder {
+
+        count: number
+        buffer: ArrayBuffer[]
+
+        constructor() {
+            this.buffer = []
+            this.count = 0
+        }
+
+        append(bin: ArrayBuffer) {
+            this.buffer.push(bin)
+            this.count += bin.byteLength
+        }
+
+        bytes() {
+            let res = new ArrayBuffer(this.count)
+            let i = 0
+            this.buffer.forEach((bin: ArrayBuffer) => {
+                new Uint8Array(res).set(new Uint8Array(bin), i)
+                i += bin.byteLength
+            });
+            return res
+        }
     }
 
-    bytes() {
-        let res = new ArrayBuffer(this.count)
-        let i = 0
-        this.buffer.forEach((bin: ArrayBuffer) => {
-            new Uint8Array(res).set(new Uint8Array(bin), i)
-            i += bin.byteLength
-        });
-        return res
-    }
 }
 
 // Primitive types
