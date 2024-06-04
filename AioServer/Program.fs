@@ -17,7 +17,12 @@ open BizShared.CustomMor
 
 
 Console.OutputEncoding <- System.Text.Encoding.Unicode
-let output (s:string) = Console.WriteLine s
+let output (s:string) = 
+    [|  Util.Text.now_date() 
+        " - "
+        s|]
+    |> String.Concat
+    |> Console.WriteLine
 
 [<EntryPoint>]
 let main args =
