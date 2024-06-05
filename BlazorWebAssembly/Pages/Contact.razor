@@ -1,101 +1,12 @@
 ﻿@page "/contact"
 
-@inject IJSRuntime JsRuntime;
 
 <PageTitle>Contact</PageTitle>
 
 <h1>Contact</h1>
 
+<BlazorWebAssembly.Components.ContactForm ReadMe="@(DateTime.UtcNow.ToString())" />
 
-<style>
-    input,textarea,select{
-        width:100%;
-    }
-
-    .contact-form{
-        width: 60%;
-        text-align: center;
-        background-color:antiquewhite;
-    }
-
-</style>
-
-<script>
-    
-    //let port = theInstance.invokeMethodAsync('BlazorWebAssembly', 'GetPort');
-    //let port = DotNet.invokeMethodc('GetPort');
-
-    let server = 'localhost';
-    //let server = '147.185.239.30';
-    //let server = 'jcatsys.com';
-    let port = 8880;
-
-    let url = "ws://" + server + ":" + port;
-
-    const socket = new WebSocket(url);
-
-    socket.addEventListener("open", (event) => {
-        socket.send("Hello Server!");
-    });
-
-    socket.addEventListener("message", (event) => {
-        console.log("Message from server ", event.data);
-    });
-
-    function wsSend() {
-        socket.send('OK');
-    }
-
-</script>
-
-<div class="contact-form">
-
-    <input type="text" @bind="name" />
-
-    <input type="text" @bind="email" />
-
-    <textarea @bind="msg" />
-
-    <select>
-        <option>a</option>
-        <option>b</option>
-        <option>c</option>
-    </select>
-
-    <input type="text" @bind="tel" />
-
-    <label>
-        <input type="checkbox" />
-        <span>Allow email notification.</span>
-    </label>
-
-    <button onclick="@Send">Send</button>
-
-</div>
-
-@code{
-
-    string port = "8800";
-
-    string name = "Name";
-    string email = "Email *";
-    string msg = "Message";
-    string tel = "Phone Number";
-
-    [JSInvokable]
-    public static int GetPort()
-    {
-        return BizShared.PreOrm.port;
-    }
-
-    private async void Send()
-    {
-        this.name = this.port + " sending";
-
-        await JsRuntime.InvokeAsync<object>("wsSend");
-
-    }
-}
 
 <div>
     <a href="https://www.linkedin.com/in/lchenmay" target="_blank">
