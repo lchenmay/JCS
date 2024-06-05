@@ -1,0 +1,137 @@
+﻿
+@using System;
+@using System.Text;
+
+@inject IJSRuntime JsRuntime;
+
+
+<h3>Contact Form</h3>
+
+
+<style>
+
+    input, textarea, select {
+        width: 100%;
+        margin-top: 20px;
+        border-style:solid;
+        border-color: orange;
+    }
+
+    textarea{
+        height: 200px;
+    }
+
+    .contact-form {
+        width: 40%;
+        text-align: center;
+        padding: 20px;
+    }
+
+</style>
+
+<script>
+
+    //let port = theInstance.invokeMethodAsync('BlazorWebAssembly', 'GetPort');
+    //let port = DotNet.invokeMethodc('GetPort');
+
+    let server = 'localhost';
+    //let server = '147.185.239.30';
+    //let server = 'jcatsys.com';
+    let port = 8880;
+
+    let url = "ws://" + server + ":" + port;
+
+    const socket = new WebSocket(url);
+
+    socket.addEventListener("open", (event) => {
+        socket.send("Hello Server!");
+    });
+
+    socket.addEventListener("message", (event) => {
+        console.log("Message from server ", event.data);
+    });
+
+    function wsSend(s) {
+        socket.send(s);
+    }
+
+</script>
+
+<div class="contact-form">
+
+    <input type="text" @bind="name" />
+
+    <input type="text" @bind="email" />
+
+    <textarea @bind="msg" />
+
+    <input type="text" @bind="tel" />
+
+    <label>
+        <input type="checkbox" />
+        <span>Allow email notification.</span>
+    </label>
+
+    <div>
+        <button onclick="@Send">Send</button>
+    </div>
+
+    <p id="json">@(this.GetJson().Result)</p>
+
+</div>
+
+<p>@this.ReadMe</p>
+
+@code {
+
+    // private DotNetObjectReference<ContactForm>? objRef;
+
+    // protected override void OnInitialized()
+    // {
+    //     objRef = DotNetObjectReference.Create(this);
+    // }
+
+    // public void Dispose()
+    // {
+    //     objRef?.Dispose();
+    // }
+
+    string port = "8800";
+
+    string name = "Name";
+    string email = "Email *";
+    string msg = "Message";
+    string tel = "Phone Number";
+
+    [Parameter]
+    public string ReadMe { get; set; } = " - ";
+
+    [JSInvokable]
+    public static int GetPort()
+    {
+        return BizShared.PreOrm.port;
+    }
+
+    [JSInvokable]
+    public Task<string> GetJson()
+    {
+        var sb = new StringBuilder();
+
+        string[] lines =
+        [
+            "{",
+    "\"name\":\""+this.name + "\"",
+    ",\"email\":\""+this.email+ "\"",
+    "}" ];
+
+        foreach (string line in lines)
+            sb.Append(line);
+
+        return Task.FromResult(sb.ToString());
+    }
+
+    private async void Send()
+    {
+        await JsRuntime.InvokeAsync<object>("wsSend", this.GetJson().Result);
+    }
+}
