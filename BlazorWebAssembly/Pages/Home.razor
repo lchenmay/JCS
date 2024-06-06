@@ -1,12 +1,6 @@
 ﻿@page "/"
 
-@using Blazor.Extensions
-@using Blazor.Extensions.Canvas
-@using Blazor.Extensions.Canvas.Canvas2D
-
-@using BizShared;
-
-@inject IJSRuntime JsRuntime;
+@using BlazorWebAssembly.Components
 
 <PageTitle>J-Category Systems | Home</PageTitle>
 
@@ -43,47 +37,8 @@
     <p>Slogan: "Program is like surgery: shorter is better."</p>
 </div>
 
-<style>
-    canvas {
-        /* width: 100%;
-            height: 100%;*/
-        background-color: magenta
-    }
+<GameField />
 
-</style>
-
-<script>
-    function renderJS(timeStamp) {
-        theInstance.invokeMethodAsync('RenderInBlazor', timeStamp);
-        window.requestAnimationFrame(renderJS);
-    }
-
-    function resizeCanvasToFitWindow() {
-        var holder = document.getElementById('canvasHolder');
-        var canvas = holder.querySelector('canvas');
-        if (canvas) {
-            //canvas.width = window.innerWidth;
-            //canvas.height = window.innerHeight;
-            theInstance.invokeMethodAsync('ResizeInBlazor', canvas.width, canvas.height);
-        }
-    }
-
-    window.initRenderJS = (instance) => {
-        window.theInstance = instance;
-        window.addEventListener("resize", resizeCanvasToFitWindow);
-        resizeCanvasToFitWindow();
-        window.requestAnimationFrame(renderJS);
-    };
-
-</script>
-
-<div id="canvasHolder"
-     @onmousemove="MouseMove"
-     @onmouseleave="MouseLeave"
-     @onmouseup="MouseUp"
-     class="canvas">
-    <BECanvas Width="1500" Height="600" @ref="CanvasRef"></BECanvas>
-</div>
 
 <div>Mission</div>
 <ul>

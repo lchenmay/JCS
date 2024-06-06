@@ -15,7 +15,8 @@ open BizShared.Types
 
 type Ball = {
 mutable color: string
-r: float
+mutable name: string
+mutable r: float
 mutable hit: bool
 mutable x: float
 mutable y: float 
@@ -35,8 +36,11 @@ mutable colorDst: float * float * float
 mutable interpolate: int
 mutable width: float
 mutable height: float 
+mutable hor: float
+mutable span: float
+mutable thickness: float
 mutable mouse: (float * float) option
-balls: Ball[]
+balls: SortedDictionary<string,Ball>
 mutable lastRender: DateTime }
 
 let field__balls n (w,h) = 
@@ -52,8 +56,8 @@ let field__balls n (w,h) =
 
     [| 0 .. n - 1 |]
     |> Array.map(fun i -> {
-        //color = "#ffffcc"
         color = rand__color()
+        name = "(" + i.ToString() + ")"
         r = 5.0 + 15.0 * r.NextDouble()
         hit = false
         x = w * r.NextDouble()
@@ -79,8 +83,17 @@ let createField n (w,h) = {
     interpolate = 0
     width = w
     height = h
+    hor = 0.5 * w
+    span = 0.2
+    thickness = 70.0
     mouse = None
-    balls = field__balls n (w,h)
+    balls = 
+        let balls = new SortedDictionary<string,Ball>()
+        field__balls n (w,h)
+        |> Array.iter(fun i -> 
+            if balls.ContainsKey i.name = false then
+                balls.Add(i.name,i))
+        balls
     lastRender = DateTime.UtcNow }
 
 let pushStrokePoint field = 
@@ -99,36 +112,46 @@ let closeStroke field =
             strokeSize = whiteboard.currentStrokeWidth
             color = whiteboard.currentColor }
 
-let move field = 
+let collisionCheck field ball = 
+
+    let mutable xhit,yhit = false,false
+
+    let w,h = field.width,field.height
+    let x,y,r = ball.x,ball.y,ball.r
+
+    if x < r || x + r > w then
+        xhit <- true
+    if y < r || y + r > h then
+        yhit <- true
+
+    let yy = 0.5 * w
+    let d1 = y - 0.5 * w
+    let d2 = 0.5 * field.thickness + r
+    if d1 * d1 < d2 * d2 then
+        yhit <- true
+
+    xhit,yhit
+    
+
+let move field elapse = 
 
     let w,h = field.width,field.height
 
-    field.balls
-    |> Array.iter(fun ball -> 
-        ball.x <- ball.x + ball.vx
-        ball.y <- ball.y + ball.vy
+    field.balls.Values
+    |> Seq.iter(fun ball -> 
+        ball.x <- ball.x + ball.vx * elapse * 10.1
+        ball.y <- ball.y + ball.vy * elapse * 10.1
 
-        //match field.mouse with
-        //| Some (x,y) -> 
+        let xhit,yhit = collisionCheck field ball
 
-        //    let disx = ball.x - x
-        //    let disy = ball.y - y
-
-        //    if disx * disx + disy * disy < 10.0 * 10.0 then
-        //        ball.hit <- true
-        //    else
-        //        ball.hit <- false
-
-        //| None -> ()
-
-        if ball.x < 0 || ball.x > w then
+        if xhit then
             ball.vx <- - ball.vx
             if ball.x < 0 then
                 ball.x <- 0
             if ball.x > w then
                 ball.x <- w
 
-        if ball.y < 0 || ball.y > h then
+        if yhit then
             ball.vy <- - ball.vy
             if ball.y < 0 then
                 ball.y <- 0
@@ -137,13 +160,9 @@ let move field =
 
 let cycle = 500
 
-let renderCaption (ctx:Canvas2DContext) field = 
-
-    let elapse = (DateTime.UtcNow - field.lastRender).TotalSeconds
-    field.lastRender <- DateTime.UtcNow
+let renderCaption (ctx:Canvas2DContext) field (elapse:float) = 
 
     let backColor = 
-
 
         if field.interpolate >= cycle then
             field.interpolate <- 0
@@ -197,10 +216,12 @@ let renderCaption (ctx:Canvas2DContext) field =
         cursor.Value <- cursor.Value + 20
 
         do! [|  "w = " + field.width.ToString("0")
-                ", h = " + field.height.ToString("0")    |]
+                ", h = " + field.height.ToString("0")  
+                ", hor = " + field.hor.ToString("0")   |]
             |> String.Concat
             |> drawText ctx (10, cursor.Value)
         cursor.Value <- cursor.Value + 20
+
 
         match field.mouse with
         | Some (x,y) ->
@@ -219,10 +240,17 @@ let renderCaption (ctx:Canvas2DContext) field =
             
         | None -> ()
 
-        do! [|  "Current stroke points = " + field.whiteboard.currentStroke.points.Count.ToString()  |]
-            |> String.Concat
-            |> drawText ctx (10, cursor.Value)
-        cursor.Value <- cursor.Value + 20
+
+        do! ctx.SetFontAsync("32px Segoe UI")
+        do! "======   MOVE ME, x = " + field.hor.ToString("0") + "   ======"
+            |> drawText ctx (field.hor,0.5 * field.height)
+
+        //do! ctx.SetFillStyleAsync "White"
+        //do! ctx.FillRectAsync(
+        //    field.hor - field.span * field.width,
+        //    0.5 * field.height - field.thickness,
+        //    2.0 * field.span * field.width,
+        //    2.0 * field.span)
     }
 
 let renderBall (ctx:Canvas2DContext) ball = 
@@ -231,46 +259,40 @@ let renderBall (ctx:Canvas2DContext) ball =
             "#ffffff"
         else
             ball.color
-    drawCircle ctx color ball.r (ball.x, ball.y)
-
-
-let drawStroke (ctx:Canvas2DContext) (s:Stroke) = 
 
     task{
-        do! s.color 
-            |> ctx.SetStrokeStyleAsync
-        do! ctx.SetLineWidthAsync s.strokeSize
-        do! s.points.ToArray() 
-            |> Array.map(fun (x,y) -> float x,float y)
-            |>  drawPath ctx
+        do! drawCircle ctx color ball.r (ball.x, ball.y)
+        do! [|  
+                ball.name
+                ", r = " + ball.r.ToString("0.0")
+                ", vx = " + ball.vx.ToString("0.0")
+                ", vy = " + ball.vy.ToString("0.0") |]
+            |> String.Concat
+            |> drawText ctx (ball.x + ball.r,ball.y + ball.r)
     }
 
-let renderWhiteboard (ctx:Canvas2DContext) whiteboard = 
-    task{
-        let! tasks = 
-            whiteboard.strokes.ToArray()
-            |> Array.map(drawStroke ctx)
-            |> Task.WhenAll
-    
-        do! drawStroke ctx whiteboard.currentStroke
-    }
 
 let render (ctx:Canvas2DContext) field = 
 
-    move field
+    let elapse = (DateTime.UtcNow - field.lastRender).TotalSeconds
+    field.lastRender <- DateTime.UtcNow
+
+    move field elapse
 
     let t = 
         task{
+
+
             do! ctx.BeginBatchAsync()
 
-            do! renderCaption ctx field
+            do! renderCaption ctx field elapse
+
+            do! ctx.SetFontAsync("16px consolas")
 
             let! tasks = 
-                field.balls
-                |> Array.map(renderBall ctx)
+                field.balls.Values
+                |> Seq.map(renderBall ctx)
                 |> Task.WhenAll
-
-            do! renderWhiteboard ctx field.whiteboard
 
             do! ctx.EndBatchAsync()
         }
