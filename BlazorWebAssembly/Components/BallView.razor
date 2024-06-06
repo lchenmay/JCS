@@ -4,8 +4,10 @@
 
 </style>
 
-<div style="background-color: @this.ball.color">
-    <input type="text" @bind="this.ball.name" />
+<div>
+    <input type="text" 
+        @bind="this.ball.name" 
+        style="background-color: @this.ball.color" />
     <button @onclick="Faster">Faster</button>
     <button @onclick="Slower">Slower</button>
     <button @onclick="Enlarge">Enlarge</button>
