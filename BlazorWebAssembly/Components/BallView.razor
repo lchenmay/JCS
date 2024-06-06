@@ -6,13 +6,16 @@
 
 <div style="background-color: @this.ball.color">
     <input type="text" @bind="this.ball.name" />
-    <button onclick="Faster">Faster</button>
-    <button onclick="Slower">Slower</button>
-    <button onclick="Enlarge">Enlarge</button>
-    <button onclick="Shrink">Shrink</button>
+    <button @onclick="Faster">Faster</button>
+    <button @onclick="Slower">Slower</button>
+    <button @onclick="Enlarge">Enlarge</button>
+    <button @onclick="Shrink">Shrink</button>
 </div>
 
 @code {
+    [Parameter]
+    public double r { get; set; } = 0.0;
+
     [Parameter]
     public Game.Ball ball { get; init; } = new(
             "White",
@@ -24,9 +27,6 @@
             0.0,
             0.0);
     // public Game.Ball? Ball { get; init; }
-
-    [Parameter]
-    public double r { get; set; } = 0.0;
 
     public void Faster()
     {
@@ -42,10 +42,10 @@
 
     public void Enlarge()
     {
-        this.r *= 2.0;
+        this.ball.r *= 2.0;
     }
 
-    public void SHrink()
+    public void Shrink()
     {
         this.ball.r /= 2.0;
     }

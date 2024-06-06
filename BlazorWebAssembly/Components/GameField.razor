@@ -82,11 +82,9 @@
 
 <div>
 
-    @foreach (var key in this.field.balls.Keys)
+    @foreach (var ball in this.field.balls)
     {
-        var ball = this.field.balls[key];
         <BallView 
-            r="@ball.r"
             Ball="@ball"></BallView>
     }
 </div>

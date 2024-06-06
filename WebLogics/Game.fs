@@ -40,7 +40,7 @@ mutable hor: float
 mutable span: float
 mutable thickness: float
 mutable mouse: (float * float) option
-balls: SortedDictionary<string,Ball>
+balls: Ball[]
 mutable lastRender: DateTime }
 
 let field__balls n (w,h) = 
@@ -57,7 +57,7 @@ let field__balls n (w,h) =
     [| 0 .. n - 1 |]
     |> Array.map(fun i -> {
         color = rand__color()
-        name = "(" + i.ToString() + ")"
+        name = "Nr " + i.ToString() + ""
         r = 5.0 + 15.0 * r.NextDouble()
         hit = false
         x = w * r.NextDouble()
@@ -87,13 +87,7 @@ let createField n (w,h) = {
     span = 0.2
     thickness = 70.0
     mouse = None
-    balls = 
-        let balls = new SortedDictionary<string,Ball>()
-        field__balls n (w,h)
-        |> Array.iter(fun i -> 
-            if balls.ContainsKey i.name = false then
-                balls.Add(i.name,i))
-        balls
+    balls = field__balls n (w,h)
     lastRender = DateTime.UtcNow }
 
 let pushStrokePoint field = 
@@ -137,7 +131,7 @@ let move field elapse =
 
     let w,h = field.width,field.height
 
-    field.balls.Values
+    field.balls
     |> Seq.iter(fun ball -> 
         ball.x <- ball.x + ball.vx * elapse * 10.1
         ball.y <- ball.y + ball.vy * elapse * 10.1
@@ -290,7 +284,7 @@ let render (ctx:Canvas2DContext) field =
             do! ctx.SetFontAsync("16px consolas")
 
             let! tasks = 
-                field.balls.Values
+                field.balls
                 |> Seq.map(renderBall ctx)
                 |> Task.WhenAll
 
