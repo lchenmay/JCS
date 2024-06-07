@@ -28,11 +28,13 @@ open TypeSys.CodeRobotIII
 
 type RobotConfig = {
 ns: string
+conn: string
 mainDir: string
 JsDir: string }
 
 type Robot = {
 srcs: Src[]
+sql: Src
 ot: Src
 otTypeScript: Src
 om: Src
@@ -44,7 +46,7 @@ config: RobotConfig
 output: string -> unit }
 
 let robot__srcs robot = 
-    robot.srcs,robot.ot,robot.otTypeScript,robot.om,robot.omTypeScript,robot.cm,robot.typeTypeScript,robot.cmTypeScript
+    robot.srcs,robot.sql,robot.ot,robot.otTypeScript,robot.om,robot.omTypeScript,robot.cm,robot.typeTypeScript,robot.cmTypeScript
 
 let create__Src (pattern:string) = 
     let buffer = new List<string>()
@@ -55,8 +57,10 @@ let create__Src (pattern:string) =
                 ProgrammingLang.TypeScript
             else if pattern.EndsWith ".cs" then
                 ProgrammingLang.CSharp
-            else
+            else if pattern.EndsWith ".fs" then
                 ProgrammingLang.FSharp
+            else
+                ProgrammingLang.SQL
         buffer = buffer
         w = new TextBlockWriter(buffer)
         filename = pattern }
@@ -218,8 +222,10 @@ let load robot =
 
         tables.Add(name,t))
 
-    tables.Values
-    |> Seq.iter(fun table -> 
+    let tableArray = tables.Values |> Seq.toArray
+
+    tableArray
+    |> Array.iter(fun table -> 
 
         table
         |> table__fieldKeys
@@ -272,7 +278,7 @@ let load robot =
         |> Array.iter(fun i -> dict.Add(i.name,i))
         dict
 
-    cTypes,buildTypeCat robot.output tables cTypes
+    cTypes,buildTypeCat robot.output tables cTypes,tableArray
 
 let save srcs = 
     srcs
@@ -312,7 +318,7 @@ let fSharpHeader src m opens =
 
 let buildTableEnums robot (t:Table) (name,lines:(string * string)[]) =
 
-    let srcs,ot,otTypeScript,om,omTypeScript,cm,typeTypeScript,cmTypeScript =
+    let srcs,sql,ot,otTypeScript,om,omTypeScript,cm,typeTypeScript,cmTypeScript =
         robot__srcs robot
 
     let enumName = t.typeName.ToLower() + name + "Enum"
@@ -410,7 +416,7 @@ let buildTableEnums robot (t:Table) (name,lines:(string * string)[]) =
 
 let buildTableType robot (t:Table) (fieldNames:string[],fields) =
 
-    let srcs,ot,otTypeScript,om,omTypeScript,cm,typeTypeScript,cmTypeScript =
+    let srcs,sql,ot,otTypeScript,om,omTypeScript,cm,typeTypeScript,cmTypeScript =
         robot__srcs robot
 
     fieldNames
@@ -632,6 +638,14 @@ let buildTableMor om (t:Table) (fieldNames:string[],fields) =
     ",[Createdat] BIGINT NOT NULL" |> om.w.newlineIndent 1
     ",[Updatedat] BIGINT NOT NULL" |> om.w.newlineIndent 1
     ",[Sort] BIGINT NOT NULL," |> om.w.newlineIndent 1
+
+    fieldNames
+    |> Array.iter(fun i -> 
+        let sort,name,def,json = t.fields[i]
+        ",[" + name + "]" |> om.w.newlineIndent 1)
+
+    ")" |> om.w.appendEnd
+    "END" |> om.w.newlineIndent 1
     "\"\"\"" |> om.w.newlineIndent 1
 
 
@@ -639,7 +653,7 @@ let buildTableMor om (t:Table) (fieldNames:string[],fields) =
 
 let buildTable robot (t:Table) =
 
-    let srcs,ot,otTypeScript,om,omTypeScript,cm,typeTypeScript,cmTypeScript =
+    let srcs,sql,ot,otTypeScript,om,omTypeScript,cm,typeTypeScript,cmTypeScript =
         robot__srcs robot
 
     "// [" + t.tableName + "] (" + t.typeName + ")" |> addMulti <| [| ot; otTypeScript |]
@@ -658,7 +672,7 @@ let buildTable robot (t:Table) =
 
 let buildTables robot tables =
 
-    let srcs,ot,otTypeScript,om,omTypeScript,cm,typeTypeScript,cmTypeScript =
+    let srcs,sql,ot,otTypeScript,om,omTypeScript,cm,typeTypeScript,cmTypeScript =
         robot__srcs robot
 
     om.w.newlineBlank()
@@ -824,6 +838,9 @@ let buildCustomTypes tc src (cTypes:Dictionary<string,Type>) =
 
 let prepareRobot output config= 
 
+    let sql =
+        config.mainDir + "\OrmTypes.sql"
+        |> create__Src
     let ot =
         config.mainDir + "\OrmTypes.fs"
         |> create__Src
@@ -857,6 +874,7 @@ let prepareRobot output config=
                 cm
                 typeTypeScript
                 cmTypeScript |]
+        sql = sql
         ot = ot
         otTypeScript = otTypeScript
         om = om
@@ -872,10 +890,15 @@ let go output config =
 
     let robot = prepareRobot output config
 
-    let cTypes,tc = load robot
+    let cTypes,tc,tables  = load robot
 
-    let srcs,ot,otTypeScript,om,omTypeScript,cm,typeTypeScript,cmTypeScript =
+    let srcs,sql,ot,otTypeScript,om,omTypeScript,cm,typeTypeScript,cmTypeScript =
         robot__srcs robot
+
+    let sql = 
+        tables
+        |> Array.map table__sql
+        |> String.Concat
 
     [|  "declare global {"
         "" |]

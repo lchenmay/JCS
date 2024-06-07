@@ -9,6 +9,7 @@
   <ItemGroup>
     <Compile Include="FSharp.fs" />
     <Compile Include="MetaType.fs" />
+    <Compile Include="Rdmbs.fs" />
     <Compile Include="LangPackTypeScript.fs" />
     <Compile Include="CodeRobotI.fs" />
     <Compile Include="CodeRobotIIFs.fs" />

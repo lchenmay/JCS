@@ -3,7 +3,7 @@
 @using System.Text;
 
 @inject IJSRuntime JsRuntime;
-
+@inject NavigationManager nm;
 
 <h3>Contact Form</h3>
 
@@ -34,8 +34,8 @@
     //let port = theInstance.invokeMethodAsync('BlazorWebAssembly', 'GetPort');
     //let port = DotNet.invokeMethodc('GetPort');
 
-    //let server = 'localhost';
-    let server = 'jcatsys.com';
+    let server = 'localhost';
+    //let server = 'jcatsys.com';
     let port = 8880;
 
     let url = "ws://" + server + ":" + port;
@@ -58,6 +58,8 @@
 
 <div class="contact-form">
 
+    
+
     <input type="text" @bind="name" />
 
     <input type="text" @bind="email" />
@@ -72,7 +74,7 @@
     </label>
 
     <div>
-        <button onclick="@Send">Send</button>
+        <button @onclick="Send">Send</button>
     </div>
 
     <p id="json">@(this.GetJson().Result)</p>

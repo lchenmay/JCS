@@ -23,6 +23,7 @@ type ProgrammingLang =
 | FSharp
 | CSharp
 | TypeScript
+| SQL
 
 type Rdbms = 
 | NotAvailable
