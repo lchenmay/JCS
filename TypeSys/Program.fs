@@ -14,6 +14,16 @@ let target = 0
 
 match target with
 | 0 -> 
+    {   ns = "Shared"
+        conn = "server=127.0.0.1; user=sa; database=CTC"
+        mainDir = @"C:\Dev\GCHAIN2024\CrypTradeClubVsOpen\Shared"
+        JsDir = @"C:\Dev\GCHAIN2024\VsCodeOpen\src\lib\shared" }
+| 1 -> 
+    {   ns = "Shared"
+        conn = "server=127.0.0.1; user=sa; database=GCHAIN"
+        mainDir = @"C:\Dev\GCHAIN2024\VsOpen\Shared"
+        JsDir = @"C:\Dev\GCHAIN2024\VsCodeOpen\src\lib\shared" }
+| 2 -> 
     {   ns = "BizType"
         conn = "server=127.0.0.1; user=sa; database=Personal"
         mainDir = @"C:\Dev\Personal\VisualStudio\BizType"

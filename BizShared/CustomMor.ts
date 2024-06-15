@@ -1,7 +1,3 @@
-import { BytesBuilder } from 'Bin.ts'
-import { BinIndexed } from 'Bin.ts'
-import { FactBroadcast } from 'Types.d.ts'
-import * as bin  from '~Bin.ts'
 
 // [Stroke] Structure
 
