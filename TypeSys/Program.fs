@@ -21,7 +21,7 @@ match target with
 | 1 -> 
     {   ns = "Shared"
         conn = "server=127.0.0.1; user=sa; database=GCHAIN"
-        mainDir = @"C:\Dev\GCHAIN2024\VsOpen\Shared"
+        mainDir = @"C:\Dev\GCHAIN2024\GChainVsOpen\Shared"
         JsDir = @"C:\Dev\GCHAIN2024\VsCodeOpen\src\lib\shared" }
 | 2 -> 
     {   ns = "BizType"

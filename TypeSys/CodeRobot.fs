@@ -867,7 +867,8 @@ let prepareRobot output config=
 
     {
         srcs =
-            [|  ot 
+            [|  sql
+                ot 
                 otTypeScript
                 om
                 omTypeScript
@@ -895,10 +896,9 @@ let go output config =
     let srcs,sql,ot,otTypeScript,om,omTypeScript,cm,typeTypeScript,cmTypeScript =
         robot__srcs robot
 
-    let sql = 
-        tables
-        |> Array.map table__sql
-        |> String.Concat
+    tables
+    |> Array.map table__sql
+    |> sql.w.multiLine
 
     [|  "declare global {"
         "" |]

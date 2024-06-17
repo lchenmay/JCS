@@ -109,6 +109,7 @@ and t__binCall w indent t =
         | "string" -> "str__bin"
         | "int" -> "int32__bin"
         | "Boolean" -> "bool__bin"
+        | "Json" -> "json__bin"
         | _ -> t.name + "__bin"
         |> w.appendEnd
     | TypeEnum.Structure items -> t.name + "__bin" |> w.appendEnd
@@ -253,6 +254,7 @@ and bin__tCall w indent t =
         | "string" -> "bin__str"
         | "int" -> "bin__int32"
         | "Boolean" -> "bin__bool"
+        | "Json" -> "bin__json"
         | _ -> "bin__" + t.name
         |> w.appendEnd
     | TypeEnum.Structure items -> "bin__" + t.name |> w.appendEnd
@@ -391,6 +393,7 @@ and t__jsonCall w indent t =
         | "string" -> "str__json"
         | "int" -> "int32__json"
         | "Boolean" -> "bool__json"
+        | "Json" -> ""
         | _ -> t.name + "__json"
         |> w.appendEnd
     | TypeEnum.Product items -> 
@@ -573,6 +576,7 @@ and json__tCall (w:TextBlockWriter)indent t =
         | "string" -> "json__stro"
         | "int" -> "json__int32o"
         | "Boolean" -> "json__boolo"
+        | "Json" -> "Some"
         | _ -> "json__" + t.name + "o"
         |> w.appendEnd
     | TypeEnum.Structure items -> "json__" + t.name + "o" |> w.appendEnd
