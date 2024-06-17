@@ -182,12 +182,12 @@ let fdef__tbin table l field =
 
         let int64() = 
             [|  ""
-                "int64__bin (bb) (p." + name + ")" |]
+                "bin.int64__bin (bb) (p." + name + ")" |]
             |> t__bin.AddRange
 
         let timestamp() = 
             [|  ""
-                "int64__bin (bb) (p." + name + ")" |]
+                "bin.int64__bin (bb) (p." + name + ")" |]
             |> t__bin.AddRange
 
         let bytes() = 
@@ -198,17 +198,17 @@ let fdef__tbin table l field =
 
         let float() = 
             [|  ""
-                "float__bin (bb) (p." + name + ")" |]
+                "bin.float__bin (bb) (p." + name + ")" |]
             |> t__bin.AddRange
 
         let enum() = 
             [|  ""
-                "int32__bin (bb) (" + table.typeName.ToLower() + name + "Enum__int(p." + name + "))" |]
+                "bin.int32__bin (bb) (" + table.typeName.ToLower() + name + "Enum__int(p." + name + "))" |]
             |> t__bin.AddRange
 
         let string() = 
             [|  ""
-                "str__bin (bb) (p." + name + ")" |]
+                "bin.str__bin (bb) (p." + name + ")" |]
             |> t__bin.AddRange
 
         match def with
@@ -304,19 +304,19 @@ let fdef__bint table l field =
 
         let boolean() = 
             [|  ""
-                "p." + name + " = bin__boolean (bi)"
+                "p." + name + " = bin.bin__boolean (bi)"
                 "bi.index = bi.index + 1" |]
             |> bin__t.AddRange
 
         let int64() = 
             [|  ""
-                "p." + name + " = bin__int64 (bi)"
+                "p." + name + " = bin.bin__int64 (bi)"
                 "bi.index = bi.index + 8" |]
             |> bin__t.AddRange
 
         let timestamp() = 
             [|  ""
-                "p." + name + " = bin__int64 (bi)"
+                "p." + name + " = bin.bin__int64 (bi)"
                 "bi.index = bi.index + 8" |]
             |> bin__t.AddRange
 
@@ -328,19 +328,19 @@ let fdef__bint table l field =
 
         let float() = 
             [|  ""
-                "p." + name + " = bin__float (bi)"
+                "p." + name + " = bin.bin__float (bi)"
                 "bi.index = bi.index + 8" |]
             |> bin__t.AddRange
 
         let enum() = 
             [|  ""
-                "p." + name + " = int__" + table.typeName.ToLower() + name + "Enum(bin__int32 (bi))"
+                "p." + name + " = bin.int__" + table.typeName.ToLower() + name + "Enum(bin__int32 (bi))"
                 "bi.index = bi.index + 4" |]
             |> bin__t.AddRange
 
         let string() = 
             [|  ""
-                "p." + name + " = bin__str (bi)" |]
+                "p." + name + " = bin.bin__str (bi)" |]
             |> bin__t.AddRange
 
         match def with

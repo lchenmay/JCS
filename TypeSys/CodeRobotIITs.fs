@@ -85,10 +85,10 @@ let rec t__binImpl (w:TextBlockWriter) indent t =
 
         [|  ""
             "export const " + t.name + "__bin = (bb:BytesBuilder) => (v:" + t.name + ") => {"
-            "int64__bin (bb) (v.ID)"
-            "int64__bin (bb) (v.Sort)"
-            "DateTime__bin (bb) (v.Createdat)"
-            "DateTime__bin (bb) (v.Updatedat)"
+            "bin.int64__bin (bb) (v.ID)"
+            "bin.int64__bin (bb) (v.Sort)"
+            "bin.DateTime__bin (bb) (v.Createdat)"
+            "bin.DateTime__bin (bb) (v.Updatedat)"
             ""
             "p" + t.name + "__bin (bb) (v.p)" |]
         |> w.multiLine
@@ -102,13 +102,16 @@ and t__binCall w indent t =
     
     match t.tEnum with
     | TypeEnum.Primitive -> 
+        w.appendEnd "bin."
         match t.name with
         | "string" -> "str__bin"
         | "int" -> "int32__bin"
         | "Boolean" -> "bool__bin"
         | _ -> t.name + "__bin"
         |> w.appendEnd
-    | TypeEnum.Structure items -> t.name + "__bin" |> w.appendEnd
+    | TypeEnum.Structure items -> 
+        w.appendEnd "bin."
+        t.name + "__bin" |> w.appendEnd
     | TypeEnum.Product items -> 
         "((bb:BytesBuilder) => (v:any) => {" |> w.appendEnd
         w.newlineBlankIndent indent
@@ -120,22 +123,34 @@ and t__binCall w indent t =
             " (bb) (v" + i.ToString() + ")" |> w.appendEnd)
         "})" |> w.appendEnd
 
-    | TypeEnum.Sum v -> t.name + "__bin" |> w.appendEnd
+    | TypeEnum.Sum v -> 
+        w.appendEnd "bin."
+        t.name + "__bin" |> w.appendEnd
     | TypeEnum.Enum v -> ()
-    | TypeEnum.Orm table -> t.name + "__bin" |> w.appendEnd
+    | TypeEnum.Orm table -> 
+        w.appendEnd "bin."
+        t.name + "__bin" |> w.appendEnd
     | TypeEnum.Option tt -> 
+        w.appendEnd "bin."
         "Option__bin (" |> w.appendEnd
         t__binCall w (indent + 1) tt
         ")" |> w.appendEnd
     | TypeEnum.Ary tt -> 
-        "array__bin (" |> w.newlineIndent indent
+        "" |> w.newlineIndent indent
+        w.appendEnd "bin."
+        "array__bin (" |> w.appendEnd
         t__binCall w (indent + 1) tt
         ")" |> w.appendEnd
     | TypeEnum.List tt -> 
-        "List__bin (" |> w.newlineIndent indent
+
+        "" |> w.newlineIndent indent
+        w.appendEnd "bin."
+        "List__bin (" |> w.appendEnd
         t__binCall w (indent + 1) tt
         ")" |> w.appendEnd
+
     | TypeEnum.Dictionary (kType,vType) -> 
+        w.appendEnd "bin."
         "Dictionary__bin (" |> w.appendEnd
         t__binCall w (indent + 1) kType
         ") (" |> w.appendEnd
@@ -250,13 +265,16 @@ and bin__tCall w indent t =
 
     match t.tEnum with
     | TypeEnum.Primitive ->
+        w.appendEnd "bin."
         match t.name with
         | "string" -> "bin__str"
         | "int" -> "bin__int32"
         | "Boolean" -> "bin__bool"
         | _ -> "bin__" + t.name
         |> w.appendEnd
-    | TypeEnum.Structure items -> "bin__" + t.name |> w.appendEnd
+    | TypeEnum.Structure items -> 
+        w.appendEnd "bin."
+        "bin__" + t.name |> w.appendEnd
     | TypeEnum.Product items -> 
         "((bi:BinIndexed) => {" |> w.appendEnd
         let var = productItems__term "v" "" "," items 
@@ -273,24 +291,32 @@ and bin__tCall w indent t =
         |> String.concat ","
         |> w.appendEnd
         "}})" |> w.appendEnd
-    | TypeEnum.Sum v -> "bin__" + t.name |> w.appendEnd
+    | TypeEnum.Sum v -> 
+        w.appendEnd "bin."
+        "bin__" + t.name |> w.appendEnd
     | TypeEnum.Enum v -> ()
-    | TypeEnum.Orm table -> "bin__" + t.name |> w.appendEnd
+    | TypeEnum.Orm table -> 
+        w.appendEnd "bin."
+        "bin__" + t.name |> w.appendEnd
     | TypeEnum.Option tt -> 
+        w.appendEnd "bin."
         "bin__Option (" |> w.appendEnd
         bin__tCall w (indent + 1) tt
         ")" |> w.appendEnd
     | TypeEnum.Ary tt -> 
+        w.appendEnd "bin."
         "bin__array (" |> w.appendEnd
         bin__tCall w (indent + 1) tt
         ")" |> w.appendEnd
     | TypeEnum.List tt -> 
+        w.appendEnd "bin."
         "bin__List (" |> w.appendEnd
         bin__tCall w (indent + 1) tt
         ")" |> w.appendEnd
     | TypeEnum.Dictionary (kType,vType) -> 
         "(fun bi ->" |> w.appendEnd
         "let v = new Dictionary<" + kType.name + "," + vType.name + ">()" |> w.newlineIndent (indent + 1)
+        w.appendEnd "bin."
         "bin__Dictionary (" |> w.newlineIndent (indent + 1)
         bin__tCall w (indent + 2) kType
         ") (" |> w.appendEnd

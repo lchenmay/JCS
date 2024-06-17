@@ -17,7 +17,7 @@ match target with
     {   ns = "Shared"
         conn = "server=127.0.0.1; user=sa; database=CTC"
         mainDir = @"C:\Dev\GCHAIN2024\CrypTradeClubVsOpen\Shared"
-        JsDir = @"C:\Dev\GCHAIN2024\VsCodeOpen\src\lib\shared\gtc" }
+        JsDir = @"C:\Dev\GCHAIN2024\VsCodeOpen\src\lib\shared\ctc" }
 | 1 -> 
     {   ns = "Shared"
         conn = "server=127.0.0.1; user=sa; database=GCHAIN"

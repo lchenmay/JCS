@@ -900,6 +900,24 @@ let go output config =
     |> Array.map table__sql
     |> sql.w.multiLine
 
+    [|  "// OrmMor.ts"
+        "import { BytesBuilder } from \"~/lib/util/bin\""
+        "import * as binCommon from '~/lib/util/bin'"
+        "import * as binOrm from './CustomMor'"
+        //"import * as binCustom from './CustomMor'"
+        "const bin = {...binCommon }"
+        "" |]
+    |> omTypeScript.w.multiLine
+
+    [|  "// OrmMor.ts"
+        "import { BytesBuilder } from \"~/lib/util/bin\""
+        "import * as binCommon from '~/lib/util/bin'"
+        "import * as binOrm from './CustomMor'"
+        //"import * as binCustom from './CustomMor'"
+        "const bin = {...binCommon, ...binOrm }"
+        "" |]
+    |> cmTypeScript.w.multiLine
+
     [|  "declare global {"
         "" |]
     |> otTypeScript.w.multiLine
@@ -938,7 +956,10 @@ let go output config =
     |> buildTables robot
 
     [|  ""
-        "}" |]
+        "}"
+        ""
+        "export {}"
+        "" |]
     |> otTypeScript.w.multiLine
 
     save srcs
