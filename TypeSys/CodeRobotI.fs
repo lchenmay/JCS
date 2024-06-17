@@ -462,20 +462,38 @@ let fdef__jsont field =
     buffer
 
 
-let fdef__empty def = 
-    match def with
-    | FK t -> "0L"
-    | Caption length
-    | Chars length
-    | Link length -> "\"\""
-    | Text -> "\"\""
-    | Bin -> "[||]"
-    | Integer -> "0L"
-    | Float -> "0.0"
-    | Boolean -> "true"
-    | SelectLines lines -> "EnumOfValue 0"
-    | Timestamp -> "DateTime.MinValue"
-    | TimeSeries -> "TimeSpan.MinValue"
-    | Other -> ""
+let fdef__empty lang t name def = 
+    match lang with
+    | ProgrammingLang.FSharp -> 
+        match def with
+        | FK t -> "0L"
+        | Caption length
+        | Chars length
+        | Link length -> "\"\""
+        | Text -> "\"\""
+        | Bin -> "[||]"
+        | Integer -> "0L"
+        | Float -> "0.0"
+        | Boolean -> "true"
+        | SelectLines lines -> "EnumOfValue 0"
+        | Timestamp -> "DateTime.MinValue"
+        | TimeSeries -> "TimeSpan.MinValue"
+        | Other -> ""
+
+    | _ -> 
+        match def with
+        | FK t -> "0"
+        | Caption length
+        | Chars length
+        | Link length -> "\"\""
+        | Text -> "\"\""
+        | Bin -> "[]"
+        | Integer -> "0"
+        | Float -> "0.0"
+        | Boolean -> "true"
+        | SelectLines lines -> "int__" + t.tableName + name + "Enum(0)"
+        | Timestamp -> "DateTime.MinValue"
+        | TimeSeries -> "TimeSpan.MinValue"
+        | Other -> ""
 
         

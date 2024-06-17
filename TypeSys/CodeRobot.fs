@@ -502,8 +502,16 @@ let buildTableType robot (t:Table) (fieldNames:string[],fields) =
     fieldNames
     |> Array.iter(fun i -> 
         let sort,name,def,json = t.fields[i]
-        name + " = " + (fdef__empty def)  |> ot.w.newlineIndent 1)
+        name + " = " + (fdef__empty ProgrammingLang.FSharp t name def)  |> ot.w.newlineIndent 1)
     " }" |> ot.w.appendEnd
+
+    "export const p" + t.typeName + "_empty = (): p" + t.typeName + " => {" |> otTypeScript.w.newline
+    fieldNames
+    |> Array.iter(fun i -> 
+        let sort,name,def,json = t.fields[i]
+        name + " = " + (fdef__empty ProgrammingLang.TypeScript t name def)  |> otTypeScript.w.newlineIndent 1)
+    " }" |> otTypeScript.w.appendEnd
+    otTypeScript.w.newlineBlank()
 
     ot.w.newlineBlank()
     "let " + t.typeName + "_id = ref " + t.idstarting.ToString() + "L" |> ot.w.newline
