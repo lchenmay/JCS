@@ -391,7 +391,7 @@ let buildTableEnums robot (t:Table) (name,lines:(string * string)[]) =
     "}" |> otTypeScript.w.newline
 
     otTypeScript.w.newlineBlank()
-    "export const int__" + enumName + " = (v:Number):" + enumName + " => {" |> otTypeScript.w.newline
+    "export const int__" + enumName + " = (v:number):" + enumName + " => {" |> otTypeScript.w.newline
     "switch (v) {" |> otTypeScript.w.newlineIndent 1
     [| 0 .. lines.Length - 2 |]
     |> Array.map(fun i -> 
@@ -402,7 +402,7 @@ let buildTableEnums robot (t:Table) (name,lines:(string * string)[]) =
     "}" |> otTypeScript.w.newline
 
     otTypeScript.w.newlineBlank()
-    "export const " + enumName + "__int = (e:" + enumName + "Number):int => {" |> otTypeScript.w.newline
+    "export const " + enumName + "__int = (e:" + enumName + "number):int => {" |> otTypeScript.w.newline
     "switch (e) {" |> otTypeScript.w.newlineIndent 1
     [| 0 .. lines.Length - 2 |]
     |> Array.map(fun i -> 
@@ -437,10 +437,10 @@ let buildTableType robot (t:Table) (fieldNames:string[],fields) =
     "type " + t.typeName + " = Rcd<p" + t.typeName + ">" |> ot.w.newline
 
     [|  "export type " + t.typeName + " = {"
-        "id:Number"
-        "createdat:Number"
-        "updatedat:Number"
-        "sort:Number"
+        "id:number"
+        "createdat:number"
+        "updatedat:number"
+        "sort:number"
         "p:p" + t.typeName
         "}"
         "" |]

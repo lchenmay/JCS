@@ -10,7 +10,7 @@ let output (s:string) = Console.WriteLine s
 @"C:\Dev\JCS\BizShared\Types.fs"
 |> TypeSys.FSharp.go output
 
-let target = 0
+let target = 1
 
 match target with
 | 0 -> 
