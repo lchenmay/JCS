@@ -17,12 +17,12 @@ match target with
     {   ns = "Shared"
         conn = "server=127.0.0.1; user=sa; database=CTC"
         mainDir = @"C:\Dev\GCHAIN2024\CrypTradeClubVsOpen\Shared"
-        JsDir = @"C:\Dev\GCHAIN2024\VsCodeOpen\src\lib\shared" }
+        JsDir = @"C:\Dev\GCHAIN2024\VsCodeOpen\src\lib\shared\gtc" }
 | 1 -> 
     {   ns = "Shared"
         conn = "server=127.0.0.1; user=sa; database=GCHAIN"
         mainDir = @"C:\Dev\GCHAIN2024\GChainVsOpen\Shared"
-        JsDir = @"C:\Dev\GCHAIN2024\VsCodeOpen\src\lib\shared" }
+        JsDir = @"C:\Dev\GCHAIN2024\VsCodeOpen\src\lib\shared\gchain" }
 | 2 -> 
     {   ns = "BizType"
         conn = "server=127.0.0.1; user=sa; database=Personal"
