@@ -8,7 +8,7 @@ Console.OutputEncoding <- System.Text.Encoding.Unicode
 let output (s:string) = Console.WriteLine s
 
 
-if true then
+if false then
 
     let wsHandler incoming =
 
