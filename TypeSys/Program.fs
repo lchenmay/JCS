@@ -7,6 +7,32 @@ open TypeSys.CodeRobot
 Console.OutputEncoding <- System.Text.Encoding.Unicode
 let output (s:string) = Console.WriteLine s
 
+
+if true then
+
+    let wsHandler incoming =
+
+        None
+
+    let engine = 
+        Util.WebServer.prepEngine 
+            output
+            None
+            ""
+            ""
+            ()
+            wsHandler
+            8000
+    Util.WebServer.startEngine engine
+
+    (fun _ -> engine.ToString() |> output)
+    |> Util.Concurrent.asyncCyclerInterval 1000
+
+    Util.Runtime.halt output "" ""
+
+
+
+
 @"C:\Dev\JCS\BizShared\Types.fs"
 |> TypeSys.FSharp.go output
 
