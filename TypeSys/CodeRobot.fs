@@ -77,6 +77,7 @@ let buildTypeCat output
         {   name = table.typeName
             sort = 0
             tEnum = Orm table
+            custom =  false
             src = [||] } 
         |> appendType tc
         |> ignore)
@@ -733,7 +734,9 @@ let buildType src t =
         [|  ""; 
             match src.lang with
             | ProgrammingLang.FSharp -> "let " + t.name + "__bin (bb:BytesBuilder) (v:" + t.name + ") ="
-            | ProgrammingLang.TypeScript -> "export const " + t.name + "__bin = (bb:BytesBuilder) => (v:" + t.name + ") => {"
+            | ProgrammingLang.TypeScript -> 
+                //"export const " + t.name + "__bin = (bb:BytesBuilder) => (v:" + t.name + ") => {"
+                "export const " + t.name + "__bin = (bb:BytesBuilder) => (v:any) => {"
             | _ -> ()
             "" |] 
         |> tbw.multiLine
@@ -757,7 +760,7 @@ let buildType src t =
                 "" |]
         | ProgrammingLang.TypeScript -> 
             [|  ""
-                "export const bin__" + t.name + ":" + t.name + " = (bi:BinIndexed) => {"
+                "export const bin__" + t.name + " = (bi:BinIndexed):" + t.name + " => {"
                 "" |]
         | _ -> [| |]
         |> tbw.multiLine
@@ -911,8 +914,6 @@ let go output config =
     [|  "// OrmMor.ts"
         "import { BytesBuilder } from \"~/lib/util/bin\""
         "import * as binCommon from '~/lib/util/bin'"
-        "import * as binOrm from './CustomMor'"
-        //"import * as binCustom from './CustomMor'"
         "const marshall = {...binCommon }"
         "" |]
     |> omTypeScript.w.multiLine
@@ -920,8 +921,7 @@ let go output config =
     [|  "// OrmMor.ts"
         "import { BytesBuilder } from \"~/lib/util/bin\""
         "import * as binCommon from '~/lib/util/bin'"
-        "import * as binOrm from './CustomMor'"
-        //"import * as binCustom from './CustomMor'"
+        "import * as binOrm from './OrmMor'"
         "const marshall = {...binCommon, ...binOrm }"
         "" |]
     |> cmTypeScript.w.multiLine

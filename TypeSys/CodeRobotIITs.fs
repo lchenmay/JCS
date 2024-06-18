@@ -23,6 +23,8 @@ open Util.DbTx
 open TypeSys.MetaType
 open TypeSys.CodeRobotI
 
+let prefix = "marshall."
+
 let rec t__binImpl (w:TextBlockWriter) indent t = 
 
     match t.tEnum with
@@ -43,7 +45,7 @@ let rec t__binImpl (w:TextBlockWriter) indent t =
             t__binCall w (indent + 2) tt)
 
     | TypeEnum.Sum items -> 
-        "int32__bin (bb) (v.e)" |> w.newlineIndent (indent + 1)
+        prefix + "int32__bin (bb) (v.e)" |> w.newlineIndent (indent + 1)
         "switch (v.e) {" |> w.newlineIndent (indent + 1)
         [| 0 .. items.Length - 1 |]
         |> Array.iter(fun i -> 
@@ -55,6 +57,7 @@ let rec t__binImpl (w:TextBlockWriter) indent t =
                 w.newlineBlankIndent (indent + 3)
                 t__binCall w (indent + 3) tt
                 " (bb) (v)" |> w.appendEnd
+
             | None -> ()
 
             "break" |> w.newlineIndent (indent + 3))
@@ -85,10 +88,10 @@ let rec t__binImpl (w:TextBlockWriter) indent t =
 
         [|  ""
             "export const " + t.name + "__bin = (bb:BytesBuilder) => (v:" + t.name + ") => {"
-            tab + "marshall.int64__bin (bb) (v.id)"
-            tab + "marshall.int64__bin (bb) (v.sort)"
-            tab + "marshall.DateTime__bin (bb) (v.createdat)"
-            tab + "marshall.DateTime__bin (bb) (v.updatedat)"
+            tab +  prefix + "int64__bin (bb) (v.id)"
+            tab +  prefix + "int64__bin (bb) (v.sort)"
+            tab +  prefix + "DateTime__bin (bb) (v.createdat)"
+            tab +  prefix + "DateTime__bin (bb) (v.updatedat)"
             ""
             tab + "p" + t.name + "__bin (bb) (v.p)" |]
         |> w.multiLine
@@ -100,17 +103,24 @@ let rec t__binImpl (w:TextBlockWriter) indent t =
 
 and t__binCall w indent t = 
     
+    let prefix =
+        if t.custom then
+            ""
+        else
+            prefix
+
     match t.tEnum with
     | TypeEnum.Primitive -> 
-        w.appendEnd "marshall."
+        w.appendEnd  prefix
         match t.name with
         | "string" -> "str__bin"
         | "int" -> "int32__bin"
         | "Boolean" -> "bool__bin"
+        | "Json" -> "Json__bin"
         | _ -> t.name + "__bin"
         |> w.appendEnd
     | TypeEnum.Structure items -> 
-        w.appendEnd "marshall."
+        w.appendEnd  prefix
         t.name + "__bin" |> w.appendEnd
     | TypeEnum.Product items -> 
         "((bb:BytesBuilder) => (v:any) => {" |> w.appendEnd
@@ -124,33 +134,33 @@ and t__binCall w indent t =
         "})" |> w.appendEnd
 
     | TypeEnum.Sum v -> 
-        w.appendEnd "marshall."
+        w.appendEnd  prefix
         t.name + "__bin" |> w.appendEnd
     | TypeEnum.Enum v -> ()
     | TypeEnum.Orm table -> 
-        w.appendEnd "marshall."
+        w.appendEnd  prefix
         t.name + "__bin" |> w.appendEnd
     | TypeEnum.Option tt -> 
-        w.appendEnd "marshall."
+        w.appendEnd  prefix
         "Option__bin (" |> w.appendEnd
         t__binCall w (indent + 1) tt
         ")" |> w.appendEnd
     | TypeEnum.Ary tt -> 
         "" |> w.newlineIndent indent
-        w.appendEnd "marshall."
+        w.appendEnd  prefix
         "array__bin (" |> w.appendEnd
         t__binCall w (indent + 1) tt
         ")" |> w.appendEnd
     | TypeEnum.List tt -> 
 
         "" |> w.newlineIndent indent
-        w.appendEnd "marshall."
+        w.appendEnd  prefix
         "List__bin (" |> w.appendEnd
         t__binCall w (indent + 1) tt
         ")" |> w.appendEnd
 
     | TypeEnum.Dictionary (kType,vType) -> 
-        w.appendEnd "marshall."
+        w.appendEnd  prefix
         "Dictionary__bin (" |> w.appendEnd
         t__binCall w (indent + 1) kType
         ") (" |> w.appendEnd
@@ -166,7 +176,7 @@ let rec bin__tImpl (w:TextBlockWriter) indent t =
         items
         |> Array.iter(fun (name,tt) -> 
             name + ": " |> w.newlineIndent (indent + 2)
-            bin__tCall w (indent + 3) tt 
+            bin__tCall w (indent + 3) tt
             " (bi)," |> w.appendEnd)
         "}" |> w.newlineIndent (indent + 1)
 
@@ -182,9 +192,8 @@ let rec bin__tImpl (w:TextBlockWriter) indent t =
         var |> w.newlineIndent indent
 
     | TypeEnum.Sum items -> 
-
-        "let v:" + t.name + " = {}" |> w.newlineIndent (indent + 1)
-        "v.e = bin__int32 (bi)" |> w.newlineIndent (indent + 1)
+        "let v:" + t.name + " = { e:0, val:{} }" |> w.newlineIndent (indent + 1)
+        "v.e = " +  prefix + "bin__int32 (bi)" |> w.newlineIndent (indent + 1)
         "switch (v.e) {" |> w.newlineIndent (indent + 1)
         [| 0 .. items.Length - 1 |]
         |> Array.rev
@@ -234,10 +243,10 @@ let rec bin__tImpl (w:TextBlockWriter) indent t =
             "" |] 
         |> w.multiLine
 
-        [|  "let ID = marshall.bin__int64 (bi)"
-            "let Sort = marshall.bin__int64 (bi)"
-            "let Createdat = marshall.bin__DateTime (bi)"
-            "let Updatedat = marshall.bin__DateTime (bi)"
+        [|  "let ID = " +  prefix + "bin__int64 (bi)"
+            "let Sort = " +  prefix + "bin__int64 (bi)"
+            "let Createdat = " +  prefix + "bin__DateTime (bi)"
+            "let Updatedat = " +  prefix + "bin__DateTime (bi)"
             ""
             "return {" |]
         |> Array.iter (w.newlineIndent (indent + 1))
@@ -257,18 +266,25 @@ let rec bin__tImpl (w:TextBlockWriter) indent t =
     | TypeEnum.Dictionary (kType,vType) -> ()
 
 and bin__tCall w indent t = 
+    
+    let prefix =
+        if t.custom then
+            ""
+        else
+            prefix
 
     match t.tEnum with
     | TypeEnum.Primitive ->
-        w.appendEnd "marshall."
+        w.appendEnd  prefix
         match t.name with
         | "string" -> "bin__str"
         | "int" -> "bin__int32"
         | "Boolean" -> "bin__bool"
+        | "Json" -> "bin__Json"
         | _ -> "bin__" + t.name
         |> w.appendEnd
     | TypeEnum.Structure items -> 
-        w.appendEnd "marshall."
+        w.appendEnd prefix
         "bin__" + t.name |> w.appendEnd
     | TypeEnum.Product items -> 
         "((bi:BinIndexed) => {" |> w.appendEnd
@@ -287,31 +303,31 @@ and bin__tCall w indent t =
         |> w.appendEnd
         "}})" |> w.appendEnd
     | TypeEnum.Sum v -> 
-        w.appendEnd "marshall."
+        w.appendEnd prefix
         "bin__" + t.name |> w.appendEnd
     | TypeEnum.Enum v -> ()
     | TypeEnum.Orm table -> 
-        w.appendEnd "marshall."
+        w.appendEnd prefix
         "bin__" + t.name |> w.appendEnd
     | TypeEnum.Option tt -> 
-        w.appendEnd "marshall."
+        w.appendEnd prefix
         "bin__Option (" |> w.appendEnd
         bin__tCall w (indent + 1) tt
         ")" |> w.appendEnd
     | TypeEnum.Ary tt -> 
-        w.appendEnd "marshall."
+        w.appendEnd prefix
         "bin__array (" |> w.appendEnd
         bin__tCall w (indent + 1) tt
         ")" |> w.appendEnd
     | TypeEnum.List tt -> 
-        w.appendEnd "marshall."
+        w.appendEnd prefix
         "bin__List (" |> w.appendEnd
         bin__tCall w (indent + 1) tt
         ")" |> w.appendEnd
     | TypeEnum.Dictionary (kType,vType) -> 
         "(fun bi ->" |> w.appendEnd
         "let v = new Dictionary<" + kType.name + "," + vType.name + ">()" |> w.newlineIndent (indent + 1)
-        w.appendEnd "marshall."
+        w.appendEnd prefix
         "bin__Dictionary (" |> w.newlineIndent (indent + 1)
         bin__tCall w (indent + 2) kType
         ") (" |> w.appendEnd

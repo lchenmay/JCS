@@ -83,6 +83,7 @@ and Type = {
 name: string
 mutable sort: int
 mutable tEnum: TypeEnum
+mutable custom: bool
 src: string[] }
 
 with override this.ToString() = 
@@ -191,6 +192,7 @@ let rec str__type tc s =
                     name = s 
                     sort = 0
                     tEnum = TypeEnum.Option tt
+                    custom =  false
                     src = [| |] }
             else if s.EndsWith "[]" then
                 let tt = s.Substring(0,s.Length - 2).Trim() |> str__type tc
@@ -198,6 +200,7 @@ let rec str__type tc s =
                     name = s 
                     sort = 0
                     tEnum = TypeEnum.Ary tt
+                    custom =  false
                     src = [| |] }
             else if s.EndsWith " array" then
                 let tt = s.Substring(0,s.Length - 6).Trim() |> str__type tc
@@ -205,6 +208,7 @@ let rec str__type tc s =
                     name = s 
                     sort = 0
                     tEnum = TypeEnum.Ary tt
+                    custom =  false
                     src = [| |] }
             else if s.StartsWith "List<" then
                 let tt = (find ("<",">") s).Trim() |> str__type tc
@@ -212,6 +216,7 @@ let rec str__type tc s =
                     name = s 
                     sort = 0
                     tEnum = TypeEnum.List tt
+                    custom =  false
                     src = [| |] }
             else if s.StartsWith "Dictionary<" then
                 let k = find ("<",",") s |> str__type tc
@@ -220,6 +225,7 @@ let rec str__type tc s =
                     name = s 
                     sort = 0
                     tEnum = TypeEnum.Dictionary(k,v)
+                    custom =  false
                     src = [| |] }
             else if s.Contains "*" then
                 { 
@@ -231,12 +237,14 @@ let rec str__type tc s =
                         |> Array.filter(fun i -> i.Length > 0)
                         |> Array.map(str__type tc)
                         |> TypeEnum.Product
+                    custom =  true
                     src = [| |] }
             else
                 { 
                     name = s 
                     sort = 0
                     tEnum = TypeEnum.Primitive
+                    custom =  false
                     src = [| |] }
 
         if tc.types.ContainsKey s = false then
@@ -291,6 +299,7 @@ let parseCustomTypes (lines:string[]) =
         {   name = name
             sort = i
             tEnum = e
+            custom =  true
             src = 
                 src.ToArray()
                 |> Array.filter(fun i -> i.Length > 0) })
