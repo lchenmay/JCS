@@ -437,10 +437,10 @@ let buildTableType robot (t:Table) (fieldNames:string[],fields) =
     "type " + t.typeName + " = Rcd<p" + t.typeName + ">" |> ot.w.newline
 
     [|  "export type " + t.typeName + " = {"
-        "id:number"
-        "createdat:number"
-        "updatedat:number"
-        "sort:number"
+        "id:bigint"
+        "createdat:Date"
+        "updatedat:Date"
+        "sort:bigint"
         "p:p" + t.typeName
         "}"
         "" |]
@@ -913,7 +913,7 @@ let go output config =
         "import * as binCommon from '~/lib/util/bin'"
         "import * as binOrm from './CustomMor'"
         //"import * as binCustom from './CustomMor'"
-        "const bin = {...binCommon }"
+        "const marshall = {...binCommon }"
         "" |]
     |> omTypeScript.w.multiLine
 
@@ -922,7 +922,7 @@ let go output config =
         "import * as binCommon from '~/lib/util/bin'"
         "import * as binOrm from './CustomMor'"
         //"import * as binCustom from './CustomMor'"
-        "const bin = {...binCommon, ...binOrm }"
+        "const marshall = {...binCommon, ...binOrm }"
         "" |]
     |> cmTypeScript.w.multiLine
 

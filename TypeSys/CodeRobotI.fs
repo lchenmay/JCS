@@ -62,13 +62,13 @@ let fdef__str def =
 
 let fdef__srcTypes (table,name,def) = 
     match def with
-    | FK t -> "FK","int64","number"
+    | FK t -> "FK","int64","bigint"
     | Caption length -> "Caption","string","string"
     | Chars length -> "Chars","string","string"
     | Link length -> "Link","string","string"
     | Text -> "Text","string","string"
     | Bin -> "Bin","byte[]","array"
-    | Integer -> "Integer","int64","number"
+    | Integer -> "Integer","int64","bigint"
     | Float -> "Float","double","number"
     | Boolean -> "Boolean","bool","boolean"
     | SelectLines lines -> 
@@ -177,17 +177,17 @@ let fdef__tbin table l field =
 
         let boolean() = 
             [|  ""
-                "p." + name + " |> BitConverter.GetBytes |> bb.append" |]
+                "marshall.bool__bin (bb) (p." + name + ")" |]
             |> t__bin.AddRange
 
         let int64() = 
             [|  ""
-                "bin.int64__bin (bb) (p." + name + ")" |]
+                "marshall.int64__bin (bb) (p." + name + ")" |]
             |> t__bin.AddRange
 
         let timestamp() = 
             [|  ""
-                "bin.int64__bin (bb) (p." + name + ")" |]
+                "marshall.DateTime__bin (bb) (p." + name + ")" |]
             |> t__bin.AddRange
 
         let bytes() = 
@@ -198,17 +198,17 @@ let fdef__tbin table l field =
 
         let float() = 
             [|  ""
-                "bin.float__bin (bb) (p." + name + ")" |]
+                "marshall.float__bin (bb) (p." + name + ")" |]
             |> t__bin.AddRange
 
         let enum() = 
             [|  ""
-                "bin.int32__bin (bb) (" + table.typeName.ToLower() + name + "Enum__int(p." + name + "))" |]
+                "marshall.int32__bin (bb) (" + table.typeName.ToLower() + name + "Enum__int(p." + name + "))" |]
             |> t__bin.AddRange
 
         let string() = 
             [|  ""
-                "bin.str__bin (bb) (p." + name + ")" |]
+                "marshall.str__bin (bb) (p." + name + ")" |]
             |> t__bin.AddRange
 
         match def with
@@ -303,44 +303,31 @@ let fdef__bint table l field =
     | ProgrammingLang.TypeScript -> 
 
         let boolean() = 
-            [|  ""
-                "p." + name + " = bin.bin__boolean (bi)"
-                "bi.index = bi.index + 1" |]
+            [|  "p." + name + " = marshall.bin__bool (bi)" |]
             |> bin__t.AddRange
 
         let int64() = 
-            [|  ""
-                "p." + name + " = bin.bin__int64 (bi)"
-                "bi.index = bi.index + 8" |]
+            [|  "p." + name + " = marshall.bin__int64 (bi)" |]
             |> bin__t.AddRange
 
         let timestamp() = 
-            [|  ""
-                "p." + name + " = bin.bin__int64 (bi)"
-                "bi.index = bi.index + 8" |]
+            [|  "p." + name + " = marshall.bin__DateTime (bi)" |]
             |> bin__t.AddRange
 
         let bytes() = 
-            [|  ""
-                "p." + name + ".Length |> BitConverter.GetBytes |> bb.append"
-                "p." + name + " |> bb.append" |]
+            [|  "p." + name + ".Length |> BitConverter.GetBytes |> bb.append" |]
             |> bin__t.AddRange
 
         let float() = 
-            [|  ""
-                "p." + name + " = bin.bin__float (bi)"
-                "bi.index = bi.index + 8" |]
+            [|  "p." + name + " = marshall.bin__float (bi)" |]
             |> bin__t.AddRange
 
         let enum() = 
-            [|  ""
-                "p." + name + " = bin.int__" + table.typeName.ToLower() + name + "Enum(bin__int32 (bi))"
-                "bi.index = bi.index + 4" |]
+            [|  "p." + name + " = int__" + table.typeName.ToLower() + name + "Enum(marshall.bin__int32 (bi))" |]
             |> bin__t.AddRange
 
         let string() = 
-            [|  ""
-                "p." + name + " = bin.bin__str (bi)" |]
+            [|  "p." + name + " = marshall.bin__str (bi)" |]
             |> bin__t.AddRange
 
         match def with
