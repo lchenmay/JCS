@@ -28,6 +28,7 @@ open TypeSys.CodeRobotIII
 
 type RobotConfig = {
 ns: string
+dbName: string
 conn: string
 mainDir: string
 JsDir: string }
@@ -907,9 +908,12 @@ let go output config =
     let srcs,sql,ot,otTypeScript,om,omTypeScript,cm,typeTypeScript,cmTypeScript =
         robot__srcs robot
 
-    tables
-    |> Array.map table__sql
+    [|  "USE [" + config.dbName + "]"
+        "" |]
     |> sql.w.multiLine
+
+    tables
+    |> Array.iter (table__sql sql.w)
 
     [|  "// OrmMor.ts"
         "import { BytesBuilder } from \"~/lib/util/bin\""

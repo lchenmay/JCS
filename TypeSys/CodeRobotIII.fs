@@ -25,25 +25,31 @@ open TypeSys.CodeRobotI
 open TypeSys.CodeRobotIIFs
 open TypeSys.CodeRobotIITs
 
-let table__sql table = 
+let table__sql (w:TextBlockWriter) table = 
+
+    "-- [" + table.tableName + "] ----------------------"
+    |> w.newline
 
     let sb = new StringBuilder()
-    sb.Append("IF NOT EXISTS(SELECT * FROM sysobjects WHERE [name]='" + table.tableName + "' AND xtype='U')" + Util.Text.crlf) |> ignore
-    sb.Append("BEGIN" + Util.Text.crlf) |> ignore
-    sb.Append("    CREATE TABLE " + table.tableName + " ([ID] BIGINT NOT NULL") |> ignore
-    sb.Append(",[Createdat] BIGINT NOT NULL") |> ignore
-    sb.Append(",[Updatedat] BIGINT NOT NULL") |> ignore
-    sb.Append(",[Sort] BIGINT NOT NULL,") |> ignore
+    [|  "IF NOT EXISTS(SELECT * FROM sysobjects WHERE [name]='" + table.tableName + "' AND xtype='U')" + crlf
+        "BEGIN" + crlf
+        tab + "CREATE TABLE " + table.tableName + " ([ID] BIGINT NOT NULL"
+        tab + tab + ",[Createdat] BIGINT NOT NULL"
+        tab + tab + ",[Updatedat] BIGINT NOT NULL"
+        tab + tab + ",[Sort] BIGINT NOT NULL,"
+        tab + tab + "" |]
+    |> w.multiLine
 
     table.fields.Values
     |> Seq.toArray
     |> Array.map sqlField
-    |> String.concat(",")
-    |> sb.Append
-    |> ignore
+    |> String.concat(crlf + tab + tab + ",")
+    |> w.appendEnd
 
-    sb.Append(", CONSTRAINT [PK_" + table.tableName + "] PRIMARY KEY CLUSTERED ([ID] ASC)) ON [PRIMARY]" + crlf) |> ignore
-    sb.Append("END" + Util.Text.crlf) |> ignore
+    [|  ", CONSTRAINT [PK_" + table.tableName + "] PRIMARY KEY CLUSTERED ([ID] ASC)) ON [PRIMARY]"
+        "END"
+        "" |]
+    |> w.multiLine  
 
     table.fields.Values
     |> Seq.toArray
@@ -51,16 +57,19 @@ let table__sql table =
 
         let sort,fname,def,json = f
 
-        sb.Append("--[" + table.tableName + "]--------------------" + crlf) |> ignore
+        let t = sqlField f
 
-        sb.Append("IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('" + table.tableName + "') AND name='"+fname+"')" + crlf) |> ignore
-        sb.Append("BEGIN" + crlf) |> ignore
-        sb.Append(" ALTER TABLE " + table.tableName + " ALTER COLUMN ["+fname+"] NCHAR(64) COLLATE Chinese_PRC_CI_AS " + crlf) |> ignore
-        sb.Append("END" + crlf) |> ignore
-        sb.Append("ELSE" + crlf) |> ignore
-        sb.Append("BEGIN" + crlf) |> ignore
-        sb.Append(" ALTER TABLE " + table.tableName + " ADD ["+fname+"] NCHAR(64) COLLATE Chinese_PRC_CI_AS " + crlf) |> ignore
-        sb.Append("END" + crlf) |> ignore
+        [|  ""
+            "IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('" + table.tableName + "') AND name='" + fname + "')"
+            "BEGIN"
+            " ALTER TABLE " + table.tableName + " ALTER COLUMN " + t
+            "END"
+            "ELSE"
+            "BEGIN"
+            " ALTER TABLE " + table.tableName + " ADD " + t
+            "END"
+            "" |]
+        |> w.multiLine
 
         //sqlIndexSb.Append("UPDATE "+transobj.name+" SET ["+fname+"]='-' WHERE (["+fname+"] IS NULL)" + crlf) |> ignore
         //sqlIndexSb.Append("IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_SrOrm_"+fullname+"')" + crlf) |> ignore
@@ -82,8 +91,6 @@ let table__sql table =
         //sb.Append(" ALTER TABLE " + transobj.name + " DROP  CONSTRAINT [Constraint_" + fullname + "]" + crlf) |> ignore
 
         ())
-
-    sb.ToString()
 
 let updateDatabase output rdbms (conn:string) tables = 
 
