@@ -56,7 +56,7 @@ let rec t__binImpl (w:TextBlockWriter) indent t =
             | Some tt -> 
                 w.newlineBlankIndent (indent + 3)
                 t__binCall w (indent + 3) tt
-                " (bb) (v)" |> w.appendEnd
+                " (bb) (v.val)" |> w.appendEnd
 
             | None -> ()
 

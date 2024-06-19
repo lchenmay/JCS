@@ -27,6 +27,18 @@ let rec type__annotation tc t =
 
 let type__TypeScript tc (w:TextBlockWriter) t = 
 
+    match t.tEnum with
+    | TypeEnum.Sum items ->
+        "const enum " + t.name + "Enum {" |> w.newline
+        [| 0 .. items.Length - 1 |]
+        |> Array.map(fun i -> 
+            let n,o = items[i]
+            n + " = " + i.ToString() + ",//" + n)
+        |> w.multiLineIndent 1
+        "}" |> w.newline
+        |> w.newlineBlank
+    | _ -> ()    
+
     "export type " + t.name + " = {" |> w.newline
 
     match t.tEnum with
