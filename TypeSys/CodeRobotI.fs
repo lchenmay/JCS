@@ -478,7 +478,7 @@ let fdef__empty lang t name def =
         | Integer -> "0"
         | Float -> "0.0"
         | Boolean -> "true"
-        | SelectLines lines -> "int__" + t.tableName + name + "Enum(0)"
+        | SelectLines lines -> "int__" + t.typeName.ToLower() + name + "Enum(0)"
         | Timestamp -> "DateTime.MinValue"
         | TimeSeries -> "TimeSpan.MinValue"
         | Other -> ""

@@ -6,6 +6,7 @@ open System.Text
 open Util.Text
 
 open TypeSys.MetaType
+open TypeSys.CodeRobotI
 
 let rec type__annotation tc t = 
     match t.tEnum with
@@ -25,19 +26,21 @@ let rec type__annotation tc t =
     | _ -> 
         (str__type tc t.name).name
 
-let type__TypeScript tc (w:TextBlockWriter) t = 
+let type__TypeScript tc srcType srcMor t = 
 
     match t.tEnum with
     | TypeEnum.Sum items ->
-        "const enum " + t.name + "Enum {" |> w.newline
+        "const enum " + t.name + "Enum {" |> srcMor.w.newline
         [| 0 .. items.Length - 1 |]
         |> Array.map(fun i -> 
             let n,o = items[i]
             n + " = " + i.ToString() + ",//" + n)
-        |> w.multiLineIndent 1
-        "}" |> w.newline
-        |> w.newlineBlank
+        |> srcMor.w.multiLineIndent 1
+        "}" |> srcMor.w.newline
+        |> srcMor.w.newlineBlank
     | _ -> ()    
+
+    let w = srcType.w
 
     "export type " + t.name + " = {" |> w.newline
 
@@ -65,3 +68,15 @@ let type__TypeScript tc (w:TextBlockWriter) t =
 
 
     "}" |> w.newline
+
+let builderEmpty t fieldNames src = 
+    "export const p" + t.typeName + "_empty = (): p" + t.typeName + " => {" |> src.w.newline
+    "return {" |> src.w.newlineIndent 1
+    fieldNames
+    |> Array.map(fun i -> 
+        let sort,name,def,json = t.fields[i]
+        name + ": " + (fdef__empty ProgrammingLang.TypeScript t name def))
+    |> src.w.multiLineConcateIndent "," 2
+    " }" |> src.w.appendEnd
+    "}" |> src.w.newline
+    src.w.newlineBlank()
