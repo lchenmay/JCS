@@ -427,17 +427,11 @@ let buildTableType robot (t:Table) (fieldNames:string[],fields) =
         let sort,name,def,json = t.fields[i]
         name,fdef__srcTypes(t,name,def))
     |> Array.iter (fun (name,(fsType,csType,tsType)) -> 
-
         "mutable " + name + ": " + fsType |> ot.w.newline
-
         name + ": " + tsType |> otTypeScript.w.newlineIndent 1)
     "}" |> ot.w.appendEnd
     "}" |> otTypeScript.w.newline
     addMulti "" [| ot; otTypeScript |]
-
-
-    ot.w.newlineBlank()
-    "type " + t.typeName + " = Rcd<p" + t.typeName + ">" |> ot.w.newline
 
     [|  "export type " + t.typeName + " = {"
         "id:bigint"
@@ -448,6 +442,9 @@ let buildTableType robot (t:Table) (fieldNames:string[],fields) =
         "}"
         "" |]
     |> otTypeScript.w.multiLine
+
+    ot.w.newlineBlank()
+    "type " + t.typeName + " = Rcd<p" + t.typeName + ">" |> ot.w.newline
 
     ot.w.newlineBlank()
     [|  "let " + t.typeName + "_fieldorders = \"[ID],[Createdat],[Updatedat],[Sort],"

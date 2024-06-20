@@ -372,13 +372,15 @@ let rec t__jsonImpl (w:TextBlockWriter) indent t =
         "(\"createdat\",(v.Createdat |> Util.Time.wintime__unixtime).ToString() |> Json.Num)" |> w.newlineIndent (indent + 2)
         "(\"updatedat\",(v.Updatedat |> Util.Time.wintime__unixtime).ToString() |> Json.Num)" |> w.newlineIndent (indent + 2)
         
-        table
-        |> table__sortedFields
-        |> Array.map(fun f -> 
-            let sort,name,def,json = f
-            let src = fdef__tjson f
-            "(\"" + name + "\"," + src + ")")
-        |> Array.iter (w.newlineIndent (indent + 2))
+        "(\"p\",p" + t.name + "__json v.p)" |> w.newlineIndent (indent + 2)
+        
+        //table
+        //|> table__sortedFields
+        //|> Array.map(fun f -> 
+        //    let sort,name,def,json = f
+        //    let src = fdef__tjson f
+        //    "(\"" + name + "\"," + src + ")")
+        //|> Array.iter (w.newlineIndent (indent + 2))
 
         " |]" |> w.appendEnd
         "|> Json.Braket" |> w.newlineIndent (indent + 1)
@@ -540,7 +542,15 @@ let rec json__tImpl (w:TextBlockWriter) indent t =
             "let Createdat = checkfield fields \"createdat\" |> parse_int64 |> DateTime.FromBinary"
             "let Updatedat = checkfield fields \"updatedat\" |> parse_int64 |> DateTime.FromBinary"
             ""
-            "let p = p" + t.name + "_empty()" |]
+            "let o  ="
+            tab + "match"
+            tab + tab + "json"
+            tab + tab + "|> tryFindByAtt \"p\" with"
+            tab + "| Some (s,v) -> json__p" + t.name + "o v"
+            tab + "| None -> None"
+            ""
+            "match o with"
+            "| Some p ->" |]
         |> Array.iter (w.newlineIndent (indent + 1))
 
         table
@@ -551,7 +561,7 @@ let rec json__tImpl (w:TextBlockWriter) indent t =
         |> Array.map fdef__jsont
         |> Array.map(fun i -> i.ToArray())
         |> Array.concat
-        |> Array.iter (w.newlineIndent (indent + 1))
+        |> Array.iter (w.newlineIndent (indent + 2))
 
         [|  ""
             "{"
@@ -561,7 +571,9 @@ let rec json__tImpl (w:TextBlockWriter) indent t =
             tab + "Updatedat = Updatedat"
             tab + "p = p } |> Some" 
             "" |]
-        |> Array.iter (w.newlineIndent (indent + 1))
+        |> Array.iter (w.newlineIndent (indent + 2))
+
+        "| None -> None" |> w.newlineIndent (indent + 1)
 
     | TypeEnum.Option tt -> ()
     | TypeEnum.Ary tt -> ()

@@ -66,10 +66,10 @@ let type__TypeScript tc srcType srcMor t =
     | _ -> [| |]
     |> w.multiLineConcate ("," + crlf)
 
-
     "}" |> w.newline
 
 let builderEmpty t fieldNames src = 
+
     "export const p" + t.typeName + "_empty = (): p" + t.typeName + " => {" |> src.w.newline
     "return {" |> src.w.newlineIndent 1
     fieldNames
@@ -78,5 +78,15 @@ let builderEmpty t fieldNames src =
         name + ": " + (fdef__empty ProgrammingLang.TypeScript t name def))
     |> src.w.multiLineConcateIndent "," 2
     " }" |> src.w.appendEnd
+    "}" |> src.w.newline
+    src.w.newlineBlank()
+
+    "export const " + t.typeName + "_empty = (): " + t.typeName + " => {" |> src.w.newline
+    "return {" |> src.w.newlineIndent 1
+    "id: 0," |> src.w.newlineIndent 2
+    "createdat: new Date()," |> src.w.newlineIndent 2
+    "updatedat: new Date()," |> src.w.newlineIndent 2
+    "sort: 0," |> src.w.newlineIndent 2
+    "p: p" + t.typeName + "_empty() }" |> src.w.newlineIndent 2
     "}" |> src.w.newline
     src.w.newlineBlank()
