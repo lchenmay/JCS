@@ -434,10 +434,10 @@ let buildTableType robot (t:Table) (fieldNames:string[],fields) =
     addMulti "" [| ot; otTypeScript |]
 
     [|  "export type " + t.typeName + " = {"
-        "id:bigint"
+        "id:number"
         "createdat:Date"
         "updatedat:Date"
-        "sort:bigint"
+        "sort:number"
         "p:p" + t.typeName
         "}"
         "" |]

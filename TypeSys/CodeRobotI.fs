@@ -62,13 +62,13 @@ let fdef__str def =
 
 let fdef__srcTypes (table,name,def) = 
     match def with
-    | FK t -> "FK","int64","bigint"
+    | FK t -> "FK","int64","number"
     | Caption length -> "Caption","string","string"
     | Chars length -> "Chars","string","string"
     | Link length -> "Link","string","string"
     | Text -> "Text","string","string"
     | Bin -> "Bin","byte[]","array"
-    | Integer -> "Integer","int64","bigint"
+    | Integer -> "Integer","int64","number"
     | Float -> "Float","double","number"
     | Boolean -> "Boolean","bool","boolean"
     | SelectLines lines -> 
