@@ -161,7 +161,7 @@ and t__binCall w indent t =
 
     | TypeEnum.Dictionary (kType,vType) -> 
         w.appendEnd  prefix
-        "Dictionary__bin (" |> w.appendEnd
+        "dict__bin (" |> w.appendEnd
         t__binCall w (indent + 1) kType
         ") (" |> w.appendEnd
         t__binCall w (indent + 1) vType
@@ -325,15 +325,12 @@ and bin__tCall w indent t =
         bin__tCall w (indent + 1) tt
         ")" |> w.appendEnd
     | TypeEnum.Dictionary (kType,vType) -> 
-        "(fun bi ->" |> w.appendEnd
-        "let v = new Dictionary<" + kType.name + "," + vType.name + ">()" |> w.newlineIndent (indent + 1)
         w.appendEnd prefix
-        "bin__Dictionary (" |> w.newlineIndent (indent + 1)
+        "bin__dict(" |> w.appendEnd
         bin__tCall w (indent + 2) kType
         ") (" |> w.appendEnd
         bin__tCall w (indent + 2) vType
-        ") v bi" |> w.appendEnd
-        "v)" |> w.newlineIndent (indent + 1)
+        ")" |> w.appendEnd
 
 let rec t__jsonImpl (w:TextBlockWriter) indent t = 
 
