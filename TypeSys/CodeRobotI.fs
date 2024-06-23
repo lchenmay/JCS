@@ -73,7 +73,7 @@ let fdef__srcTypes (table,name,def) =
     | Boolean -> "Boolean","bool","boolean"
     | SelectLines lines -> 
         let enumType = table.typeName.ToLower() + name + "Enum"
-        enumType,enumType,enumType
+        enumType,enumType,"number"
     | Timestamp -> "Timestamp","DateTime","Date"
     | TimeSeries -> "TimeSeries","TimeSpan","Date"
     | Other -> "","Object","any"
@@ -203,7 +203,8 @@ let fdef__tbin table l field =
 
         let enum() = 
             [|  ""
-                "marshall.int32__bin (bb) (" + table.typeName.ToLower() + name + "Enum__int(p." + name + "))" |]
+                //"marshall.int32__bin (bb) (" + table.typeName.ToLower() + name + "Enum__int(p." + name + "))" |]
+                "marshall.int32__bin (bb) (p." + name + ")" |]
             |> t__bin.AddRange
 
         let string() = 
@@ -323,7 +324,8 @@ let fdef__bint table l field =
             |> bin__t.AddRange
 
         let enum() = 
-            [|  "p." + name + " = int__" + table.typeName.ToLower() + name + "Enum(marshall.bin__int32 (bi))" |]
+            //[|  "p." + name + " = int__" + table.typeName.ToLower() + name + "Enum(marshall.bin__int32 (bi))" |]
+            [|  "p." + name + " = marshall.bin__int32 (bi)" |]
             |> bin__t.AddRange
 
         let string() = 
@@ -478,7 +480,7 @@ let fdef__empty lang t name def =
         | Integer -> "0"
         | Float -> "0.0"
         | Boolean -> "true"
-        | SelectLines lines -> "int__" + t.typeName.ToLower() + name + "Enum(0)"
+        | SelectLines lines -> "0"
         | Timestamp -> "new Date()"
         | TimeSeries -> "0"
         | Other -> ""

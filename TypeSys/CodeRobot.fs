@@ -327,7 +327,6 @@ let buildTableEnums robot (t:Table) (name,lines:(string * string)[]) =
     let enumName = t.typeName.ToLower() + name + "Enum"
 
     "type " + enumName + " = " |> ot.w.newline
-    "const enum " + enumName + " {" |> otTypeScript.w.newline
 
     [| 0 .. lines.Length - 1 |]
     |> Array.iter(fun i -> 
@@ -387,33 +386,43 @@ let buildTableEnums robot (t:Table) (name,lines:(string * string)[]) =
     |> Array.iter (ot.w.newlineIndent 1)
     "| _ -> \"\"" |> ot.w.newlineIndent 1
 
-    [| 0 .. lines.Length - 1 |]
-    |> Array.iter(fun i -> 
-        let a,b = lines[i]
-        a + " = " + i.ToString() + ", // " + b |> otTypeScript.w.newlineIndent 1)
-    "}" |> otTypeScript.w.newline
 
-    otTypeScript.w.newlineBlank()
-    "export const int__" + enumName + " = (v:number):" + enumName + " => {" |> otTypeScript.w.newline
-    "switch (v) {" |> otTypeScript.w.newlineIndent 1
-    [| 0 .. lines.Length - 2 |]
-    |> Array.map(fun i -> 
-        let a,b = lines[i]
-        "case " + i.ToString() + ": return " + enumName + "." + a)
-    |> Array.iter (otTypeScript.w.newlineIndent 1)
-    "default: return " + enumName + "." + (fst lines[lines.Length - 1]) + " }" |> otTypeScript.w.newlineIndent 1
-    "}" |> otTypeScript.w.newline
+    (fun (w:TextBlockWriter) -> 
 
-    otTypeScript.w.newlineBlank()
-    "export const " + enumName + "__int = (e:" + enumName + "number):int => {" |> otTypeScript.w.newline
-    "switch (e) {" |> otTypeScript.w.newlineIndent 1
-    [| 0 .. lines.Length - 2 |]
-    |> Array.map(fun i -> 
-        let a,b = lines[i]
-        "case " + enumName + "." + a + ": return " + i.ToString())
-    |> Array.iter (otTypeScript.w.newlineIndent 1)
-    "default: return 0 }" |> otTypeScript.w.newlineIndent 1
-    "}" |> otTypeScript.w.newline
+        [| 0 .. lines.Length - 1 |]
+        |> Array.iter(fun i -> 
+            let a,b = lines[i]
+            "const " + enumName + "_" + a + " = " + i.ToString() + " // " + b |> w.newline)
+
+        //"const enum " + enumName + " {" |> w.newline
+        //[| 0 .. lines.Length - 1 |]
+        //|> Array.iter(fun i -> 
+        //    let a,b = lines[i]
+        //    a + " = " + i.ToString() + ", // " + b |> otTypeScript.w.newlineIndent 1)
+        //"}" |> w.newline
+
+    //    w.newlineBlank()
+    //    "export const int__" + enumName + " = (v:number):" + enumName + " => {" |> w.newline
+    //    "switch (v) {" |> w.newlineIndent 1
+    //    [| 0 .. lines.Length - 2 |]
+    //    |> Array.map(fun i -> 
+    //        let a,b = lines[i]
+    //        "case " + i.ToString() + ": return " + enumName + "." + a)
+    //    |> Array.iter (w.newlineIndent 1)
+    //    "default: return " + enumName + "." + (fst lines[lines.Length - 1]) + " }" |> w.newlineIndent 1
+    //    "}" |> w.newline
+
+    //    w.newlineBlank()
+    //    "export const " + enumName + "__int = (e:" + enumName + "number):int => {" |> w.newline
+    //    "switch (e) {" |> w.newlineIndent 1
+    //    [| 0 .. lines.Length - 2 |]
+    //    |> Array.map(fun i -> 
+    //        let a,b = lines[i]
+    //        "case " + enumName + "." + a + ": return " + i.ToString())
+    //    |> Array.iter (w.newlineIndent 1)
+    //    "default: return 0 }" |> w.newlineIndent 1
+    //    "}" |> w.newline
+        ()) otTypeScript.w
 
     addMulti "" [| ot; otTypeScript |]
 
