@@ -155,28 +155,40 @@ let updateDatabase output rdbms (conn:string) tables =
                     | Fail(exn,so) ->
                         output("Failed: " + sqlcreatetable.text + ": " + exn.ToString())
 
-                    //cols
-                    //|> Seq.iter(fun col ->
-                    //    let find = transobj.fields |> Seq.tryFind(fun f -> f.["name"] = col)
-                    //    if(find.IsNone && col <> "ID" && col <> "Createdat" && col <> "Updatedat" && col <> "Sort") then
-                    //        output("Droping ["+transobj.name+"].["+col+"], CONFIRM...")
-                    //        //System.Console.ReadLine() |> ignore
-                    //        match tx conn output [|str__sql("ALTER TABLE "+transobj.name+" DROP COLUMN ["+col+"]")|] with
-                    //        | Suc x -> output("OK")
-                    //        | Fail(exn,so) ->
-                    //            output("Failed: "+exn.ToString()))
+                    cols
+                    |> Array.filter(fun col -> col <> "ID" && col <> "Createdat" && col <> "Updatedat" && col <> "Sort")
+                    |> Array.iter(fun col ->
+                        match
+                            table 
+                            |> table__fieldKeys
+                            |> Array.tryFind(fun f -> f = col) with
+                        | Some f ->
+                            [|  "ALTER TABLE "
+                                table.tableName
+                                " DROP COLUMN [" + col + "]" |]
+                            |> String.Concat
+                            |> str__sql
+                            |> sqls.Add
+                        | None -> ())
 
-                    //transobj.fields
-                    //|> Seq.iter(fun f ->
-                    //    let fname = f.["name"]
-                    //    let find = cols |> Seq.tryFind(fun c -> c = fname)
-                    //    if(find.IsNone) then
-                    //        output("Adding ["+transobj.name+"].["+fname+"], CONFIRM...")
-                    //        //System.Console.ReadLine() |> ignore
-                    //        match tx conn output [|str__sql(" ALTER TABLE "+transobj.name+" ADD "+db1(f))|] with
-                    //        | Suc x -> output("OK")
-                    //        | Fail(exn,so) ->
-                    //            output("Failed: "+exn.ToString()))
+                    table 
+                    |> table__fieldKeys
+                    |> Array.iter(fun f ->
+                        match cols |> Seq.tryFind(fun c -> c = f) with
+                        | Some f -> ()
+                        | None ->
+
+                            let s = 
+                                table.fields[f]
+                                |> sqlField
+
+                            [|  " ALTER TABLE "
+                                table.tableName
+                                " ADD "
+                                s |]
+                            |> String.Concat
+                            |> str__sql
+                            |> sqls.Add)
 
                 | _ -> ())
         | Fail(b,a) -> 
