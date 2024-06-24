@@ -25,8 +25,7 @@ let sqlField f =
 
     let s = 
         match def with
-        | FieldDef.FK v -> "
-        "
+        | FieldDef.FK v -> "BIGINT"
         | FieldDef.Caption length -> "NVARCHAR(" + length.ToString() + ") COLLATE Chinese_PRC_CI_AS"
         | FieldDef.Chars length -> "NVARCHAR(" + length.ToString() + ") COLLATE Chinese_PRC_CI_AS"
         | FieldDef.Link length -> "NVARCHAR(" + length.ToString() + ") COLLATE Chinese_PRC_CI_AS"
