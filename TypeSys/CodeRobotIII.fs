@@ -59,33 +59,41 @@ let table__sql (w:TextBlockWriter) table =
 
         let t = sqlField f
 
+        let fullname = table.tableName + fname
+
         [|  ""
+            "-- [" + table.tableName + "." + fname + "] -------------"
+            ""
             "IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('" + table.tableName + "') AND name='" + fname + "')"
-            "BEGIN"
-            " ALTER TABLE " + table.tableName + " ALTER COLUMN " + t
-            "END"
+            tab + "BEGIN"
+            tab + " ALTER TABLE " + table.tableName + " ALTER COLUMN " + t
+            tab + "END"
             "ELSE"
-            "BEGIN"
-            " ALTER TABLE " + table.tableName + " ADD " + t
-            "END"
+            tab + "BEGIN"
+            tab + "ALTER TABLE " + table.tableName + " ADD " + t
+            tab + "END"
             "" |]
         |> w.multiLine
 
-        //sqlIndexSb.Append("UPDATE "+transobj.name+" SET ["+fname+"]='-' WHERE (["+fname+"] IS NULL)" + crlf) |> ignore
-        //sqlIndexSb.Append("IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_SrOrm_"+fullname+"')" + crlf) |> ignore
-        //sqlIndexSb.Append("BEGIN" + crlf) |> ignore
-        //sqlIndexSb.Append(" ALTER TABLE Ca_Staff DROP  CONSTRAINT [Constraint_SrOrm_"+fullname+"]" + crlf) |> ignore
-        //sqlIndexSb.Append("END" + crlf) |> ignore
+        [|  "UPDATE " + table.tableName + " SET [" + fname + "]='' WHERE ([" + fname + "] IS NULL)"
+            ""
+            "IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_" + fullname + "')"
+            tab + "BEGIN"
+            tab + "ALTER TABLE Ca_Staff DROP  CONSTRAINT [Constraint_" + fullname + "]"
+            tab + "END"
+            "" |]
+        |> w.multiLine
 
-        //sqlIndexSb.Append("IF NOT EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_"+fullname+"')" + crlf) |> ignore
-        //sqlIndexSb.Append("BEGIN" + crlf) |> ignore
-        //sqlIndexSb.Append(" ALTER TABLE "+transobj.name+" ADD  CONSTRAINT [Constraint_"+fullname+"] DEFAULT('-') FOR ["+fname+"]" + crlf) |> ignore
-        //sqlIndexSb.Append("END" + crlf) |> ignore
-        //sqlIndexSb.Append("" + crlf) |> ignore
-        //sqlIndexSb.Append("IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_"+fullname+"')" + crlf) |> ignore
-        //sqlIndexSb.Append("BEGIN" + crlf) |> ignore
-        //sqlIndexSb.Append(" ALTER TABLE "+transobj.name+" DROP  CONSTRAINT [UniqueNonclustered_"+fullname+"]" + crlf) |> ignore
-        //sqlIndexSb.Append("END" + crlf) |> ignore
+        [|  //"IF NOT EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_" + fullname + "')"
+            //tab + "BEGIN"
+            //tab + "ALTER TABLE " + table.tableName + " ADD  CONSTRAINT [Constraint_" + fullname + "] DEFAULT('') FOR [" + fullname + "]"
+            //tab + "END"
+            //""
+            "IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_" + fullname + "')"
+            tab + "BEGIN"
+            tab + "ALTER TABLE " + table.tableName + " DROP  CONSTRAINT [UniqueNonclustered_" + fullname + "]"
+            tab + "END" |]
+        |> w.multiLine
 
         //let s = " ALTER TABLE " + transobj.name + " DROP  CONSTRAINT [Constraint_" + fullname + "]" + crlf
         //sb.Append(" ALTER TABLE " + transobj.name + " DROP  CONSTRAINT [Constraint_" + fullname + "]" + crlf) |> ignore

@@ -827,9 +827,12 @@ let buildType src t =
         //CodeRobotIITs.json__tImpl tbw 0 t
     | _ -> ()
 
-let buildCustomTypes tc src srcTypeScript (cTypes:Dictionary<string,Type>) = 
+let buildCustomTypes config tc src srcTypeScript (cTypes:Dictionary<string,Type>) = 
 
     [|  "declare global {"
+        ""
+        "namespace " + config.dbName.ToLower() + " {"
+        ""
         "" |]
     |> src.w.multiLine
 
@@ -843,6 +846,8 @@ let buildCustomTypes tc src srcTypeScript (cTypes:Dictionary<string,Type>) =
         LangPackTypeScript.type__TypeScript tc src srcTypeScript t)
 
     [|  ""
+        "}"
+        ""
         "}"
         ""
         "export {}"
@@ -932,6 +937,8 @@ let go output config =
     |> cmTypeScript.w.multiLine
 
     [|  "declare global {"
+        ""
+        "namespace " + config.dbName.ToLower() + " {"
         "" |]
     |> otTypeScript.w.multiLine
     
@@ -950,7 +957,7 @@ let go output config =
 
     let sorted = tc |> tc__sorted
 
-    buildCustomTypes tc typeTypeScript cmTypeScript cTypes
+    buildCustomTypes config tc typeTypeScript cmTypeScript cTypes
 
     sorted
     |> Array.iter(fun t ->
@@ -969,6 +976,8 @@ let go output config =
     |> buildTables robot
 
     [|  ""
+        "}"
+        ""
         "}"
         ""
         "export {}"
