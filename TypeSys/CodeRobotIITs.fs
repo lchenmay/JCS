@@ -21,11 +21,12 @@ open Util.DbQuery
 open Util.DbTx
 
 open TypeSys.MetaType
+open TypeSys.Common
 open TypeSys.CodeRobotI
 
 let prefix = "marshall."
 
-let rec t__binImpl (w:TextBlockWriter) indent t = 
+let rec t__binImpl ns (w:TextBlockWriter) indent t = 
 
     match t.tEnum with
     | TypeEnum.Primitive -> ()
@@ -72,7 +73,7 @@ let rec t__binImpl (w:TextBlockWriter) indent t =
     | TypeEnum.Orm table ->
 
         [|  ""
-            "export const p" + t.name + "__bin = (bb:BytesBuilder) => (p:p" + t.name + ") => {"
+            "export const p" + t.name + "__bin = (bb:BytesBuilder) => (p:" + ns + ".p" + t.name + ") => {"
             "" |] 
         |> w.multiLine
 
@@ -87,7 +88,7 @@ let rec t__binImpl (w:TextBlockWriter) indent t =
         |> w.newline
 
         [|  ""
-            "export const " + t.name + "__bin = (bb:BytesBuilder) => (v:" + t.name + ") => {"
+            "export const " + t.name + "__bin = (bb:BytesBuilder) => (v:" + ns + "." + t.name + ") => {"
             tab +  prefix + "int64__bin (bb) (v.id)"
             tab +  prefix + "int64__bin (bb) (v.sort)"
             tab +  prefix + "DateTime__bin (bb) (v.createdat)"
@@ -167,7 +168,7 @@ and t__binCall w indent t =
         t__binCall w (indent + 1) vType
         ")" |> w.appendEnd
 
-let rec bin__tImpl (w:TextBlockWriter) indent t = 
+let rec bin__tImpl ns (w:TextBlockWriter) indent t = 
 
     match t.tEnum with
     | TypeEnum.Primitive -> ()
@@ -215,7 +216,7 @@ let rec bin__tImpl (w:TextBlockWriter) indent t =
     | TypeEnum.Orm table ->
 
         [|  ""
-            "export const bin__p" + t.name + " = (bi:BinIndexed):p" + t.name + " => {"
+            "export const bin__p" + t.name + " = (bi:BinIndexed):" + ns + ".p" + t.name + " => {"
             "" |] 
         |> w.multiLine
 
@@ -239,7 +240,7 @@ let rec bin__tImpl (w:TextBlockWriter) indent t =
         |> w.multiLine
 
         [|  ""; 
-            "export const bin__" + t.name + " = (bi:BinIndexed):" + t.name + " => {" 
+            "export const bin__" + t.name + " = (bi:BinIndexed):" + ns + "." + t.name + " => {" 
             "" |] 
         |> w.multiLine
 

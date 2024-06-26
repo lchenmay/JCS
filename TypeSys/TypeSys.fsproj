@@ -9,12 +9,12 @@
   <ItemGroup>
     <Compile Include="FSharp.fs" />
     <Compile Include="MetaType.fs" />
-    <Compile Include="Rdmbs.fs" />
+    <Compile Include="Common.fs" />
+    <Compile Include="RDBMS.fs" />
     <Compile Include="CodeRobotI.fs" />
     <Compile Include="LangPackTypeScript.fs" />
     <Compile Include="CodeRobotIIFs.fs" />
     <Compile Include="CodeRobotIITs.fs" />
-    <Compile Include="CodeRobotIII.fs" />
     <Compile Include="CodeRobot.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>

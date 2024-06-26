@@ -1,4 +1,4 @@
-﻿module TypeSys.CodeRobotIII
+﻿module TypeSys.RDBMS
 
 open System
 open System.IO
@@ -8,30 +8,62 @@ open System.Data.SqlClient
 open System.Text
 open System.Text.RegularExpressions
 
-open Util.Runtime
 open Util.Cat
-open Util.Collection
-open Util.CollectionSortedAccessor
 open Util.Text
-open Util.Json
-open Util.FileSys
 open Util.Db
 open Util.DbQuery
 open Util.DbTx
+open Util.Collection
 
-open TypeSys.Rdmbs
 open TypeSys.MetaType
-open TypeSys.CodeRobotI
-open TypeSys.CodeRobotIIFs
-open TypeSys.CodeRobotIITs
+open TypeSys.Common
+
+type Rdbms = 
+| NotAvailable
+| SqlServer
+| MySql
+| PostgreSql
+
+let sqlField f =
+    let sort,fname,def,json = f
+
+    let n = fname
+
+    let s = 
+        match def with
+        | FieldDef.FK v -> "BIGINT"
+        | FieldDef.Caption length -> "NVARCHAR(" + length.ToString() + ") COLLATE Chinese_PRC_CI_AS"
+        | FieldDef.Chars length -> "NVARCHAR(" + length.ToString() + ") COLLATE Chinese_PRC_CI_AS"
+        | FieldDef.Link length -> "NVARCHAR(" + length.ToString() + ") COLLATE Chinese_PRC_CI_AS"
+        | FieldDef.Text -> "NVARCHAR(MAX)"
+        | FieldDef.Timestamp
+        | FieldDef.Integer -> "BIGINT"
+        | FieldDef.Float -> "FLOAT"
+        | FieldDef.Boolean -> "BIT"
+        | FieldDef.SelectLines v -> "INT"
+        | FieldDef.TimeSeries -> "VARBINARY(MAX)"
+        | _ -> ""
+
+    "[" + n + "] " + s
+
+let field__existence tname fname = 
+    [|  "SELECT * FROM SYSCOLUMNS WHERE id=object_id('"
+        tname
+        "') AND name='"
+        fname
+        "'" |]
+    |> String.Concat
+
+let table__fieldnames tname = "SELECT [name] FROM SYSCOLUMNS WHERE id=object_id('" + tname + "')"
+let table__fieldnamesCount tname = "SELECT COUNT(*) FROM SYSCOLUMNS WHERE id=object_id('" + tname + "')"
 
 let table__sql (w:TextBlockWriter) table = 
 
     "-- [" + table.tableName + "] ----------------------"
     |> w.newline
 
-    let sb = new StringBuilder()
-    [|  "IF NOT EXISTS(SELECT * FROM sysobjects WHERE [name]='" + table.tableName + "' AND xtype='U')" + crlf
+    [|  ""
+        "IF NOT EXISTS(SELECT * FROM sysobjects WHERE [name]='" + table.tableName + "' AND xtype='U')" + crlf
         "BEGIN" + crlf
         tab + "CREATE TABLE " + table.tableName + " ([ID] BIGINT NOT NULL"
         tab + tab + ",[Createdat] BIGINT NOT NULL"
@@ -51,6 +83,55 @@ let table__sql (w:TextBlockWriter) table =
         "" |]
     |> w.multiLine  
 
+    let fns = 
+        [|  [|  "ID"; "Createdat"; "Updatedat"; "Sort" |]
+            table.fields.Values
+            |> Seq.toArray
+            |> Array.map(fun f ->
+                let sort,fname,def,json = f
+                fname) |]
+        |> Array.concat
+
+    let checkNotIn = 
+        [|  "SELECT name FROM SYSCOLUMNS WHERE id=object_id('"
+            table.tableName
+            "') "
+            "AND (name NOT IN ("
+            (fns |> Array.map(fun i -> "'" + i + "'") |> String.concat ",")
+            "))" |]
+        |> String.Concat
+
+    let fn = "@name_" + table.tableName
+    let cursor = "cursor_" + table.tableName
+    let sql = "@sql_" + table.tableName
+
+    [|  ""
+        "-- Dropping obsolete fields -----------"
+        "DECLARE " + fn + " NVARCHAR(64)"
+        "DECLARE " + cursor + " CURSOR FOR "
+        tab + checkNotIn
+        ""
+        "OPEN " + cursor
+        "FETCH NEXT FROM " + cursor + " INTO " + fn
+        ""
+        "WHILE @@FETCH_STATUS = 0"
+        "BEGIN"
+        tab + "PRINT 'Dropping " + table.tableName + ".' + " + fn + ";"
+        tab + ""
+        tab + "DECLARE " + sql + " NVARCHAR(MAX);"
+        tab + "SET " + sql + " = 'ALTER TABLE " + table.tableName + " DROP COLUMN ' + QUOTENAME(" + fn + ")"
+        tab + "EXEC sp_executesql " + sql
+        tab + ""
+        //tab + "ALTER TABLE " + table.tableName + " DROP COLUMN " + fn + ""
+        tab + ""
+        tab + "FETCH NEXT FROM " + cursor + " INTO " + fn
+        "END"
+        ""
+        "CLOSE " + cursor + ";"
+        "DEALLOCATE " + cursor + ";" 
+        "" |]
+    |> w.multiLine
+
     table.fields.Values
     |> Seq.toArray
     |> Array.iter(fun f ->
@@ -64,7 +145,7 @@ let table__sql (w:TextBlockWriter) table =
         [|  ""
             "-- [" + table.tableName + "." + fname + "] -------------"
             ""
-            "IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('" + table.tableName + "') AND name='" + fname + "')"
+            "IF EXISTS(" + (field__existence table.tableName fname) + ")"
             tab + "BEGIN"
             tab + " ALTER TABLE " + table.tableName + " ALTER COLUMN " + t
             tab + "END"
@@ -119,7 +200,7 @@ let updateDatabase output rdbms (conn:string) tables =
             |> Array.iter(fun table ->
 
                 match 
-                    "SELECT [name] FROM SYSCOLUMNS WHERE id=object_id('" + table.tableName + "')"
+                    table__fieldnames table.tableName
                     |> str__sql
                     |> multiline_query conn with
                 | Suc x ->

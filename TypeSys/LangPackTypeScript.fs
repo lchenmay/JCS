@@ -6,6 +6,7 @@ open System.Text
 open Util.Text
 
 open TypeSys.MetaType
+open TypeSys.Common
 open TypeSys.CodeRobotI
 
 let rec type__annotation tc t = 
@@ -68,9 +69,9 @@ let type__TypeScript tc srcType srcMor t =
 
     "}" |> w.newline
 
-let builderEmpty t fieldNames src = 
+let builderEmpty ns t fieldNames src = 
 
-    "export const p" + t.typeName + "_empty = (): p" + t.typeName + " => {" |> src.w.newline
+    "export const p" + t.typeName + "_empty = (): " + ns + ".p" + t.typeName + " => {" |> src.w.newline
     "return {" |> src.w.newlineIndent 1
     fieldNames
     |> Array.map(fun i -> 
@@ -81,7 +82,7 @@ let builderEmpty t fieldNames src =
     "}" |> src.w.newline
     src.w.newlineBlank()
 
-    "export const " + t.typeName + "_empty = (): " + t.typeName + " => {" |> src.w.newline
+    "export const " + t.typeName + "_empty = (): " + ns + "." + t.typeName + " => {" |> src.w.newline
     "return {" |> src.w.newlineIndent 1
     "id: 0," |> src.w.newlineIndent 2
     "createdat: new Date()," |> src.w.newlineIndent 2

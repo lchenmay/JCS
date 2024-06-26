@@ -21,11 +21,12 @@ open Util.DbTx
 open Util.Orm
 
 open TypeSys.MetaType
+open TypeSys.Common
+open TypeSys.RDBMS
 open TypeSys.CodeRobotI
 open TypeSys.LangPackTypeScript
 open TypeSys.CodeRobotIIFs
 open TypeSys.CodeRobotIITs
-open TypeSys.CodeRobotIII
 
 type RobotConfig = {
 ns: string
@@ -514,7 +515,11 @@ let buildTableType robot (t:Table) (fieldNames:string[],fields) =
         name + " = " + (fdef__empty ProgrammingLang.FSharp t name def)  |> ot.w.newlineIndent 1)
     " }" |> ot.w.appendEnd
 
-    builderEmpty t fieldNames omTypeScript
+    builderEmpty 
+        (robot.config.dbName.ToLower())
+        t 
+        fieldNames 
+        omTypeScript
 
     ot.w.newlineBlank()
     "let " + t.typeName + "_id = ref " + t.idstarting.ToString() + "L" |> ot.w.newline
@@ -723,7 +728,7 @@ let buildTables robot tables =
         "| None -> ()" |> om.w.newlineIndent 1)
     "()" |> om.w.newlineIndent 1
 
-let buildType src t = 
+let buildType ns src t = 
 
     let tbw = new TextBlockWriter(src.buffer)
 
@@ -747,7 +752,7 @@ let buildType src t =
     | ProgrammingLang.FSharp -> 
         CodeRobotIIFs.t__binImpl tbw 0 t
     | ProgrammingLang.TypeScript -> 
-        CodeRobotIITs.t__binImpl tbw 0 t
+        CodeRobotIITs.t__binImpl ns tbw 0 t
         "}" |> tbw.newline
     | _ -> ()
 
@@ -772,7 +777,7 @@ let buildType src t =
     | ProgrammingLang.FSharp -> 
         CodeRobotIIFs.bin__tImpl tbw 0 t
     | ProgrammingLang.TypeScript -> 
-        CodeRobotIITs.bin__tImpl tbw 0 t
+        CodeRobotIITs.bin__tImpl ns tbw 0 t
         "}" |> tbw.newline
     | _ -> ()
 
@@ -959,16 +964,18 @@ let go output config =
 
     buildCustomTypes config tc typeTypeScript cmTypeScript cTypes
 
+    let ns = config.dbName.ToLower()
+
     sorted
     |> Array.iter(fun t ->
         match t.tEnum |> typeEnum__plain with
         | TypeEnumPlain.Orm -> 
-            buildType om t
-            buildType omTypeScript t
+            buildType ns om t
+            buildType ns omTypeScript t
         | TypeEnumPlain.Structure
         | TypeEnumPlain.Sum -> 
-            buildType cm t
-            buildType cmTypeScript t
+            buildType ns cm t
+            buildType ns cmTypeScript t
         | _ -> ())
     
     sorted
