@@ -142,22 +142,29 @@ let table__sql (w:TextBlockWriter) table =
 
         let fullname = table.tableName + fname
 
+        let sql = "@sql_add_" + table.tableName + "_" + fname
+
         [|  ""
             "-- [" + table.tableName + "." + fname + "] -------------"
             ""
             "IF EXISTS(" + (field__existence table.tableName fname) + ")"
             tab + "BEGIN"
             tab + " ALTER TABLE " + table.tableName + " ALTER COLUMN " + t
+            //tab + "UPDATE " + table.tableName + " SET [" + fname + "]='' WHERE ([" + fname + "] IS NULL)"
             tab + "END"
             "ELSE"
             tab + "BEGIN"
-            tab + "ALTER TABLE " + table.tableName + " ADD " + t
+
+            tab + "DECLARE " + sql + " NVARCHAR(MAX);"
+            tab + "SET " + sql + " = 'ALTER TABLE " + table.tableName + " ADD " + t + "'"
+            tab + "EXEC sp_executesql " + sql
+
+            //tab + "ALTER TABLE " + table.tableName + " ADD " + t
             tab + "END"
             "" |]
         |> w.multiLine
 
-        [|  "UPDATE " + table.tableName + " SET [" + fname + "]='' WHERE ([" + fname + "] IS NULL)"
-            ""
+        [|  ""
             "IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_" + fullname + "')"
             tab + "BEGIN"
             tab + "ALTER TABLE Ca_Staff DROP  CONSTRAINT [Constraint_" + fullname + "]"
