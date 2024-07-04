@@ -25,12 +25,6 @@ type ProgrammingLang =
 | TypeScript
 | SQL
 
-type Rdbms = 
-| NotAvailable
-| SqlServer
-| MySql
-| PostgreSql
-
 type FieldDef =
 | FK of Table
 | Caption of int

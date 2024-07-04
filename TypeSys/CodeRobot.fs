@@ -30,6 +30,7 @@ open TypeSys.CodeRobotIITs
 
 type RobotConfig = {
 ns: string
+rdbms: Rdbms
 dbName: string
 conn: string
 mainDir: string
