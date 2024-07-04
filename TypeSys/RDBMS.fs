@@ -139,7 +139,7 @@ let checkNotIn tname fns =
             (fns |> Array.map(fun i -> "'" + i + "'") |> String.concat ",")
             "))" |]
     | Rdbms.PostgreSql -> 
-        [|  "SELECT column_name FROM nformation_schema.columns WHERE table_name='"
+        [|  "SELECT column_name FROM information_schema.columns WHERE table_name='"
             tname
             "' AND (column_name NOT IN ("
             (fns |> Array.map(fun i -> "'" + i + "'") |> String.concat ",")
@@ -185,13 +185,19 @@ let tableDropUndefinedColumns rdbms (w:TextBlockWriter) tname fns =
 
 let tableProcessColumn rdbms (w:TextBlockWriter) tname f = 
 
+    let sort,fname,def,json = f
+
+    let t = sqlField rdbms f
+
+    let fullname = tname + fname
+
+    [|  ""
+        "-- [" + tname + "." + fname + "] -------------"
+        "" |]
+    |> w.multiLine
+
     match rdbms with
     | Rdbms.SqlServer -> 
-        let sort,fname,def,json = f
-
-        let t = sqlField rdbms f
-
-        let fullname = tname + fname
 
         let sql = "@sql_add_" + tname + "_" + fname
 
@@ -218,7 +224,7 @@ let tableProcessColumn rdbms (w:TextBlockWriter) tname f =
         [|  ""
             "IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_" + fullname + "')"
             tab + "BEGIN"
-            tab + "ALTER TABLE Ca_Staff DROP  CONSTRAINT [Constraint_" + fullname + "]"
+            tab + "ALTER TABLE " + tname + " DROP  CONSTRAINT [Constraint_" + fullname + "]"
             tab + "END"
             "" |]
         |> w.multiLine
@@ -236,7 +242,24 @@ let tableProcessColumn rdbms (w:TextBlockWriter) tname f =
 
         //let s = " ALTER TABLE " + transobj.name + " DROP  CONSTRAINT [Constraint_" + fullname + "]" + crlf
         //sb.Append(" ALTER TABLE " + transobj.name + " DROP  CONSTRAINT [Constraint_" + fullname + "]" + crlf) |> ignore
-    | Rdbms.PostgreSql -> ()
+
+    | Rdbms.PostgreSql -> 
+
+        [|  ""
+            "DO $$"
+            "DECLARE"
+            "    condition boolean;"
+            "BEGIN"
+            "    condition := (SELECT EXISTS(SELECT column_name FROM information_schema.columns WHERE table_name='" + tname + "' AND column_name='" + fname + "'));"
+            ""
+            "    IF condition THEN"
+            "        RAISE NOTICE '" + fname + " exists.';"
+            "    ELSE"
+            "        ALTER TABLE " + tname + " ADD " + t + ";"
+            "    END IF;"
+            "END $$;" |]
+        |> w.multiLine
+
 
 let table__sql rdbms (w:TextBlockWriter) table = 
 
