@@ -184,7 +184,8 @@ let load robot =
 
         let dict = Util.Json.json__items item
 
-        let name = dict.["name"]
+        let name = 
+            dict.["name"]
 
         let t = {
             tableName = name

@@ -70,16 +70,7 @@ let field__existence tname fname =
 let table__fieldnames tname = "SELECT [name] FROM SYSCOLUMNS WHERE id=object_id('" + tname + "')"
 let table__fieldnamesCount tname = "SELECT COUNT(*) FROM SYSCOLUMNS WHERE id=object_id('" + tname + "')"
 
-let table__sql rdbms (w:TextBlockWriter) table = 
-
-    let tname = 
-        match rdbms with
-        | Rdbms.PostgreSql -> table.tableName.ToLower()
-        | _ -> table.tableName
-
-
-    "-- [" + tname + "] ----------------------"
-    |> w.newline
+let tableCheckExistOrCreate rdbms (w:TextBlockWriter) table tname = 
 
     match rdbms with
     | Rdbms.SqlServer -> 
@@ -138,61 +129,64 @@ let table__sql rdbms (w:TextBlockWriter) table =
             "END $$;" |]
         |> w.multiLine
 
-
-
-    let fns = 
-        [|  [|  "ID"; "Createdat"; "Updatedat"; "Sort" |]
-            table.fields.Values
-            |> Seq.toArray
-            |> Array.map(fun f ->
-                let sort,fname,def,json = f
-                fname) |]
-        |> Array.concat
-
-    let checkNotIn = 
+let checkNotIn tname fns = 
+    match rdbms with
+    | Rdbms.SqlServer -> 
         [|  "SELECT name FROM SYSCOLUMNS WHERE id=object_id('"
             tname
             "') "
             "AND (name NOT IN ("
             (fns |> Array.map(fun i -> "'" + i + "'") |> String.concat ",")
             "))" |]
-        |> String.Concat
+    | Rdbms.PostgreSql -> 
+        [|  "SELECT column_name FROM nformation_schema.columns WHERE table_name='"
+            tname
+            "' AND (column_name NOT IN ("
+            (fns |> Array.map(fun i -> "'" + i + "'") |> String.concat ",")
+            "))" |]
+    |> String.Concat
 
-    let fn = "@name_" + tname
-    let cursor = "cursor_" + tname
-    let sql = "@sql_" + tname
+let tableDropUndefinedColumns rdbms (w:TextBlockWriter) tname fns = 
 
-    [|  ""
-        "-- Dropping obsolete fields -----------"
-        "DECLARE " + fn + " NVARCHAR(64)"
-        "DECLARE " + cursor + " CURSOR FOR "
-        tab + checkNotIn
-        ""
-        "OPEN " + cursor
-        "FETCH NEXT FROM " + cursor + " INTO " + fn
-        ""
-        "WHILE @@FETCH_STATUS = 0"
-        "BEGIN"
-        tab + "PRINT 'Dropping " + tname + ".' + " + fn + ";"
-        tab + ""
-        tab + "DECLARE " + sql + " NVARCHAR(MAX);"
-        tab + "SET " + sql + " = 'ALTER TABLE " + tname + " DROP COLUMN ' + QUOTENAME(" + fn + ")"
-        tab + "EXEC sp_executesql " + sql
-        tab + ""
-        //tab + "ALTER TABLE " + tname + " DROP COLUMN " + fn + ""
-        tab + ""
-        tab + "FETCH NEXT FROM " + cursor + " INTO " + fn
-        "END"
-        ""
-        "CLOSE " + cursor + ";"
-        "DEALLOCATE " + cursor + ";" 
-        "" |]
+    match rdbms with
+    | Rdbms.SqlServer -> 
+        let fn = "@name_" + tname
+        let cursor = "cursor_" + tname
+        let sql = "@sql_" + tname
+
+        [|  ""
+            "-- Dropping obsolete fields -----------"
+            "DECLARE " + fn + " NVARCHAR(64)"
+            "DECLARE " + cursor + " CURSOR FOR "
+            tab + (checkNotIn tname fns)
+            ""
+            "OPEN " + cursor
+            "FETCH NEXT FROM " + cursor + " INTO " + fn
+            ""
+            "WHILE @@FETCH_STATUS = 0"
+            "BEGIN"
+            tab + "PRINT 'Dropping " + tname + ".' + " + fn + ";"
+            tab + ""
+            tab + "DECLARE " + sql + " NVARCHAR(MAX);"
+            tab + "SET " + sql + " = 'ALTER TABLE " + tname + " DROP COLUMN ' + QUOTENAME(" + fn + ")"
+            tab + "EXEC sp_executesql " + sql
+            tab + ""
+            //tab + "ALTER TABLE " + tname + " DROP COLUMN " + fn + ""
+            tab + ""
+            tab + "FETCH NEXT FROM " + cursor + " INTO " + fn
+            "END"
+            ""
+            "CLOSE " + cursor + ";"
+            "DEALLOCATE " + cursor + ";" 
+            "" |]
+    | Rdbms.PostgreSql -> 
+        [|  "" |]
     |> w.multiLine
 
-    table.fields.Values
-    |> Seq.toArray
-    |> Array.iter(fun f ->
+let tableProcessColumn rdbms (w:TextBlockWriter) tname f = 
 
+    match rdbms with
+    | Rdbms.SqlServer -> 
         let sort,fname,def,json = f
 
         let t = sqlField rdbms f
@@ -242,8 +236,36 @@ let table__sql rdbms (w:TextBlockWriter) table =
 
         //let s = " ALTER TABLE " + transobj.name + " DROP  CONSTRAINT [Constraint_" + fullname + "]" + crlf
         //sb.Append(" ALTER TABLE " + transobj.name + " DROP  CONSTRAINT [Constraint_" + fullname + "]" + crlf) |> ignore
+    | Rdbms.PostgreSql -> ()
 
-        ())
+let table__sql rdbms (w:TextBlockWriter) table = 
+
+    let tname = 
+        match rdbms with
+        | Rdbms.PostgreSql -> table.tableName.ToLower()
+        | _ -> table.tableName
+
+    "-- [" + tname + "] ----------------------"
+    |> w.newline
+
+    tableCheckExistOrCreate rdbms w table tname
+
+    let fns = 
+        [|  [|  "ID"; "Createdat"; "Updatedat"; "Sort" |]
+            table.fields.Values
+            |> Seq.toArray
+            |> Array.map(fun f ->
+                let sort,fname,def,json = f
+                match rdbms with
+                | Rdbms.SqlServer -> fname
+                | Rdbms.PostgreSql -> fname.ToLower()) |]
+        |> Array.concat
+
+    tableDropUndefinedColumns rdbms w tname fns
+
+    table.fields.Values
+    |> Seq.toArray
+    |> Array.iter(tableProcessColumn rdbms w tname)
 
 let updateDatabase output rdbms (conn:string) tables = 
 
