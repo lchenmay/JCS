@@ -28,14 +28,6 @@ open TypeSys.LangPackTypeScript
 open TypeSys.CodeRobotIIFs
 open TypeSys.CodeRobotIITs
 
-type RobotConfig = {
-ns: string
-rdbms: Rdbms
-dbName: string
-conn: string
-mainDir: string
-JsDir: string }
-
 type Robot = {
 srcs: Src[]
 sql: Src
@@ -562,16 +554,17 @@ let buildTableMor om (t:Table) (fieldNames:string[],fields) =
     "p" |> om.w.newlineIndent 1
 
     om.w.newlineBlank()
-    "let p" + t.typeName + "__sps (p:p" + t.typeName + ") = [|" |> om.w.newline
+    "let p" + t.typeName + "__sps (p:p" + t.typeName + ") =" |> om.w.newline
+    "[|" |> om.w.newlineIndent 1
     fieldNames
     |> Array.iter(fun i -> 
         let sort,name,def,json = t.fields[i]
-        "new SqlParameter(\"" + name + "\", " |> om.w.newlineIndent 1
+        "(\"" + name + "\", " |> om.w.newlineIndent 2
         match def with
         | FieldDef.Timestamp -> "p." + name + ".Ticks"
         | _ -> "p." + name 
         |> om.w.appendEnd
-        ")" |> om.w.appendEnd)
+        ") |> kvp__sqlparam" |> om.w.appendEnd)
     " |]" |> om.w.appendEnd
 
     om.w.newlineBlank()
@@ -920,12 +913,18 @@ let go output config =
     let srcs,sql,ot,otTypeScript,om,omTypeScript,cm,typeTypeScript,cmTypeScript =
         robot__srcs robot
 
-    [|  "USE [" + config.dbName + "]"
-        "" |]
+    match config.rdbms with
+    | Rdbms.SqlServer -> 
+        [|  "USE [" + config.dbName + "]"
+            "" |]
+    | _ -> 
+    //| Rdbms.PostgreSql -> 
+        [|  //"SET search_path TO " + config.dbName
+            "" |]
     |> sql.w.multiLine
 
     tables
-    |> Array.iter (table__sql sql.w)
+    |> Array.iter (table__sql config.rdbms sql.w)
 
     [|  "// OrmMor.ts"
         "import { BytesBuilder } from \"~/lib/util/bin\""
@@ -960,6 +959,14 @@ let go output config =
         "open " + config.ns + ".Types"
         "open " + config.ns + ".OrmMor" |]
     |> fSharpHeader cm (config.ns + ".CustomMor")
+
+    let rdbms = 
+        match config.rdbms with
+        | Rdbms.SqlServer -> "rdbms <- Rdbms.SqlServer" 
+        | Rdbms.PostgreSql -> "rdbms <- Rdbms.PostgreSql" 
+
+    [|  ""; rdbms; ""; "" |]
+    |> ot.w.multiLine
 
     let sorted = tc |> tc__sorted
 

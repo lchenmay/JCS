@@ -23,6 +23,15 @@ open Util.Orm
 open TypeSys.MetaType
 
 
+type RobotConfig = {
+ns: string
+rdbms: Rdbms
+dbName: string
+conn: string
+mainDir: string
+JsDir: string }
+
+
 type Src = {
 lang: ProgrammingLang
 buffer: List<string>

@@ -18,27 +18,46 @@ open Util.Collection
 open TypeSys.MetaType
 open TypeSys.Common
 
-let sqlField f =
+let sqlField rdbms f =
     let sort,fname,def,json = f
 
     let n = fname
 
-    let s = 
-        match def with
-        | FieldDef.FK v -> "BIGINT"
-        | FieldDef.Caption length -> "NVARCHAR(" + length.ToString() + ") COLLATE Chinese_PRC_CI_AS"
-        | FieldDef.Chars length -> "NVARCHAR(" + length.ToString() + ") COLLATE Chinese_PRC_CI_AS"
-        | FieldDef.Link length -> "NVARCHAR(" + length.ToString() + ") COLLATE Chinese_PRC_CI_AS"
-        | FieldDef.Text -> "NVARCHAR(MAX)"
-        | FieldDef.Timestamp
-        | FieldDef.Integer -> "BIGINT"
-        | FieldDef.Float -> "FLOAT"
-        | FieldDef.Boolean -> "BIT"
-        | FieldDef.SelectLines v -> "INT"
-        | FieldDef.TimeSeries -> "VARBINARY(MAX)"
-        | _ -> ""
+    match rdbms with
+    | Rdbms.SqlServer -> 
+        let s = 
+            match def with
+            | FieldDef.FK v -> "BIGINT"
+            | FieldDef.Caption length -> "NVARCHAR(" + length.ToString() + ") COLLATE Chinese_PRC_CI_AS"
+            | FieldDef.Chars length -> "NVARCHAR(" + length.ToString() + ") COLLATE Chinese_PRC_CI_AS"
+            | FieldDef.Link length -> "NVARCHAR(" + length.ToString() + ") COLLATE Chinese_PRC_CI_AS"
+            | FieldDef.Text -> "NVARCHAR(MAX)"
+            | FieldDef.Timestamp
+            | FieldDef.Integer -> "BIGINT"
+            | FieldDef.Float -> "FLOAT"
+            | FieldDef.Boolean -> "BIT"
+            | FieldDef.SelectLines v -> "INT"
+            | FieldDef.TimeSeries -> "VARBINARY(MAX)"
+            | _ -> ""
+        "[" + n + "] " + s
 
-    "[" + n + "] " + s
+    | Rdbms.PostgreSql -> 
+        let s = 
+            match def with
+            | FieldDef.FK v -> "BIGINT"
+            | FieldDef.Caption length -> "VARCHAR(" + length.ToString() + ")"
+            | FieldDef.Chars length -> "VARCHAR(" + length.ToString() + ")"
+            | FieldDef.Link length -> "VARCHAR(" + length.ToString() + ")"
+            | FieldDef.Text -> "TEXT"
+            | FieldDef.Timestamp
+            | FieldDef.Integer -> "BIGINT"
+            | FieldDef.Float -> "FLOAT"
+            | FieldDef.Boolean -> "BIT"
+            | FieldDef.SelectLines v -> "INT"
+            | FieldDef.TimeSeries -> "VARBINARY(MAX)"
+            | _ -> ""
+
+        n + " " + s
 
 let field__existence tname fname = 
     [|  "SELECT * FROM SYSCOLUMNS WHERE id=object_id('"
@@ -51,31 +70,75 @@ let field__existence tname fname =
 let table__fieldnames tname = "SELECT [name] FROM SYSCOLUMNS WHERE id=object_id('" + tname + "')"
 let table__fieldnamesCount tname = "SELECT COUNT(*) FROM SYSCOLUMNS WHERE id=object_id('" + tname + "')"
 
-let table__sql (w:TextBlockWriter) table = 
+let table__sql rdbms (w:TextBlockWriter) table = 
 
-    "-- [" + table.tableName + "] ----------------------"
+    let tname = 
+        match rdbms with
+        | Rdbms.PostgreSql -> table.tableName.ToLower()
+        | _ -> table.tableName
+
+
+    "-- [" + tname + "] ----------------------"
     |> w.newline
 
-    [|  ""
-        "IF NOT EXISTS(SELECT * FROM sysobjects WHERE [name]='" + table.tableName + "' AND xtype='U')" + crlf
-        "BEGIN" + crlf
-        tab + "CREATE TABLE " + table.tableName + " ([ID] BIGINT NOT NULL"
-        tab + tab + ",[Createdat] BIGINT NOT NULL"
-        tab + tab + ",[Updatedat] BIGINT NOT NULL"
-        tab + tab + ",[Sort] BIGINT NOT NULL,"
-        tab + tab + "" |]
-    |> w.multiLine
+    match rdbms with
+    | Rdbms.SqlServer -> 
 
-    table.fields.Values
-    |> Seq.toArray
-    |> Array.map sqlField
-    |> String.concat(crlf + tab + tab + ",")
-    |> w.appendEnd
+        [|  ""
+            "IF NOT EXISTS(SELECT * FROM sysobjects WHERE [name]='" + tname + "' AND xtype='U')" + crlf
+            "BEGIN" + crlf
+            tab + "CREATE TABLE " + tname + " ([ID] BIGINT NOT NULL"
+            tab + tab + ",[Createdat] BIGINT NOT NULL"
+            tab + tab + ",[Updatedat] BIGINT NOT NULL"
+            tab + tab + ",[Sort] BIGINT NOT NULL,"
+            tab + tab + "" |]
+        |> w.multiLine
 
-    [|  ", CONSTRAINT [PK_" + table.tableName + "] PRIMARY KEY CLUSTERED ([ID] ASC)) ON [PRIMARY]"
-        "END"
-        "" |]
-    |> w.multiLine  
+        table.fields.Values
+        |> Seq.toArray
+        |> Array.map (sqlField rdbms)
+        |> String.concat(crlf + tab + tab + ",")
+        |> w.appendEnd
+
+        [|  ", CONSTRAINT [PK_" + tname + "] PRIMARY KEY CLUSTERED ([ID] ASC)) ON [PRIMARY]"
+            "END"
+            "" |]
+        |> w.multiLine  
+
+    | Rdbms.PostgreSql -> 
+        [|  ""
+            "DO $$"
+            "DECLARE"
+            "    condition boolean;"
+            "BEGIN"
+            "    condition := (SELECT EXISTS(SELECT * FROM information_schema.tables WHERE table_name = '" + tname + "'));"
+            ""
+            "    IF condition THEN"
+            "        RAISE NOTICE '" + tname + " exists.';"
+            "    ELSE"
+            ""
+            "    CREATE TABLE " + tname + " (ID BIGINT NOT NULL"
+            "        ,Createdat BIGINT NOT NULL"
+            "        ,Updatedat BIGINT NOT NULL"
+            "        ,Sort BIGINT NOT NULL"
+            "        ," |]
+        |> w.multiLine
+
+
+        table.fields.Values
+        |> Seq.toArray
+        |> Array.map (sqlField rdbms)
+        |> String.concat(crlf + tab + tab + ",")
+        |> w.appendEnd
+
+        ");" |> w.appendEnd
+
+        [|  ""
+            "   END IF;"
+            "END $$;" |]
+        |> w.multiLine
+
+
 
     let fns = 
         [|  [|  "ID"; "Createdat"; "Updatedat"; "Sort" |]
@@ -88,16 +151,16 @@ let table__sql (w:TextBlockWriter) table =
 
     let checkNotIn = 
         [|  "SELECT name FROM SYSCOLUMNS WHERE id=object_id('"
-            table.tableName
+            tname
             "') "
             "AND (name NOT IN ("
             (fns |> Array.map(fun i -> "'" + i + "'") |> String.concat ",")
             "))" |]
         |> String.Concat
 
-    let fn = "@name_" + table.tableName
-    let cursor = "cursor_" + table.tableName
-    let sql = "@sql_" + table.tableName
+    let fn = "@name_" + tname
+    let cursor = "cursor_" + tname
+    let sql = "@sql_" + tname
 
     [|  ""
         "-- Dropping obsolete fields -----------"
@@ -110,13 +173,13 @@ let table__sql (w:TextBlockWriter) table =
         ""
         "WHILE @@FETCH_STATUS = 0"
         "BEGIN"
-        tab + "PRINT 'Dropping " + table.tableName + ".' + " + fn + ";"
+        tab + "PRINT 'Dropping " + tname + ".' + " + fn + ";"
         tab + ""
         tab + "DECLARE " + sql + " NVARCHAR(MAX);"
-        tab + "SET " + sql + " = 'ALTER TABLE " + table.tableName + " DROP COLUMN ' + QUOTENAME(" + fn + ")"
+        tab + "SET " + sql + " = 'ALTER TABLE " + tname + " DROP COLUMN ' + QUOTENAME(" + fn + ")"
         tab + "EXEC sp_executesql " + sql
         tab + ""
-        //tab + "ALTER TABLE " + table.tableName + " DROP COLUMN " + fn + ""
+        //tab + "ALTER TABLE " + tname + " DROP COLUMN " + fn + ""
         tab + ""
         tab + "FETCH NEXT FROM " + cursor + " INTO " + fn
         "END"
@@ -132,28 +195,28 @@ let table__sql (w:TextBlockWriter) table =
 
         let sort,fname,def,json = f
 
-        let t = sqlField f
+        let t = sqlField rdbms f
 
-        let fullname = table.tableName + fname
+        let fullname = tname + fname
 
-        let sql = "@sql_add_" + table.tableName + "_" + fname
+        let sql = "@sql_add_" + tname + "_" + fname
 
         [|  ""
-            "-- [" + table.tableName + "." + fname + "] -------------"
+            "-- [" + tname + "." + fname + "] -------------"
             ""
-            "IF EXISTS(" + (field__existence table.tableName fname) + ")"
+            "IF EXISTS(" + (field__existence tname fname) + ")"
             tab + "BEGIN"
-            tab + " ALTER TABLE " + table.tableName + " ALTER COLUMN " + t
-            //tab + "UPDATE " + table.tableName + " SET [" + fname + "]='' WHERE ([" + fname + "] IS NULL)"
+            tab + " ALTER TABLE " + tname + " ALTER COLUMN " + t
+            //tab + "UPDATE " + tname + " SET [" + fname + "]='' WHERE ([" + fname + "] IS NULL)"
             tab + "END"
             "ELSE"
             tab + "BEGIN"
 
             tab + "DECLARE " + sql + " NVARCHAR(MAX);"
-            tab + "SET " + sql + " = 'ALTER TABLE " + table.tableName + " ADD " + t + "'"
+            tab + "SET " + sql + " = 'ALTER TABLE " + tname + " ADD " + t + "'"
             tab + "EXEC sp_executesql " + sql
 
-            //tab + "ALTER TABLE " + table.tableName + " ADD " + t
+            //tab + "ALTER TABLE " + tname + " ADD " + t
             tab + "END"
             "" |]
         |> w.multiLine
@@ -173,7 +236,7 @@ let table__sql (w:TextBlockWriter) table =
             //""
             "IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_" + fullname + "')"
             tab + "BEGIN"
-            tab + "ALTER TABLE " + table.tableName + " DROP  CONSTRAINT [UniqueNonclustered_" + fullname + "]"
+            tab + "ALTER TABLE " + tname + " DROP  CONSTRAINT [UniqueNonclustered_" + fullname + "]"
             tab + "END" |]
         |> w.multiLine
 
@@ -220,7 +283,7 @@ let updateDatabase output rdbms (conn:string) tables =
                         table 
                         |> table__fieldKeys
                         |> Array.map(fun i -> table.fields[i])
-                        |> Array.map sqlField
+                        |> Array.map (sqlField rdbms)
                         |> String.concat ","
                         |> sb.Append
                         |> ignore
@@ -270,7 +333,7 @@ let updateDatabase output rdbms (conn:string) tables =
 
                             let s = 
                                 table.fields[f]
-                                |> sqlField
+                                |> (sqlField rdbms)
 
                             [|  " ALTER TABLE "
                                 table.tableName
@@ -298,7 +361,7 @@ let updateDatabase output rdbms (conn:string) tables =
 
             table.fields.Values
             |> Seq.toArray
-            |> Array.map sqlField
+            |> Array.map (sqlField rdbms)
             |> String.concat(",")
             |> sb.Append
             |> ignore
