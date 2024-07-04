@@ -4,13 +4,41 @@ open System
 
 open TypeSys.CodeRobot
 
+open Npgsql
+
 Console.OutputEncoding <- System.Text.Encoding.Unicode
 let output (s:string) = Console.WriteLine s
 
 @"C:\Dev\JCS\BizShared\Types.fs"
 |> TypeSys.FSharp.go output
 
-let target = 0
+
+(fun _ -> 
+
+    let pwd = "jjsjd2VSd$"
+
+    let connStr =
+        [|  "Host=localhost"
+            ";Username=postgres"
+            ";Password=" + pwd
+            ";Database=CTC" |]
+        |> String.Concat
+
+    let conn = new NpgsqlConnection(connStr)
+
+    try
+        conn.Open()
+    with
+    | ex -> 
+        let s = ex.ToString()
+        ()
+    
+    ()) ()
+
+
+
+
+let target = 1
 
 match target with
 | 0 -> 

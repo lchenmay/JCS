@@ -18,12 +18,6 @@ open Util.Collection
 open TypeSys.MetaType
 open TypeSys.Common
 
-type Rdbms = 
-| NotAvailable
-| SqlServer
-| MySql
-| PostgreSql
-
 let sqlField f =
     let sort,fname,def,json = f
 
