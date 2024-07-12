@@ -1,8 +1,6 @@
 import { glib } from '~/lib/glib'
 import { watch } from 'vue'
 
-export const projectname = 'jcs'
-export const domainname = 'jcatsys.com'
 
 export const loadLS = (key: string, defaultv: string = '{}') => {
   const v = window.localStorage.getItem(key)
@@ -24,7 +22,7 @@ export const is_local = () => {
   return ["localhost"].includes(window.location.hostname)
 }
 export const is_domainname = () => {
-  return [domainname].includes(window.location.hostname)
+  return [global.jcs.domainname].includes(window.location.hostname)
 }
 
 export const initRT = (): RT => {

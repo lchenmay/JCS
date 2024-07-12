@@ -5,9 +5,7 @@ declare global {
     }
   }
   namespace globalThis {
-    var rtxx: gchainRT | ctcRT | RT
-    var gchainRt: gchainRT
-    var ctcRt: ctcRT
+    var rtxx: RT
     var panelrt: {showpanel:boolean}
   }
 
@@ -27,12 +25,6 @@ declare global {
 
     [key:string]: any
   }
-  export interface gchainRT extends RT  {
-    user: gchain.EuComplex
-  } 
-  export interface ctcRT extends RT {
-    user: ctc.EuComplex
-  } 
 
   export type WsCtx = {
     ws: WebSocket

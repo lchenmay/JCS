@@ -27,6 +27,7 @@ type RobotConfig = {
 ns: string
 rdbms: Rdbms
 dbName: string
+donmainName: string
 conn: string
 mainDir: string
 JsDir: string }

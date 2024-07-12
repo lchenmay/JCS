@@ -832,7 +832,6 @@ let buildCustomTypes config tc src srcTypeScript (cTypes:Dictionary<string,Type>
     [|  "declare global {"
         ""
         "namespace " + config.dbName.ToLower() + " {"
-        ""
         "" |]
     |> src.w.multiLine
 
@@ -945,6 +944,9 @@ let go output config =
     [|  "declare global {"
         ""
         "namespace " + config.dbName.ToLower() + " {"
+        ""
+        "export const projectname = '" + config.dbName.ToLower() + "'"
+        "export const domainname = '" + config.donmainName.ToLower() + "'"
         "" |]
     |> otTypeScript.w.multiLine
     

@@ -2,6 +2,9 @@ declare global {
 
 namespace jcs {
 
+export const projectname = 'jcs'
+export const domainname = 'jcatsys.com'
+
 // [Ca_Address] (ADDRESS)
 
 const addressTypeEnum_Default = 0 // 默认

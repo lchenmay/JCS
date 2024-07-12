@@ -22,6 +22,7 @@ match target with
     {   ns = "Shared"
         rdbms = Rdbms.PostgreSql
         dbName = "CTC"
+        donmainName = "cpto.cc"
         conn = 
             [|  "Host=localhost"
                 ";Username=postgres"
@@ -34,6 +35,7 @@ match target with
     {   ns = "Shared"
         rdbms = Rdbms.SqlServer
         dbName = "CTC"
+        donmainName = "cpto.cc"
         conn = "server=127.0.0.1; user=sa; database=CTC"
         mainDir = @"C:\Dev\GCHAIN2024\CrypTradeClubVsOpen\Shared"
         JsDir = @"C:\Dev\GCHAIN2024\VsCodeOpen\src\lib\shared\ctc" }
@@ -41,6 +43,7 @@ match target with
     {   ns = "Shared"
         rdbms = Rdbms.PostgreSql
         dbName = "JCS"
+        donmainName = "jcatsys.com"
         conn = 
             [|  "Host=localhost"
                 ";Username=postgres"
@@ -53,6 +56,7 @@ match target with
     {   ns = "Shared"
         rdbms = Rdbms.SqlServer
         dbName = "GCHAIN"
+        donmainName = "gcha.in"
         conn = "server=127.0.0.1; user=sa; database=GCHAIN"
         mainDir = @"C:\Dev\GCHAIN2024\GChainVsOpen\Shared"
         JsDir = @"C:\Dev\GCHAIN2024\VsCodeOpen\src\lib\shared\gchain" }
@@ -60,6 +64,7 @@ match target with
     {   ns = "BizType"
         rdbms = Rdbms.SqlServer
         dbName = "Personal"
+        donmainName = "sdchen.xyz"
         conn = "server=127.0.0.1; user=sa; database=Personal"
         mainDir = @"C:\Dev\Personal\VisualStudio\BizType"
         JsDir = @"C:\Dev\Personal\VSCode\src" }
@@ -67,6 +72,7 @@ match target with
     {   ns = "BizShared"
         rdbms = Rdbms.SqlServer
         dbName = ""
+        donmainName = "jcatsys.com"
         conn = ""
         mainDir = @"C:\Dev\JCS\BizShared"
         JsDir = @"C:\Dev\JCS\BizShared" }
