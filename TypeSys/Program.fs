@@ -13,33 +13,42 @@ let output (s:string) = Console.WriteLine s
 |> TypeSys.FSharp.go output
 
 
-let postgresqlconn = 
+let pwd = "jjsjd2VSd$"
 
-    let db = "CTC"
-    let pwd = "jjsjd2VSd$"
-
-    [|  "Host=localhost"
-        ";Username=postgres"
-        ";Password=" + pwd
-        ";Database=" + db |]
-    |> String.Concat
-
-let target = 0
+let target = 6
 
 match target with
 | 0 -> 
     {   ns = "Shared"
         rdbms = Rdbms.PostgreSql
         dbName = "CTC"
-        conn = postgresqlconn
+        conn = 
+            [|  "Host=localhost"
+                ";Username=postgres"
+                ";Password=" + pwd
+                ";Database=CTC" |]
+            |> String.Concat
         mainDir = @"C:\Dev\GCHAIN2024\CrypTradeClubVsOpen\Shared"
         JsDir = @"C:\Dev\GCHAIN2024\VsCodeOpen\src\lib\shared\ctc" }
-    //{   ns = "Shared"
-    //    rdbms = Rdbms.SqlServer
-    //    dbName = "CTC"
-    //    conn = "server=127.0.0.1; user=sa; database=CTC"
-    //    mainDir = @"C:\Dev\GCHAIN2024\CrypTradeClubVsOpen\Shared"
-    //    JsDir = @"C:\Dev\GCHAIN2024\VsCodeOpen\src\lib\shared\ctc" }
+| 5 ->
+    {   ns = "Shared"
+        rdbms = Rdbms.SqlServer
+        dbName = "CTC"
+        conn = "server=127.0.0.1; user=sa; database=CTC"
+        mainDir = @"C:\Dev\GCHAIN2024\CrypTradeClubVsOpen\Shared"
+        JsDir = @"C:\Dev\GCHAIN2024\VsCodeOpen\src\lib\shared\ctc" }
+| 6 ->
+    {   ns = "Shared"
+        rdbms = Rdbms.PostgreSql
+        dbName = "JCS"
+        conn = 
+            [|  "Host=localhost"
+                ";Username=postgres"
+                ";Password=" + pwd
+                ";Database=JCS" |]
+            |> String.Concat
+        mainDir = @"C:\Dev\JCS\Shared"
+        JsDir = @"C:\Dev\JCS\vscode\src\lib\shared" }
 | 1 -> 
     {   ns = "Shared"
         rdbms = Rdbms.SqlServer

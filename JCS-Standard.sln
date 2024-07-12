@@ -14,9 +14,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "BizShared", "BizShared\BizShared.fsproj", "{845E3D70-CB08-4E55-B19D-F7654363139A}"
-EndProject
-Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "AioServer", "AioServer\AioServer.fsproj", "{8C2E40F8-155D-4237-9A42-810138E0B280}"
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Shared", "Shared\Shared.fsproj", "{C82FD9A3-8C96-487E-AE4B-F4E3F7A48166}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -32,14 +30,10 @@ Global
 		{D84F6A26-A6C9-456D-BAD0-39E89CA887B2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D84F6A26-A6C9-456D-BAD0-39E89CA887B2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D84F6A26-A6C9-456D-BAD0-39E89CA887B2}.Release|Any CPU.Build.0 = Release|Any CPU
-		{845E3D70-CB08-4E55-B19D-F7654363139A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{845E3D70-CB08-4E55-B19D-F7654363139A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{845E3D70-CB08-4E55-B19D-F7654363139A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{845E3D70-CB08-4E55-B19D-F7654363139A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{8C2E40F8-155D-4237-9A42-810138E0B280}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8C2E40F8-155D-4237-9A42-810138E0B280}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8C2E40F8-155D-4237-9A42-810138E0B280}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8C2E40F8-155D-4237-9A42-810138E0B280}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C82FD9A3-8C96-487E-AE4B-F4E3F7A48166}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C82FD9A3-8C96-487E-AE4B-F4E3F7A48166}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C82FD9A3-8C96-487E-AE4B-F4E3F7A48166}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C82FD9A3-8C96-487E-AE4B-F4E3F7A48166}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

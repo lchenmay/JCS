@@ -1,0 +1,28 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="Design.json" />
+    <Content Include="Design-Ca.json" />
+    <Compile Include="PreOrm.fs" />
+    <Compile Include="OrmTypes.fs" />
+    <Compile Include="Types.fs" />
+    <Compile Include="OrmMor.fs" />
+    <Compile Include="CustomMor.fs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="OrmTypes.sql">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Common\Util\Util.fsproj" />
+  </ItemGroup>
+
+</Project>
