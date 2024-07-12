@@ -20,13 +20,11 @@ declare global {
     devmode: boolean
     msgList: NotifyItem[]
 
-
     canvas: {
       canvasRef:HTMLCanvasElement | null
       gl: WebGLRenderingContext | null
     }
 
-    bizList: BIZ[]
     [key:string]: any
   }
   export interface gchainRT extends RT  {

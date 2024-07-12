@@ -24,19 +24,16 @@ const updateRouteb = (originalRoutes: RouteRecordRaw[]) => (routeToUpdate: strin
 
 const updateRoute = updateRouteb(originalRoutes)
 
-
 const initRoutes = (): RouteRecordRaw[] => {
   switch (true) {
-    case runtime.is_gchain():
-      return updateRoute('gchain')
-    case runtime.is_ctc():
-        return updateRoute('ctc')
+    case runtime.is_domainname():
+      return updateRoute(runtime.projectname)
 
     case runtime.is_local():
-      return updateRoute('gchain')
-      //return updateRoute('ctc')
+      return updateRoute(runtime.projectname)
+
     default:
-      return updateRoute('gchain')
+      return updateRoute(runtime.projectname)
   }
 }
 

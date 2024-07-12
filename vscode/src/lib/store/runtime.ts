@@ -1,6 +1,9 @@
 import { glib } from '~/lib/glib'
 import { watch } from 'vue'
 
+export const projectname = 'jcs'
+export const domainname = 'jcatsys.com'
+
 export const loadLS = (key: string, defaultv: string = '{}') => {
   const v = window.localStorage.getItem(key)
   if (v != undefined) {
@@ -20,11 +23,8 @@ export const prstLS = (key: string, value: any) => {
 export const is_local = () => {
   return ["localhost"].includes(window.location.hostname)
 }
-export const is_gchain = () => {
-  return ["gcha.in"].includes(window.location.hostname)
-}
-export const is_ctc = () => {
-  return ["cryptradeclub.com","cpto.cc"].includes(window.location.hostname)
+export const is_domainname = () => {
+  return [domainname].includes(window.location.hostname)
 }
 
 export const initRT = (): RT => {
@@ -35,7 +35,7 @@ export const initRT = (): RT => {
 
     session: loadLS("session", ''),
     user: {
-      eu: glib.Mor.gchain.EU_empty(),
+      eu: glib.Mor.EU_empty(),
       clinks: {}
     },
 
@@ -43,8 +43,7 @@ export const initRT = (): RT => {
 
     devmode: false,
 
-    msgList: [],
-    bizList: []
+    msgList: []
   } as RT
   return s
 }
@@ -81,13 +80,14 @@ const initHost = () => {
 
   switch (host.hostname) {
     case 'localhost':
-      host.hostname = 'gcha.in'
+      //host.hostname = 'https://jcatsys.com/'
+      host.hostname = 'http://127.0.0.1'
       host.api = 'http://localhost'
       host.wsurl = 'wss://localhost/'
       break
     case '127.0.0.1':
       host.hostname = '127.0.0.1'
-      host.api = 'https://cpto.cc'
+      host.api = 'http://127.0.0.1'
       host.wsurl = 'wss://gcha.in'
       break
   }

@@ -15,11 +15,8 @@ import * as panel from '~/lib/mod/panel'
 
 import * as runtime from '~/lib/store/runtime'
 
-import * as cm_gchain from '~/lib/shared/gchain/CustomMor'
-import * as om_gchain from '~/lib/shared/gchain/OrmMor'
-
-import * as cm_ctc from '~/lib/shared/ctc/CustomMor'
-import * as om_ctc from '~/lib/shared/ctc/OrmMor'
+import * as cm from '~/lib/shared/CustomMor'
+import * as om from '~/lib/shared/OrmMor'
 
 export const glib = {
   vue: vue,
@@ -39,8 +36,7 @@ export const glib = {
   runtime: runtime,
 
   Mor: {
-    gchain: { ...cm_gchain, ...om_gchain },
-    ctc: { ...cm_ctc, ...om_ctc },
+    ...cm, ...om
   },
 
   post: fetchs.post,
