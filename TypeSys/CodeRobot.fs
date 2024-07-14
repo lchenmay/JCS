@@ -944,9 +944,6 @@ let go output config =
     [|  "declare global {"
         ""
         "namespace " + config.dbName.ToLower() + " {"
-        ""
-        "export const projectname = '" + config.dbName.ToLower() + "'"
-        "export const domainname = '" + config.donmainName.ToLower() + "'"
         "" |]
     |> otTypeScript.w.multiLine
     

@@ -22,7 +22,7 @@ export const is_local = () => {
   return ["localhost"].includes(window.location.hostname)
 }
 export const is_domainname = () => {
-  return [global.jcs.domainname].includes(window.location.hostname)
+  return [rtxx.host.domainname].includes(window.location.hostname)
 }
 
 export const initRT = (): RT => {

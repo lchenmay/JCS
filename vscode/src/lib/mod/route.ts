@@ -28,13 +28,13 @@ const updateRoute = updateRouteb(originalRoutes)
 const initRoutes = (): RouteRecordRaw[] => {
   switch (true) {
     case runtime.is_domainname():
-      return updateRoute(global.jcs.projectname)
+      return updateRoute(rtxx.host.projectname)
 
     case runtime.is_local():
-      return updateRoute(global.jcs.projectname)
+      return updateRoute(rtxx.host.projectname)
 
     default:
-      return updateRoute(global.jcs.projectname)
+      return updateRoute(rtxx.host.projectname)
   }
 }
 

@@ -14,7 +14,7 @@ declare global {
     wsctx: WsCtx
     router: Router
     session: string
-
+    
     devmode: boolean
     msgList: NotifyItem[]
 
@@ -39,6 +39,8 @@ declare global {
 
   export type Host = {
     hostname: string
+    projectname: string
+    domainname: string
     api: string
     wsurl: string
     discordAPPID: string
