@@ -297,9 +297,9 @@ let updateDatabase output rdbms (conn:string) tables =
     match rdbms with
     | Rdbms.SqlServer ->
 
-        let mutable dbName = conn.ToUpper() |> regex_match(string__regex("(?<=DATABASE=)[^;]+"))
+        let mutable dbName = conn.ToUpper() |> regex_match(str__regex("(?<=DATABASE=)[^;]+"))
         if dbName.Length = 0 then
-            dbName <- conn.ToUpper() |> regex_match(string__regex("(?<=CATALOG=)[^;]+"))
+            dbName <- conn.ToUpper() |> regex_match(str__regex("(?<=CATALOG=)[^;]+"))
                     
         match 
             [|  { text = "USE [" + dbName + "]"; ps = [||] }    |]

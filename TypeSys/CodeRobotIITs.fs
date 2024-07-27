@@ -193,7 +193,7 @@ let rec bin__tImpl ns (w:TextBlockWriter) indent t =
         var |> w.newlineIndent indent
 
     | TypeEnum.Sum items -> 
-        "let v:" + t.name + " = { e:0, val:{} }" |> w.newlineIndent (indent + 1)
+        "let v:" + ns + "." + t.name + " = { e:0, val:{} }" |> w.newlineIndent (indent + 1)
         "v.e = " +  prefix + "bin__int32 (bi)" |> w.newlineIndent (indent + 1)
         "switch (v.e) {" |> w.newlineIndent (indent + 1)
         [| 0 .. items.Length - 1 |]
@@ -332,6 +332,146 @@ and bin__tCall w indent t =
         ") (" |> w.appendEnd
         bin__tCall w (indent + 2) vType
         ")" |> w.appendEnd
+
+let rec t__emptyImpl ns (w:TextBlockWriter) indent t = 
+
+    "export const " + t.name + "_empty = (): " + ns + "." + t.name + " => { " |> w.newline
+    "return {" |> w.newlineIndent 1
+
+    match t.tEnum with
+    | TypeEnum.Primitive -> ()
+    | TypeEnum.Structure items ->
+        items
+        |> Array.iter(fun (name,tt) -> 
+            name + ": " |> w.newlineIndent (indent + 2)
+            t__emptyCall w (indent + 3) tt
+            "," |> w.appendEnd)
+
+    | TypeEnum.Product items -> 
+        let var = productItems__term "rcd" "" "," items 
+        "let " + var + " = rcd" |> w.newlineIndent indent
+        [| 0 .. items.Length - 1 |]
+        |> Array.iter(fun i -> 
+            let tt = items[i]
+            "rcd" + i.ToString() |> w.appendEnd
+            t__emptyCall w (indent + 2) tt)
+        "" |> w.newlineIndent indent
+        var |> w.newlineIndent indent
+
+    | TypeEnum.Sum items -> 
+        "e:0, val:{}" |> w.newlineIndent (indent + 1)
+
+    | TypeEnum.Enum v -> ()
+    | TypeEnum.Orm table ->
+
+        [|  ""
+            "export const bin__p" + t.name + " = (bi:BinIndexed):" + ns + ".p" + t.name + " => {"
+            "" |] 
+        |> w.multiLine
+
+        [|  "let p = p" + t.name + "_empty()" |]
+        |> w.multiLineIndent (indent + 1)
+
+        table
+        |> table__sortedFields
+        |> Array.sortBy(fun i ->
+            let sort,fname,def,json = i
+            sort)
+        |> Array.map (fdef__bint table ProgrammingLang.TypeScript)
+        |> Array.map(fun i -> i.ToArray())
+        |> Array.concat
+        |> Array.iter (w.newlineIndent (indent + 1))
+
+        [|  ""
+            tab + "return p"
+            "}"
+            "" |]
+        |> w.multiLine
+
+        [|  ""; 
+            "export const bin__" + t.name + " = (bi:BinIndexed):" + ns + "." + t.name + " => {" 
+            "" |] 
+        |> w.multiLine
+
+        [|  "let ID = " +  prefix + "bin__int64 (bi)"
+            "let Sort = " +  prefix + "bin__int64 (bi)"
+            "let Createdat = " +  prefix + "bin__DateTime (bi)"
+            "let Updatedat = " +  prefix + "bin__DateTime (bi)"
+            ""
+            "return {" |]
+        |> Array.iter (w.newlineIndent (indent + 1))
+
+        [|  "id: ID,"
+            "sort: Sort,"
+            "createdat: Createdat,"
+            "updatedat: Updatedat,"
+            "p:  bin__p" + t.name + " (bi)" |]
+        |> w.multiLineIndent (indent + 2)
+
+        "}"
+        |> w.newlineIndent (indent + 1)
+
+    | TypeEnum.Option tt -> ()
+    | TypeEnum.List tt -> ()
+    | TypeEnum.Dictionary (kType,vType) -> ()
+
+    "} as " + ns + "." + t.name |> w.newlineIndent 1
+    "}" |> w.newline
+
+and t__emptyCall (w:TextBlockWriter) indent t = 
+    
+    let prefix =
+        if t.custom then
+            ""
+        else
+            prefix
+
+    match t.tEnum with
+    | TypeEnum.Primitive ->
+        match t.name with
+        | "string" -> "\"\""
+        | "float" -> "0.0"
+        | "int" -> "0"
+        | "int64" -> "0"
+        | "Boolean" -> "true"
+        | "DateTime" -> "new Date()"
+        | "Json" -> "bin__Json"
+        | _ -> "bin__" + t.name
+        |> w.appendEnd
+    | TypeEnum.Structure items -> t.name + "_empty()" |> w.appendEnd
+    | TypeEnum.Product items -> 
+        "((bi:BinIndexed) => {" |> w.appendEnd
+        let var = productItems__term "v" "" "," items 
+        [| 0 .. items.Length - 1 |]
+        |> Array.iter(fun i -> 
+            w.newlineBlankIndent (indent + 2)
+            "let v" + i.ToString() + " = " |> w.appendEnd
+            t__emptyCall w (indent + 3) items[i]
+            "(bi)" |> w.appendEnd)
+        "" |> w.newlineIndent indent
+        "return {" |> w.newlineIndent(indent + 2)
+        [| 0 .. items.Length - 1 |]
+        |> Array.map(fun i -> "v" + i.ToString() + ":v" + i.ToString())
+        |> String.concat ","
+        |> w.appendEnd
+        "}})" |> w.appendEnd
+    | TypeEnum.Sum v -> 
+        w.appendEnd prefix
+        "bin__" + t.name |> w.appendEnd
+    | TypeEnum.Enum v -> ()
+    | TypeEnum.Orm table -> 
+        "{ id: 0, sort: 0, createdat: new Date(), updatedat: new Date(), p: " + prefix + "p" + t.name.ToUpper() + "_empty() }" |> w.appendEnd
+    | TypeEnum.Option tt -> 
+        w.appendEnd prefix
+        "bin__Option (" |> w.appendEnd
+        t__emptyCall w (indent + 1) tt
+        ")" |> w.appendEnd
+    | TypeEnum.Ary tt -> 
+        "[]" |> w.appendEnd
+    | TypeEnum.List tt -> 
+        "[]" |> w.appendEnd
+    | TypeEnum.Dictionary (kType,vType) -> 
+        "{}" |> w.appendEnd
 
 let rec t__jsonImpl (w:TextBlockWriter) indent t = 
 

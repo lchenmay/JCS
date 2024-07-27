@@ -247,7 +247,7 @@ let rec str__type tc s =
 
 let parseCustomTypes (lines:string[]) = 
 
-    let rx = string__regex @"(?<=type\s+)\w+"
+    let rx = str__regex @"(?<=type\s+)\w+"
 
     let buffer = new List<string * List<string>>()
 
@@ -283,7 +283,7 @@ let parseCustomTypes (lines:string[]) =
             else
                 TypeEnum.Structure [||]
 
-        let r = string__regex (@"type\s+" + name)
+        let r = str__regex (@"type\s+" + name)
         let head = 
             lines 
             |> Array.findIndex(fun line ->

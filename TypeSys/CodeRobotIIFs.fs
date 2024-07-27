@@ -297,6 +297,92 @@ and bin__tCall w indent t =
         ") v bi" |> w.appendEnd
         "v)" |> w.newlineIndent (indent + 1)
 
+let rec t__emptyImpl (w:TextBlockWriter) indent t = 
+
+    "let " + t.name + "_empty(): " + t.name + " ="
+    |> w.newline
+
+    match t.tEnum with
+    | TypeEnum.Primitive -> ()
+    | TypeEnum.Structure items ->
+        "{" |> w.newlineIndent (indent + 1)
+        items
+        |> Array.iter(fun (name,tt) -> 
+            name + " = " |> w.newlineIndent (indent + 2)
+            (t__emptyCall w (indent + 3) tt))
+        "}" |> w.newlineIndent (indent + 1)
+
+    | TypeEnum.Product items -> 
+        let var = productItems__term "rcd" "" "," items 
+        "let " + var + " = rcd" |> w.newlineIndent indent
+        [| 0 .. items.Length - 1 |]
+        |> Array.iter(fun i -> 
+            let tt = items[i]
+            "rcd" + i.ToString() |> w.appendEnd
+            t__emptyCall w (indent + 2) tt)
+        "" |> w.newlineIndent indent
+        var |> w.newlineIndent indent
+
+    | TypeEnum.Sum items -> 
+        let n,o = items[0]
+        match o with
+        | Some tt -> 
+            t__emptyCall w (indent + 2) tt
+            " bi |> " + t.name + "." + n |> w.appendEnd
+        | None -> t.name + "." + n |> w.appendEnd
+
+    | TypeEnum.Enum v -> ()
+    | TypeEnum.Orm table ->
+        ()
+
+    | TypeEnum.Option tt -> ()
+    | TypeEnum.Ary tt -> ()
+    | TypeEnum.List tt -> ()
+    | TypeEnum.Dictionary (kType,vType) -> ()
+
+and t__emptyCall w indent t = 
+
+    match t.tEnum with
+    | TypeEnum.Primitive ->
+        match t.name with
+        | "string" -> "\"\""
+        | "float" -> "0.0"
+        | "int" -> "0"
+        | "int64" -> "0L"
+        | "Boolean" -> "true"
+        | "DateTime" -> "DateTime.MinValue"
+        | "Json" -> "bin__json"
+        | _ -> "bin__" + t.name
+        |> w.appendEnd
+    | TypeEnum.Structure items -> t.name + "_empty()" |> w.appendEnd
+    | TypeEnum.Product items -> 
+        "(fun bi ->" |> w.appendEnd
+        let var = productItems__term "v" "" "," items 
+        [| 0 .. items.Length - 1 |]
+        |> Array.iter(fun i -> 
+            w.newlineBlankIndent (indent + 2)
+            "let v" + i.ToString() + " = " |> w.appendEnd
+            "bi" |> w.newlineIndent (indent + 3)
+            "|> " |> w.newlineIndent (indent + 3)
+            t__emptyCall w (indent + 3) items[i])
+        "" |> w.newlineIndent indent
+        var |> w.newlineIndent(indent + 2)
+        ")" |> w.appendEnd
+    | TypeEnum.Sum v -> "bin__" + t.name |> w.appendEnd
+    | TypeEnum.Enum v -> ()
+    | TypeEnum.Orm table -> 
+        "{ ID = 0L; Sort = 0L; Createdat = DateTime.MinValue; Updatedat = DateTime.MinValue; p = p" + t.name.ToUpper() + "_empty() }" |> w.appendEnd
+    | TypeEnum.Option tt -> 
+        "bin__Option (" |> w.appendEnd
+        t__emptyCall w (indent + 1) tt
+        ")" |> w.appendEnd
+    | TypeEnum.Ary tt -> 
+        "[| |]" |> w.appendEnd
+    | TypeEnum.List tt -> 
+        "new List<" + tt.name + ">()" |> w.appendEnd
+    | TypeEnum.Dictionary (kType,vType) -> 
+        "new Dictionary<" + kType.name + "," + vType.name + ">()" |> w.appendEnd
+
 let rec t__jsonImpl (w:TextBlockWriter) indent t = 
 
     match t.tEnum with

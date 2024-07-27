@@ -729,13 +729,25 @@ let buildType ns src t =
 
     tbw.newlineBlank()
     "// [" + t.name + "] Structure" |> tbw.newline
+    tbw.newlineBlank()
+
+    match t.tEnum with
+    | TypeEnum.Orm table -> ()
+    | _ -> 
+        match src.lang with
+        | ProgrammingLang.FSharp -> 
+            CodeRobotIIFs.t__emptyImpl tbw 0 t
+        | ProgrammingLang.TypeScript -> 
+            CodeRobotIITs.t__emptyImpl ns tbw 0 t
+        | _ -> ()
 
     match t.tEnum with
     | TypeEnum.Orm table -> ()
     | _ ->
         [|  ""; 
             match src.lang with
-            | ProgrammingLang.FSharp -> "let " + t.name + "__bin (bb:BytesBuilder) (v:" + t.name + ") ="
+            | ProgrammingLang.FSharp -> 
+                "let " + t.name + "__bin (bb:BytesBuilder) (v:" + t.name + ") ="
             | ProgrammingLang.TypeScript -> 
                 //"export const " + t.name + "__bin = (bb:BytesBuilder) => (v:" + t.name + ") => {"
                 "export const " + t.name + "__bin = (bb:BytesBuilder) => (v:any) => {"
@@ -762,7 +774,7 @@ let buildType ns src t =
                 "" |]
         | ProgrammingLang.TypeScript -> 
             [|  ""
-                "export const bin__" + t.name + " = (bi:BinIndexed):" + t.name + " => {"
+                "export const bin__" + t.name + " = (bi:BinIndexed):" + ns + "." + t.name + " => {"
                 "" |]
         | _ -> [| |]
         |> tbw.multiLine
