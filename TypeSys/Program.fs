@@ -15,7 +15,7 @@ let output (s:string) = Console.WriteLine s
 
 let pwd = "jjsjd2VSd$"
 
-let target = 7
+let target = 8
 
 match target with
 | 0 -> 
@@ -60,6 +60,14 @@ match target with
         conn = "server=127.0.0.1; user=sa; database=J7"
         mainDir = @"C:\Dev\J-7\Shared"
         JsDir = @"C:\Dev\J-7\vscode\src\lib\shared" }
+| 8 ->
+    {   ns = "Shared"
+        rdbms = Rdbms.SqlServer
+        dbName = "GenVI"
+        donmainName = ""
+        conn = "server=127.0.0.1; user=sa; database=GenVI"
+        mainDir = @"C:\Dev\DevCoop\GenVI\Shared"
+        JsDir = @"C:\Dev\DevCoop\GenVI\vscode\src\lib\shared" }
 | 1 -> 
     {   ns = "Shared"
         rdbms = Rdbms.SqlServer
