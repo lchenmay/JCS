@@ -38,6 +38,7 @@ let sqlField rdbms f =
             | FieldDef.Boolean -> "BIT"
             | FieldDef.SelectLines v -> "INT"
             | FieldDef.TimeSeries -> "VARBINARY(MAX)"
+            | FieldDef.Bin -> "VARBINARY(MAX)"
             | _ -> ""
         "[" + n + "] " + s
 

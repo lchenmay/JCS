@@ -352,6 +352,8 @@ and t__emptyCall w indent t =
         | "Boolean" -> "true"
         | "DateTime" -> "DateTime.MinValue"
         | "Json" -> "bin__json"
+        | "Stat" -> "Stat_empty()"
+        | "SpotInStat" -> "SpotInStat_empty()"
         | _ -> "bin__" + t.name
         |> w.appendEnd
     | TypeEnum.Structure items -> t.name + "_empty()" |> w.appendEnd
@@ -413,11 +415,11 @@ let rec t__jsonImpl (w:TextBlockWriter) indent t =
             match o with
             | Some tt -> " v ->" |> w.appendEnd
             | None ->  " ->" |> w.appendEnd
-            "(\"enum\",int32__json " + i.ToString() + ") |> items.Add" |> w.newlineIndent (indent + 2)
+            "(\"e\",int32__json " + i.ToString() + ") |> items.Add" |> w.newlineIndent (indent + 2)
             match o with
             | Some tt -> 
                 w.newlineBlankIndent (indent + 2)
-                "(\"" + n + "\"," |> w.appendEnd
+                "(\"val\"," |> w.appendEnd
                 t__jsonCall w (indent + 2) tt
                 " v) |> items.Add" |> w.appendEnd
             | None -> ())
@@ -501,11 +503,11 @@ and t__jsonCall w indent t =
         t__jsonCall w (indent + 1) tt
         ")" |> w.appendEnd
     | TypeEnum.Ary tt -> 
-        "array__json (" |> w.newlineIndent indent
+        "array__json (" |> w.appendEnd
         t__jsonCall w (indent + 1) tt
         ")" |> w.appendEnd
     | TypeEnum.List tt -> 
-        "List__json (" |> w.newlineIndent indent
+        "List__json (" |> w.appendEnd
         t__jsonCall w (indent + 1) tt
         ")" |> w.appendEnd
     | TypeEnum.Dictionary (kType,vType) -> 
@@ -570,9 +572,9 @@ let rec json__tImpl (w:TextBlockWriter) indent t =
         
     | TypeEnum.Sum items ->
 
-        "match json__tryFindByName json \"enum\" with" |> w.newlineIndent (indent + 1)
-        "| Some json ->" |> w.newlineIndent (indent + 1)
-        "match json__int32o json with" |> w.newlineIndent (indent + 2)
+        "match json__tryFindByName json \"e\" with" |> w.newlineIndent (indent + 1)
+        "| Some e ->" |> w.newlineIndent (indent + 1)
+        "match json__int32o e with" |> w.newlineIndent (indent + 2)
         "| Some i ->" |> w.newlineIndent (indent + 2)
         "match i with" |> w.newlineIndent (indent + 3)
         [| 0 .. items.Length - 1 |]
@@ -581,10 +583,13 @@ let rec json__tImpl (w:TextBlockWriter) indent t =
             "| " + i.ToString() + " -> " |> w.newlineIndent (indent + 3)
             match o with
             | Some tt -> 
-                "match " |> w.newlineIndent (indent + 4)
-                json__tCall w (indent + 4) tt
-                " json with" |> w.appendEnd
-                "| Some v -> v |> " + t.name + "." + n + " |> Some" |> w.newlineIndent (indent + 4)
+                "match json__tryFindByName json \"val\" with " |> w.newlineIndent (indent + 4)
+                "| Some v ->" |> w.newlineIndent (indent + 4)
+                "match " |> w.newlineIndent (indent + 5)
+                json__tCall w (indent + 5) tt
+                " v with" |> w.appendEnd
+                "| Some vv -> vv |> " + t.name + "." + n + " |> Some" |> w.newlineIndent (indent + 5)
+                "| None -> None" |> w.newlineIndent (indent + 5)
                 "| None -> None" |> w.newlineIndent (indent + 4)
             | None -> t.name + "." + n + " |> Some" |> w.appendEnd)
         "| _ -> None" |> w.newlineIndent (indent + 3)

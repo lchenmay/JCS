@@ -307,6 +307,7 @@ let fSharpHeader src m opens =
         "open Util.Text"
         "open Util.Json"
         "open Util.Orm"
+        "open Util.Stat"
         ""
         "open PreOrm"
         "" |]
