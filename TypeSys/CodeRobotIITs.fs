@@ -436,6 +436,8 @@ and t__emptyCall (w:TextBlockWriter) indent t =
         | "Boolean" -> "true"
         | "DateTime" -> "new Date()"
         | "Json" -> "bin__Json"
+        | "Stat" -> "binCommon.Stat_empty()"
+        | "SpotInStat" -> "binCommon.SpotInStat_empty()"
         | _ -> "bin__" + t.name
         |> w.appendEnd
     | TypeEnum.Structure items -> t.name + "_empty()" |> w.appendEnd

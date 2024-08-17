@@ -148,6 +148,7 @@ let rec type__str output indent t =
         type__str output (indent + 1) kType
         tabs[indent + 1] + "Val:" |> output
         type__str output (indent + 1) vType
+    | _ -> ()
 
 let type__strFinal t = 
     let w = empty__TextBlockWriter()
