@@ -295,6 +295,7 @@ let fSharpHeader src m opens =
         ""
         "open System"
         "open System.Collections.Generic"
+        "open System.Collections.Concurrent"
         "open System.Text"
         ""
         "open Util.Cat"

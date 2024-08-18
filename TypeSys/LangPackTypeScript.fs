@@ -21,8 +21,11 @@ let rec type__annotation tc t =
         | "DateTime" -> "Date"
         | _ -> t.name
     | TypeEnum.Orm v -> t.name
-    | TypeEnum.List v -> "any[]"
+    | TypeEnum.Ary v -> "Array<" + v.name + ">" 
+    | TypeEnum.List v -> "Array<" + v.name + ">" 
+    | TypeEnum.ListImmutable v -> "Array<" + v.name + ">" 
     | TypeEnum.Dictionary (k,v) -> "{[key:any]: any}"
+    | TypeEnum.ConcurrentDictionary (k,v) -> "{[key:any]: any}"
     | TypeEnum.Option tt -> tt |> type__annotation tc
     | _ -> 
         (str__type tc t.name).name

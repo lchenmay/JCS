@@ -73,6 +73,8 @@ type TypeEnum =
 | Ary of Type
 | List of Type
 | Dictionary of Type * Type
+| ConcurrentDictionary of Type * Type
+| ListImmutable of Type
 and Type = {
 name: string
 mutable sort: int
@@ -94,6 +96,8 @@ type TypeEnumPlain =
 | Ary = 7
 | List = 8
 | Dictionary = 9
+| ConcurrentDictionary = 10
+| ListImmutable = 11
 
 let typeEnum__plain e = 
     match e with
@@ -107,6 +111,8 @@ let typeEnum__plain e =
     | TypeEnum.Ary v -> TypeEnumPlain.Ary
     | TypeEnum.List v -> TypeEnumPlain.List
     | TypeEnum.Dictionary (kType,vType) -> TypeEnumPlain.Dictionary
+    | TypeEnum.ConcurrentDictionary (kType,vType) -> TypeEnumPlain.ConcurrentDictionary
+    | TypeEnum.ListImmutable v -> TypeEnumPlain.ListImmutable
 
 let rec type__str output indent t = 
 
@@ -143,11 +149,22 @@ let rec type__str output indent t =
     | TypeEnum.List v ->
         tabs[indent + 1] + "List of:" |> output
         type__str output (indent + 1) v
+    | TypeEnum.ListImmutable v ->
+        tabs[indent + 1] + "ListImmutable of:" |> output
+        type__str output (indent + 1) v
     | TypeEnum.Dictionary (kType,vType) ->
         tabs[indent + 1] + "Key:" |> output
         type__str output (indent + 1) kType
         tabs[indent + 1] + "Val:" |> output
         type__str output (indent + 1) vType
+    | TypeEnum.ConcurrentDictionary (kType,vType) ->
+        tabs[indent + 1] + "Key:" |> output
+        type__str output (indent + 1) kType
+        tabs[indent + 1] + "Val:" |> output
+        type__str output (indent + 1) vType
+    | TypeEnum.ListImmutable v ->
+        tabs[indent + 1] + " immutable list of:" |> output
+        type__str output (indent + 1) v
     | _ -> ()
 
 let type__strFinal t = 
@@ -189,6 +206,14 @@ let rec str__type tc s =
                     tEnum = TypeEnum.Option tt
                     custom =  false
                     src = [| |] }
+            else if s.EndsWith " list" then
+                let tt = s.Substring(0,s.Length - " list".Length) |> str__type tc
+                { 
+                    name = s 
+                    sort = 0
+                    tEnum = TypeEnum.ListImmutable tt
+                    custom =  false
+                    src = [| |] }
             else if s.EndsWith "[]" then
                 let tt = s.Substring(0,s.Length - 2).Trim() |> str__type tc
                 { 
@@ -211,6 +236,15 @@ let rec str__type tc s =
                     name = s 
                     sort = 0
                     tEnum = TypeEnum.List tt
+                    custom =  false
+                    src = [| |] }
+            else if s.StartsWith "ConcurrentDictionary<" then
+                let k = find ("<",",") s |> str__type tc
+                let v = (findBidirectional (",",">") s).Trim() |> str__type tc
+                { 
+                    name = s 
+                    sort = 0
+                    tEnum = TypeEnum.ConcurrentDictionary(k,v)
                     custom =  false
                     src = [| |] }
             else if s.StartsWith "Dictionary<" then

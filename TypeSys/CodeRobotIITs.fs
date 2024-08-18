@@ -100,7 +100,9 @@ let rec t__binImpl ns (w:TextBlockWriter) indent t =
     | TypeEnum.Option v -> ()
     | TypeEnum.Ary v -> ()
     | TypeEnum.List v -> ()
+    | TypeEnum.ListImmutable v -> ()
     | TypeEnum.Dictionary (kType,vType) -> ()
+    | TypeEnum.ConcurrentDictionary (kType,vType) -> ()
 
 and t__binCall w indent t = 
     
@@ -153,14 +155,27 @@ and t__binCall w indent t =
         t__binCall w (indent + 1) tt
         ")" |> w.appendEnd
     | TypeEnum.List tt -> 
-
         "" |> w.newlineIndent indent
         w.appendEnd  prefix
-        "List__bin (" |> w.appendEnd
+        "array__bin (" |> w.appendEnd
+        t__binCall w (indent + 1) tt
+        ")" |> w.appendEnd
+    | TypeEnum.ListImmutable tt -> 
+        "" |> w.newlineIndent indent
+        w.appendEnd  prefix
+        "array__bin (" |> w.appendEnd
         t__binCall w (indent + 1) tt
         ")" |> w.appendEnd
 
     | TypeEnum.Dictionary (kType,vType) -> 
+        w.appendEnd  prefix
+        "dict__bin (" |> w.appendEnd
+        t__binCall w (indent + 1) kType
+        ") (" |> w.appendEnd
+        t__binCall w (indent + 1) vType
+        ")" |> w.appendEnd
+
+    | TypeEnum.ConcurrentDictionary (kType,vType) -> 
         w.appendEnd  prefix
         "dict__bin (" |> w.appendEnd
         t__binCall w (indent + 1) kType
@@ -322,10 +337,22 @@ and bin__tCall w indent t =
         ")" |> w.appendEnd
     | TypeEnum.List tt -> 
         w.appendEnd prefix
-        "bin__List (" |> w.appendEnd
+        "bin__array (" |> w.appendEnd
+        bin__tCall w (indent + 1) tt
+        ")" |> w.appendEnd
+    | TypeEnum.ListImmutable tt -> 
+        w.appendEnd prefix
+        "bin__array (" |> w.appendEnd
         bin__tCall w (indent + 1) tt
         ")" |> w.appendEnd
     | TypeEnum.Dictionary (kType,vType) -> 
+        w.appendEnd prefix
+        "bin__dict(" |> w.appendEnd
+        bin__tCall w (indent + 2) kType
+        ") (" |> w.appendEnd
+        bin__tCall w (indent + 2) vType
+        ")" |> w.appendEnd
+    | TypeEnum.ConcurrentDictionary (kType,vType) -> 
         w.appendEnd prefix
         "bin__dict(" |> w.appendEnd
         bin__tCall w (indent + 2) kType
@@ -413,6 +440,7 @@ let rec t__emptyImpl ns (w:TextBlockWriter) indent t =
 
     | TypeEnum.Option tt -> ()
     | TypeEnum.List tt -> ()
+    | TypeEnum.ListImmutable tt -> ()
     | TypeEnum.Dictionary (kType,vType) -> ()
 
     "} as " + ns + "." + t.name |> w.newlineIndent 1
@@ -472,8 +500,10 @@ and t__emptyCall (w:TextBlockWriter) indent t =
         "[]" |> w.appendEnd
     | TypeEnum.List tt -> 
         "[]" |> w.appendEnd
-    | TypeEnum.Dictionary (kType,vType) -> 
-        "{}" |> w.appendEnd
+    | TypeEnum.ListImmutable tt -> 
+        "[]" |> w.appendEnd
+    | TypeEnum.Dictionary (kType,vType) -> "{}" |> w.appendEnd
+    | TypeEnum.ConcurrentDictionary (kType,vType) -> "{}" |> w.appendEnd
 
 let rec t__jsonImpl (w:TextBlockWriter) indent t = 
 
@@ -597,8 +627,18 @@ and t__jsonCall w indent t =
         "List__json (" |> w.newlineIndent indent
         t__jsonCall w (indent + 1) tt
         ")" |> w.appendEnd
+    | TypeEnum.ListImmutable tt -> 
+        "ListImmutable__json (" |> w.newlineIndent indent
+        t__jsonCall w (indent + 1) tt
+        ")" |> w.appendEnd
     | TypeEnum.Dictionary (kType,vType) -> 
         "Dictionary__json (" |> w.appendEnd
+        t__jsonCall w (indent + 1) kType
+        ") (" |> w.appendEnd
+        t__jsonCall w (indent + 1) vType
+        ")" |> w.appendEnd
+    | TypeEnum.ConcurrentDictionary (kType,vType) -> 
+        "ConcurrentDictionary__json (" |> w.appendEnd
         t__jsonCall w (indent + 1) kType
         ") (" |> w.appendEnd
         t__jsonCall w (indent + 1) vType
@@ -744,7 +784,9 @@ let rec json__tImpl (w:TextBlockWriter) indent t =
     | TypeEnum.Option tt -> ()
     | TypeEnum.Ary tt -> ()
     | TypeEnum.List tt -> ()
+    | TypeEnum.ListImmutable tt -> ()
     | TypeEnum.Dictionary (kType,vType) -> ()
+    | TypeEnum.ConcurrentDictionary (kType,vType) -> ()
 
 and json__tCall (w:TextBlockWriter)indent t = 
 
@@ -800,6 +842,10 @@ and json__tCall (w:TextBlockWriter)indent t =
         "json__Listo (" |> w.appendEnd
         json__tCall w (indent + 1) tt
         ")" |> w.appendEnd
+    | TypeEnum.ListImmutable tt -> 
+        "json__ListImmutableo (" |> w.appendEnd
+        json__tCall w (indent + 1) tt
+        ")" |> w.appendEnd
     | TypeEnum.Dictionary (kType,vType) -> 
         "(fun json ->" |> w.appendEnd
         "json__Dictionaryo (" |> w.newlineIndent (indent + 1)
@@ -807,4 +853,11 @@ and json__tCall (w:TextBlockWriter)indent t =
         ") (" |> w.appendEnd
         json__tCall w (indent) vType
         ") (new Dictionary<" + kType.name + "," + vType.name + ">()) json)" |> w.appendEnd
+    | TypeEnum.ConcurrentDictionary (kType,vType) -> 
+        "(fun json ->" |> w.appendEnd
+        "json__ConcurrentDictionaryo (" |> w.newlineIndent (indent + 1)
+        json__tCall w (indent) kType
+        ") (" |> w.appendEnd
+        json__tCall w (indent) vType
+        ") (new ConcurrentDictionary<" + kType.name + "," + vType.name + ">()) json)" |> w.appendEnd
 
