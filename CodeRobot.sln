@@ -17,6 +17,9 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "vscode", "vscode", "{9C288FD0-9F16-4499-BFFB-461681804EA9}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{E55161AA-EF7D-4997-8A89-789A732B9367}"
+	ProjectSection(SolutionItems) = preProject
+		vscode\src\main.ts = vscode\src\main.ts
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "lib", "lib", "{02E9F791-761A-4774-83FD-DCE2D34309BD}"
 EndProject
@@ -31,6 +34,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "util", "util", "{ECAAF89E-1
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "store", "store", "{975C13D2-66F9-44FE-9392-F4DFD324CD92}"
 	ProjectSection(SolutionItems) = preProject
+		vscode\src\lib\store\init.ts = vscode\src\lib\store\init.ts
 		vscode\src\lib\store\runtime.ts = vscode\src\lib\store\runtime.ts
 		vscode\src\lib\store\wshandler.ts = vscode\src\lib\store\wshandler.ts
 	EndProjectSection

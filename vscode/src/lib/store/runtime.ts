@@ -1,4 +1,5 @@
 import { glib } from '~/lib/glib'
+import { initRuntime } from '~/lib/store/init'
 import { watch } from 'vue'
 import { RuntimeData_empty } from '../shared/CustomMor'
 
@@ -18,24 +19,6 @@ export const prstLS = (key: string, value: any) => {
     window.localStorage.setItem(key, JSON.stringify(value))
 }
 
-export const init = (): Runtime => {
-    return {
-        host: {} as Host,
-        wsctx: initWebSocketMeta(),
-        router: glib.route.router,
-
-        session: loadLS("session", ''),
-        user: {},
-
-        data: RuntimeData_empty()
-    } as Runtime
-}
-
-export const InitWSConn = () => {
-    glib.ws.createWebSocket(runtime.host.wsurl)()
-    //glib.ws.autoping()
-}
-
 const initWebSocketMeta = () => {
     const res: WsCtx = {
         ws: {} as WebSocket,
@@ -50,7 +33,22 @@ const initWebSocketMeta = () => {
     return res
 }
 
+export const prepRuntime = (): Runtime => {
+    let runtime = {
+        host: {} as Host,
+        wsctx: initWebSocketMeta(),
+        router: glib.route.router,
 
+        session: loadLS("session", ''),
+        user: {},
+
+        data: RuntimeData_empty()
+    } as Runtime
+
+    initRuntime(runtime)
+
+    return runtime
+}
 
 export const getRT = (key: string, obj: any = runtime) => {
     const keys = key.split('.')
