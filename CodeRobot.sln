@@ -14,6 +14,21 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		README.md = README.md
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "vscode", "vscode", "{9C288FD0-9F16-4499-BFFB-461681804EA9}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{E55161AA-EF7D-4997-8A89-789A732B9367}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "lib", "lib", "{02E9F791-761A-4774-83FD-DCE2D34309BD}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "util", "util", "{ECAAF89E-1EA9-4DC5-B55A-7EFE2566EE3B}"
+	ProjectSection(SolutionItems) = preProject
+		vscode\src\lib\util\bin.ts = vscode\src\lib\util\bin.ts
+		vscode\src\lib\util\graphics.ts = vscode\src\lib\util\graphics.ts
+		vscode\src\lib\util\graphicsH5.ts = vscode\src\lib\util\graphicsH5.ts
+		vscode\src\lib\util\graphicsPixi.ts = vscode\src\lib\util\graphicsPixi.ts
+		vscode\src\lib\util\ws.ts = vscode\src\lib\util\ws.ts
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -31,6 +46,12 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{9C288FD0-9F16-4499-BFFB-461681804EA9} = {6B211DC5-7C29-426F-B005-CE9DEF566656}
+		{E55161AA-EF7D-4997-8A89-789A732B9367} = {9C288FD0-9F16-4499-BFFB-461681804EA9}
+		{02E9F791-761A-4774-83FD-DCE2D34309BD} = {E55161AA-EF7D-4997-8A89-789A732B9367}
+		{ECAAF89E-1EA9-4DC5-B55A-7EFE2566EE3B} = {02E9F791-761A-4774-83FD-DCE2D34309BD}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {5D6FBBFE-FF28-4250-BBFB-AC6B8661ACA6}
