@@ -941,14 +941,14 @@ let go output config =
     |> Array.iter (table__sql config.rdbms sql.w)
 
     [|  "// OrmMor.ts"
-        "import { BytesBuilder } from \"~/lib/util/bin\""
+        "import { BinIndexed, BytesBuilder } from \"~/lib/util/bin\""
         "import * as binCommon from '~/lib/util/bin'"
         "const marshall = {...binCommon }"
         "" |]
     |> omTypeScript.w.multiLine
 
     [|  "// OrmMor.ts"
-        "import { BytesBuilder } from \"~/lib/util/bin\""
+        "import { BinIndexed, BytesBuilder } from \"~/lib/util/bin\""
         "import * as binCommon from '~/lib/util/bin'"
         "import * as binOrm from './OrmMor'"
         "const marshall = {...binCommon, ...binOrm }"

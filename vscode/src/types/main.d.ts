@@ -1,66 +1,52 @@
 declare global {
-  namespace JSX {
-    interface IntrinsicElements {
-      [elem: string]: any
+    namespace JSX {
+        interface IntrinsicElements {
+            [elem: string]: any
+        }
     }
-  }
-  namespace globalThis {
-    var rtxx: RT
-    var panelrt: {showpanel:boolean}
-  }
-
-  export interface RT  {
-    host: Host
-    wsctx: WsCtx
-    router: Router
-    session: string
-    
-    devmode: boolean
-    msgList: NotifyItem[]
-
-    canvas: {
-      canvasRef:HTMLCanvasElement | null
-      gl: WebGLRenderingContext | null
+    namespace globalThis {
+        var host: Host
+        var runtime: Runtime
+        var panelrt: { showpanel: boolean }
     }
 
-    [key:string]: any
-  }
+    export interface Runtime {
+        host: Host
+        wsctx: WsCtx
+        router: Router
+        session: string
 
-  export type WsCtx = {
-    ws: WebSocket
-    ping: NodeJS.Timeout | null
-    autoping: boolean
-    pinginterval: number
-    sent: number
-    sentsize: number
-    rec: number
-    recsize: number
-  }
+        data: game.RuntimeData
+    }
 
-  export type Host = {
-    hostname: string
-    projectname: string
-    domainname: string
-    api: string
-    wsurl: string
-    discordAPPID: string
-    discordRedirect: string
-  }
+    export type WsCtx = {
+        ws: WebSocket
+        ping: NodeJS.Timeout | null
+        autoping: boolean
+        pinginterval: number
+        sent: number
+        sentsize: number
+        rec: number
+        recsize: number
+    }
 
-  export type NotifyItem = {
-    cdate?: number
-    msg?: string
-    label?: string
-    bgcolor?: string
-    url?: string
-    expire?: number
-    textColor?: string
-  }
+    export type Host = {
+        hostname: string
+        api: string
+        wsurl: string
+        discordAPPID: string
+        discordRedirect: string
+    }
 
-  export type BinIndexed = {
-    bin: ArrayBuffer,
-    index: number
-}
+    export type NotifyItem = {
+        cdate?: number
+        msg?: string
+        label?: string
+        bgcolor?: string
+        url?: string
+        expire?: number
+        textColor?: string
+    }
 }
 
 export { }

@@ -34,7 +34,7 @@ let type__TypeScript tc srcType srcMor t =
 
     match t.tEnum with
     | TypeEnum.Sum items ->
-        "const enum " + t.name + "Enum {" |> srcMor.w.newline
+        "export const enum " + t.name + "Enum {" |> srcMor.w.newline
         [| 0 .. items.Length - 1 |]
         |> Array.map(fun i -> 
             let n,o = items[i]

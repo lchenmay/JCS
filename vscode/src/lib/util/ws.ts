@@ -1,7 +1,7 @@
 import { glib } from '~/lib/glib'
 
 import { wsjsonHandler, wsbinHandler } from '~/lib/store/wshandler'
-import { BytesBuilder } from '~/lib/util/bin';
+import { BytesBuilder } from '~/lib/util/bin'
 
 const tryJSONobj = (data: any) => {
     try {
@@ -49,7 +49,7 @@ const createWebSocket_base = (wsbinHandler: Function, wsjsonHandler: Function) =
 export const createWebSocket = createWebSocket_base(wsbinHandler, wsjsonHandler)
 
 
-export const disconnect = (ws: WsCtx = rt.wsctx) => {
+export const disconnect = (ws: WsCtx = runtime.wsctx) => {
     if (ws.ws && ws.ws.readyState === WebSocket.OPEN) {
         ws.ws.close()
     }
@@ -58,7 +58,7 @@ export const disconnect = (ws: WsCtx = rt.wsctx) => {
 export const trySend = (x: WsCtx) => (e: number) => (msg: Record<string, any> | Object) => {
 
     if (!x) {
-        x = rt.wsctx
+        x = runtime.wsctx
     }
 
     if (x && x.ws.readyState === WebSocket.OPEN) {
@@ -71,9 +71,9 @@ export const trySend = (x: WsCtx) => (e: number) => (msg: Record<string, any> | 
 }
 
 export const trySendx = (e: number) => (msg: Record<string, any> | Object) => {
-    trySend(rt.wsctx)(e)(msg)
+    trySend(runtime.wsctx)(e)(msg)
 }
 
 export const tryApiRequest = async (req: any, rep: Function) => {
-    trySendx(MsgEnum.ApiRequest)(req)
+    trySendx(glib.Mor.j7.MsgEnum.ApiRequest)(req)
 }
