@@ -119,7 +119,7 @@ export const DateTime__bin = (bb: BytesBuilder) => (v: Date | number) => {
         if (typeof v == "number") return v
         else {
             try { return v.getTime() }
-            catch { console.log(`something wrong with ${v}, return current Date.`) ;return new Date() }
+            catch { console.log(`something wrong with ${v}, return current Date.`); return new Date() }
         }
     }
     console.log("v=" + v)
@@ -303,6 +303,146 @@ export const arrayBuffer__Hex = (buffer: ArrayBuffer): string => {
     }
     return hexString.toUpperCase()
 }
+
+
+// [Stat]
+export type Stat = {
+    mean: number,
+
+    middle: number,
+
+    var: number,
+
+    median: number,
+
+    ma: number,
+
+    mb: number,
+
+    mc: number,
+
+    md: number,
+
+    min: number,
+
+    max: number,
+
+    count: number
+}
+
+// [SpotInStat]
+export type SpotInStat = {
+    deviation: number,
+
+    spot: number,
+
+    anchor: number,
+
+    digit: number,
+
+    unit: string,
+
+    stat: Stat
+}
+
+
+// [Stat] Structure
+
+export const Stat_empty = (): Stat => {
+    return {
+        mean: 0.0,
+        middle: 0.0,
+        var: 0.0,
+        median: 0.0,
+        ma: 0.0,
+        mb: 0.0,
+        mc: 0.0,
+        md: 0.0,
+        min: 0.0,
+        max: 0.0,
+        count: 0,
+    } as Stat
+}
+
+export const Stat__bin = (bb: BytesBuilder) => (v: any) => {
+
+    float__bin(bb)(v.mean)
+    float__bin(bb)(v.middle)
+    float__bin(bb)(v.var)
+    float__bin(bb)(v.median)
+    float__bin(bb)(v.ma)
+    float__bin(bb)(v.mb)
+    float__bin(bb)(v.mc)
+    float__bin(bb)(v.md)
+    float__bin(bb)(v.min)
+    float__bin(bb)(v.max)
+    int32__bin(bb)(v.count)
+}
+
+export const bin__Stat = (bi: BinIndexed): Stat => {
+
+    return {
+        mean: bin__float(bi),
+        middle: bin__float(bi),
+        var: bin__float(bi),
+        median: bin__float(bi),
+        ma: bin__float(bi),
+        mb: bin__float(bi),
+        mc: bin__float(bi),
+        md: bin__float(bi),
+        min: bin__float(bi),
+        max: bin__float(bi),
+        count: bin__int32(bi),
+    }
+}
+
+// [SpotInStat] Structure
+
+export const SpotInStat_empty = (): SpotInStat => {
+    return {
+        deviation: 0.0,
+        spot: 0.0,
+        anchor: 0.0,
+        digit: 0,
+        unit: "",
+        stat: Stat_empty(),
+    } as SpotInStat
+}
+
+export const SpotInStat__bin = (bb: BytesBuilder) => (v: any) => {
+
+    float__bin(bb)(v.deviation)
+    float__bin(bb)(v.spot)
+    float__bin(bb)(v.anchor)
+    int32__bin(bb)(v.digit)
+    str__bin(bb)(v.unit)
+    Stat__bin(bb)(v.stat)
+}
+
+export const bin__SpotInStat = (bi: BinIndexed): SpotInStat => {
+
+    return {
+        deviation: bin__float(bi),
+        spot: bin__float(bi),
+        anchor: bin__float(bi),
+        digit: bin__int32(bi),
+        unit: bin__str(bi),
+        stat: bin__Stat(bi),
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
 // 测试
 
 
@@ -336,3 +476,5 @@ const doo = () => {
     console.log(`===== Test dict =====`)
     test({ "key1": "value1", "key2": "value2" }, dict__bin, bin__dict)
 }
+
+

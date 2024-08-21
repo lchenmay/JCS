@@ -2,6 +2,7 @@ import { glib } from '~/lib/glib'
 
 import { wsjsonHandler, wsbinHandler } from '~/lib/store/wshandler'
 import { BytesBuilder } from '~/lib/util/bin'
+import { MsgEnum } from '../shared/CustomMor'
 
 const tryJSONobj = (data: any) => {
     try {
@@ -48,32 +49,23 @@ const createWebSocket_base = (wsbinHandler: Function, wsjsonHandler: Function) =
 }
 export const createWebSocket = createWebSocket_base(wsbinHandler, wsjsonHandler)
 
-
 export const disconnect = (ws: WsCtx = runtime.wsctx) => {
     if (ws.ws && ws.ws.readyState === WebSocket.OPEN) {
         ws.ws.close()
     }
 }
 
-export const trySend = (x: WsCtx) => (e: number) => (msg: Record<string, any> | Object) => {
-
-    if (!x) {
-        x = runtime.wsctx
-    }
-
-    if (x && x.ws.readyState === WebSocket.OPEN) {
-        const bb = new BytesBuilder()
-        glib.Mor.j7.Msg__bin(bb)({ e: 1, val: msg })
-        x.ws.send(bb.bytes())
-    } else {
-
-    }
-}
-
-export const trySendx = (e: number) => (msg: Record<string, any> | Object) => {
-    trySend(runtime.wsctx)(e)(msg)
-}
-
 export const tryApiRequest = async (req: any, rep: Function) => {
-    trySendx(glib.Mor.j7.MsgEnum.ApiRequest)(req)
+    let x = runtime.wsctx
+    if (x && x.ws.readyState === WebSocket.OPEN) {
+
+        let msg = {
+            e: MsgEnum.ApiRequest as number,
+            val: req
+        } as game.Msg
+
+        const bb = new BytesBuilder()
+        glib.Mor.game.Msg__bin(bb)(msg)
+        x.ws.send(bb.bytes())
+    }
 }

@@ -1015,5 +1015,26 @@ let go output config =
 
     save srcs
 
+    let pathsrc = 
+        let di = new DirectoryInfo(Directory.GetCurrentDirectory())
+        Path.Combine(di.Parent.Parent.Parent.Parent.FullName,"vscode")
+    let pathdst = 
+        let di = new DirectoryInfo(config.JsDir)
+        Path.Combine(di.Parent.Parent.Parent.Parent.FullName,"vscode")
+
+    [|  "src/main.ts"
+        "src/lib/store/init.ts"
+        "src/lib/store/runtime.ts"
+        "src/lib/store/wshandler.ts"
+        "src/lib/util/bin.ts"
+        "src/lib/util/graphics.ts"
+        "src/lib/util/graphicsH5.ts"
+        "src/lib/util/graphicsPixi.ts"
+        "src/types/main.d.ts"  |]
+    |> Array.iter(fun f -> File.Copy(
+        Path.Combine(pathsrc,f),
+        Path.Combine(pathdst,f),true))
+
+
     "Done" |> output
         

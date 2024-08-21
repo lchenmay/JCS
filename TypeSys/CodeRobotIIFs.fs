@@ -354,8 +354,9 @@ let rec t__emptyImpl (w:TextBlockWriter) indent t =
         let n,o = items[0]
         match o with
         | Some tt -> 
+            " " |> w.appendEnd
             t__emptyCall w (indent + 2) tt
-            " bi |> " + t.name + "." + n |> w.appendEnd
+            " |> " + t.name + "." + n |> w.appendEnd
         | None -> t.name + "." + n |> w.appendEnd
 
     | TypeEnum.Enum v -> ()
@@ -399,7 +400,7 @@ and t__emptyCall w indent t =
         "" |> w.newlineIndent indent
         var |> w.newlineIndent(indent + 2)
         ")" |> w.appendEnd
-    | TypeEnum.Sum v -> "bin__" + t.name |> w.appendEnd
+    | TypeEnum.Sum v -> t.name + "_empty()" |> w.appendEnd
     | TypeEnum.Enum v -> ()
     | TypeEnum.Orm table -> 
         "{ ID = 0L; Sort = 0L; Createdat = DateTime.MinValue; Updatedat = DateTime.MinValue; p = p" + t.name.ToUpper() + "_empty() }" |> w.appendEnd

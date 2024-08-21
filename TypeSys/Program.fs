@@ -1,6 +1,7 @@
 ﻿module TypeSys.Program
 
 open System
+open System.IO
 
 open TypeSys.Common
 
@@ -11,7 +12,6 @@ let output (s:string) = Console.WriteLine s
 
 @"C:\Dev\JCS\BizShared\Types.fs"
 |> TypeSys.FSharp.go output
-
 
 let pwd = "jjsjd2VSd$"
 

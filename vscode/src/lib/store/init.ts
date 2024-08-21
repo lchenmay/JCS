@@ -1,6 +1,6 @@
 import { glib } from '~/lib/glib'
 import { watch } from 'vue'
-import { RuntimeData_empty } from '../shared/CustomMor'
+import { MsgEnum, RuntimeData_empty } from '../shared/CustomMor'
 import { initHost } from './host'
 
 let wsOnOpen = (runtime: Runtime) => (event: any) => {
@@ -16,14 +16,18 @@ let wsOnError = (runtime: Runtime) => (event: any) => {
 }
 
 let wsOnMsg = (runtime: Runtime) => (event: any) => {
-    console.log(event)
+    let msg = event.data as game.Msg
+    switch (msg.e as MsgEnum) {
+        case MsgEnum.ApiResponse:
+            console.log(msg.val)
+            break
+    }
 }
 
 export const initRuntime = (runtime: Runtime) => {
 
     runtime.host = initHost()
 
-    console.log(runtime.host.wsurl)
     let ws = new WebSocket(runtime.host.wsurl)
 
     ws.onopen = wsOnOpen(runtime)

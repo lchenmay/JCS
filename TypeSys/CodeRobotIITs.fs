@@ -487,7 +487,7 @@ and t__emptyCall (w:TextBlockWriter) indent t =
         "}})" |> w.appendEnd
     | TypeEnum.Sum v -> 
         w.appendEnd prefix
-        "bin__" + t.name |> w.appendEnd
+        t.name + "_empty()" |> w.appendEnd
     | TypeEnum.Enum v -> ()
     | TypeEnum.Orm table -> 
         "{ id: 0, sort: 0, createdat: new Date(), updatedat: new Date(), p: " + prefix + "p" + t.name.ToUpper() + "_empty() }" |> w.appendEnd
