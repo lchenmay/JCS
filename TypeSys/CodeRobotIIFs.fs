@@ -31,12 +31,14 @@ let rec t__binImpl (w:TextBlockWriter) indent t =
     | TypeEnum.Primitive -> ()
     | TypeEnum.Structure items ->
         items
+        |> Array.filter(snd >> type__supportMarshall)
         |> Array.iter(fun (name,tt) -> 
             w.newlineBlankIndent (indent + 1)
             t__binCall w (indent + 1) tt
             " bb v." + name |> w.appendEnd)
 
     | TypeEnum.Product items -> 
+        let items = items |> Array.filter(type__supportMarshall)
         "let " + (productItems__term "rcd" "" "," items) + " = rcd" |> w.newlineIndent indent
         [| 0 .. items.Length - 1 |]
         |> Array.iter(fun i -> 
@@ -103,6 +105,7 @@ let rec t__binImpl (w:TextBlockWriter) indent t =
     | TypeEnum.ListImmutable v -> ()
     | TypeEnum.Dictionary (kType,vType) -> ()
     | TypeEnum.ConcurrentDictionary (kType,vType) -> ()
+    | TypeEnum.Fun (src,dst) -> ()
 
 and t__binCall w indent t = 
     
@@ -158,6 +161,7 @@ and t__binCall w indent t =
         ") (" |> w.appendEnd
         t__binCall w (indent + 1) vType
         ")" |> w.appendEnd
+    | TypeEnum.Fun (src,dst) -> ()
 
 let rec bin__tImpl (w:TextBlockWriter) indent t = 
 
@@ -167,13 +171,17 @@ let rec bin__tImpl (w:TextBlockWriter) indent t =
         "{" |> w.newlineIndent (indent + 1)
         items
         |> Array.iter(fun (name,tt) -> 
-            name + " =" |> w.newlineIndent (indent + 2)
-            "bi" |> w.newlineIndent (indent + 3)
-            "|> " |> w.newlineIndent (indent + 3)
-            (bin__tCall w (indent + 3) tt))
+            name + " = " |> w.newlineIndent (indent + 2)
+            if type__supportMarshall tt then
+                "bi" |> w.newlineIndent (indent + 3)
+                "|> " |> w.newlineIndent (indent + 3)
+                (bin__tCall w (indent + 3) tt)
+             else
+                t__emptyCall w indent tt)
         "}" |> w.newlineIndent (indent + 1)
 
     | TypeEnum.Product items -> 
+        let items = items |> Array.filter(type__supportMarshall)
         let var = productItems__term "rcd" "" "," items 
         "let " + var + " = rcd" |> w.newlineIndent indent
         [| 0 .. items.Length - 1 |]
@@ -323,8 +331,9 @@ and bin__tCall w indent t =
         bin__tCall w (indent + 2) vType
         ") v bi" |> w.appendEnd
         "v)" |> w.newlineIndent (indent + 1)
+    | TypeEnum.Fun (kType,vType) -> ()
 
-let rec t__emptyImpl (w:TextBlockWriter) indent t = 
+and t__emptyImpl (w:TextBlockWriter) indent t = 
 
     "let " + t.name + "_empty(): " + t.name + " ="
     |> w.newline
@@ -379,7 +388,7 @@ and t__emptyCall w indent t =
         | "float" -> "0.0"
         | "int" -> "0"
         | "int64" -> "0L"
-        | "Boolean" -> "true"
+        | "bool" -> "true"
         | "DateTime" -> "DateTime.MinValue"
         | "Json" -> "bin__json"
         | "Stat" -> "Stat_empty()"
@@ -418,11 +427,18 @@ and t__emptyCall w indent t =
         "new Dictionary<" + kType.name + "," + vType.name + ">()" |> w.appendEnd
     | TypeEnum.ConcurrentDictionary (kType,vType) -> 
         "new ConcurrentDictionary<" + kType.name + "," + vType.name + ">()" |> w.appendEnd
+    | TypeEnum.Fun (src,dst) -> 
+        "(fun _ -> " |> w.appendEnd
+        match dst.tEnum with
+        | TypeEnum.Primitive -> t__emptyCall w indent dst
+        | _ -> dst.name + "_empty()" |> w.appendEnd
+        ")" |> w.appendEnd
 
 let rec t__jsonImpl (w:TextBlockWriter) indent t = 
 
     match t.tEnum with
     | TypeEnum.Structure items ->
+        let items = items |> Array.filter(snd >> type__supportMarshall)
 
         "[|  " |> w.newlineIndent (indent + 1)
 
@@ -575,19 +591,25 @@ let rec json__tImpl (w:TextBlockWriter) indent t =
 
         items
         |> Array.iter(fun (name,tt) -> 
+
             "let " + name + "o =" |> w.newlineIndent (indent + 1) 
-            "match json__tryFindByName json \"" + name + "\" with" |> w.newlineIndent (indent + 2) 
-            "| None ->" |> w.newlineIndent (indent + 2) 
-            "passOptions <- false" |> w.newlineIndent (indent + 3) 
-            "None" |> w.newlineIndent (indent + 3) 
-            "| Some v -> " |> w.newlineIndent (indent + 2) 
-            "match v |> " |> w.newlineIndent (indent + 3) 
-            (json__tCall w (indent + 3) tt)
-            " with" |> w.appendEnd 
-            "| Some res -> Some res" |> w.newlineIndent (indent + 3) 
-            "| None ->" |> w.newlineIndent (indent + 3) 
-            "passOptions <- false" |> w.newlineIndent (indent + 4) 
-            "None" |> w.newlineIndent (indent + 4) 
+            if type__supportMarshall tt then
+                "match json__tryFindByName json \"" + name + "\" with" |> w.newlineIndent (indent + 2) 
+                "| None ->" |> w.newlineIndent (indent + 2) 
+                "passOptions <- false" |> w.newlineIndent (indent + 3) 
+                "None" |> w.newlineIndent (indent + 3) 
+                "| Some v -> " |> w.newlineIndent (indent + 2) 
+                "match v |> " |> w.newlineIndent (indent + 3) 
+                (json__tCall w (indent + 3) tt)
+                " with" |> w.appendEnd 
+                "| Some res -> Some res" |> w.newlineIndent (indent + 3) 
+                "| None ->" |> w.newlineIndent (indent + 3) 
+                "passOptions <- false" |> w.newlineIndent (indent + 4) 
+                "None" |> w.newlineIndent (indent + 4) 
+            else
+                " " |> w.appendEnd
+                t__emptyCall w indent tt
+                " |> Some" |> w.appendEnd
             w.newlineBlank())
 
         "if passOptions then" |> w.newlineIndent (indent + 1) 
@@ -595,14 +617,14 @@ let rec json__tImpl (w:TextBlockWriter) indent t =
         "{" |> w.newlineIndent (indent + 2)
         items
         |> Array.iter(fun (name,tt) -> 
-            name + " = " + name + "o.Value" |> w.newlineIndent (indent + 3) 
-            ())
-        "} |> Some" |> w.appendEnd
+            name + " = " + name + "o.Value" |> w.newlineIndent (indent + 3))
+        " } |> Some" |> w.appendEnd
 
         "else" |> w.newlineIndent (indent + 1) 
         "None" |> w.newlineIndent (indent + 2) 
 
     | TypeEnum.Product items -> 
+        let items = items |> Array.filter(type__supportMarshall)
         let var = productItems__term "rcd" "" "," items 
         "let " + var + " = rcd" |> w.newlineIndent indent
         [| 0 .. items.Length - 1 |]
@@ -790,4 +812,5 @@ and json__tCall (w:TextBlockWriter)indent t =
         ") (" |> w.appendEnd
         json__tCall w (indent) vType
         ") (new ConcurrentDictionary<" + kType.name + "," + vType.name + ">()) json)" |> w.appendEnd
+    | TypeEnum.Fun (kType,vType) -> ()
 

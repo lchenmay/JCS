@@ -75,6 +75,7 @@ type TypeEnum =
 | Dictionary of Type * Type
 | ConcurrentDictionary of Type * Type
 | ListImmutable of Type
+| Fun of Type * Type
 and Type = {
 name: string
 mutable sort: int
@@ -98,6 +99,7 @@ type TypeEnumPlain =
 | Dictionary = 9
 | ConcurrentDictionary = 10
 | ListImmutable = 11
+| Fun = 12
 
 let typeEnum__plain e = 
     match e with
@@ -113,6 +115,12 @@ let typeEnum__plain e =
     | TypeEnum.Dictionary (kType,vType) -> TypeEnumPlain.Dictionary
     | TypeEnum.ConcurrentDictionary (kType,vType) -> TypeEnumPlain.ConcurrentDictionary
     | TypeEnum.ListImmutable v -> TypeEnumPlain.ListImmutable
+    | TypeEnum.Fun (src,dst) -> TypeEnumPlain.Fun
+
+let type__supportMarshall t = 
+    match t.tEnum with
+    | TypeEnum.Fun (src,dst) -> false
+    | _ -> true
 
 let rec type__str output indent t = 
 
@@ -162,9 +170,11 @@ let rec type__str output indent t =
         type__str output (indent + 1) kType
         tabs[indent + 1] + "Val:" |> output
         type__str output (indent + 1) vType
-    | TypeEnum.ListImmutable v ->
-        tabs[indent + 1] + " immutable list of:" |> output
-        type__str output (indent + 1) v
+    | TypeEnum.Fun (src, dst) ->
+        tabs[indent + 1] + " function:" |> output
+        type__str output (indent + 1) src
+        tabs[indent + 1] + " -> " |> output
+        type__str output (indent + 1) dst
     | _ -> ()
 
 let type__strFinal t = 
@@ -198,7 +208,17 @@ let rec str__type tc s =
         tc.types[s]
     else
         let t = 
-            if s.EndsWith " option" then
+            if s.Contains "->" then
+                let index = s.IndexOf "->"
+                let src = s.Substring(0,index).Trim() |> str__type tc
+                let dst = s.Substring(index + "->".Length).Trim() |> str__type tc
+                { 
+                    name = s 
+                    sort = 0
+                    tEnum = TypeEnum.Fun (src,dst)
+                    custom =  false
+                    src = [| |] }
+            else if s.EndsWith " option" then
                 let tt = s.Substring(0,s.Length - " option".Length) |> str__type tc
                 { 
                     name = s 

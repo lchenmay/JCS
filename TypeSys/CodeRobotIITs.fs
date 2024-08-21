@@ -182,6 +182,7 @@ and t__binCall w indent t =
         ") (" |> w.appendEnd
         t__binCall w (indent + 1) vType
         ")" |> w.appendEnd
+    | TypeEnum.Fun (src,dst) -> ()
 
 let rec bin__tImpl ns (w:TextBlockWriter) indent t = 
 
@@ -359,6 +360,7 @@ and bin__tCall w indent t =
         ") (" |> w.appendEnd
         bin__tCall w (indent + 2) vType
         ")" |> w.appendEnd
+    | TypeEnum.Fun (src,dst) -> ()
 
 let rec t__emptyImpl ns (w:TextBlockWriter) indent t = 
 
@@ -504,6 +506,7 @@ and t__emptyCall (w:TextBlockWriter) indent t =
         "[]" |> w.appendEnd
     | TypeEnum.Dictionary (kType,vType) -> "{}" |> w.appendEnd
     | TypeEnum.ConcurrentDictionary (kType,vType) -> "{}" |> w.appendEnd
+    | TypeEnum.Fun (src,dst) -> "{}" |> w.appendEnd
 
 let rec t__jsonImpl (w:TextBlockWriter) indent t = 
 
