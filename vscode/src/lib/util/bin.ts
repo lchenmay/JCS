@@ -304,6 +304,14 @@ export const arrayBuffer__Hex = (buffer: ArrayBuffer): string => {
     return hexString.toUpperCase()
 }
 
+export function dict__KeyArray<V>(dict: { [key: string]: V }): string[] {
+    return Object.entries(dict).map(([k, v]) => k)
+}
+
+export function dict__ValArray<V>(dict: { [key: string]: V }): V[] {
+    return Object.entries(dict).map(([k, v]) => v)
+}
+
 
 // [Stat]
 export type Stat = {

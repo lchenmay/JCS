@@ -15,8 +15,8 @@ let output (s:string) = Console.WriteLine s
 
 let pwd = "jjsjd2VSd$"
 
-let target = 7
-//let target = 9
+//let target = 7
+let target = 9
 
 match target with
 | 0 -> 

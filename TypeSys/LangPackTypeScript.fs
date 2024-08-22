@@ -24,9 +24,12 @@ let rec type__annotation tc t =
     | TypeEnum.Ary v -> "Array<" + v.name + ">" 
     | TypeEnum.List v -> "Array<" + v.name + ">" 
     | TypeEnum.ListImmutable v -> "Array<" + v.name + ">" 
-    | TypeEnum.Dictionary (k,v) -> "{[key:" + k.name + "]: " + v.name + "}"
-    | TypeEnum.ConcurrentDictionary (k,v) -> "{[key:" + k.name + "]: " + v.name + "}"
+    | TypeEnum.Dictionary (k,v)
+    | TypeEnum.ConcurrentDictionary (k,v) -> 
+        //"Dict<" + k.name + "," + v.name + ">"
+        "{[key:" + k.name + "]: " + v.name + "}"
     | TypeEnum.Option tt -> tt |> type__annotation tc
+    | TypeEnum.Fun (src,dst) -> "function"
     | _ -> 
         (str__type tc t.name).name
 
