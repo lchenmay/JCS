@@ -71,11 +71,11 @@ let field__existence tname fname =
 let table__fieldnames tname = "SELECT [name] FROM SYSCOLUMNS WHERE id=object_id('" + tname + "')"
 let table__fieldnamesCount tname = "SELECT COUNT(*) FROM SYSCOLUMNS WHERE id=object_id('" + tname + "')"
 
-let tableCheckExistOrCreate rdbms (w:TextBlockWriter) table tname = 
+let tableCheckExistOrCreate 
+    (wSQLServer:TextBlockWriter,wPostgreSQL:TextBlockWriter)
+    table tname = 
 
-    match rdbms with
-    | Rdbms.SqlServer -> 
-
+    Rdbms.SqlServer |> (fun rdbms ->
         [|  ""
             "IF NOT EXISTS(SELECT * FROM sysobjects WHERE [name]='" + tname + "' AND xtype='U')" + crlf
             "BEGIN" + crlf
@@ -84,20 +84,20 @@ let tableCheckExistOrCreate rdbms (w:TextBlockWriter) table tname =
             tab + tab + ",[Updatedat] BIGINT NOT NULL"
             tab + tab + ",[Sort] BIGINT NOT NULL,"
             tab + tab + "" |]
-        |> w.multiLine
+        |> wSQLServer.multiLine
 
         table.fields.Values
         |> Seq.toArray
         |> Array.map (sqlField rdbms)
         |> String.concat(crlf + tab + tab + ",")
-        |> w.appendEnd
+        |> wSQLServer.appendEnd
 
         [|  ", CONSTRAINT [PK_" + tname + "] PRIMARY KEY CLUSTERED ([ID] ASC)) ON [PRIMARY]"
             "END"
             "" |]
-        |> w.multiLine  
+        |> wSQLServer.multiLine)
 
-    | Rdbms.PostgreSql -> 
+    Rdbms.PostgreSql |> (fun rdbms ->
         [|  ""
             "DO $$"
             "DECLARE"
@@ -114,21 +114,20 @@ let tableCheckExistOrCreate rdbms (w:TextBlockWriter) table tname =
             "        ,Updatedat BIGINT NOT NULL"
             "        ,Sort BIGINT NOT NULL"
             "        ," |]
-        |> w.multiLine
-
+        |> wPostgreSQL.multiLine
 
         table.fields.Values
         |> Seq.toArray
         |> Array.map (sqlField rdbms)
         |> String.concat(crlf + tab + tab + ",")
-        |> w.appendEnd
+        |> wPostgreSQL.appendEnd
 
-        ");" |> w.appendEnd
+        ");" |> wPostgreSQL.appendEnd
 
         [|  ""
             "   END IF;"
             "END $$;" |]
-        |> w.multiLine
+        |> wPostgreSQL.multiLine)
 
 let checkNotIn tname fns = 
     match rdbms with
@@ -147,7 +146,9 @@ let checkNotIn tname fns =
             "))" |]
     |> String.Concat
 
-let tableDropUndefinedColumns rdbms (w:TextBlockWriter) tname fns = 
+let tableDropUndefinedColumns rdbms 
+    (wSQLServer:TextBlockWriter,wPostgreSQL:TextBlockWriter) 
+    tname fns = 
 
     match rdbms with
     | Rdbms.SqlServer -> 
@@ -180,25 +181,28 @@ let tableDropUndefinedColumns rdbms (w:TextBlockWriter) tname fns =
             "CLOSE " + cursor + ";"
             "DEALLOCATE " + cursor + ";" 
             "" |]
+        |> wSQLServer.multiLine
     | Rdbms.PostgreSql -> 
-        [|  "" |]
-    |> w.multiLine
+        [|  "" |] |> wPostgreSQL.multiLine
 
-let tableProcessColumn rdbms (w:TextBlockWriter) tname f = 
+let tableProcessColumn 
+    (wSQLServer:TextBlockWriter,wPostgreSQL:TextBlockWriter)
+    tname f = 
 
     let sort,fname,def,json = f
 
-    let t = sqlField rdbms f
+    let comment = 
+        [|  ""
+            "-- [" + tname + "." + fname + "] -------------"
+            "" |]
+    comment |> wSQLServer.multiLine
+    comment |> wPostgreSQL.multiLine
 
     let fullname = tname + fname
 
-    [|  ""
-        "-- [" + tname + "." + fname + "] -------------"
-        "" |]
-    |> w.multiLine
+    Rdbms.SqlServer |> (fun rdbms ->
 
-    match rdbms with
-    | Rdbms.SqlServer -> 
+        let t = sqlField rdbms f
 
         let sql = "@sql_add_" + tname + "_" + fname
 
@@ -220,7 +224,7 @@ let tableProcessColumn rdbms (w:TextBlockWriter) tname f =
             //tab + "ALTER TABLE " + tname + " ADD " + t
             tab + "END"
             "" |]
-        |> w.multiLine
+        |> wSQLServer.multiLine
 
         [|  ""
             "IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_" + fullname + "')"
@@ -228,7 +232,7 @@ let tableProcessColumn rdbms (w:TextBlockWriter) tname f =
             tab + "ALTER TABLE " + tname + " DROP  CONSTRAINT [Constraint_" + fullname + "]"
             tab + "END"
             "" |]
-        |> w.multiLine
+        |> wSQLServer.multiLine
 
         [|  //"IF NOT EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_" + fullname + "')"
             //tab + "BEGIN"
@@ -239,12 +243,14 @@ let tableProcessColumn rdbms (w:TextBlockWriter) tname f =
             tab + "BEGIN"
             tab + "ALTER TABLE " + tname + " DROP  CONSTRAINT [UniqueNonclustered_" + fullname + "]"
             tab + "END" |]
-        |> w.multiLine
+        |> wSQLServer.multiLine
 
         //let s = " ALTER TABLE " + transobj.name + " DROP  CONSTRAINT [Constraint_" + fullname + "]" + crlf
         //sb.Append(" ALTER TABLE " + transobj.name + " DROP  CONSTRAINT [Constraint_" + fullname + "]" + crlf) |> ignore
+        ())
 
-    | Rdbms.PostgreSql -> 
+    Rdbms.SqlServer |> (fun rdbms ->
+        let t = sqlField rdbms f
 
         [|  ""
             "DO $$"
@@ -257,20 +263,22 @@ let tableProcessColumn rdbms (w:TextBlockWriter) tname f =
             "        ALTER TABLE " + tname + " ADD " + t + ";"
             "    END IF;"
             "END $$;" |]
-        |> w.multiLine
+        |> wPostgreSQL.multiLine)
 
 
-let table__sql rdbms (w:TextBlockWriter) table = 
+let table__sql rdbms 
+    (wSQLServer:TextBlockWriter,wPostgreSQL:TextBlockWriter) 
+    table = 
 
     let tname = 
         match rdbms with
         | Rdbms.PostgreSql -> table.tableName.ToLower()
         | _ -> table.tableName
 
-    "-- [" + tname + "] ----------------------"
-    |> w.newline
+    "-- [" + tname + "] ----------------------" |> wSQLServer.newline
+    "-- [" + tname + "] ----------------------" |> wPostgreSQL.newline
 
-    tableCheckExistOrCreate rdbms w table tname
+    tableCheckExistOrCreate (wSQLServer,wPostgreSQL) table tname
 
     let fns = 
         [|  [|  "ID"; "Createdat"; "Updatedat"; "Sort" |]
@@ -283,11 +291,11 @@ let table__sql rdbms (w:TextBlockWriter) table =
                 | Rdbms.PostgreSql -> fname.ToLower()) |]
         |> Array.concat
 
-    tableDropUndefinedColumns rdbms w tname fns
+    tableDropUndefinedColumns rdbms (wSQLServer,wPostgreSQL) tname fns
 
     table.fields.Values
     |> Seq.toArray
-    |> Array.iter(tableProcessColumn rdbms w tname)
+    |> Array.iter(tableProcessColumn (wSQLServer,wPostgreSQL) tname)
 
 let updateDatabase output rdbms (conn:string) tables = 
 

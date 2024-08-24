@@ -944,8 +944,7 @@ let go output config =
             "" |]
         |> sqlPostgreSQL.w.multiLine
 
-    tables |> Array.iter (table__sql config.rdbms sqlSQLServer.w)
-    tables |> Array.iter (table__sql config.rdbms sqlPostgreSQL.w)
+    tables |> Array.iter (table__sql config.rdbms (sqlSQLServer.w,sqlPostgreSQL.w))
 
     [|  "// OrmMor.ts"
         "import { BinIndexed, BytesBuilder } from \"~/lib/util/bin\""
