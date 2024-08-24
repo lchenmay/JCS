@@ -15,10 +15,41 @@ let output (s:string) = Console.WriteLine s
 
 let pwd = "jjsjd2VSd$"
 
-let target = 7
-//let target = 9
+//let target = 7
+let target = 9 // Game Develop
+//let target = 10 // Game Deploy
 
 match target with
+| 7 ->
+    {   ns = "Shared"
+        rdbms = Rdbms.SqlServer
+        dbName = "J7"
+        donmainName = ""
+        conn = "server=127.0.0.1; user=sa; database=J7"
+        mainDir = @"C:\Dev\J-7\Shared"
+        JsDir = @"C:\Dev\J-7\vscode\src\lib\shared" }
+| 9 ->
+    {   ns = "Shared"
+        rdbms = Rdbms.SqlServer
+        dbName = "Game"
+        donmainName = ""
+        conn = "server=127.0.0.1; user=sa; database=Game"
+        mainDir = @"C:\Dev\Game\Shared"
+        JsDir = @"C:\Dev\Game\vscode\src\lib\shared" }
+| 10 ->
+    {   ns = "Shared"
+        rdbms = Rdbms.PostgreSql
+        dbName = "Game"
+        donmainName = ""
+        conn = 
+            [|  "Host=localhost"
+                ";Username=game"
+                ";Password=" + pwd
+                ";Database=JCS" |]
+            |> String.Concat
+        mainDir = @"C:\Dev\Game\Shared"
+        JsDir = @"C:\Dev\Game\vscode\src\lib\shared" }
+
 | 0 -> 
     {   ns = "Shared"
         rdbms = Rdbms.PostgreSql
@@ -53,14 +84,7 @@ match target with
             |> String.Concat
         mainDir = @"C:\Dev\JCS\Shared"
         JsDir = @"C:\Dev\JCS\vscode\src\lib\shared" }
-| 7 ->
-    {   ns = "Shared"
-        rdbms = Rdbms.SqlServer
-        dbName = "J7"
-        donmainName = ""
-        conn = "server=127.0.0.1; user=sa; database=J7"
-        mainDir = @"C:\Dev\J-7\Shared"
-        JsDir = @"C:\Dev\J-7\vscode\src\lib\shared" }
+
 | 8 ->
     {   ns = "Shared"
         rdbms = Rdbms.SqlServer
@@ -69,15 +93,6 @@ match target with
         conn = "server=127.0.0.1; user=sa; database=GenVI"
         mainDir = @"C:\Dev\DevCoop\GenVI\Shared"
         JsDir = @"C:\Dev\DevCoop\GenVI\vscode\src\lib\shared" }
-| 9 ->
-    {   ns = "Shared"
-        rdbms = Rdbms.SqlServer
-        dbName = "Game"
-        donmainName = ""
-        conn = "server=127.0.0.1; user=sa; database=Game"
-        mainDir = @"C:\Dev\Game\Shared"
-        JsDir = @"C:\Dev\Game\vscode\src\lib\shared" }
-
 | 1 -> 
     {   ns = "Shared"
         rdbms = Rdbms.SqlServer
