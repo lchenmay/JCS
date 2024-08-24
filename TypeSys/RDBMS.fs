@@ -251,11 +251,9 @@ let tableProcessColumn rdbms (w:TextBlockWriter) tname f =
             "DECLARE"
             "    condition boolean;"
             "BEGIN"
-            "    condition := (SELECT EXISTS(SELECT column_name FROM information_schema.columns WHERE table_name='" + tname + "' AND column_name='" + fname + "'));"
+            "    condition := (SELECT EXISTS(SELECT column_name FROM information_schema.columns WHERE table_name='" + tname + "' AND column_name='" + fname.ToLower() + "'));"
             ""
-            "    IF condition THEN"
-            "        RAISE NOTICE '" + fname + " exists.';"
-            "    ELSE"
+            "    IF not condition THEN"
             "        ALTER TABLE " + tname + " ADD " + t + ";"
             "    END IF;"
             "END $$;" |]

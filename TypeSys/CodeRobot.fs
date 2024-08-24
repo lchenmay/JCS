@@ -30,7 +30,8 @@ open TypeSys.CodeRobotIITs
 
 type Robot = {
 srcs: Src[]
-sql: Src
+sqlSQLServer: Src
+sqlPostegreSQL: Src
 ot: Src
 otTypeScript: Src
 om: Src
@@ -42,7 +43,7 @@ config: RobotConfig
 output: string -> unit }
 
 let robot__srcs robot = 
-    robot.srcs,robot.sql,robot.ot,robot.otTypeScript,robot.om,robot.omTypeScript,robot.cm,robot.typeTypeScript,robot.cmTypeScript
+    robot.srcs,robot.sqlSQLServer,robot.sqlPostegreSQL,robot.ot,robot.otTypeScript,robot.om,robot.omTypeScript,robot.cm,robot.typeTypeScript,robot.cmTypeScript
 
 let create__Src (pattern:string) = 
     let buffer = new List<string>()
@@ -318,7 +319,7 @@ let fSharpHeader src m opens =
 
 let buildTableEnums robot (t:Table) (name,lines:(string * string)[]) =
 
-    let srcs,sql,ot,otTypeScript,om,omTypeScript,cm,typeTypeScript,cmTypeScript =
+    let srcs,sqlSQLServer,sqlPostgreSQL,ot,otTypeScript,om,omTypeScript,cm,typeTypeScript,cmTypeScript =
         robot__srcs robot
 
     let enumName = t.typeName.ToLower() + name + "Enum"
@@ -425,7 +426,7 @@ let buildTableEnums robot (t:Table) (name,lines:(string * string)[]) =
 
 let buildTableType robot (t:Table) (fieldNames:string[],fields) =
 
-    let srcs,sql,ot,otTypeScript,om,omTypeScript,cm,typeTypeScript,cmTypeScript =
+    let srcs,sqlSQLServer,sqlPostgreSQL,ot,otTypeScript,om,omTypeScript,cm,typeTypeScript,cmTypeScript =
         robot__srcs robot
 
     fieldNames
@@ -666,7 +667,7 @@ let buildTableMor om (t:Table) (fieldNames:string[],fields) =
 
 let buildTable robot (t:Table) =
 
-    let srcs,sql,ot,otTypeScript,om,omTypeScript,cm,typeTypeScript,cmTypeScript =
+    let srcs,sqlSQLServer,sqlPostgreSQL,ot,otTypeScript,om,omTypeScript,cm,typeTypeScript,cmTypeScript =
         robot__srcs robot
 
     "// [" + t.tableName + "] (" + t.typeName + ")" |> addMulti <| [| ot; otTypeScript |]
@@ -685,7 +686,7 @@ let buildTable robot (t:Table) =
 
 let buildTables robot tables =
 
-    let srcs,sql,ot,otTypeScript,om,omTypeScript,cm,typeTypeScript,cmTypeScript =
+    let srcs,sqlSQLServer,sqlPostgreSQL,ot,otTypeScript,om,omTypeScript,cm,typeTypeScript,cmTypeScript =
         robot__srcs robot
 
     om.w.newlineBlank()
@@ -869,8 +870,11 @@ let buildCustomTypes config tc src srcTypeScript (cTypes:Dictionary<string,Type>
 
 let prepareRobot output config= 
 
-    let sql =
-        config.mainDir + "\OrmTypes.sql"
+    let sqlSQLServer =
+        config.mainDir + "\sqlSQLServer.sql"
+        |> create__Src
+    let sqlPostgreSQL =
+        config.mainDir + "\sqlPostgreSQL.sql"
         |> create__Src
     let ot =
         config.mainDir + "\OrmTypes.fs"
@@ -898,7 +902,8 @@ let prepareRobot output config=
 
     {
         srcs =
-            [|  sql
+            [|  sqlSQLServer
+                sqlPostgreSQL
                 ot 
                 otTypeScript
                 om
@@ -906,7 +911,8 @@ let prepareRobot output config=
                 cm
                 typeTypeScript
                 cmTypeScript |]
-        sql = sql
+        sqlSQLServer = sqlSQLServer
+        sqlPostegreSQL = sqlPostgreSQL
         ot = ot
         otTypeScript = otTypeScript
         om = om
@@ -924,21 +930,22 @@ let go output config =
 
     let cTypes,tc,tables  = load robot
 
-    let srcs,sql,ot,otTypeScript,om,omTypeScript,cm,typeTypeScript,cmTypeScript =
+    let srcs,sqlSQLServer,sqlPostgreSQL,ot,otTypeScript,om,omTypeScript,cm,typeTypeScript,cmTypeScript =
         robot__srcs robot
 
     match config.rdbms with
     | Rdbms.SqlServer -> 
         [|  "USE [" + config.dbName + "]"
             "" |]
+        |> sqlSQLServer.w.multiLine
     | _ -> 
     //| Rdbms.PostgreSql -> 
         [|  //"SET search_path TO " + config.dbName
             "" |]
-    |> sql.w.multiLine
+        |> sqlPostgreSQL.w.multiLine
 
-    tables
-    |> Array.iter (table__sql config.rdbms sql.w)
+    tables |> Array.iter (table__sql config.rdbms sqlSQLServer.w)
+    tables |> Array.iter (table__sql config.rdbms sqlPostgreSQL.w)
 
     [|  "// OrmMor.ts"
         "import { BinIndexed, BytesBuilder } from \"~/lib/util/bin\""
