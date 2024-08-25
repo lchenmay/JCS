@@ -73,6 +73,7 @@ type TypeEnum =
 | Ary of Type
 | List of Type
 | Dictionary of Type * Type
+| SortedDictionary of Type * Type
 | ConcurrentDictionary of Type * Type
 | ListImmutable of Type
 | Fun of Type * Type
@@ -97,9 +98,10 @@ type TypeEnumPlain =
 | Ary = 7
 | List = 8
 | Dictionary = 9
-| ConcurrentDictionary = 10
-| ListImmutable = 11
-| Fun = 12
+| SortedDictionary = 10
+| ConcurrentDictionary = 11
+| ListImmutable = 12
+| Fun = 13
 
 let typeEnum__plain e = 
     match e with
@@ -113,6 +115,7 @@ let typeEnum__plain e =
     | TypeEnum.Ary v -> TypeEnumPlain.Ary
     | TypeEnum.List v -> TypeEnumPlain.List
     | TypeEnum.Dictionary (kType,vType) -> TypeEnumPlain.Dictionary
+    | TypeEnum.SortedDictionary (kType,vType) -> TypeEnumPlain.SortedDictionary
     | TypeEnum.ConcurrentDictionary (kType,vType) -> TypeEnumPlain.ConcurrentDictionary
     | TypeEnum.ListImmutable v -> TypeEnumPlain.ListImmutable
     | TypeEnum.Fun (src,dst) -> TypeEnumPlain.Fun
@@ -161,6 +164,11 @@ let rec type__str output indent t =
         tabs[indent + 1] + "ListImmutable of:" |> output
         type__str output (indent + 1) v
     | TypeEnum.Dictionary (kType,vType) ->
+        tabs[indent + 1] + "Key:" |> output
+        type__str output (indent + 1) kType
+        tabs[indent + 1] + "Val:" |> output
+        type__str output (indent + 1) vType
+    | TypeEnum.SortedDictionary (kType,vType) ->
         tabs[indent + 1] + "Key:" |> output
         type__str output (indent + 1) kType
         tabs[indent + 1] + "Val:" |> output
@@ -265,6 +273,15 @@ let rec str__type tc s =
                     name = s 
                     sort = 0
                     tEnum = TypeEnum.ConcurrentDictionary(k,v)
+                    custom =  false
+                    src = [| |] }
+            else if s.StartsWith "SortedDictionary<" then
+                let k = find ("<",",") s |> str__type tc
+                let v = (findBidirectional (",",">") s).Trim() |> str__type tc
+                { 
+                    name = s 
+                    sort = 0
+                    tEnum = TypeEnum.SortedDictionary(k,v)
                     custom =  false
                     src = [| |] }
             else if s.StartsWith "Dictionary<" then

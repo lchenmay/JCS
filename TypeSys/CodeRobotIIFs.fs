@@ -104,6 +104,7 @@ let rec t__binImpl (w:TextBlockWriter) indent t =
     | TypeEnum.List v -> ()
     | TypeEnum.ListImmutable v -> ()
     | TypeEnum.Dictionary (kType,vType) -> ()
+    | TypeEnum.SortedDictionary (kType,vType) -> ()
     | TypeEnum.ConcurrentDictionary (kType,vType) -> ()
     | TypeEnum.Fun (src,dst) -> ()
 
@@ -151,6 +152,12 @@ and t__binCall w indent t =
         ")" |> w.appendEnd
     | TypeEnum.Dictionary (kType,vType) -> 
         "Dictionary__bin (" |> w.appendEnd
+        t__binCall w (indent + 1) kType
+        ") (" |> w.appendEnd
+        t__binCall w (indent + 1) vType
+        ")" |> w.appendEnd
+    | TypeEnum.SortedDictionary (kType,vType) -> 
+        "SortedDictionary__bin (" |> w.appendEnd
         t__binCall w (indent + 1) kType
         ") (" |> w.appendEnd
         t__binCall w (indent + 1) vType
@@ -267,6 +274,7 @@ let rec bin__tImpl (w:TextBlockWriter) indent t =
     | TypeEnum.List tt -> ()
     | TypeEnum.ListImmutable tt -> ()
     | TypeEnum.Dictionary (kType,vType) -> ()
+    | TypeEnum.SortedDictionary (kType,vType) -> ()
     | TypeEnum.ConcurrentDictionary(kType,vType) -> ()
 
 and bin__tCall w indent t = 
@@ -317,6 +325,15 @@ and bin__tCall w indent t =
         "(fun bi ->" |> w.appendEnd
         "let v = new Dictionary<" + kType.name + "," + vType.name + ">()" |> w.newlineIndent (indent + 1)
         "bin__Dictionary (" |> w.newlineIndent (indent + 1)
+        bin__tCall w (indent + 2) kType
+        ") (" |> w.appendEnd
+        bin__tCall w (indent + 2) vType
+        ") v bi" |> w.appendEnd
+        "v)" |> w.newlineIndent (indent + 1)
+    | TypeEnum.SortedDictionary (kType,vType) ->
+        "(fun bi ->" |> w.appendEnd
+        "let v = new SortedDictionary<" + kType.name + "," + vType.name + ">()" |> w.newlineIndent (indent + 1)
+        "bin__SortedDictionary (" |> w.newlineIndent (indent + 1)
         bin__tCall w (indent + 2) kType
         ") (" |> w.appendEnd
         bin__tCall w (indent + 2) vType
@@ -377,6 +394,7 @@ and t__emptyImpl (w:TextBlockWriter) indent t =
     | TypeEnum.List tt -> ()
     | TypeEnum.ListImmutable tt -> ()
     | TypeEnum.Dictionary (kType,vType) -> ()
+    | TypeEnum.SortedDictionary (kType,vType) -> ()
     | TypeEnum.ConcurrentDictionary (kType,vType) -> ()
 
 and t__emptyCall w indent t = 
@@ -425,6 +443,8 @@ and t__emptyCall w indent t =
         "[]" |> w.appendEnd
     | TypeEnum.Dictionary (kType,vType) -> 
         "new Dictionary<" + kType.name + "," + vType.name + ">()" |> w.appendEnd
+    | TypeEnum.SortedDictionary (kType,vType) -> 
+        "new SortedDictionary<" + kType.name + "," + vType.name + ">()" |> w.appendEnd
     | TypeEnum.ConcurrentDictionary (kType,vType) -> 
         "new ConcurrentDictionary<" + kType.name + "," + vType.name + ">()" |> w.appendEnd
     | TypeEnum.Fun (src,dst) -> 
@@ -566,6 +586,12 @@ and t__jsonCall w indent t =
         ")" |> w.appendEnd
     | TypeEnum.Dictionary (kType,vType) -> 
         "Dictionary__json (" |> w.appendEnd
+        t__jsonCall w (indent + 1) kType
+        ") (" |> w.appendEnd
+        t__jsonCall w (indent + 1) vType
+        ")" |> w.appendEnd
+    | TypeEnum.SortedDictionary (kType,vType) -> 
+        "SortedDictionary__json (" |> w.appendEnd
         t__jsonCall w (indent + 1) kType
         ") (" |> w.appendEnd
         t__jsonCall w (indent + 1) vType
@@ -738,6 +764,7 @@ let rec json__tImpl (w:TextBlockWriter) indent t =
     | TypeEnum.List tt -> ()
     | TypeEnum.ListImmutable tt -> ()
     | TypeEnum.Dictionary (kType,vType) -> ()
+    | TypeEnum.SortedDictionary (kType,vType) -> ()
 
 and json__tCall (w:TextBlockWriter)indent t = 
 
@@ -805,6 +832,13 @@ and json__tCall (w:TextBlockWriter)indent t =
         ") (" |> w.appendEnd
         json__tCall w (indent) vType
         ") (new Dictionary<" + kType.name + "," + vType.name + ">()) json)" |> w.appendEnd
+    | TypeEnum.SortedDictionary (kType,vType) -> 
+        "(fun json ->" |> w.appendEnd
+        "json__SortedDictionaryo (" |> w.newlineIndent (indent + 1)
+        json__tCall w (indent) kType
+        ") (" |> w.appendEnd
+        json__tCall w (indent) vType
+        ") (new SortedDictionary<" + kType.name + "," + vType.name + ">()) json)" |> w.appendEnd
     | TypeEnum.ConcurrentDictionary (kType,vType) -> 
         "(fun json ->" |> w.appendEnd
         "json__ConcurrentDictionaryo (" |> w.newlineIndent (indent + 1)
