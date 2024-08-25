@@ -53,7 +53,7 @@ let sqlField rdbms f =
             | FieldDef.Timestamp
             | FieldDef.Integer -> "BIGINT"
             | FieldDef.Float -> "FLOAT"
-            | FieldDef.Boolean -> "BIT"
+            | FieldDef.Boolean -> "BOOLEAN"//"BIT"
             | FieldDef.SelectLines v -> "INT"
             | FieldDef.TimeSeries -> "VARBINARY(MAX)"
             | _ -> ""
