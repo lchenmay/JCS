@@ -16,8 +16,8 @@ let output (s:string) = Console.WriteLine s
 let pwd = "jjsjd2VSd$"
 
 //let target = 7
-let target = 9 // Game Develop
-//let target = 10 // Game Deploy
+//let target = 9 // Game Develop
+let target = 10 // Game Deploy
 
 match target with
 | 7 ->

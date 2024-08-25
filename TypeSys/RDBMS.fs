@@ -58,7 +58,7 @@ let sqlField rdbms f =
             | FieldDef.TimeSeries -> "VARBINARY(MAX)"
             | _ -> ""
 
-        n + " " + s
+        n.ToLower() + " " + s
 
 let field__existence tname fname = 
     [|  "SELECT * FROM SYSCOLUMNS WHERE id=object_id('"
@@ -102,10 +102,10 @@ let tableCheckExistOrCreatePostegreSQL (w:TextBlockWriter) table (tname:string) 
         "    condition := (SELECT EXISTS(SELECT * FROM information_schema.tables WHERE table_name = '" + tname.ToLower() + "'));"
         ""
         "    IF not condition THEN"
-        "    CREATE TABLE " + tname.ToLower() + " (ID BIGINT NOT NULL"
-        "        ,Createdat BIGINT NOT NULL"
-        "        ,Updatedat BIGINT NOT NULL"
-        "        ,Sort BIGINT NOT NULL"
+        "    CREATE TABLE " + tname.ToLower() + " (id BIGINT NOT NULL"
+        "        ,createdat BIGINT NOT NULL"
+        "        ,updatedat BIGINT NOT NULL"
+        "        ,sort BIGINT NOT NULL"
         "        ," |]
     |> w.multiLine
 
