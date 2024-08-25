@@ -454,13 +454,20 @@ let buildTableType robot (t:Table) (fieldNames:string[],fields) =
     "type " + t.typeName + " = Rcd<p" + t.typeName + ">" |> ot.w.newline
 
     ot.w.newlineBlank()
-    [|  "let " + t.typeName + "_fieldorders = \"[ID],[Createdat],[Updatedat],[Sort],"
-        fieldNames
-        |> Array.map(fun i -> "[" + i + "]")
-        |> String.concat ","
-        "\"" |]
-    |> String.Concat
-    |> ot.w.newline
+    "let " + t.typeName + "_fieldorders() =" |> ot.w.newline
+    "match rdbms with" |> ot.w.newlineIndent 1
+    "| Rdbms.SqlServer ->" |> ot.w.newlineIndent 1
+    "\"[ID],[Createdat],[Updatedat],[Sort]," |> ot.w.newlineIndent 2
+    fieldNames
+    |> Array.map(fun i -> "[" + i + "]")
+    |> String.concat "," |> ot.w.appendEnd
+    "\"" |> ot.w.appendEnd
+    "| Rdbms.PostgreSql ->" |> ot.w.newlineIndent 1
+    "\"id,createdat,updatedat,sort," |> ot.w.newlineIndent 2
+    fieldNames
+    |> Array.map(fun i -> i.ToLower())
+    |> String.concat "," |> ot.w.appendEnd
+    "\"" |> ot.w.appendEnd
 
     ot.w.newlineBlank()
     "let p" + t.typeName + "_fieldordersArray = [|" |> ot.w.newline
@@ -470,16 +477,24 @@ let buildTableType robot (t:Table) (fieldNames:string[],fields) =
     " |]" |> ot.w.appendEnd
 
     ot.w.newlineBlank()
-    [|  "let " + t.typeName + "_sql_update = \"[Updatedat]=@Updatedat,"
-        fieldNames
-        |> Array.map(fun i -> "[" + i + "]=@" + i)
-        |> String.concat ","
-        "\"" |]
-    |> String.Concat
-    |> ot.w.newline
+    "let " + t.typeName + "_sql_update() =" |> ot.w.newline
+    "match rdbms with" |> ot.w.newlineIndent 1
+    "| Rdbms.SqlServer -> \"" |> ot.w.newlineIndent 1
+    fieldNames
+    |> Array.map(fun i -> "[" + i + "]=@" + i)
+    |> String.concat "," |> ot.w.appendEnd
+    "\"" |> ot.w.appendEnd
+    "| Rdbms.PostgreSql -> \"" |> ot.w.newlineIndent 1
+    fieldNames
+    |> Array.map(fun i -> i.ToLower() + "=@" + i.ToLower())
+    |> String.concat "," |> ot.w.appendEnd
+    "\"" |> ot.w.appendEnd
 
     ot.w.newlineBlank()
-    "let p" + t.typeName + "_fields = [|" |> ot.w.newline
+    "let p" + t.typeName + "_fields() =" |> ot.w.newline
+    "match rdbms with" |> ot.w.newlineIndent 1
+    "| Rdbms.SqlServer ->" |> ot.w.newlineIndent 1
+    "[|" |> ot.w.newlineIndent 2
     fields
     |> Array.map(fun (sort,name,def,json) -> 
         match def with
@@ -501,9 +516,34 @@ let buildTableType robot (t:Table) (fieldNames:string[],fields) =
         | Timestamp -> "Timestamp" + "(\"" + name + "\")"
         | TimeSeries -> "TimeSeries" + "(\"" + name + "\")"
         | Other -> "")
-    |> Array.iter (ot.w.newlineIndent 1)
+    |> Array.iter (ot.w.newlineIndent 3)
     " |]" |> ot.w.appendEnd
-
+    "| Rdbms.PostgreSql ->" |> ot.w.newlineIndent 1
+    "[|" |> ot.w.newlineIndent 2
+    fields
+    |> Array.map(fun (sort,name,def,json) -> 
+        let name = name.ToLower()
+        match def with
+        | FK v -> "FK" + "(\"" + name + "\")"
+        | Caption v -> "Caption" + "(\"" + name + "\", " + v.ToString() + ")"
+        | Chars v -> "Chars" + "(\"" + name + "\", " + v.ToString() + ")"
+        | Link v -> "Link" + "(\"" + name + "\", " + v.ToString() + ")"
+        | Text -> "Text" + "(\"" + name + "\")"
+        | Bin -> "Bin" + "(\"" + name + "\")"
+        | Integer -> "Integer" + "(\"" + name + "\")"
+        | Float -> "Float" + "(\"" + name + "\")"
+        | Boolean -> "Boolean" + "(\"" + name + "\")"
+        | SelectLines lines -> 
+            let a = 
+                lines
+                |> Array.map(fun (p,q) -> "(\"" + p + "\",\"" + q + "\")")
+                |> String.concat ";"
+            "SelectLines" + "(\"" + name + "\", [| " + a + " |])"
+        | Timestamp -> "Timestamp" + "(\"" + name + "\")"
+        | TimeSeries -> "TimeSeries" + "(\"" + name + "\")"
+        | Other -> "")
+    |> Array.iter (ot.w.newlineIndent 3)
+    " |]" |> ot.w.appendEnd
     ot.w.newlineBlank()
     "let p" + t.typeName + "_empty(): p" + t.typeName + " = {" |> ot.w.newline
     fieldNames
@@ -559,11 +599,25 @@ let buildTableMor om (t:Table) (fieldNames:string[],fields) =
 
     om.w.newlineBlank()
     "let p" + t.typeName + "__sps (p:p" + t.typeName + ") =" |> om.w.newline
-    "[|" |> om.w.newlineIndent 1
+    "match rdbms with" |> om.w.newlineIndent 1
+    "| Rdbms.SqlServer ->" |> om.w.newlineIndent 1
+    "[|" |> om.w.newlineIndent 2
     fieldNames
     |> Array.iter(fun i -> 
         let sort,name,def,json = t.fields[i]
-        "(\"" + name + "\", " |> om.w.newlineIndent 2
+        "(\"" + name + "\", " |> om.w.newlineIndent 3
+        match def with
+        | FieldDef.Timestamp -> "p." + name + ".Ticks"
+        | _ -> "p." + name 
+        |> om.w.appendEnd
+        ") |> kvp__sqlparam" |> om.w.appendEnd)
+    " |]" |> om.w.appendEnd
+    "| Rdbms.PostgreSql ->" |> om.w.newlineIndent 1
+    "[|" |> om.w.newlineIndent 2
+    fieldNames
+    |> Array.iter(fun i -> 
+        let sort,name,def,json = t.fields[i]
+        "(\"" + name.ToLower() + "\", " |> om.w.newlineIndent 3
         match def with
         | FieldDef.Timestamp -> "p." + name + ".Ticks"
         | _ -> "p." + name 
@@ -594,7 +648,7 @@ let buildTableMor om (t:Table) (fieldNames:string[],fields) =
     "updater rcd.p" |> om.w.newlineIndent 1
     "let ctime,res =" |> om.w.newlineIndent 1
     "(rcd.ID,rcd.p,rollback_p,rollback_updatedat)" |> om.w.newlineIndent 2
-    "|> update (conn,output," + t.typeName + "_table," + t.typeName + "_sql_update,p" + t.typeName + "__sps,suc,fail)" |> om.w.newlineIndent 2
+    "|> update (conn,output," + t.typeName + "_table," + t.typeName + "_sql_update(),p" + t.typeName + "__sps,suc,fail)" |> om.w.newlineIndent 2
     "match res with" |> om.w.newlineIndent 1
     "| Suc ctx ->" |> om.w.newlineIndent 1
     "rcd.Updatedat <- ctime" |> om.w.newlineIndent 2
@@ -623,7 +677,7 @@ let buildTableMor om (t:Table) (fieldNames:string[],fields) =
     "" |> om.w.newlineIndent 1
 
     om.w.newlineBlank()
-    "let id__" + t.typeName + "o id: " + t.typeName + " option = id__rcd(conn," + t.typeName + "_fieldorders," + t.typeName + "_table,db__" + t.typeName + ") id" |> om.w.newline
+    "let id__" + t.typeName + "o id: " + t.typeName + " option = id__rcd(conn," + t.typeName + "_fieldorders()," + t.typeName + "_table,db__" + t.typeName + ") id" |> om.w.newline
 
     om.w.newlineBlank()
     "let " + t.typeName + "_metadata = {" |> om.w.newline
@@ -714,14 +768,18 @@ let buildTables robot tables =
     tables
     |> Array.iter(fun t -> 
         om.w.newlineBlank()
-        "match singlevalue_query conn (str__sql \"SELECT MAX(ID) FROM [" + t.tableName + "]\") with" |> om.w.newlineIndent 1
+        "let sqlMax" + t.tableName + ", sqlCount" + t.tableName + " =" |> om.w.newlineIndent 1
+        "match rdbms with" |> om.w.newlineIndent 2
+        "| Rdbms.SqlServer -> \"SELECT MAX(ID) FROM [" + t.tableName + "]\", \"SELECT COUNT(ID) FROM [" + t.tableName + "]\"" |> om.w.newlineIndent 2
+        "| Rdbms.PostgreSql -> \"SELECT MAX(id) FROM " + t.tableName.ToLower() + "\", \"SELECT COUNT(id) FROM " + t.tableName.ToLower() + "\"" |> om.w.newlineIndent 2
+        "match singlevalue_query conn (str__sql sqlMax" + t.tableName + ") with" |> om.w.newlineIndent 1
         "| Some v ->" |> om.w.newlineIndent 1
         "let max = v :?> int64" |> om.w.newlineIndent 2
         "if max > " + t.typeName + "_id.Value then" |> om.w.newlineIndent 2
         t.typeName + "_id.Value <- max" |> om.w.newlineIndent 3
         "| None -> ()" |> om.w.newlineIndent 1
         om.w.newlineBlank()
-        "match singlevalue_query conn (str__sql \"SELECT COUNT(ID) FROM [" + t.tableName + "]\") with" |> om.w.newlineIndent 1
+        "match singlevalue_query conn (str__sql sqlCount" + t.tableName + ") with" |> om.w.newlineIndent 1
         "| Some v -> " + t.typeName + "_count.Value <- v :?> int32" |> om.w.newlineIndent 1
         "| None -> ()" |> om.w.newlineIndent 1)
     "()" |> om.w.newlineIndent 1
@@ -971,13 +1029,13 @@ let go output config =
         "open " + config.ns + ".OrmMor" |]
     |> fSharpHeader cm (config.ns + ".CustomMor")
 
-    let rdbms = 
-        match config.rdbms with
-        | Rdbms.SqlServer -> "rdbms <- Rdbms.SqlServer" 
-        | Rdbms.PostgreSql -> "rdbms <- Rdbms.PostgreSql" 
+    //let rdbms = 
+    //    match config.rdbms with
+    //    | Rdbms.SqlServer -> "rdbms <- Rdbms.SqlServer" 
+    //    | Rdbms.PostgreSql -> "rdbms <- Rdbms.PostgreSql" 
 
-    [|  ""; rdbms; ""; "" |]
-    |> ot.w.multiLine
+    //[|  ""; rdbms; ""; "" |]
+    //|> ot.w.multiLine
 
     let sorted = tc |> tc__sorted
 
