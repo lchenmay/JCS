@@ -93,16 +93,16 @@ let tableCheckExistOrCreateSQLServer (w:TextBlockWriter) table tname =
         "" |]
     |> w.multiLine
 
-let tableCheckExistOrCreatePostegreSQL (w:TextBlockWriter) table tname = 
+let tableCheckExistOrCreatePostegreSQL (w:TextBlockWriter) table (tname:string) = 
     [|  ""
         "DO $$"
         "DECLARE"
         "    condition boolean;"
         "BEGIN"
-        "    condition := (SELECT EXISTS(SELECT * FROM information_schema.tables WHERE table_name = '" + tname + "'));"
+        "    condition := (SELECT EXISTS(SELECT * FROM information_schema.tables WHERE table_name = '" + tname.ToLower() + "'));"
         ""
-        "    IF condition THEN"
-        "    CREATE TABLE " + tname + " (ID BIGINT NOT NULL"
+        "    IF not condition THEN"
+        "    CREATE TABLE " + tname.ToLower() + " (ID BIGINT NOT NULL"
         "        ,Createdat BIGINT NOT NULL"
         "        ,Updatedat BIGINT NOT NULL"
         "        ,Sort BIGINT NOT NULL"
@@ -246,10 +246,10 @@ let tableProcessColumn
             "DECLARE"
             "    condition boolean;"
             "BEGIN"
-            "    condition := (SELECT EXISTS(SELECT column_name FROM information_schema.columns WHERE table_name='" + tname + "' AND column_name='" + fname.ToLower() + "'));"
+            "    condition := (SELECT EXISTS(SELECT column_name FROM information_schema.columns WHERE table_name='" + tname.ToLower() + "' AND column_name='" + fname.ToLower() + "'));"
             ""
-            "    IF condition THEN"
-            "        ALTER TABLE " + tname + " ADD " + t + ";"
+            "    IF not condition THEN"
+            "        ALTER TABLE " + tname.ToLower() + " ADD " + t.ToLower() + ";"
             "    END IF;"
             "END $$;" |]
         |> wPostgreSQL.multiLine)
