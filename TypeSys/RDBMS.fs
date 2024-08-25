@@ -71,65 +71,58 @@ let field__existence tname fname =
 let table__fieldnames tname = "SELECT [name] FROM SYSCOLUMNS WHERE id=object_id('" + tname + "')"
 let table__fieldnamesCount tname = "SELECT COUNT(*) FROM SYSCOLUMNS WHERE id=object_id('" + tname + "')"
 
-let tableCheckExistOrCreate 
-    (wSQLServer:TextBlockWriter,wPostgreSQL:TextBlockWriter)
-    table tname = 
+let tableCheckExistOrCreateSQLServer (w:TextBlockWriter) table tname = 
+    [|  ""
+        "IF NOT EXISTS(SELECT * FROM sysobjects WHERE [name]='" + tname + "' AND xtype='U')" + crlf
+        "BEGIN" + crlf
+        tab + "CREATE TABLE " + tname + " ([ID] BIGINT NOT NULL"
+        tab + tab + ",[Createdat] BIGINT NOT NULL"
+        tab + tab + ",[Updatedat] BIGINT NOT NULL"
+        tab + tab + ",[Sort] BIGINT NOT NULL,"
+        tab + tab + "" |]
+    |> w.multiLine
 
-    Rdbms.SqlServer |> (fun rdbms ->
-        [|  ""
-            "IF NOT EXISTS(SELECT * FROM sysobjects WHERE [name]='" + tname + "' AND xtype='U')" + crlf
-            "BEGIN" + crlf
-            tab + "CREATE TABLE " + tname + " ([ID] BIGINT NOT NULL"
-            tab + tab + ",[Createdat] BIGINT NOT NULL"
-            tab + tab + ",[Updatedat] BIGINT NOT NULL"
-            tab + tab + ",[Sort] BIGINT NOT NULL,"
-            tab + tab + "" |]
-        |> wSQLServer.multiLine
+    table.fields.Values
+    |> Seq.toArray
+    |> Array.map (sqlField Rdbms.SqlServer)
+    |> String.concat(crlf + tab + tab + ",")
+    |> w.appendEnd
 
-        table.fields.Values
-        |> Seq.toArray
-        |> Array.map (sqlField rdbms)
-        |> String.concat(crlf + tab + tab + ",")
-        |> wSQLServer.appendEnd
+    [|  ", CONSTRAINT [PK_" + tname + "] PRIMARY KEY CLUSTERED ([ID] ASC)) ON [PRIMARY]"
+        "END"
+        "" |]
+    |> w.multiLine
 
-        [|  ", CONSTRAINT [PK_" + tname + "] PRIMARY KEY CLUSTERED ([ID] ASC)) ON [PRIMARY]"
-            "END"
-            "" |]
-        |> wSQLServer.multiLine)
+let tableCheckExistOrCreatePostegreSQL (w:TextBlockWriter) table tname = 
+    [|  ""
+        "DO $$"
+        "DECLARE"
+        "    condition boolean;"
+        "BEGIN"
+        "    condition := (SELECT EXISTS(SELECT * FROM information_schema.tables WHERE table_name = '" + tname + "'));"
+        ""
+        "    IF condition THEN"
+        "    CREATE TABLE " + tname + " (ID BIGINT NOT NULL"
+        "        ,Createdat BIGINT NOT NULL"
+        "        ,Updatedat BIGINT NOT NULL"
+        "        ,Sort BIGINT NOT NULL"
+        "        ," |]
+    |> w.multiLine
 
-    Rdbms.PostgreSql |> (fun rdbms ->
-        [|  ""
-            "DO $$"
-            "DECLARE"
-            "    condition boolean;"
-            "BEGIN"
-            "    condition := (SELECT EXISTS(SELECT * FROM information_schema.tables WHERE table_name = '" + tname + "'));"
-            ""
-            "    IF condition THEN"
-            "        RAISE NOTICE '" + tname + " exists.';"
-            "    ELSE"
-            ""
-            "    CREATE TABLE " + tname + " (ID BIGINT NOT NULL"
-            "        ,Createdat BIGINT NOT NULL"
-            "        ,Updatedat BIGINT NOT NULL"
-            "        ,Sort BIGINT NOT NULL"
-            "        ," |]
-        |> wPostgreSQL.multiLine
+    table.fields.Values
+    |> Seq.toArray
+    |> Array.map (sqlField Rdbms.PostgreSql)
+    |> String.concat(crlf + tab + tab + ",")
+    |> w.appendEnd
 
-        table.fields.Values
-        |> Seq.toArray
-        |> Array.map (sqlField rdbms)
-        |> String.concat(crlf + tab + tab + ",")
-        |> wPostgreSQL.appendEnd
+    ");" |> w.appendEnd
 
-        ");" |> wPostgreSQL.appendEnd
+    [|  ""
+        "   END IF;"
+        "END $$;" |]
+    |> w.multiLine
 
-        [|  ""
-            "   END IF;"
-            "END $$;" |]
-        |> wPostgreSQL.multiLine)
-
-let checkNotIn tname fns = 
+let checkNotIn rdbms tname fns = 
     match rdbms with
     | Rdbms.SqlServer -> 
         [|  "SELECT name FROM SYSCOLUMNS WHERE id=object_id('"
@@ -146,44 +139,40 @@ let checkNotIn tname fns =
             "))" |]
     |> String.Concat
 
-let tableDropUndefinedColumns rdbms 
-    (wSQLServer:TextBlockWriter,wPostgreSQL:TextBlockWriter) 
-    tname fns = 
+let tableDropUndefinedColumnsSQLServer (w:TextBlockWriter) tname fns = 
+    let fn = "@name_" + tname
+    let cursor = "cursor_" + tname
+    let sql = "@sql_" + tname
 
-    match rdbms with
-    | Rdbms.SqlServer -> 
-        let fn = "@name_" + tname
-        let cursor = "cursor_" + tname
-        let sql = "@sql_" + tname
+    [|  ""
+        "-- Dropping obsolete fields -----------"
+        "DECLARE " + fn + " NVARCHAR(64)"
+        "DECLARE " + cursor + " CURSOR FOR "
+        tab + (checkNotIn Rdbms.SqlServer tname fns)
+        ""
+        "OPEN " + cursor
+        "FETCH NEXT FROM " + cursor + " INTO " + fn
+        ""
+        "WHILE @@FETCH_STATUS = 0"
+        "BEGIN"
+        tab + "PRINT 'Dropping " + tname + ".' + " + fn + ";"
+        tab + ""
+        tab + "DECLARE " + sql + " NVARCHAR(MAX);"
+        tab + "SET " + sql + " = 'ALTER TABLE " + tname + " DROP COLUMN ' + QUOTENAME(" + fn + ")"
+        tab + "EXEC sp_executesql " + sql
+        tab + ""
+        //tab + "ALTER TABLE " + tname + " DROP COLUMN " + fn + ""
+        tab + ""
+        tab + "FETCH NEXT FROM " + cursor + " INTO " + fn
+        "END"
+        ""
+        "CLOSE " + cursor + ";"
+        "DEALLOCATE " + cursor + ";" 
+        "" |]
+    |> w.multiLine
 
-        [|  ""
-            "-- Dropping obsolete fields -----------"
-            "DECLARE " + fn + " NVARCHAR(64)"
-            "DECLARE " + cursor + " CURSOR FOR "
-            tab + (checkNotIn tname fns)
-            ""
-            "OPEN " + cursor
-            "FETCH NEXT FROM " + cursor + " INTO " + fn
-            ""
-            "WHILE @@FETCH_STATUS = 0"
-            "BEGIN"
-            tab + "PRINT 'Dropping " + tname + ".' + " + fn + ";"
-            tab + ""
-            tab + "DECLARE " + sql + " NVARCHAR(MAX);"
-            tab + "SET " + sql + " = 'ALTER TABLE " + tname + " DROP COLUMN ' + QUOTENAME(" + fn + ")"
-            tab + "EXEC sp_executesql " + sql
-            tab + ""
-            //tab + "ALTER TABLE " + tname + " DROP COLUMN " + fn + ""
-            tab + ""
-            tab + "FETCH NEXT FROM " + cursor + " INTO " + fn
-            "END"
-            ""
-            "CLOSE " + cursor + ";"
-            "DEALLOCATE " + cursor + ";" 
-            "" |]
-        |> wSQLServer.multiLine
-    | Rdbms.PostgreSql -> 
-        [|  "" |] |> wPostgreSQL.multiLine
+let tableDropUndefinedColumnsPostgreSQL (w:TextBlockWriter) tname fns = 
+    [|  "" |] |> w.multiLine
 
 let tableProcessColumn 
     (wSQLServer:TextBlockWriter,wPostgreSQL:TextBlockWriter)
@@ -249,7 +238,7 @@ let tableProcessColumn
         //sb.Append(" ALTER TABLE " + transobj.name + " DROP  CONSTRAINT [Constraint_" + fullname + "]" + crlf) |> ignore
         ())
 
-    Rdbms.SqlServer |> (fun rdbms ->
+    Rdbms.PostgreSql |> (fun rdbms ->
         let t = sqlField rdbms f
 
         [|  ""
@@ -259,7 +248,7 @@ let tableProcessColumn
             "BEGIN"
             "    condition := (SELECT EXISTS(SELECT column_name FROM information_schema.columns WHERE table_name='" + tname + "' AND column_name='" + fname.ToLower() + "'));"
             ""
-            "    IF not condition THEN"
+            "    IF condition THEN"
             "        ALTER TABLE " + tname + " ADD " + t + ";"
             "    END IF;"
             "END $$;" |]
@@ -278,20 +267,26 @@ let table__sql rdbms
     "-- [" + tname + "] ----------------------" |> wSQLServer.newline
     "-- [" + tname + "] ----------------------" |> wPostgreSQL.newline
 
-    tableCheckExistOrCreate (wSQLServer,wPostgreSQL) table tname
+    tableCheckExistOrCreateSQLServer wSQLServer table tname
+    tableCheckExistOrCreatePostegreSQL wPostgreSQL table tname
 
-    let fns = 
-        [|  [|  "ID"; "Createdat"; "Updatedat"; "Sort" |]
-            table.fields.Values
-            |> Seq.toArray
-            |> Array.map(fun f ->
-                let sort,fname,def,json = f
-                match rdbms with
-                | Rdbms.SqlServer -> fname
-                | Rdbms.PostgreSql -> fname.ToLower()) |]
-        |> Array.concat
+    [|  [|  "ID"; "Createdat"; "Updatedat"; "Sort" |]
+        table.fields.Values
+        |> Seq.toArray
+        |> Array.map(fun f ->
+            let sort,fname,def,json = f
+            fname) |]
+    |> Array.concat
+    |> tableDropUndefinedColumnsSQLServer wSQLServer tname
 
-    tableDropUndefinedColumns rdbms (wSQLServer,wPostgreSQL) tname fns
+    [|  [|  "ID"; "Createdat"; "Updatedat"; "Sort" |]
+        table.fields.Values
+        |> Seq.toArray
+        |> Array.map(fun f ->
+            let sort,fname,def,json = f
+            fname.ToLower()) |]
+    |> Array.concat
+    |> tableDropUndefinedColumnsPostgreSQL wPostgreSQL tname
 
     table.fields.Values
     |> Seq.toArray

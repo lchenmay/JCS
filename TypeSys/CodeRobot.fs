@@ -933,16 +933,7 @@ let go output config =
     let srcs,sqlSQLServer,sqlPostgreSQL,ot,otTypeScript,om,omTypeScript,cm,typeTypeScript,cmTypeScript =
         robot__srcs robot
 
-    match config.rdbms with
-    | Rdbms.SqlServer -> 
-        [|  "USE [" + config.dbName + "]"
-            "" |]
-        |> sqlSQLServer.w.multiLine
-    | _ -> 
-    //| Rdbms.PostgreSql -> 
-        [|  //"SET search_path TO " + config.dbName
-            "" |]
-        |> sqlPostgreSQL.w.multiLine
+    "USE [" + config.dbName + "]"  |> sqlSQLServer.w.newline
 
     tables |> Array.iter (table__sql config.rdbms (sqlSQLServer.w,sqlPostgreSQL.w))
 
