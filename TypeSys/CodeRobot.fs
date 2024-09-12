@@ -780,7 +780,11 @@ let buildTables robot tables =
         "| None -> ()" |> om.w.newlineIndent 1
         om.w.newlineBlank()
         "match singlevalue_query conn (str__sql sqlCount" + t.tableName + ") with" |> om.w.newlineIndent 1
-        "| Some v -> " + t.typeName + "_count.Value <- v :?> int32" |> om.w.newlineIndent 1
+        "| Some v ->" |> om.w.newlineIndent 1
+        "" + t.typeName + "_count.Value <-" |> om.w.newlineIndent 2
+        "match rdbms with" |> om.w.newlineIndent 3
+        "| Rdbms.SqlServer -> v :?> int32" |> om.w.newlineIndent 3
+        "| Rdbms.PostgreSql -> v :?> int64 |> int32" |> om.w.newlineIndent 3
         "| None -> ()" |> om.w.newlineIndent 1)
     "()" |> om.w.newlineIndent 1
 

@@ -16,8 +16,9 @@ let output (s:string) = Console.WriteLine s
 let pwd = "jjsjd2VSd$"
 
 //let target = 7
-let target = 9 // Game Develop
-//let target = 10 // Game Deploy
+//let target = 5 // CTC Develop
+let target = 9 // Game
+//let target = 11 // GNexts
 
 match target with
 | 7 ->
@@ -36,6 +37,14 @@ match target with
         conn = "server=127.0.0.1; user=sa; database=Game"
         mainDir = @"C:\Dev\Game\Shared"
         JsDir = @"C:\Dev\Game\vscode\src\lib\shared" }
+| 11 ->
+    {   ns = "Shared"
+        rdbms = Rdbms.SqlServer
+        dbName = "GNexts"
+        donmainName = ""
+        conn = "server=127.0.0.1; user=sa; database=GNexts"
+        mainDir = @"C:\Dev\GNexts\Shared"
+        JsDir = @"C:\Dev\GNexts\vscode\src\lib\shared" }
 | 10 ->
     {   ns = "Shared"
         rdbms = Rdbms.PostgreSql
@@ -70,7 +79,7 @@ match target with
         donmainName = "cpto.cc"
         conn = "server=127.0.0.1; user=sa; database=CTC"
         mainDir = @"C:\Dev\GCHAIN2024\CrypTradeClubVsOpen\Shared"
-        JsDir = @"C:\Dev\GCHAIN2024\VsCodeOpen\src\lib\shared\ctc" }
+        JsDir = @"C:\Dev\GCHAIN2024\CrypTradeClubVsOpen\vscode\src\lib\shared" }
 | 6 ->
     {   ns = "Shared"
         rdbms = Rdbms.PostgreSql
