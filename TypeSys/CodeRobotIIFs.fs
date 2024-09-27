@@ -432,9 +432,10 @@ and t__emptyCall w indent t =
     | TypeEnum.Orm table -> 
         "{ ID = 0L; Sort = 0L; Createdat = DateTime.MinValue; Updatedat = DateTime.MinValue; p = p" + t.name.ToUpper() + "_empty() }" |> w.appendEnd
     | TypeEnum.Option tt -> 
-        "bin__Option (" |> w.appendEnd
-        t__emptyCall w (indent + 1) tt
-        ")" |> w.appendEnd
+        "None" |> w.appendEnd
+        //"bin__Option (" |> w.appendEnd
+        //t__emptyCall w (indent + 1) tt
+        //")" |> w.appendEnd
     | TypeEnum.Ary tt -> 
         "[| |]" |> w.appendEnd
     | TypeEnum.List tt -> 

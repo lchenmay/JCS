@@ -189,6 +189,23 @@ export const Json__bin = (bb: BytesBuilder) => (obj: Object) => {
 
 // Generic types
 
+export const option__bin = <T>(item__bin: Function) => (bb: BytesBuilder) => (v: T) => {
+    if(v){
+        bool__bin(bb)(true)
+        item__bin(bb)(v)
+    }
+    else
+        bool__bin(bb)(false)
+}
+
+// This is a 2-order function with 2 arrows in the signature
+export const bin__option = <T>(bin__item: Function) => (bi: BinIndexed) => {
+    if(bin__bool(bi))
+        return bin__item(bi)
+    else
+        return null
+}
+
 export const array__bin = <T>(item__bin: Function) => (bb: BytesBuilder) => (array: Array<T>) => {
     int32__bin(bb)(array.length)
     array.forEach((i: T) => {

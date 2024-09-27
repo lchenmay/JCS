@@ -28,7 +28,7 @@ let rec type__annotation tc t =
     | TypeEnum.ConcurrentDictionary (k,v) -> 
         //"Dict<" + k.name + "," + v.name + ">"
         "{[key:" + k.name + "]: " + v.name + "}"
-    | TypeEnum.Option tt -> tt |> type__annotation tc
+    | TypeEnum.Option tt -> (tt |> type__annotation tc) + " | null"
     | TypeEnum.Fun (src,dst) -> "function"
     | _ -> 
         (str__type tc t.name).name
@@ -66,9 +66,6 @@ let type__TypeScript tc srcType srcMor t =
     | TypeEnum.Sum items ->
         [|  "e: number"
             "val: any" |]
-
-    | TypeEnum.Enum items -> 
-        [|  "e: number" |]
 
     | _ -> [| |]
     |> w.multiLineConcate ("," + crlf)

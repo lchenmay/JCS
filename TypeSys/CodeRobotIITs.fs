@@ -146,7 +146,7 @@ and t__binCall w indent t =
         t.name + "__bin" |> w.appendEnd
     | TypeEnum.Option tt -> 
         w.appendEnd  prefix
-        "Option__bin (" |> w.appendEnd
+        "option__bin (" |> w.appendEnd
         t__binCall w (indent + 1) tt
         ")" |> w.appendEnd
     | TypeEnum.Ary tt -> 
@@ -339,7 +339,7 @@ and bin__tCall w indent t =
         "bin__" + t.name |> w.appendEnd
     | TypeEnum.Option tt -> 
         w.appendEnd prefix
-        "bin__Option (" |> w.appendEnd
+        "bin__option (" |> w.appendEnd
         bin__tCall w (indent + 1) tt
         ")" |> w.appendEnd
     | TypeEnum.Ary tt -> 
@@ -446,7 +446,8 @@ let rec t__emptyImpl ns (w:TextBlockWriter) indent t =
         "}"
         |> w.newlineIndent (indent + 1)
 
-    | TypeEnum.Option tt -> ()
+    | TypeEnum.Option tt -> 
+        "null" |> w.appendEnd
     | TypeEnum.List tt -> ()
     | TypeEnum.ListImmutable tt -> ()
     | TypeEnum.Dictionary (kType,vType)
@@ -503,10 +504,11 @@ and t__emptyCall (w:TextBlockWriter) indent t =
     | TypeEnum.Orm table -> 
         "{ id: 0, sort: 0, createdat: new Date(), updatedat: new Date(), p: " + prefix + "p" + t.name.ToUpper() + "_empty() }" |> w.appendEnd
     | TypeEnum.Option tt -> 
-        w.appendEnd prefix
-        "bin__Option (" |> w.appendEnd
-        t__emptyCall w (indent + 1) tt
-        ")" |> w.appendEnd
+        "null" |> w.appendEnd
+        //w.appendEnd prefix
+        //"bin__Option (" |> w.appendEnd
+        //t__emptyCall w (indent + 1) tt
+        //")" |> w.appendEnd
     | TypeEnum.Ary tt -> 
         "[]" |> w.appendEnd
     | TypeEnum.List tt -> 

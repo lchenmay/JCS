@@ -1094,6 +1094,8 @@ let go output config =
         Path.Combine(pathsrc,f),
         Path.Combine(pathdst,f),true))
 
+    config.JsDir.Replace("\src\lib\shared","")
+    |> FrontendPackVue.build robot.config.mainDir
 
     "Done" |> output
         

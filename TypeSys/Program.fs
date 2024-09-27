@@ -15,10 +15,11 @@ let output (s:string) = Console.WriteLine s
 
 let pwd = "jjsjd2VSd$"
 
-//let target = 7
-//let target = 5 // CTC Develop
-let target = 9 // Game
+let mutable target = 9
+//target <- 5 // CTC Develop
+target <- 9 // Game
 //let target = 11 // GNexts
+//target <- 15 // J
 
 match target with
 | 7 ->
@@ -45,6 +46,14 @@ match target with
         conn = "server=127.0.0.1; user=sa; database=GNexts"
         mainDir = @"C:\Dev\GNexts\Shared"
         JsDir = @"C:\Dev\GNexts\vscode\src\lib\shared" }
+| 15 ->
+    {   ns = "Shared"
+        rdbms = Rdbms.SqlServer
+        dbName = "J"
+        donmainName = ""
+        conn = "server=127.0.0.1; user=sa; database=J"
+        mainDir = @"C:\Dev\J\Shared"
+        JsDir = @"C:\Dev\J\vscode\src\lib\shared" }
 | 10 ->
     {   ns = "Shared"
         rdbms = Rdbms.PostgreSql
