@@ -463,12 +463,13 @@ let buildTableType robot (t:Table) (fieldNames:string[],fields) =
     |> String.concat "," |> ot.w.appendEnd
     "\"" |> ot.w.appendEnd
     "| Rdbms.PostgreSql ->" |> ot.w.newlineIndent 1
-    "\"'id','createdat','updatedat','sort'," |> ot.w.newlineIndent 2
+    let qout = "\"\"\""
+    $""" {qout}"id","createdat","updatedat","sort", """ |> ot.w.newlineIndent 2
     fieldNames
     |> Array.map(fun i -> i.ToLower())
-    |> Array.map(fun i -> "'" + i + "'")
+    |> Array.map(fun i -> "\"" + i + "\"")
     |> String.concat "," |> ot.w.appendEnd
-    "\"" |> ot.w.appendEnd
+    $"{qout}" |> ot.w.appendEnd
 
     ot.w.newlineBlank()
     "let p" + t.typeName + "_fieldordersArray = [|" |> ot.w.newline
