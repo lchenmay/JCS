@@ -58,7 +58,7 @@ let sqlField rdbms f =
             | FieldDef.TimeSeries -> "VARBINARY(MAX)"
             | _ -> ""
 
-        "'" + n.ToLower() + "' " + s
+        "\"" + n.ToLower() + "\" " + s
 
 let field__existence tname fname = 
     [|  "SELECT * FROM SYSCOLUMNS WHERE id=object_id('"
