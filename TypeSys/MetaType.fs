@@ -101,8 +101,10 @@ type TypeEnumPlain =
 | Dictionary = 9
 | SortedDictionary = 10
 | ConcurrentDictionary = 11
-| ListImmutable = 12
-| Fun = 13
+| ModDictInt64 = 12
+| ModDictStr = 13
+| ListImmutable = 14
+| Fun = 15
 
 let typeEnum__plain e = 
     match e with
@@ -118,6 +120,8 @@ let typeEnum__plain e =
     | TypeEnum.Dictionary (kType,vType) -> TypeEnumPlain.Dictionary
     | TypeEnum.SortedDictionary (kType,vType) -> TypeEnumPlain.SortedDictionary
     | TypeEnum.ConcurrentDictionary (kType,vType) -> TypeEnumPlain.ConcurrentDictionary
+    | TypeEnum.ModDictInt64 v -> TypeEnumPlain.ModDictInt64
+    | TypeEnum.ModDictStr v -> TypeEnumPlain.ModDictStr
     | TypeEnum.ListImmutable v -> TypeEnumPlain.ListImmutable
     | TypeEnum.Fun (src,dst) -> TypeEnumPlain.Fun
 
@@ -179,6 +183,12 @@ let rec type__str output indent t =
         type__str output (indent + 1) kType
         tabs[indent + 1] + "Val:" |> output
         type__str output (indent + 1) vType
+    | TypeEnum.ModDictInt64 v ->
+        tabs[indent + 1] + "ModDict Int64 of:" |> output
+        type__str output (indent + 1) v
+    | TypeEnum.ModDictStr v ->
+        tabs[indent + 1] + "ModDict Str of:" |> output
+        type__str output (indent + 1) v
     | TypeEnum.Fun (src, dst) ->
         tabs[indent + 1] + " function:" |> output
         type__str output (indent + 1) src
@@ -292,6 +302,22 @@ let rec str__type tc s =
                     name = s 
                     sort = 0
                     tEnum = TypeEnum.Dictionary(k,v)
+                    custom =  false
+                    src = [| |] }
+            else if s.StartsWith "ModDictInt64<" then
+                let tt = (find ("<",">") s).Trim() |> str__type tc
+                { 
+                    name = s 
+                    sort = 0
+                    tEnum = TypeEnum.ModDictInt64 tt
+                    custom =  false
+                    src = [| |] }
+            else if s.StartsWith "ModDictStr<" then
+                let tt = (find ("<",">") s).Trim() |> str__type tc
+                { 
+                    name = s 
+                    sort = 0
+                    tEnum = TypeEnum.ModDictStr tt
                     custom =  false
                     src = [| |] }
             else if s.Contains "*" then
