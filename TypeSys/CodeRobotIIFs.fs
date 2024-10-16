@@ -11,7 +11,6 @@ open System.Text.RegularExpressions
 open Util.Runtime
 open Util.Cat
 open Util.Collection
-open Util.CollectionSortedAccessor
 open Util.Bin
 open Util.Text
 open Util.Json
@@ -106,6 +105,7 @@ let rec t__binImpl (w:TextBlockWriter) indent t =
     | TypeEnum.Dictionary (kType,vType) -> ()
     | TypeEnum.SortedDictionary (kType,vType) -> ()
     | TypeEnum.ConcurrentDictionary (kType,vType) -> ()
+    | TypeEnum.CodeAccessor v -> ()
     | TypeEnum.Fun (src,dst) -> ()
 
 and t__binCall w indent t = 
@@ -167,6 +167,10 @@ and t__binCall w indent t =
         t__binCall w (indent + 1) kType
         ") (" |> w.appendEnd
         t__binCall w (indent + 1) vType
+        ")" |> w.appendEnd
+    | TypeEnum.CodeAccessor tt -> 
+        "CodeAccessor__bin (" |> w.newlineIndent indent
+        t__binCall w (indent + 1) tt
         ")" |> w.appendEnd
     | TypeEnum.Fun (src,dst) -> ()
 
@@ -276,6 +280,7 @@ let rec bin__tImpl (w:TextBlockWriter) indent t =
     | TypeEnum.Dictionary (kType,vType) -> ()
     | TypeEnum.SortedDictionary (kType,vType) -> ()
     | TypeEnum.ConcurrentDictionary(kType,vType) -> ()
+    | TypeEnum.CodeAccessor tt -> ()
 
 and bin__tCall w indent t = 
 
@@ -348,6 +353,10 @@ and bin__tCall w indent t =
         bin__tCall w (indent + 2) vType
         ") v bi" |> w.appendEnd
         "v)" |> w.newlineIndent (indent + 1)
+    | TypeEnum.CodeAccessor tt -> 
+        "CodeAccessor__array (" |> w.appendEnd
+        bin__tCall w (indent + 1) tt
+        ")" |> w.appendEnd
     | TypeEnum.Fun (kType,vType) -> ()
 
 and t__emptyImpl (w:TextBlockWriter) indent t = 
@@ -396,6 +405,7 @@ and t__emptyImpl (w:TextBlockWriter) indent t =
     | TypeEnum.Dictionary (kType,vType) -> ()
     | TypeEnum.SortedDictionary (kType,vType) -> ()
     | TypeEnum.ConcurrentDictionary (kType,vType) -> ()
+    | TypeEnum.CodeAccessor tt -> ()
 
 and t__emptyCall w indent t = 
 
@@ -448,6 +458,8 @@ and t__emptyCall w indent t =
         "new SortedDictionary<" + kType.name + "," + vType.name + ">()" |> w.appendEnd
     | TypeEnum.ConcurrentDictionary (kType,vType) -> 
         "new ConcurrentDictionary<" + kType.name + "," + vType.name + ">()" |> w.appendEnd
+    | TypeEnum.CodeAccessor tt -> 
+        "new CodeAccessor<" + tt.name + ">()" |> w.appendEnd
     | TypeEnum.Fun (src,dst) -> 
         "(fun _ -> " |> w.appendEnd
         match dst.tEnum with
@@ -602,6 +614,10 @@ and t__jsonCall w indent t =
         t__jsonCall w (indent + 1) kType
         ") (" |> w.appendEnd
         t__jsonCall w (indent + 1) vType
+        ")" |> w.appendEnd
+    | TypeEnum.CodeAccessor tt -> 
+        "CodeAccessor__json (" |> w.appendEnd
+        t__jsonCall w (indent + 1) tt
         ")" |> w.appendEnd
     | _ -> t.name + "__json" |> w.appendEnd
 
@@ -766,6 +782,7 @@ let rec json__tImpl (w:TextBlockWriter) indent t =
     | TypeEnum.ListImmutable tt -> ()
     | TypeEnum.Dictionary (kType,vType) -> ()
     | TypeEnum.SortedDictionary (kType,vType) -> ()
+    | TypeEnum.CodeAccessor tt -> ()
 
 and json__tCall (w:TextBlockWriter)indent t = 
 
@@ -847,5 +864,9 @@ and json__tCall (w:TextBlockWriter)indent t =
         ") (" |> w.appendEnd
         json__tCall w (indent) vType
         ") (new ConcurrentDictionary<" + kType.name + "," + vType.name + ">()) json)" |> w.appendEnd
+    | TypeEnum.CodeAccessor tt -> 
+        "json__CodeAccessoro (" |> w.appendEnd
+        json__tCall w (indent + 1) tt
+        ")" |> w.appendEnd
     | TypeEnum.Fun (kType,vType) -> ()
 

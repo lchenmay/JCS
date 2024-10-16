@@ -11,7 +11,6 @@ open System.Text.RegularExpressions
 open Util.Runtime
 open Util.Cat
 open Util.Collection
-open Util.CollectionSortedAccessor
 open Util.Text
 open Util.Json
 open Util.FileSys
@@ -302,6 +301,8 @@ let fSharpHeader src m opens =
         "open Util.Cat"
         "open Util.Perf"
         "open Util.Measures"
+        "open Util.CollectionModDict"
+        "open Util.Collection"
         "open Util.Db"
         "open Util.DbQuery"
         "open Util.DbTx"

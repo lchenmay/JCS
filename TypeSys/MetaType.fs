@@ -10,7 +10,6 @@ open System.Text.RegularExpressions
 
 open Util.Runtime
 open Util.Cat
-open Util.CollectionSortedAccessor
 open Util.Text
 open Util.Json
 open Util.FileSys
@@ -75,6 +74,7 @@ type TypeEnum =
 | Dictionary of Type * Type
 | SortedDictionary of Type * Type
 | ConcurrentDictionary of Type * Type
+| CodeAccessor of Type
 | ListImmutable of Type
 | Fun of Type * Type
 and Type = {

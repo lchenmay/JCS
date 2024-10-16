@@ -11,7 +11,6 @@ open System.Text.RegularExpressions
 open Util.Runtime
 open Util.Cat
 open Util.Collection
-open Util.CollectionSortedAccessor
 open Util.Bin
 open Util.Text
 open Util.Json
