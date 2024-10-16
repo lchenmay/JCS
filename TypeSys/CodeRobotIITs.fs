@@ -190,6 +190,21 @@ and t__binCall w indent t =
         ") (" |> w.appendEnd
         t__binCall w (indent + 1) vType
         ")" |> w.appendEnd
+
+    | TypeEnum.ModDictInt64 tt -> 
+        "" |> w.newlineIndent indent
+        w.appendEnd  prefix
+        "ModDictInt64__bin (" |> w.appendEnd
+        t__binCall w (indent + 1) tt
+        ")" |> w.appendEnd
+
+    | TypeEnum.ModDictStr tt -> 
+        "" |> w.newlineIndent indent
+        w.appendEnd  prefix
+        "ModDictStr__bin (" |> w.appendEnd
+        t__binCall w (indent + 1) tt
+        ")" |> w.appendEnd
+
     | TypeEnum.Fun (src,dst) -> ()
 
 let rec bin__tImpl ns (w:TextBlockWriter) indent t = 
@@ -365,6 +380,16 @@ and bin__tCall w indent t =
         ") (" |> w.appendEnd
         bin__tCall w (indent + 2) vType
         ")" |> w.appendEnd
+    | TypeEnum.ModDictInt64 tt -> 
+        w.appendEnd prefix
+        "bin__ModDictInt64 (" |> w.appendEnd
+        bin__tCall w (indent + 1) tt
+        ")" |> w.appendEnd
+    | TypeEnum.ModDictStr tt -> 
+        w.appendEnd prefix
+        "bin__Str (" |> w.appendEnd
+        bin__tCall w (indent + 1) tt
+        ")" |> w.appendEnd
     | TypeEnum.Fun (src,dst) -> ()
 
 let rec t__emptyImpl ns (w:TextBlockWriter) indent t = 
@@ -517,6 +542,8 @@ and t__emptyCall (w:TextBlockWriter) indent t =
     | TypeEnum.Dictionary (kType,vType)
     | TypeEnum.SortedDictionary (kType,vType)
     | TypeEnum.ConcurrentDictionary (kType,vType) -> "{}" |> w.appendEnd
+    | TypeEnum.ModDictInt64 tt -> "ModDict_empty()" |> w.appendEnd
+    | TypeEnum.ModDictStr tt -> "ModDict_empty()" |> w.appendEnd
     | TypeEnum.Fun (src,dst) -> "{}" |> w.appendEnd
 
 let rec t__jsonImpl (w:TextBlockWriter) indent t = 
