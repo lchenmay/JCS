@@ -360,11 +360,11 @@ and bin__tCall w indent t =
         ") v bi" |> w.appendEnd
         "v)" |> w.newlineIndent (indent + 1)
     | TypeEnum.ModDictInt64 tt -> 
-        "ModDictInt64__array (" |> w.appendEnd
+        "bin__ModDictInt64(" |> w.appendEnd
         bin__tCall w (indent + 1) tt
         ")" |> w.appendEnd
     | TypeEnum.ModDictStr tt -> 
-        "ModDictStr__array (" |> w.appendEnd
+        "bin__ModDictStr(" |> w.appendEnd
         bin__tCall w (indent + 1) tt
         ")" |> w.appendEnd
     | TypeEnum.Fun (kType,vType) -> ()
@@ -883,11 +883,11 @@ and json__tCall (w:TextBlockWriter)indent t =
         json__tCall w (indent) vType
         ") (new ConcurrentDictionary<" + kType.name + "," + vType.name + ">()) json)" |> w.appendEnd
     | TypeEnum.ModDictInt64 tt -> 
-        "json__ModDictInt64o (" |> w.appendEnd
+        "json__ModDictInt64 (" |> w.appendEnd
         json__tCall w (indent + 1) tt
         ")" |> w.appendEnd
     | TypeEnum.ModDictStr tt -> 
-        "json__ModDictStro (" |> w.appendEnd
+        "json__ModDictStr (" |> w.appendEnd
         json__tCall w (indent + 1) tt
         ")" |> w.appendEnd
     | TypeEnum.Fun (kType,vType) -> ()
