@@ -74,7 +74,8 @@ type TypeEnum =
 | Dictionary of Type * Type
 | SortedDictionary of Type * Type
 | ConcurrentDictionary of Type * Type
-| CodeAccessor of Type
+| ModDictInt64 of Type
+| ModDictStr of Type
 | ListImmutable of Type
 | Fun of Type * Type
 and Type = {

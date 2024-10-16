@@ -105,7 +105,8 @@ let rec t__binImpl (w:TextBlockWriter) indent t =
     | TypeEnum.Dictionary (kType,vType) -> ()
     | TypeEnum.SortedDictionary (kType,vType) -> ()
     | TypeEnum.ConcurrentDictionary (kType,vType) -> ()
-    | TypeEnum.CodeAccessor v -> ()
+    | TypeEnum.ModDictInt64 v -> ()
+    | TypeEnum.ModDictStr v -> ()
     | TypeEnum.Fun (src,dst) -> ()
 
 and t__binCall w indent t = 
@@ -168,8 +169,12 @@ and t__binCall w indent t =
         ") (" |> w.appendEnd
         t__binCall w (indent + 1) vType
         ")" |> w.appendEnd
-    | TypeEnum.CodeAccessor tt -> 
-        "CodeAccessor__bin (" |> w.newlineIndent indent
+    | TypeEnum.ModDictInt64 tt -> 
+        "ModDictInt64__bin (" |> w.newlineIndent indent
+        t__binCall w (indent + 1) tt
+        ")" |> w.appendEnd
+    | TypeEnum.ModDictStr tt -> 
+        "ModDictStr__bin (" |> w.newlineIndent indent
         t__binCall w (indent + 1) tt
         ")" |> w.appendEnd
     | TypeEnum.Fun (src,dst) -> ()
@@ -280,7 +285,8 @@ let rec bin__tImpl (w:TextBlockWriter) indent t =
     | TypeEnum.Dictionary (kType,vType) -> ()
     | TypeEnum.SortedDictionary (kType,vType) -> ()
     | TypeEnum.ConcurrentDictionary(kType,vType) -> ()
-    | TypeEnum.CodeAccessor tt -> ()
+    | TypeEnum.ModDictInt64 tt -> ()
+    | TypeEnum.ModDictStr tt -> ()
 
 and bin__tCall w indent t = 
 
@@ -353,8 +359,12 @@ and bin__tCall w indent t =
         bin__tCall w (indent + 2) vType
         ") v bi" |> w.appendEnd
         "v)" |> w.newlineIndent (indent + 1)
-    | TypeEnum.CodeAccessor tt -> 
-        "CodeAccessor__array (" |> w.appendEnd
+    | TypeEnum.ModDictInt64 tt -> 
+        "ModDictInt64__array (" |> w.appendEnd
+        bin__tCall w (indent + 1) tt
+        ")" |> w.appendEnd
+    | TypeEnum.ModDictStr tt -> 
+        "ModDictStr__array (" |> w.appendEnd
         bin__tCall w (indent + 1) tt
         ")" |> w.appendEnd
     | TypeEnum.Fun (kType,vType) -> ()
@@ -405,7 +415,8 @@ and t__emptyImpl (w:TextBlockWriter) indent t =
     | TypeEnum.Dictionary (kType,vType) -> ()
     | TypeEnum.SortedDictionary (kType,vType) -> ()
     | TypeEnum.ConcurrentDictionary (kType,vType) -> ()
-    | TypeEnum.CodeAccessor tt -> ()
+    | TypeEnum.ModDictInt64 tt -> ()
+    | TypeEnum.ModDictStr tt -> ()
 
 and t__emptyCall w indent t = 
 
@@ -458,8 +469,10 @@ and t__emptyCall w indent t =
         "new SortedDictionary<" + kType.name + "," + vType.name + ">()" |> w.appendEnd
     | TypeEnum.ConcurrentDictionary (kType,vType) -> 
         "new ConcurrentDictionary<" + kType.name + "," + vType.name + ">()" |> w.appendEnd
-    | TypeEnum.CodeAccessor tt -> 
-        "new CodeAccessor<" + tt.name + ">()" |> w.appendEnd
+    | TypeEnum.ModDictInt64 tt -> 
+        "ModDict_empty()" |> w.appendEnd
+    | TypeEnum.ModDictStr tt -> 
+        "ModDict_empty()" |> w.appendEnd
     | TypeEnum.Fun (src,dst) -> 
         "(fun _ -> " |> w.appendEnd
         match dst.tEnum with
@@ -615,8 +628,12 @@ and t__jsonCall w indent t =
         ") (" |> w.appendEnd
         t__jsonCall w (indent + 1) vType
         ")" |> w.appendEnd
-    | TypeEnum.CodeAccessor tt -> 
-        "CodeAccessor__json (" |> w.appendEnd
+    | TypeEnum.ModDictInt64 tt -> 
+        "ModDictInt64__json (" |> w.appendEnd
+        t__jsonCall w (indent + 1) tt
+        ")" |> w.appendEnd
+    | TypeEnum.ModDictStr tt -> 
+        "ModDictStr__json (" |> w.appendEnd
         t__jsonCall w (indent + 1) tt
         ")" |> w.appendEnd
     | _ -> t.name + "__json" |> w.appendEnd
@@ -782,7 +799,8 @@ let rec json__tImpl (w:TextBlockWriter) indent t =
     | TypeEnum.ListImmutable tt -> ()
     | TypeEnum.Dictionary (kType,vType) -> ()
     | TypeEnum.SortedDictionary (kType,vType) -> ()
-    | TypeEnum.CodeAccessor tt -> ()
+    | TypeEnum.ModDictInt64 tt -> ()
+    | TypeEnum.ModDictStr tt -> ()
 
 and json__tCall (w:TextBlockWriter)indent t = 
 
@@ -864,8 +882,12 @@ and json__tCall (w:TextBlockWriter)indent t =
         ") (" |> w.appendEnd
         json__tCall w (indent) vType
         ") (new ConcurrentDictionary<" + kType.name + "," + vType.name + ">()) json)" |> w.appendEnd
-    | TypeEnum.CodeAccessor tt -> 
-        "json__CodeAccessoro (" |> w.appendEnd
+    | TypeEnum.ModDictInt64 tt -> 
+        "json__ModDictInt64o (" |> w.appendEnd
+        json__tCall w (indent + 1) tt
+        ")" |> w.appendEnd
+    | TypeEnum.ModDictStr tt -> 
+        "json__ModDictStro (" |> w.appendEnd
         json__tCall w (indent + 1) tt
         ")" |> w.appendEnd
     | TypeEnum.Fun (kType,vType) -> ()
