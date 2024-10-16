@@ -883,11 +883,11 @@ and json__tCall (w:TextBlockWriter)indent t =
         json__tCall w (indent) vType
         ") (new ConcurrentDictionary<" + kType.name + "," + vType.name + ">()) json)" |> w.appendEnd
     | TypeEnum.ModDictInt64 tt -> 
-        "json__ModDictInt64 (" |> w.appendEnd
+        "json__ModDictInt64o (" |> w.appendEnd
         json__tCall w (indent + 1) tt
         ")" |> w.appendEnd
     | TypeEnum.ModDictStr tt -> 
-        "json__ModDictStr (" |> w.appendEnd
+        "json__ModDictStro (" |> w.appendEnd
         json__tCall w (indent + 1) tt
         ")" |> w.appendEnd
     | TypeEnum.Fun (kType,vType) -> ()
