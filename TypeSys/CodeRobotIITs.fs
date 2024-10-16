@@ -194,14 +194,14 @@ and t__binCall w indent t =
     | TypeEnum.ModDictInt64 tt -> 
         "" |> w.newlineIndent indent
         w.appendEnd  prefix
-        "ModDictInt64__bin (" |> w.appendEnd
+        "dict__bin (marshall.int64__bin)(" |> w.appendEnd
         t__binCall w (indent + 1) tt
         ")" |> w.appendEnd
 
     | TypeEnum.ModDictStr tt -> 
         "" |> w.newlineIndent indent
         w.appendEnd  prefix
-        "ModDictStr__bin (" |> w.appendEnd
+        "dict__bin (marshall.str__bin)(" |> w.appendEnd
         t__binCall w (indent + 1) tt
         ")" |> w.appendEnd
 
@@ -382,13 +382,15 @@ and bin__tCall w indent t =
         ")" |> w.appendEnd
     | TypeEnum.ModDictInt64 tt -> 
         w.appendEnd prefix
-        "bin__ModDictInt64 (" |> w.appendEnd
-        bin__tCall w (indent + 1) tt
+        "bin__dict(marshall.bin__int64)" |> w.appendEnd
+        "(" |> w.appendEnd
+        bin__tCall w (indent + 2) tt
         ")" |> w.appendEnd
     | TypeEnum.ModDictStr tt -> 
         w.appendEnd prefix
-        "bin__Str (" |> w.appendEnd
-        bin__tCall w (indent + 1) tt
+        "bin__dict(marshall.bin__str)" |> w.appendEnd
+        "(" |> w.appendEnd
+        bin__tCall w (indent + 2) tt
         ")" |> w.appendEnd
     | TypeEnum.Fun (src,dst) -> ()
 
@@ -477,6 +479,8 @@ let rec t__emptyImpl ns (w:TextBlockWriter) indent t =
     | TypeEnum.Dictionary (kType,vType)
     | TypeEnum.SortedDictionary (kType,vType)
     | TypeEnum.ConcurrentDictionary (kType,vType) -> ()
+    | TypeEnum.ModDictInt64 tt -> ()
+    | TypeEnum.ModDictStr tt -> ()
 
     "} as " + ns + "." + t.name |> w.newlineIndent 1
     "}" |> w.newline
@@ -542,8 +546,8 @@ and t__emptyCall (w:TextBlockWriter) indent t =
     | TypeEnum.Dictionary (kType,vType)
     | TypeEnum.SortedDictionary (kType,vType)
     | TypeEnum.ConcurrentDictionary (kType,vType) -> "{}" |> w.appendEnd
-    | TypeEnum.ModDictInt64 tt -> "ModDict_empty()" |> w.appendEnd
-    | TypeEnum.ModDictStr tt -> "ModDict_empty()" |> w.appendEnd
+    | TypeEnum.ModDictInt64 tt -> "{}" |> w.appendEnd
+    | TypeEnum.ModDictStr tt -> "{}" |> w.appendEnd
     | TypeEnum.Fun (src,dst) -> "{}" |> w.appendEnd
 
 let rec t__jsonImpl (w:TextBlockWriter) indent t = 
