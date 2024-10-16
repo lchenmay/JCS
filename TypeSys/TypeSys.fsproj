@@ -17,8 +17,14 @@
     <Compile Include="CodeRobotIITs.fs" />
     <Compile Include="FrontendPackVue.fs" />
     <Compile Include="CodeRobot.fs" />
+    <Compile Include="Loadcfg.fs" />
     <Compile Include="Program.fs" />
+    <Content Include="set.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
+
+  <ItemGroup />
 
   <ItemGroup>
     <PackageReference Include="Npgsql" Version="8.0.3" />
