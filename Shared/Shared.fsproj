@@ -7,7 +7,7 @@
 
   <ItemGroup>
     <Content Include="Design.json" />
-    <Content Include="Design-Ca.json" />
+    <Content Include="Design-TypeSys.json" />
     <Compile Include="PreOrm.fs" />
     <Compile Include="OrmTypes.fs" />
     <Compile Include="Types.fs" />

@@ -1,0 +1,19 @@
+﻿[
+  {
+    "name": "Ts_Project",
+    "shorthand": "proj",
+    "id": 234345,
+    "fields": [
+      {
+        "enum": "Chars",
+        "length": 64,
+        "name": "Code"
+      },
+      {
+        "enum": "Chars",
+        "length": 256,
+        "name": "Caption"
+      }
+    ]
+  }
+]

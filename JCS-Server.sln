@@ -1,0 +1,82 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.1.32319.34
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Apps", "Apps", "{28C31853-DECB-4E65-8924-F0B923E02C32}"
+EndProject
+Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Util", "..\Common\Util\Util.fsproj", "{132036FF-E53B-4454-A5A2-CE0ACA99119F}"
+EndProject
+Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "TypeSys", "TypeSys\TypeSys.fsproj", "{D84F6A26-A6C9-456D-BAD0-39E89CA887B2}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{6B211DC5-7C29-426F-B005-CE9DEF566656}"
+	ProjectSection(SolutionItems) = preProject
+		README.md = README.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "vscode", "vscode", "{9C288FD0-9F16-4499-BFFB-461681804EA9}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{E55161AA-EF7D-4997-8A89-789A732B9367}"
+	ProjectSection(SolutionItems) = preProject
+		vscode\src\main.ts = vscode\src\main.ts
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "lib", "lib", "{02E9F791-761A-4774-83FD-DCE2D34309BD}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "util", "util", "{ECAAF89E-1EA9-4DC5-B55A-7EFE2566EE3B}"
+	ProjectSection(SolutionItems) = preProject
+		vscode\src\lib\util\bin.ts = vscode\src\lib\util\bin.ts
+		vscode\src\lib\util\graphics.ts = vscode\src\lib\util\graphics.ts
+		vscode\src\lib\util\graphicsH5.ts = vscode\src\lib\util\graphicsH5.ts
+		vscode\src\lib\util\graphicsPixi.ts = vscode\src\lib\util\graphicsPixi.ts
+		vscode\src\lib\util\ws.ts = vscode\src\lib\util\ws.ts
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "store", "store", "{975C13D2-66F9-44FE-9392-F4DFD324CD92}"
+	ProjectSection(SolutionItems) = preProject
+		vscode\src\lib\store\init.ts = vscode\src\lib\store\init.ts
+		vscode\src\lib\store\runtime.ts = vscode\src\lib\store\runtime.ts
+		vscode\src\lib\store\wshandler.ts = vscode\src\lib\store\wshandler.ts
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "types", "types", "{B6CD5C54-85AB-4561-8DA0-5ABB38A02E9B}"
+	ProjectSection(SolutionItems) = preProject
+		vscode\src\types\main.d.ts = vscode\src\types\main.d.ts
+	EndProjectSection
+EndProject
+Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Shared", "Shared\Shared.fsproj", "{89082BFE-070D-43E6-8C07-0E67D1FFAACA}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{132036FF-E53B-4454-A5A2-CE0ACA99119F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{132036FF-E53B-4454-A5A2-CE0ACA99119F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{132036FF-E53B-4454-A5A2-CE0ACA99119F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{132036FF-E53B-4454-A5A2-CE0ACA99119F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D84F6A26-A6C9-456D-BAD0-39E89CA887B2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D84F6A26-A6C9-456D-BAD0-39E89CA887B2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D84F6A26-A6C9-456D-BAD0-39E89CA887B2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D84F6A26-A6C9-456D-BAD0-39E89CA887B2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{89082BFE-070D-43E6-8C07-0E67D1FFAACA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{89082BFE-070D-43E6-8C07-0E67D1FFAACA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{89082BFE-070D-43E6-8C07-0E67D1FFAACA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{89082BFE-070D-43E6-8C07-0E67D1FFAACA}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{9C288FD0-9F16-4499-BFFB-461681804EA9} = {6B211DC5-7C29-426F-B005-CE9DEF566656}
+		{E55161AA-EF7D-4997-8A89-789A732B9367} = {9C288FD0-9F16-4499-BFFB-461681804EA9}
+		{02E9F791-761A-4774-83FD-DCE2D34309BD} = {E55161AA-EF7D-4997-8A89-789A732B9367}
+		{ECAAF89E-1EA9-4DC5-B55A-7EFE2566EE3B} = {02E9F791-761A-4774-83FD-DCE2D34309BD}
+		{975C13D2-66F9-44FE-9392-F4DFD324CD92} = {02E9F791-761A-4774-83FD-DCE2D34309BD}
+		{B6CD5C54-85AB-4561-8DA0-5ABB38A02E9B} = {E55161AA-EF7D-4997-8A89-789A732B9367}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {5D6FBBFE-FF28-4250-BBFB-AC6B8661ACA6}
+	EndGlobalSection
+EndGlobal

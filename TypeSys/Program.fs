@@ -126,7 +126,8 @@ let pwd = "jjsjd2VSd$"
 let mutable target = 0
 
 //target <- 5 // CTC Develop
-target <- 10 // Game
+target <- 6 // JCS
+//target <- 10 // Game
 //let target = 11 // GNexts
 //target <- 15 // J
 
@@ -200,15 +201,10 @@ match target with
         JsDir = @"C:\Dev\GCHAIN2024\CrypTradeClubVsOpen\vscode\src\lib\shared" }
 | 6 ->
     {   ns = "Shared"
-        rdbms = Rdbms.PostgreSql
+        rdbms = Rdbms.SqlServer
         dbName = "JCS"
         donmainName = "jcatsys.com"
-        conn = 
-            [|  "Host=localhost"
-                ";Username=postgres"
-                ";Password=" + pwd
-                ";Database=JCS" |]
-            |> String.Concat
+        conn = "server=127.0.0.1; user=sa; database=JCS"
         mainDir = @"C:\Dev\JCS\Shared"
         JsDir = @"C:\Dev\JCS\vscode\src\lib\shared" }
 
