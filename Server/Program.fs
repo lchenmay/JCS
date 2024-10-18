@@ -40,8 +40,8 @@ let main argv =
             |> vueIndexFile__hashes
 
         let ssrPageHome = {
-            title = "cpto.cc"
-            desc = "Social trading. Portfolio. Aggregated news and market data."
+            title = "J-Cat Sys"
+            desc = "Cross platform code automation solution"
             image = "https://i.imgur.com/hzWYQow.png"
             url = runtime.host.url
             noscript = "" }

@@ -1,6 +1,5 @@
 <template>
-  <div>/src/layouts/game.vue</div>
-  <div><button @click="$router.push('/admin')">$router.push('/admin')</button></div>
+  <div><button @click="$router.push('/CodeRobotCenter')">Code Robot Center</button></div>
   <router-view />
 </template>
 
