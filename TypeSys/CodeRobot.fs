@@ -1094,9 +1094,13 @@ let go output config =
         "src/lib/util/graphicsH5.ts"
         "src/lib/util/graphicsPixi.ts"
         "src/types/main.d.ts"  |]
-    |> Array.iter(fun f -> File.Copy(
-        Path.Combine(pathsrc,f),
-        Path.Combine(pathdst,f),true))
+    |> Array.iter(fun f -> 
+        try
+            File.Copy(
+            Path.Combine(pathsrc,f),
+            Path.Combine(pathdst,f),true)
+        with 
+        | _ -> ())
 
     config.JsDir.Replace("\src\lib\shared","")
     |> FrontendPackVue.build robot.config.mainDir
