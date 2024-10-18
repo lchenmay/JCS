@@ -22,3 +22,8 @@
 /BlazorWebAssembly/Properties/PublishProfiles/IISProfile.pubxml.user
 /Shared/bin/Debug/net8.0
 /Shared/obj
+/BizLogics/bin/Debug/net8.0
+/BizLogics/obj/Debug/net8.0
+/BizLogics/obj
+/Server/bin/Debug/net8.0
+/Server/obj
