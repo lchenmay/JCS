@@ -36,5 +36,4 @@ export const initRuntime = (runtime: Runtime) => {
     ws.onmessage = wsOnMsg(runtime)
 
     runtime.wsctx.ws = ws
-
 }
