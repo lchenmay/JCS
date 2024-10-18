@@ -1,7 +1,7 @@
 import * as runtime from '~/lib/store/runtime'
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
+import * as hosts from '~/lib/store/host'
 import originalRoutes from '~/generatedRoutes'
-import { glib } from '../glib';
 
 export const addTrailingSlash = () => {
   const currentPath = window.location.pathname;
@@ -25,16 +25,11 @@ const updateRouteb = (originalRoutes: RouteRecordRaw[]) => (routeToUpdate: strin
 
 const updateRoute = updateRouteb(originalRoutes)
 
+
 const initRoutes = (): RouteRecordRaw[] => {
   switch (true) {
-    case runtime.is_domainname():
-      return updateRoute(rtxx.host.projectname)
-
-    case runtime.is_local():
-      return updateRoute(rtxx.host.projectname)
-
     default:
-      return updateRoute(rtxx.host.projectname)
+      return updateRoute('game')
   }
 }
 

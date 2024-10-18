@@ -20,7 +20,7 @@ export const msg_add = (item: NotifyItem) => {
     if (!item.expire) item.expire = 3000
     if (!item.bgcolor) item.bgcolor = "bg-gray-500/70"
     item.expire = Date.now() + item.expire
-    rtxx.msgList.unshift(item)
+    //rt.msgList.unshift(item)
     Refresh()
 }
 
@@ -31,14 +31,14 @@ export const DefaultItem = (): NotifyItem => {
 }
 
 export const getcurMsg = () => {
-    if (rtxx.msgList.length) return rtxx.msgList[0]
+    //if (rt.msgList.length) return rt.msgList[0]
     return DefaultItem()
 }
 
 export const getTimeleft = (item: NotifyItem) => { return item.expire! - Date.now() }
 
 export const removeExpiredMessages = () => {
-    rtxx.msgList = rtxx.msgList.filter((item:any) => { return getTimeleft(item) > 0 });
+    //rt.msgList = rt.msgList.filter((item:any) => { return getTimeleft(item) > 0 });
 }
 
 export const Refresh = () => {

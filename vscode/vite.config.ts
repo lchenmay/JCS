@@ -2,6 +2,7 @@ import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import vueJsx from '@vitejs/plugin-vue-jsx'
 import path from 'path'
+
 export default defineConfig({
   base: '/',
   plugins: [
@@ -9,7 +10,8 @@ export default defineConfig({
     vueJsx()
   ],
   server: {
-    host: '0.0.0.0'
+    host: '0.0.0.0',
+    port: 5173,
   },
   resolve: {
     alias: {

@@ -13,6 +13,7 @@ import * as notify from '~/lib/mod/notify'
 import * as route from '~/lib/mod/route'
 import * as panel from '~/lib/mod/panel'
 
+import * as host from '~/lib/store/host'
 import * as runtime from '~/lib/store/runtime'
 
 import * as cm from '~/lib/shared/CustomMor'
@@ -33,10 +34,11 @@ export const glib = {
   route: route,
   panel: panel,
 
+  host: host,
   runtime: runtime,
 
   Mor: {
-    ...cm, ...om
+    game: { ...cm, ...om }
   },
 
   post: fetchs.post,

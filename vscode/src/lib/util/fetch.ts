@@ -1,6 +1,6 @@
 const request = (method: "POST" | "GET") => async (url: string, data: Record<string, any>) => {
   const getbase = () =>{
-    if (rtxx.host.api) return rtxx.host.api
+    if (runtime.host.api) return runtime.host.api
     else return `http://localhost`
   }
   if (!/^http(s?):/i.test(url)) {
@@ -13,7 +13,7 @@ const request = (method: "POST" | "GET") => async (url: string, data: Record<str
   }
   switch (method) {
     case "POST":
-      if (rtxx.session) { data['session'] = rtxx.session }
+      if (runtime.session) { data['session'] = runtime.session }
       inits['body'] = JSON.stringify(data)
       break
     case "GET":
@@ -22,7 +22,7 @@ const request = (method: "POST" | "GET") => async (url: string, data: Record<str
       break
   }
   return fetch(url, inits).then(res => { return res.json() }).catch(err => { console.error('Error:', err) })
-}
+} 
 
 export const post = request("POST")
 export const get = request("GET")

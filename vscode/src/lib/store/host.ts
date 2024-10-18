@@ -6,7 +6,7 @@ export const checkDomain = (domain:string) => {
 
 export const initHost = () => {
 
-    let portBackend = 5045
+    let portBackend = 5177
 
     const hostname = window.location.hostname
 

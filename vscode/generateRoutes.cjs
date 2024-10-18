@@ -2,6 +2,7 @@ const fs = require('fs');
 const path = require('path');
 
 function parseURLPath(path) {
+
   if (path === '/') {
     return [];
   }
@@ -15,21 +16,7 @@ function parseURLPath(path) {
 
 function setupMetaInfo(pro) {
   let resultMeta = {
-    layout:"blank"
-  }
-  switch (pro) {
-    case 'admin':
-      resultMeta.layout = "admin"
-      return resultMeta
-    case 'ctc':
-      resultMeta.layout = "ctc"
-      return resultMeta
-    case 'gchain':
-      resultMeta.layout = "gchain"
-      return resultMeta
-    case 'fx':
-      resultMeta.layout = "fx"
-      return resultMeta
+    layout:"jcs"
   }
   return resultMeta
 }
@@ -71,24 +58,19 @@ async function generateRoutes(rootDir) {
 
           const fileName = path.basename(file, '.vue');
 
-          if (fileName.includes('[id]')) {
-            route.name = route.name.replace(/\[id\]/, 'id'); // Remove brackets from the component name
-            route.path = route.path.replace(/\/\[id\]/, '/:id'); // Replace '[id]' with ':id'
-          }
-          else if(fileName.includes('[type]')){
-            route.name = route.name.replace(/\[type]/, 'type');
-            route.path = route.path.replace(/\/\[type]/, '/:type');
-          }
-          else if(fileName.includes('[all]')){
-            route.name = route.name.replace(/\[all\]/, 'all');
-            route.path = route.path.replace(/\/\[all\]/, '/:all');
-          }
+          ['id','type','all'].forEach(pattern => {
+            if(fileName.includes("[" + pattern + "]")){
+              route.name = route.name.replace('/\[{' + pattern + '}]/', pattern);
+              route.path = route.path.replace('/\/\[{' + pattern + '}]/', '/:' + pattern);
+            }
+          })
 
           routes.push(route);
         // }
       }
     });
   }
+
   // Add error.vue for handling route navigation failures
   traverseDirectory(rootDir);
   const errorPath = path.join(rootDir, '/error.vue');

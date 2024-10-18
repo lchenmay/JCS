@@ -32,7 +32,6 @@ open Shared.CustomMor
 open BizLogics.Common
 open BizLogics.Branch
 
-
 let hash1,hash2 = 
     runtime.host.fsDir + "\\" + runtime.host.defaultHtml
     |> vueIndexFile__hashes
@@ -55,6 +54,3 @@ let echo req =
         |> bind (hapi echoApiHandler branch) with
     | Suc x -> x.rep
     | Fail(x,e) -> None
-
-
-

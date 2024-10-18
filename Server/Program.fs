@@ -30,19 +30,22 @@ open UtilWebServer.Server.Service
 [<EntryPoint>]
 let main argv =
 
-    //let content,embedding = "content","embedding"
-    //UtilWebServer.Open.Discord.sendMsg
-    //    (fun (s:string) -> Console.WriteLine s)
-    //    BizLogics.Discord.glitchClient 
-    //    BizLogics.Discord.guildId 
-    //    BizLogics.Discord.glitchReviewChannelId 
-    //    //BizLogics.Discord.glitchVerifiedChannelId
-    //    (content,embedding)
-
     init runtime
 
     runtime.echo <- echo
     runtime.h404o <- (fun _ ->  
+
+        let hash1,hash2 = 
+            runtime.host.fsDir + "\\" + runtime.host.defaultHtml
+            |> vueIndexFile__hashes
+
+        let ssrPageHome = {
+            title = "cpto.cc"
+            desc = "Social trading. Portfolio. Aggregated news and market data."
+            image = "https://i.imgur.com/hzWYQow.png"
+            url = runtime.host.url
+            noscript = "" }
+
         ssrPageHome 
         |> render (hash1,hash2) 
         |> bin__StandardResponse "text/html") |> Some
