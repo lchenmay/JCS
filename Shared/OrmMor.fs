@@ -770,6 +770,10 @@ let pPAGE__bin (bb:BytesBuilder) (p:pPAGE) =
     binCaption.Length |> BitConverter.GetBytes |> bb.append
     binCaption |> bb.append
     
+    let binRoute = p.Route |> Encoding.UTF8.GetBytes
+    binRoute.Length |> BitConverter.GetBytes |> bb.append
+    binRoute |> bb.append
+    
     let binOgTitle = p.OgTitle |> Encoding.UTF8.GetBytes
     binOgTitle.Length |> BitConverter.GetBytes |> bb.append
     binOgTitle |> bb.append
@@ -808,6 +812,11 @@ let bin__pPAGE (bi:BinIndexed):pPAGE =
     index.Value <- index.Value + 4
     p.Caption <- Encoding.UTF8.GetString(bin,index.Value,count_Caption)
     index.Value <- index.Value + count_Caption
+    
+    let count_Route = BitConverter.ToInt32(bin,index.Value)
+    index.Value <- index.Value + 4
+    p.Route <- Encoding.UTF8.GetString(bin,index.Value,count_Route)
+    index.Value <- index.Value + count_Route
     
     let count_OgTitle = BitConverter.ToInt32(bin,index.Value)
     index.Value <- index.Value + 4
@@ -857,6 +866,7 @@ let pPAGE__json (p:pPAGE) =
     [|
         ("Name",p.Name |> Json.Str)
         ("Caption",p.Caption |> Json.Str)
+        ("Route",p.Route |> Json.Str)
         ("OgTitle",p.OgTitle |> Json.Str)
         ("OgDesc",p.OgDesc |> Json.Str)
         ("OgImage",p.OgImage |> Json.Str)
@@ -890,6 +900,8 @@ let json__pPAGEo (json:Json):pPAGE option =
     p.Name <- checkfieldz fields "Name" 64
     
     p.Caption <- checkfieldz fields "Caption" 256
+    
+    p.Route <- checkfield fields "Route"
     
     p.OgTitle <- checkfield fields "OgTitle"
     
@@ -925,6 +937,8 @@ let json__PAGEo (json:Json):PAGE option =
         p.Name <- checkfieldz fields "Name" 64
         
         p.Caption <- checkfieldz fields "Caption" 256
+        
+        p.Route <- checkfield fields "Route"
         
         p.OgTitle <- checkfield fields "OgTitle"
         
@@ -1594,11 +1608,12 @@ let db__pPAGE(line:Object[]): pPAGE =
 
     p.Name <- string(line.[4]).TrimEnd()
     p.Caption <- string(line.[5]).TrimEnd()
-    p.OgTitle <- string(line.[6]).TrimEnd()
-    p.OgDesc <- string(line.[7]).TrimEnd()
-    p.OgImage <- string(line.[8]).TrimEnd()
-    p.Template <- if Convert.IsDBNull(line.[9]) then 0L else line.[9] :?> int64
-    p.Project <- if Convert.IsDBNull(line.[10]) then 0L else line.[10] :?> int64
+    p.Route <- string(line.[6]).TrimEnd()
+    p.OgTitle <- string(line.[7]).TrimEnd()
+    p.OgDesc <- string(line.[8]).TrimEnd()
+    p.OgImage <- string(line.[9]).TrimEnd()
+    p.Template <- if Convert.IsDBNull(line.[10]) then 0L else line.[10] :?> int64
+    p.Project <- if Convert.IsDBNull(line.[11]) then 0L else line.[11] :?> int64
 
     p
 
@@ -1608,6 +1623,7 @@ let pPAGE__sps (p:pPAGE) =
         [|
             ("Name", p.Name) |> kvp__sqlparam
             ("Caption", p.Caption) |> kvp__sqlparam
+            ("Route", p.Route) |> kvp__sqlparam
             ("OgTitle", p.OgTitle) |> kvp__sqlparam
             ("OgDesc", p.OgDesc) |> kvp__sqlparam
             ("OgImage", p.OgImage) |> kvp__sqlparam
@@ -1617,6 +1633,7 @@ let pPAGE__sps (p:pPAGE) =
         [|
             ("name", p.Name) |> kvp__sqlparam
             ("caption", p.Caption) |> kvp__sqlparam
+            ("route", p.Route) |> kvp__sqlparam
             ("ogtitle", p.OgTitle) |> kvp__sqlparam
             ("ogdesc", p.OgDesc) |> kvp__sqlparam
             ("ogimage", p.OgImage) |> kvp__sqlparam
@@ -1632,6 +1649,7 @@ let PAGE_wrapper item: PAGE =
 let pPAGE_clone (p:pPAGE): pPAGE = {
     Name = p.Name
     Caption = p.Caption
+    Route = p.Route
     OgTitle = p.OgTitle
     OgDesc = p.OgDesc
     OgImage = p.OgImage
@@ -1698,6 +1716,7 @@ let PAGETxSqlServer =
     ,[Sort] BIGINT NOT NULL,
     ,[Name]
     ,[Caption]
+    ,[Route]
     ,[OgTitle]
     ,[OgDesc]
     ,[OgImage]

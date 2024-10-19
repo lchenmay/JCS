@@ -81,7 +81,8 @@ let init (runtime:Runtime) =
 
     let template = pc.templates.Values |> Array.find(fun i -> i.p.Name = "CodeRobot")
 
-    [|  "/CodeRobot/Projects"
+    [|  "/Public/HomePage"
+        "/CodeRobot/Projects"
         "/CodeRobot/Project" |]
     |> Array.iter(fun name ->
         match pc.pages.Values |> Array.tryFind(fun i -> i.p.Name = name) with

@@ -368,6 +368,7 @@ BEGIN
         ,sort BIGINT NOT NULL
         ,"name" VARCHAR(64)
         ,"caption" VARCHAR(256)
+        ,"route" TEXT
         ,"ogtitle" TEXT
         ,"ogdesc" TEXT
         ,"ogimage" TEXT
@@ -403,6 +404,20 @@ BEGIN
 
     IF not condition THEN
         ALTER TABLE ts_uipage ADD "caption" varchar(256);
+    END IF;
+END $$;
+
+-- [Ts_UiPage.Route] -------------
+
+
+DO $$
+DECLARE
+    condition boolean;
+BEGIN
+    condition := (SELECT EXISTS(SELECT column_name FROM information_schema.columns WHERE table_name='ts_uipage' AND column_name='route'));
+
+    IF not condition THEN
+        ALTER TABLE ts_uipage ADD "route" text;
     END IF;
 END $$;
 

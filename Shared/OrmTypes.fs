@@ -288,6 +288,7 @@ let COMP_table = "Ts_UiComponent"
 type pPAGE = {
 mutable Name: Chars
 mutable Caption: Chars
+mutable Route: Text
 mutable OgTitle: Text
 mutable OgDesc: Text
 mutable OgImage: Text
@@ -300,13 +301,14 @@ type PAGE = Rcd<pPAGE>
 let PAGE_fieldorders() =
     match rdbms with
     | Rdbms.SqlServer ->
-        "[ID],[Createdat],[Updatedat],[Sort],[Name],[Caption],[OgTitle],[OgDesc],[OgImage],[Template],[Project]"
+        "[ID],[Createdat],[Updatedat],[Sort],[Name],[Caption],[Route],[OgTitle],[OgDesc],[OgImage],[Template],[Project]"
     | Rdbms.PostgreSql ->
-        $""" "id","createdat","updatedat","sort", "name","caption","ogtitle","ogdesc","ogimage","template","project" """
+        $""" "id","createdat","updatedat","sort", "name","caption","route","ogtitle","ogdesc","ogimage","template","project" """
 
 let pPAGE_fieldordersArray = [|
     "Name"
     "Caption"
+    "Route"
     "OgTitle"
     "OgDesc"
     "OgImage"
@@ -315,8 +317,8 @@ let pPAGE_fieldordersArray = [|
 
 let PAGE_sql_update() =
     match rdbms with
-    | Rdbms.SqlServer -> "[Name]=@Name,[Caption]=@Caption,[OgTitle]=@OgTitle,[OgDesc]=@OgDesc,[OgImage]=@OgImage,[Template]=@Template,[Project]=@Project"
-    | Rdbms.PostgreSql -> "name=@name,caption=@caption,ogtitle=@ogtitle,ogdesc=@ogdesc,ogimage=@ogimage,template=@template,project=@project"
+    | Rdbms.SqlServer -> "[Name]=@Name,[Caption]=@Caption,[Route]=@Route,[OgTitle]=@OgTitle,[OgDesc]=@OgDesc,[OgImage]=@OgImage,[Template]=@Template,[Project]=@Project"
+    | Rdbms.PostgreSql -> "name=@name,caption=@caption,route=@route,ogtitle=@ogtitle,ogdesc=@ogdesc,ogimage=@ogimage,template=@template,project=@project"
 
 let pPAGE_fields() =
     match rdbms with
@@ -324,6 +326,7 @@ let pPAGE_fields() =
         [|
             Chars("Name", 64)
             Chars("Caption", 256)
+            Text("Route")
             Text("OgTitle")
             Text("OgDesc")
             Text("OgImage")
@@ -333,6 +336,7 @@ let pPAGE_fields() =
         [|
             Chars("name", 64)
             Chars("caption", 256)
+            Text("route")
             Text("ogtitle")
             Text("ogdesc")
             Text("ogimage")
@@ -342,6 +346,7 @@ let pPAGE_fields() =
 let pPAGE_empty(): pPAGE = {
     Name = ""
     Caption = ""
+    Route = ""
     OgTitle = ""
     OgDesc = ""
     OgImage = ""

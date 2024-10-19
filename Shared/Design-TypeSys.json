@@ -160,6 +160,10 @@
       },
       {
         "enum": "Text",
+        "name": "Route"
+      },
+      {
+        "enum": "Text",
         "name": "OgTitle"
       },
       {

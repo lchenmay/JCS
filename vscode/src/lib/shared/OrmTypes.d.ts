@@ -90,6 +90,7 @@ p:pCOMP
 export type pPAGE = {
     Name: string
     Caption: string
+    Route: string
     OgTitle: string
     OgDesc: string
     OgImage: string

@@ -700,6 +700,7 @@ BEGIN
         ,[Sort] BIGINT NOT NULL,
         [Name] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS
         ,[Caption] NVARCHAR(256) COLLATE Chinese_PRC_CI_AS
+        ,[Route] NVARCHAR(MAX)
         ,[OgTitle] NVARCHAR(MAX)
         ,[OgDesc] NVARCHAR(MAX)
         ,[OgImage] NVARCHAR(MAX)
@@ -712,7 +713,7 @@ END
 -- Dropping obsolete fields -----------
 DECLARE @name_Ts_UiPage NVARCHAR(64)
 DECLARE cursor_Ts_UiPage CURSOR FOR 
-    SELECT name FROM SYSCOLUMNS WHERE id=object_id('Ts_UiPage') AND (name NOT IN ('ID','Createdat','Updatedat','Sort','Name','Caption','OgTitle','OgDesc','OgImage','Template','Project'))
+    SELECT name FROM SYSCOLUMNS WHERE id=object_id('Ts_UiPage') AND (name NOT IN ('ID','Createdat','Updatedat','Sort','Name','Caption','Route','OgTitle','OgDesc','OgImage','Template','Project'))
 
 OPEN cursor_Ts_UiPage
 FETCH NEXT FROM cursor_Ts_UiPage INTO @name_Ts_UiPage
@@ -785,6 +786,33 @@ IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ts_UiPage
 IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ts_UiPageCaption')
     BEGIN
     ALTER TABLE Ts_UiPage DROP  CONSTRAINT [UniqueNonclustered_Ts_UiPageCaption]
+    END
+
+-- [Ts_UiPage.Route] -------------
+
+
+-- [Ts_UiPage.Route] -------------
+
+IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ts_UiPage') AND name='Route')
+    BEGIN
+     ALTER TABLE Ts_UiPage ALTER COLUMN [Route] NVARCHAR(MAX)
+    END
+ELSE
+    BEGIN
+    DECLARE @sql_add_Ts_UiPage_Route NVARCHAR(MAX);
+    SET @sql_add_Ts_UiPage_Route = 'ALTER TABLE Ts_UiPage ADD [Route] NVARCHAR(MAX)'
+    EXEC sp_executesql @sql_add_Ts_UiPage_Route
+    END
+
+
+IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ts_UiPageRoute')
+    BEGIN
+    ALTER TABLE Ts_UiPage DROP  CONSTRAINT [Constraint_Ts_UiPageRoute]
+    END
+
+IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ts_UiPageRoute')
+    BEGIN
+    ALTER TABLE Ts_UiPage DROP  CONSTRAINT [UniqueNonclustered_Ts_UiPageRoute]
     END
 
 -- [Ts_UiPage.OgTitle] -------------

@@ -268,6 +268,8 @@ export const pPAGE__bin = (bb:BytesBuilder) => (p:jcs.pPAGE) => {
     
     marshall.str__bin (bb) (p.Caption)
     
+    marshall.str__bin (bb) (p.Route)
+    
     marshall.str__bin (bb) (p.OgTitle)
     
     marshall.str__bin (bb) (p.OgDesc)
@@ -293,6 +295,7 @@ export const bin__pPAGE = (bi:BinIndexed):jcs.pPAGE => {
     let p = pPAGE_empty()
     p.Name = marshall.bin__str (bi)
     p.Caption = marshall.bin__str (bi)
+    p.Route = marshall.bin__str (bi)
     p.OgTitle = marshall.bin__str (bi)
     p.OgDesc = marshall.bin__str (bi)
     p.OgImage = marshall.bin__str (bi)
@@ -454,6 +457,7 @@ export const pPAGE_empty = (): jcs.pPAGE => {
     return {
         Name: "",
         Caption: "",
+        Route: "",
         OgTitle: "",
         OgDesc: "",
         OgImage: "",
