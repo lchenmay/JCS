@@ -88,6 +88,7 @@ let json__EuComplexo (json:Json):EuComplex option =
 
 let ProjectComplex_empty(): ProjectComplex =
     {
+        hostconfigs = ModDict_empty()
         comps = ModDict_empty()
         templates = ModDict_empty()
         pages = ModDict_empty()
@@ -96,6 +97,8 @@ let ProjectComplex_empty(): ProjectComplex =
 
 let ProjectComplex__bin (bb:BytesBuilder) (v:ProjectComplex) =
 
+    
+    ModDictStr__bin (HOSTCONFIG__bin) bb v.hostconfigs
     
     ModDictInt64__bin (COMP__bin) bb v.comps
     
@@ -108,6 +111,9 @@ let bin__ProjectComplex (bi:BinIndexed):ProjectComplex =
     let bin,index = bi
 
     {
+        hostconfigs = 
+            bi
+            |> bin__ModDictStr(bin__HOSTCONFIG)
         comps = 
             bi
             |> bin__ModDictInt64(bin__COMP)
@@ -124,7 +130,8 @@ let bin__ProjectComplex (bi:BinIndexed):ProjectComplex =
 
 let ProjectComplex__json (v:ProjectComplex) =
 
-    [|  ("comps",ModDictInt64__json (COMP__json) v.comps)
+    [|  ("hostconfigs",ModDictStr__json (HOSTCONFIG__json) v.hostconfigs)
+        ("comps",ModDictInt64__json (COMP__json) v.comps)
         ("templates",ModDictInt64__json (TEMPLATE__json) v.templates)
         ("pages",ModDictInt64__json (PAGE__json) v.pages)
         ("project",PROJECT__json v.project)
@@ -142,6 +149,18 @@ let json__ProjectComplexo (json:Json):ProjectComplex option =
     let fields = json |> json__items
 
     let mutable passOptions = true
+
+    let hostconfigso =
+        match json__tryFindByName json "hostconfigs" with
+        | None ->
+            passOptions <- false
+            None
+        | Some v -> 
+            match v |> (fun json ->json__ModDictStro (json__HOSTCONFIGo) (new Dictionary<string,HOSTCONFIG>()) json) with
+            | Some res -> Some res
+            | None ->
+                passOptions <- false
+                None
 
     let compso =
         match json__tryFindByName json "comps" with
@@ -193,6 +212,7 @@ let json__ProjectComplexo (json:Json):ProjectComplex option =
 
     if passOptions then
         {
+            hostconfigs = hostconfigso.Value
             comps = compso.Value
             templates = templateso.Value
             pages = pageso.Value

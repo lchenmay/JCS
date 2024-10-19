@@ -49,6 +49,7 @@ export const bin__EuComplex = (bi:BinIndexed):jcs.EuComplex => {
 
 export const ProjectComplex_empty = (): jcs.ProjectComplex => { 
     return {
+        hostconfigs: {},
         comps: {},
         templates: {},
         pages: {},
@@ -58,6 +59,8 @@ export const ProjectComplex_empty = (): jcs.ProjectComplex => {
 
 export const ProjectComplex__bin = (bb:BytesBuilder) => (v:any) => {
 
+    
+    marshall.dict__bin (marshall.str__bin)(marshall.HOSTCONFIG__bin) (bb) (v.hostconfigs)
     
     marshall.dict__bin (marshall.int64__bin)(marshall.COMP__bin) (bb) (v.comps)
     
@@ -70,6 +73,7 @@ export const ProjectComplex__bin = (bb:BytesBuilder) => (v:any) => {
 export const bin__ProjectComplex = (bi:BinIndexed):jcs.ProjectComplex => {
 
     return {
+        hostconfigs: marshall.bin__dict(marshall.bin__str)(marshall.bin__HOSTCONFIG) (bi),
         comps: marshall.bin__dict(marshall.bin__int64)(marshall.bin__COMP) (bi),
         templates: marshall.bin__dict(marshall.bin__int64)(marshall.bin__TEMPLATE) (bi),
         pages: marshall.bin__dict(marshall.bin__int64)(marshall.bin__PAGE) (bi),

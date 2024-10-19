@@ -10,6 +10,8 @@ eu:number
 
 // [ProjectComplex]
 export type ProjectComplex = {
+hostconfigs:{[key:string]: HOSTCONFIG},
+
 comps:{[key:number]: COMP},
 
 templates:{[key:number]: TEMPLATE},

@@ -77,6 +77,70 @@ let FIELD_id = ref 7523431L
 let FIELD_count = ref 0
 let FIELD_table = "Ts_Field"
 
+// [Ts_HostConfig] (HOSTCONFIG)
+
+type pHOSTCONFIG = {
+mutable Hostname: Chars
+mutable DatabaseName: Chars
+mutable DatabaseConn: Chars
+mutable DirVsShared: Chars
+mutable DirVsCodeWeb: Chars
+mutable Project: FK}
+
+
+type HOSTCONFIG = Rcd<pHOSTCONFIG>
+
+let HOSTCONFIG_fieldorders() =
+    match rdbms with
+    | Rdbms.SqlServer ->
+        "[ID],[Createdat],[Updatedat],[Sort],[Hostname],[DatabaseName],[DatabaseConn],[DirVsShared],[DirVsCodeWeb],[Project]"
+    | Rdbms.PostgreSql ->
+        $""" "id","createdat","updatedat","sort", "hostname","databasename","databaseconn","dirvsshared","dirvscodeweb","project" """
+
+let pHOSTCONFIG_fieldordersArray = [|
+    "Hostname"
+    "DatabaseName"
+    "DatabaseConn"
+    "DirVsShared"
+    "DirVsCodeWeb"
+    "Project" |]
+
+let HOSTCONFIG_sql_update() =
+    match rdbms with
+    | Rdbms.SqlServer -> "[Hostname]=@Hostname,[DatabaseName]=@DatabaseName,[DatabaseConn]=@DatabaseConn,[DirVsShared]=@DirVsShared,[DirVsCodeWeb]=@DirVsCodeWeb,[Project]=@Project"
+    | Rdbms.PostgreSql -> "hostname=@hostname,databasename=@databasename,databaseconn=@databaseconn,dirvsshared=@dirvsshared,dirvscodeweb=@dirvscodeweb,project=@project"
+
+let pHOSTCONFIG_fields() =
+    match rdbms with
+    | Rdbms.SqlServer ->
+        [|
+            Chars("Hostname", 64)
+            Chars("DatabaseName", 64)
+            Chars("DatabaseConn", 64)
+            Chars("DirVsShared", 64)
+            Chars("DirVsCodeWeb", 64)
+            FK("Project") |]
+    | Rdbms.PostgreSql ->
+        [|
+            Chars("hostname", 64)
+            Chars("databasename", 64)
+            Chars("databaseconn", 64)
+            Chars("dirvsshared", 64)
+            Chars("dirvscodeweb", 64)
+            FK("project") |]
+
+let pHOSTCONFIG_empty(): pHOSTCONFIG = {
+    Hostname = ""
+    DatabaseName = ""
+    DatabaseConn = ""
+    DirVsShared = ""
+    DirVsCodeWeb = ""
+    Project = 0L }
+
+let HOSTCONFIG_id = ref 34512L
+let HOSTCONFIG_count = ref 0
+let HOSTCONFIG_table = "Ts_HostConfig"
+
 // [Ts_Project] (PROJECT)
 
 type pPROJECT = {

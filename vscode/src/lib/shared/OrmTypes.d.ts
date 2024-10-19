@@ -19,6 +19,25 @@ sort:number
 p:pFIELD
 }
 
+// [Ts_HostConfig] (HOSTCONFIG)
+
+export type pHOSTCONFIG = {
+    Hostname: string
+    DatabaseName: string
+    DatabaseConn: string
+    DirVsShared: string
+    DirVsCodeWeb: string
+    Project: number
+}
+
+export type HOSTCONFIG = {
+id:number
+createdat:Date
+updatedat:Date
+sort:number
+p:pHOSTCONFIG
+}
+
 // [Ts_Project] (PROJECT)
 
 export type pPROJECT = {

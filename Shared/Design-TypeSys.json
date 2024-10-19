@@ -17,6 +17,47 @@
     ]
   },
   {
+    "name": "Ts_HostConfig",
+    "shorthand": "hostconfig",
+    "id": 34512,
+    "fields": [
+      {
+        "enum": "Chars",
+        "length": 64,
+        "name": "Hostname"
+      },
+      {
+        "enum": "Database",
+        "lines": "SQLSERVER//SQL Server///PostgreSQL//PostgreSQL",
+        "name": "Gender"
+      },
+      {
+        "enum": "Chars",
+        "length": 64,
+        "name": "DatabaseName"
+      },
+      {
+        "enum": "Chars",
+        "length": 64,
+        "name": "DatabaseConn"
+      },
+      {
+        "enum": "Chars",
+        "length": 64,
+        "name": "DirVsShared"
+      },
+      {
+        "enum": "Chars",
+        "length": 64,
+        "name": "DirVsCodeWeb"
+      },
+      {
+        "enum": "FK",
+        "name": "Project"
+      }
+    ]
+  },
+  {
     "name": "Ts_Table",
     "shorthand": "table",
     "id": 7523431,

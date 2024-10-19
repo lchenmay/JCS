@@ -17,6 +17,7 @@ type EuComplex = {
 eu: int64 }
 
 type ProjectComplex = {
+hostconfigs: ModDictStr<HOSTCONFIG>
 comps: ModDictInt64<COMP>
 templates: ModDictInt64<TEMPLATE>
 pages: ModDictInt64<PAGE>

@@ -148,6 +148,211 @@ IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ts_FieldTable'
     BEGIN
     ALTER TABLE Ts_Field DROP  CONSTRAINT [UniqueNonclustered_Ts_FieldTable]
     END
+-- [Ts_HostConfig] ----------------------
+
+IF NOT EXISTS(SELECT * FROM sysobjects WHERE [name]='Ts_HostConfig' AND xtype='U')
+
+BEGIN
+
+    CREATE TABLE Ts_HostConfig ([ID] BIGINT NOT NULL
+        ,[Createdat] BIGINT NOT NULL
+        ,[Updatedat] BIGINT NOT NULL
+        ,[Sort] BIGINT NOT NULL,
+        [Hostname] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS
+        ,[DatabaseName] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS
+        ,[DatabaseConn] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS
+        ,[DirVsShared] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS
+        ,[DirVsCodeWeb] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS
+        ,[Project] BIGINT
+, CONSTRAINT [PK_Ts_HostConfig] PRIMARY KEY CLUSTERED ([ID] ASC)) ON [PRIMARY]
+END
+
+
+-- Dropping obsolete fields -----------
+DECLARE @name_Ts_HostConfig NVARCHAR(64)
+DECLARE cursor_Ts_HostConfig CURSOR FOR 
+    SELECT name FROM SYSCOLUMNS WHERE id=object_id('Ts_HostConfig') AND (name NOT IN ('ID','Createdat','Updatedat','Sort','Hostname','DatabaseName','DatabaseConn','DirVsShared','DirVsCodeWeb','Project'))
+
+OPEN cursor_Ts_HostConfig
+FETCH NEXT FROM cursor_Ts_HostConfig INTO @name_Ts_HostConfig
+
+WHILE @@FETCH_STATUS = 0
+BEGIN
+    PRINT 'Dropping Ts_HostConfig.' + @name_Ts_HostConfig;
+    
+    DECLARE @sql_Ts_HostConfig NVARCHAR(MAX);
+    SET @sql_Ts_HostConfig = 'ALTER TABLE Ts_HostConfig DROP COLUMN ' + QUOTENAME(@name_Ts_HostConfig)
+    EXEC sp_executesql @sql_Ts_HostConfig
+    
+    
+    FETCH NEXT FROM cursor_Ts_HostConfig INTO @name_Ts_HostConfig
+END
+
+CLOSE cursor_Ts_HostConfig;
+DEALLOCATE cursor_Ts_HostConfig;
+
+
+-- [Ts_HostConfig.Hostname] -------------
+
+
+-- [Ts_HostConfig.Hostname] -------------
+
+IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ts_HostConfig') AND name='Hostname')
+    BEGIN
+     ALTER TABLE Ts_HostConfig ALTER COLUMN [Hostname] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS
+    END
+ELSE
+    BEGIN
+    DECLARE @sql_add_Ts_HostConfig_Hostname NVARCHAR(MAX);
+    SET @sql_add_Ts_HostConfig_Hostname = 'ALTER TABLE Ts_HostConfig ADD [Hostname] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS'
+    EXEC sp_executesql @sql_add_Ts_HostConfig_Hostname
+    END
+
+
+IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ts_HostConfigHostname')
+    BEGIN
+    ALTER TABLE Ts_HostConfig DROP  CONSTRAINT [Constraint_Ts_HostConfigHostname]
+    END
+
+IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ts_HostConfigHostname')
+    BEGIN
+    ALTER TABLE Ts_HostConfig DROP  CONSTRAINT [UniqueNonclustered_Ts_HostConfigHostname]
+    END
+
+-- [Ts_HostConfig.DatabaseName] -------------
+
+
+-- [Ts_HostConfig.DatabaseName] -------------
+
+IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ts_HostConfig') AND name='DatabaseName')
+    BEGIN
+     ALTER TABLE Ts_HostConfig ALTER COLUMN [DatabaseName] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS
+    END
+ELSE
+    BEGIN
+    DECLARE @sql_add_Ts_HostConfig_DatabaseName NVARCHAR(MAX);
+    SET @sql_add_Ts_HostConfig_DatabaseName = 'ALTER TABLE Ts_HostConfig ADD [DatabaseName] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS'
+    EXEC sp_executesql @sql_add_Ts_HostConfig_DatabaseName
+    END
+
+
+IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ts_HostConfigDatabaseName')
+    BEGIN
+    ALTER TABLE Ts_HostConfig DROP  CONSTRAINT [Constraint_Ts_HostConfigDatabaseName]
+    END
+
+IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ts_HostConfigDatabaseName')
+    BEGIN
+    ALTER TABLE Ts_HostConfig DROP  CONSTRAINT [UniqueNonclustered_Ts_HostConfigDatabaseName]
+    END
+
+-- [Ts_HostConfig.DatabaseConn] -------------
+
+
+-- [Ts_HostConfig.DatabaseConn] -------------
+
+IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ts_HostConfig') AND name='DatabaseConn')
+    BEGIN
+     ALTER TABLE Ts_HostConfig ALTER COLUMN [DatabaseConn] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS
+    END
+ELSE
+    BEGIN
+    DECLARE @sql_add_Ts_HostConfig_DatabaseConn NVARCHAR(MAX);
+    SET @sql_add_Ts_HostConfig_DatabaseConn = 'ALTER TABLE Ts_HostConfig ADD [DatabaseConn] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS'
+    EXEC sp_executesql @sql_add_Ts_HostConfig_DatabaseConn
+    END
+
+
+IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ts_HostConfigDatabaseConn')
+    BEGIN
+    ALTER TABLE Ts_HostConfig DROP  CONSTRAINT [Constraint_Ts_HostConfigDatabaseConn]
+    END
+
+IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ts_HostConfigDatabaseConn')
+    BEGIN
+    ALTER TABLE Ts_HostConfig DROP  CONSTRAINT [UniqueNonclustered_Ts_HostConfigDatabaseConn]
+    END
+
+-- [Ts_HostConfig.DirVsShared] -------------
+
+
+-- [Ts_HostConfig.DirVsShared] -------------
+
+IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ts_HostConfig') AND name='DirVsShared')
+    BEGIN
+     ALTER TABLE Ts_HostConfig ALTER COLUMN [DirVsShared] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS
+    END
+ELSE
+    BEGIN
+    DECLARE @sql_add_Ts_HostConfig_DirVsShared NVARCHAR(MAX);
+    SET @sql_add_Ts_HostConfig_DirVsShared = 'ALTER TABLE Ts_HostConfig ADD [DirVsShared] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS'
+    EXEC sp_executesql @sql_add_Ts_HostConfig_DirVsShared
+    END
+
+
+IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ts_HostConfigDirVsShared')
+    BEGIN
+    ALTER TABLE Ts_HostConfig DROP  CONSTRAINT [Constraint_Ts_HostConfigDirVsShared]
+    END
+
+IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ts_HostConfigDirVsShared')
+    BEGIN
+    ALTER TABLE Ts_HostConfig DROP  CONSTRAINT [UniqueNonclustered_Ts_HostConfigDirVsShared]
+    END
+
+-- [Ts_HostConfig.DirVsCodeWeb] -------------
+
+
+-- [Ts_HostConfig.DirVsCodeWeb] -------------
+
+IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ts_HostConfig') AND name='DirVsCodeWeb')
+    BEGIN
+     ALTER TABLE Ts_HostConfig ALTER COLUMN [DirVsCodeWeb] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS
+    END
+ELSE
+    BEGIN
+    DECLARE @sql_add_Ts_HostConfig_DirVsCodeWeb NVARCHAR(MAX);
+    SET @sql_add_Ts_HostConfig_DirVsCodeWeb = 'ALTER TABLE Ts_HostConfig ADD [DirVsCodeWeb] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS'
+    EXEC sp_executesql @sql_add_Ts_HostConfig_DirVsCodeWeb
+    END
+
+
+IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ts_HostConfigDirVsCodeWeb')
+    BEGIN
+    ALTER TABLE Ts_HostConfig DROP  CONSTRAINT [Constraint_Ts_HostConfigDirVsCodeWeb]
+    END
+
+IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ts_HostConfigDirVsCodeWeb')
+    BEGIN
+    ALTER TABLE Ts_HostConfig DROP  CONSTRAINT [UniqueNonclustered_Ts_HostConfigDirVsCodeWeb]
+    END
+
+-- [Ts_HostConfig.Project] -------------
+
+
+-- [Ts_HostConfig.Project] -------------
+
+IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ts_HostConfig') AND name='Project')
+    BEGIN
+     ALTER TABLE Ts_HostConfig ALTER COLUMN [Project] BIGINT
+    END
+ELSE
+    BEGIN
+    DECLARE @sql_add_Ts_HostConfig_Project NVARCHAR(MAX);
+    SET @sql_add_Ts_HostConfig_Project = 'ALTER TABLE Ts_HostConfig ADD [Project] BIGINT'
+    EXEC sp_executesql @sql_add_Ts_HostConfig_Project
+    END
+
+
+IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ts_HostConfigProject')
+    BEGIN
+    ALTER TABLE Ts_HostConfig DROP  CONSTRAINT [Constraint_Ts_HostConfigProject]
+    END
+
+IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ts_HostConfigProject')
+    BEGIN
+    ALTER TABLE Ts_HostConfig DROP  CONSTRAINT [UniqueNonclustered_Ts_HostConfigProject]
+    END
 -- [Ts_Project] ----------------------
 
 IF NOT EXISTS(SELECT * FROM sysobjects WHERE [name]='Ts_Project' AND xtype='U')

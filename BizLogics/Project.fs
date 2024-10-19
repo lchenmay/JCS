@@ -27,7 +27,8 @@ open Shared.CustomMor
 open BizLogics.Common
 
 let project__ProjectComplex project = 
-    {   comps = createModDictInt64 4
+    {   hostconfigs = createModDictStr 4    
+        comps = createModDictInt64 4
         templates = createModDictInt64 4
         pages = createModDictInt64 4
         project = project }

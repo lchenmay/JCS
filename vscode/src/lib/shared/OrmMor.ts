@@ -56,6 +56,64 @@ export const bin__FIELD = (bi:BinIndexed):jcs.FIELD => {
     }
 }
 
+// [HOSTCONFIG] Structure
+
+
+export const pHOSTCONFIG__bin = (bb:BytesBuilder) => (p:jcs.pHOSTCONFIG) => {
+
+    
+    marshall.str__bin (bb) (p.Hostname)
+    
+    marshall.str__bin (bb) (p.DatabaseName)
+    
+    marshall.str__bin (bb) (p.DatabaseConn)
+    
+    marshall.str__bin (bb) (p.DirVsShared)
+    
+    marshall.str__bin (bb) (p.DirVsCodeWeb)
+    
+    marshall.int64__bin (bb) (p.Project)
+}
+
+export const HOSTCONFIG__bin = (bb:BytesBuilder) => (v:jcs.HOSTCONFIG) => {
+    marshall.int64__bin (bb) (v.id)
+    marshall.int64__bin (bb) (v.sort)
+    marshall.DateTime__bin (bb) (v.createdat)
+    marshall.DateTime__bin (bb) (v.updatedat)
+
+    pHOSTCONFIG__bin (bb) (v.p)
+}
+
+export const bin__pHOSTCONFIG = (bi:BinIndexed):jcs.pHOSTCONFIG => {
+
+    let p = pHOSTCONFIG_empty()
+    p.Hostname = marshall.bin__str (bi)
+    p.DatabaseName = marshall.bin__str (bi)
+    p.DatabaseConn = marshall.bin__str (bi)
+    p.DirVsShared = marshall.bin__str (bi)
+    p.DirVsCodeWeb = marshall.bin__str (bi)
+    p.Project = marshall.bin__int64 (bi)
+
+    return p
+}
+
+
+export const bin__HOSTCONFIG = (bi:BinIndexed):jcs.HOSTCONFIG => {
+
+    let ID = marshall.bin__int64 (bi)
+    let Sort = marshall.bin__int64 (bi)
+    let Createdat = marshall.bin__DateTime (bi)
+    let Updatedat = marshall.bin__DateTime (bi)
+    
+    return {
+        id: ID,
+        sort: Sort,
+        createdat: Createdat,
+        updatedat: Updatedat,
+        p:  bin__pHOSTCONFIG (bi)
+    }
+}
+
 // [PROJECT] Structure
 
 
@@ -324,6 +382,25 @@ export const FIELD_empty = (): jcs.FIELD => {
         updatedat: new Date(),
         sort: 0,
         p: pFIELD_empty() }
+}
+
+export const pHOSTCONFIG_empty = (): jcs.pHOSTCONFIG => {
+    return {
+        Hostname: "",
+        DatabaseName: "",
+        DatabaseConn: "",
+        DirVsShared: "",
+        DirVsCodeWeb: "",
+        Project: 0 }
+}
+
+export const HOSTCONFIG_empty = (): jcs.HOSTCONFIG => {
+    return {
+        id: 0,
+        createdat: new Date(),
+        updatedat: new Date(),
+        sort: 0,
+        p: pHOSTCONFIG_empty() }
 }
 
 export const pPROJECT_empty = (): jcs.pPROJECT => {

@@ -75,6 +75,113 @@ BEGIN
         ALTER TABLE ts_field ADD "table" bigint;
     END IF;
 END $$;
+-- [Ts_HostConfig] ----------------------
+
+DO $$
+DECLARE
+    condition boolean;
+BEGIN
+    condition := (SELECT EXISTS(SELECT * FROM information_schema.tables WHERE table_name = 'ts_hostconfig'));
+
+    IF not condition THEN
+    CREATE TABLE ts_hostconfig (id BIGINT NOT NULL
+        ,createdat BIGINT NOT NULL
+        ,updatedat BIGINT NOT NULL
+        ,sort BIGINT NOT NULL
+        ,"hostname" VARCHAR(64)
+        ,"databasename" VARCHAR(64)
+        ,"databaseconn" VARCHAR(64)
+        ,"dirvsshared" VARCHAR(64)
+        ,"dirvscodeweb" VARCHAR(64)
+        ,"project" BIGINT);
+
+   END IF;
+END $$;
+
+
+-- [Ts_HostConfig.Hostname] -------------
+
+
+DO $$
+DECLARE
+    condition boolean;
+BEGIN
+    condition := (SELECT EXISTS(SELECT column_name FROM information_schema.columns WHERE table_name='ts_hostconfig' AND column_name='hostname'));
+
+    IF not condition THEN
+        ALTER TABLE ts_hostconfig ADD "hostname" varchar(64);
+    END IF;
+END $$;
+
+-- [Ts_HostConfig.DatabaseName] -------------
+
+
+DO $$
+DECLARE
+    condition boolean;
+BEGIN
+    condition := (SELECT EXISTS(SELECT column_name FROM information_schema.columns WHERE table_name='ts_hostconfig' AND column_name='databasename'));
+
+    IF not condition THEN
+        ALTER TABLE ts_hostconfig ADD "databasename" varchar(64);
+    END IF;
+END $$;
+
+-- [Ts_HostConfig.DatabaseConn] -------------
+
+
+DO $$
+DECLARE
+    condition boolean;
+BEGIN
+    condition := (SELECT EXISTS(SELECT column_name FROM information_schema.columns WHERE table_name='ts_hostconfig' AND column_name='databaseconn'));
+
+    IF not condition THEN
+        ALTER TABLE ts_hostconfig ADD "databaseconn" varchar(64);
+    END IF;
+END $$;
+
+-- [Ts_HostConfig.DirVsShared] -------------
+
+
+DO $$
+DECLARE
+    condition boolean;
+BEGIN
+    condition := (SELECT EXISTS(SELECT column_name FROM information_schema.columns WHERE table_name='ts_hostconfig' AND column_name='dirvsshared'));
+
+    IF not condition THEN
+        ALTER TABLE ts_hostconfig ADD "dirvsshared" varchar(64);
+    END IF;
+END $$;
+
+-- [Ts_HostConfig.DirVsCodeWeb] -------------
+
+
+DO $$
+DECLARE
+    condition boolean;
+BEGIN
+    condition := (SELECT EXISTS(SELECT column_name FROM information_schema.columns WHERE table_name='ts_hostconfig' AND column_name='dirvscodeweb'));
+
+    IF not condition THEN
+        ALTER TABLE ts_hostconfig ADD "dirvscodeweb" varchar(64);
+    END IF;
+END $$;
+
+-- [Ts_HostConfig.Project] -------------
+
+
+DO $$
+DECLARE
+    condition boolean;
+BEGIN
+    condition := (SELECT EXISTS(SELECT column_name FROM information_schema.columns WHERE table_name='ts_hostconfig' AND column_name='project'));
+
+    IF not condition THEN
+        ALTER TABLE ts_hostconfig ADD "project" bigint;
+    END IF;
+END $$;
 -- [Ts_Project] ----------------------
 
 DO $$

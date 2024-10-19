@@ -176,6 +176,185 @@ let json__FIELDo (json:Json):FIELD option =
         
     | None -> None
 
+// [HOSTCONFIG] Structure
+
+
+let pHOSTCONFIG__bin (bb:BytesBuilder) (p:pHOSTCONFIG) =
+
+    
+    let binHostname = p.Hostname |> Encoding.UTF8.GetBytes
+    binHostname.Length |> BitConverter.GetBytes |> bb.append
+    binHostname |> bb.append
+    
+    let binDatabaseName = p.DatabaseName |> Encoding.UTF8.GetBytes
+    binDatabaseName.Length |> BitConverter.GetBytes |> bb.append
+    binDatabaseName |> bb.append
+    
+    let binDatabaseConn = p.DatabaseConn |> Encoding.UTF8.GetBytes
+    binDatabaseConn.Length |> BitConverter.GetBytes |> bb.append
+    binDatabaseConn |> bb.append
+    
+    let binDirVsShared = p.DirVsShared |> Encoding.UTF8.GetBytes
+    binDirVsShared.Length |> BitConverter.GetBytes |> bb.append
+    binDirVsShared |> bb.append
+    
+    let binDirVsCodeWeb = p.DirVsCodeWeb |> Encoding.UTF8.GetBytes
+    binDirVsCodeWeb.Length |> BitConverter.GetBytes |> bb.append
+    binDirVsCodeWeb |> bb.append
+    
+    p.Project |> BitConverter.GetBytes |> bb.append
+
+let HOSTCONFIG__bin (bb:BytesBuilder) (v:HOSTCONFIG) =
+    v.ID |> BitConverter.GetBytes |> bb.append
+    v.Sort |> BitConverter.GetBytes |> bb.append
+    DateTime__bin bb v.Createdat
+    DateTime__bin bb v.Updatedat
+    
+    pHOSTCONFIG__bin bb v.p
+
+let bin__pHOSTCONFIG (bi:BinIndexed):pHOSTCONFIG =
+    let bin,index = bi
+
+    let p = pHOSTCONFIG_empty()
+    
+    let count_Hostname = BitConverter.ToInt32(bin,index.Value)
+    index.Value <- index.Value + 4
+    p.Hostname <- Encoding.UTF8.GetString(bin,index.Value,count_Hostname)
+    index.Value <- index.Value + count_Hostname
+    
+    let count_DatabaseName = BitConverter.ToInt32(bin,index.Value)
+    index.Value <- index.Value + 4
+    p.DatabaseName <- Encoding.UTF8.GetString(bin,index.Value,count_DatabaseName)
+    index.Value <- index.Value + count_DatabaseName
+    
+    let count_DatabaseConn = BitConverter.ToInt32(bin,index.Value)
+    index.Value <- index.Value + 4
+    p.DatabaseConn <- Encoding.UTF8.GetString(bin,index.Value,count_DatabaseConn)
+    index.Value <- index.Value + count_DatabaseConn
+    
+    let count_DirVsShared = BitConverter.ToInt32(bin,index.Value)
+    index.Value <- index.Value + 4
+    p.DirVsShared <- Encoding.UTF8.GetString(bin,index.Value,count_DirVsShared)
+    index.Value <- index.Value + count_DirVsShared
+    
+    let count_DirVsCodeWeb = BitConverter.ToInt32(bin,index.Value)
+    index.Value <- index.Value + 4
+    p.DirVsCodeWeb <- Encoding.UTF8.GetString(bin,index.Value,count_DirVsCodeWeb)
+    index.Value <- index.Value + count_DirVsCodeWeb
+    
+    p.Project <- BitConverter.ToInt64(bin,index.Value)
+    index.Value <- index.Value + 8
+    
+    p
+
+let bin__HOSTCONFIG (bi:BinIndexed):HOSTCONFIG =
+    let bin,index = bi
+
+    let ID = BitConverter.ToInt64(bin,index.Value)
+    index.Value <- index.Value + 8
+    
+    let Sort = BitConverter.ToInt64(bin,index.Value)
+    index.Value <- index.Value + 8
+    
+    let Createdat = bin__DateTime bi
+    
+    let Updatedat = bin__DateTime bi
+    
+    {
+        ID = ID
+        Sort = Sort
+        Createdat = Createdat
+        Updatedat = Updatedat
+        p = bin__pHOSTCONFIG bi }
+
+let pHOSTCONFIG__json (p:pHOSTCONFIG) =
+
+    [|
+        ("Hostname",p.Hostname |> Json.Str)
+        ("DatabaseName",p.DatabaseName |> Json.Str)
+        ("DatabaseConn",p.DatabaseConn |> Json.Str)
+        ("DirVsShared",p.DirVsShared |> Json.Str)
+        ("DirVsCodeWeb",p.DirVsCodeWeb |> Json.Str)
+        ("Project",p.Project.ToString() |> Json.Num) |]
+    |> Json.Braket
+
+let HOSTCONFIG__json (v:HOSTCONFIG) =
+
+    let p = v.p
+    
+    [|  ("id",v.ID.ToString() |> Json.Num)
+        ("sort",v.Sort.ToString() |> Json.Num)
+        ("createdat",(v.Createdat |> Util.Time.wintime__unixtime).ToString() |> Json.Num)
+        ("updatedat",(v.Updatedat |> Util.Time.wintime__unixtime).ToString() |> Json.Num)
+        ("p",pHOSTCONFIG__json v.p) |]
+    |> Json.Braket
+
+let HOSTCONFIG__jsonTbw (w:TextBlockWriter) (v:HOSTCONFIG) =
+    json__str w (HOSTCONFIG__json v)
+
+let HOSTCONFIG__jsonStr (v:HOSTCONFIG) =
+    (HOSTCONFIG__json v) |> json__strFinal
+
+
+let json__pHOSTCONFIGo (json:Json):pHOSTCONFIG option =
+    let fields = json |> json__items
+
+    let p = pHOSTCONFIG_empty()
+    
+    p.Hostname <- checkfieldz fields "Hostname" 64
+    
+    p.DatabaseName <- checkfieldz fields "DatabaseName" 64
+    
+    p.DatabaseConn <- checkfieldz fields "DatabaseConn" 64
+    
+    p.DirVsShared <- checkfieldz fields "DirVsShared" 64
+    
+    p.DirVsCodeWeb <- checkfieldz fields "DirVsCodeWeb" 64
+    
+    p.Project <- checkfield fields "Project" |> parse_int64
+    
+    p |> Some
+    
+
+let json__HOSTCONFIGo (json:Json):HOSTCONFIG option =
+    let fields = json |> json__items
+
+    let ID = checkfield fields "id" |> parse_int64
+    let Sort = checkfield fields "sort" |> parse_int64
+    let Createdat = checkfield fields "createdat" |> parse_int64 |> DateTime.FromBinary
+    let Updatedat = checkfield fields "updatedat" |> parse_int64 |> DateTime.FromBinary
+    
+    let o  =
+        match
+            json
+            |> tryFindByAtt "p" with
+        | Some (s,v) -> json__pHOSTCONFIGo v
+        | None -> None
+    
+    match o with
+    | Some p ->
+        
+        p.Hostname <- checkfieldz fields "Hostname" 64
+        
+        p.DatabaseName <- checkfieldz fields "DatabaseName" 64
+        
+        p.DatabaseConn <- checkfieldz fields "DatabaseConn" 64
+        
+        p.DirVsShared <- checkfieldz fields "DirVsShared" 64
+        
+        p.DirVsCodeWeb <- checkfieldz fields "DirVsCodeWeb" 64
+        
+        p.Project <- checkfield fields "Project" |> parse_int64
+        
+        {
+            ID = ID
+            Sort = Sort
+            Createdat = Createdat
+            Updatedat = Updatedat
+            p = p } |> Some
+        
+    | None -> None
+
 // [PROJECT] Structure
 
 
@@ -1008,6 +1187,119 @@ let FIELDTxSqlServer =
     """
 
 
+let db__pHOSTCONFIG(line:Object[]): pHOSTCONFIG =
+    let p = pHOSTCONFIG_empty()
+
+    p.Hostname <- string(line.[4]).TrimEnd()
+    p.DatabaseName <- string(line.[5]).TrimEnd()
+    p.DatabaseConn <- string(line.[6]).TrimEnd()
+    p.DirVsShared <- string(line.[7]).TrimEnd()
+    p.DirVsCodeWeb <- string(line.[8]).TrimEnd()
+    p.Project <- if Convert.IsDBNull(line.[9]) then 0L else line.[9] :?> int64
+
+    p
+
+let pHOSTCONFIG__sps (p:pHOSTCONFIG) =
+    match rdbms with
+    | Rdbms.SqlServer ->
+        [|
+            ("Hostname", p.Hostname) |> kvp__sqlparam
+            ("DatabaseName", p.DatabaseName) |> kvp__sqlparam
+            ("DatabaseConn", p.DatabaseConn) |> kvp__sqlparam
+            ("DirVsShared", p.DirVsShared) |> kvp__sqlparam
+            ("DirVsCodeWeb", p.DirVsCodeWeb) |> kvp__sqlparam
+            ("Project", p.Project) |> kvp__sqlparam |]
+    | Rdbms.PostgreSql ->
+        [|
+            ("hostname", p.Hostname) |> kvp__sqlparam
+            ("databasename", p.DatabaseName) |> kvp__sqlparam
+            ("databaseconn", p.DatabaseConn) |> kvp__sqlparam
+            ("dirvsshared", p.DirVsShared) |> kvp__sqlparam
+            ("dirvscodeweb", p.DirVsCodeWeb) |> kvp__sqlparam
+            ("project", p.Project) |> kvp__sqlparam |]
+
+let db__HOSTCONFIG = db__Rcd db__pHOSTCONFIG
+
+let HOSTCONFIG_wrapper item: HOSTCONFIG =
+    let (i,c,u,s),p = item
+    { ID = i; Createdat = c; Updatedat = u; Sort = s; p = p }
+
+let pHOSTCONFIG_clone (p:pHOSTCONFIG): pHOSTCONFIG = {
+    Hostname = p.Hostname
+    DatabaseName = p.DatabaseName
+    DatabaseConn = p.DatabaseConn
+    DirVsShared = p.DirVsShared
+    DirVsCodeWeb = p.DirVsCodeWeb
+    Project = p.Project }
+
+let HOSTCONFIG_update_transaction output (updater,suc,fail) (rcd:HOSTCONFIG) =
+    let rollback_p = rcd.p |> pHOSTCONFIG_clone
+    let rollback_updatedat = rcd.Updatedat
+    updater rcd.p
+    let ctime,res =
+        (rcd.ID,rcd.p,rollback_p,rollback_updatedat)
+        |> update (conn,output,HOSTCONFIG_table,HOSTCONFIG_sql_update(),pHOSTCONFIG__sps,suc,fail)
+    match res with
+    | Suc ctx ->
+        rcd.Updatedat <- ctime
+        suc(ctime,ctx)
+    | Fail(eso,ctx) ->
+        rcd.p <- rollback_p
+        rcd.Updatedat <- rollback_updatedat
+        fail eso
+
+let HOSTCONFIG_update output (rcd:HOSTCONFIG) =
+    rcd
+    |> HOSTCONFIG_update_transaction output ((fun p -> ()),(fun (ctime,ctx) -> ()),(fun dte -> ()))
+
+let HOSTCONFIG_create_incremental_transaction output (suc,fail) p =
+    let cid = Interlocked.Increment HOSTCONFIG_id
+    let ctime = DateTime.UtcNow
+    match create (conn,output,HOSTCONFIG_table,pHOSTCONFIG__sps) (cid,ctime,p) with
+    | Suc ctx -> ((cid,ctime,ctime,cid),p) |> HOSTCONFIG_wrapper |> suc
+    | Fail(eso,ctx) -> fail(eso,ctx)
+
+let HOSTCONFIG_create output p =
+    HOSTCONFIG_create_incremental_transaction output ((fun rcd -> ()),(fun (eso,ctx) -> ())) p
+    
+
+let id__HOSTCONFIGo id: HOSTCONFIG option = id__rcd(conn,HOSTCONFIG_fieldorders(),HOSTCONFIG_table,db__HOSTCONFIG) id
+
+let HOSTCONFIG_metadata = {
+    fieldorders = HOSTCONFIG_fieldorders
+    db__rcd = db__HOSTCONFIG 
+    wrapper = HOSTCONFIG_wrapper
+    sps = pHOSTCONFIG__sps
+    id = HOSTCONFIG_id
+    id__rcdo = id__HOSTCONFIGo
+    clone = pHOSTCONFIG_clone
+    empty__p = pHOSTCONFIG_empty
+    rcd__bin = HOSTCONFIG__bin
+    bin__rcd = bin__HOSTCONFIG
+    sql_update = HOSTCONFIG_sql_update
+    rcd_update = HOSTCONFIG_update
+    table = HOSTCONFIG_table
+    shorthand = "hostconfig" }
+
+let HOSTCONFIGTxSqlServer =
+    """
+    IF NOT EXISTS(SELECT * FROM sysobjects WHERE [name]='Ts_HostConfig' AND xtype='U')
+    BEGIN
+
+        CREATE TABLE Ts_HostConfig ([ID] BIGINT NOT NULL
+    ,[Createdat] BIGINT NOT NULL
+    ,[Updatedat] BIGINT NOT NULL
+    ,[Sort] BIGINT NOT NULL,
+    ,[Hostname]
+    ,[DatabaseName]
+    ,[DatabaseConn]
+    ,[DirVsShared]
+    ,[DirVsCodeWeb]
+    ,[Project])
+    END
+    """
+
+
 let db__pPROJECT(line:Object[]): pPROJECT =
     let p = pPROJECT_empty()
 
@@ -1515,14 +1807,16 @@ let TEMPLATETxSqlServer =
 
 type MetadataEnum = 
 | FIELD = 0
-| PROJECT = 1
-| TABLE = 2
-| COMP = 3
-| PAGE = 4
-| TEMPLATE = 5
+| HOSTCONFIG = 1
+| PROJECT = 2
+| TABLE = 3
+| COMP = 4
+| PAGE = 5
+| TEMPLATE = 6
 
 let tablenames = [|
     FIELD_metadata.table
+    HOSTCONFIG_metadata.table
     PROJECT_metadata.table
     TABLE_metadata.table
     COMP_metadata.table
@@ -1545,6 +1839,25 @@ let init() =
     match singlevalue_query conn (str__sql sqlCountTs_Field) with
     | Some v ->
         FIELD_count.Value <-
+            match rdbms with
+            | Rdbms.SqlServer -> v :?> int32
+            | Rdbms.PostgreSql -> v :?> int64 |> int32
+    | None -> ()
+
+    let sqlMaxTs_HostConfig, sqlCountTs_HostConfig =
+        match rdbms with
+        | Rdbms.SqlServer -> "SELECT MAX(ID) FROM [Ts_HostConfig]", "SELECT COUNT(ID) FROM [Ts_HostConfig]"
+        | Rdbms.PostgreSql -> "SELECT MAX(id) FROM ts_hostconfig", "SELECT COUNT(id) FROM ts_hostconfig"
+    match singlevalue_query conn (str__sql sqlMaxTs_HostConfig) with
+    | Some v ->
+        let max = v :?> int64
+        if max > HOSTCONFIG_id.Value then
+            HOSTCONFIG_id.Value <- max
+    | None -> ()
+
+    match singlevalue_query conn (str__sql sqlCountTs_HostConfig) with
+    | Some v ->
+        HOSTCONFIG_count.Value <-
             match rdbms with
             | Rdbms.SqlServer -> v :?> int32
             | Rdbms.PostgreSql -> v :?> int64 |> int32

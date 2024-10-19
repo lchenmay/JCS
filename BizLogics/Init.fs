@@ -44,9 +44,12 @@ let init (runtime:Runtime) =
 
     runtime.data.pcs.Reset 4
 
+    let localhost = System.Environment.MachineName
+
     let loader metadata = loadAll runtime.output conn metadata
 
     (fun (i:PROJECT) -> runtime.data.pcs[i.ID] <- i |> project__ProjectComplex) |> loader PROJECT_metadata
+    (fun (i:HOSTCONFIG) -> runtime.data.pcs[i.p.Project].hostconfigs[i.p.Hostname] <- i) |> loader HOSTCONFIG_metadata
 
     (fun (i:COMP) -> runtime.data.pcs[i.p.Project].comps[i.ID] <- i) |> loader COMP_metadata
     (fun (i:TEMPLATE) -> runtime.data.pcs[i.p.Project].templates[i.ID] <- i) |> loader TEMPLATE_metadata
