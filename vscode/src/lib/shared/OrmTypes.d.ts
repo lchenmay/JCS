@@ -7,6 +7,8 @@ namespace jcs {
 export type pFIELD = {
     Name: string
     Desc: string
+    Project: number
+    Table: number
 }
 
 export type FIELD = {
@@ -37,6 +39,7 @@ p:pPROJECT
 export type pTABLE = {
     Name: string
     Desc: string
+    Project: number
 }
 
 export type TABLE = {
@@ -52,6 +55,7 @@ p:pTABLE
 export type pCOMP = {
     Code: string
     Caption: string
+    Project: number
 }
 
 export type COMP = {
@@ -65,8 +69,9 @@ p:pCOMP
 // [Ts_UiPage] (PAGE)
 
 export type pPAGE = {
-    Code: string
+    Name: string
     Caption: string
+    Project: number
 }
 
 export type PAGE = {

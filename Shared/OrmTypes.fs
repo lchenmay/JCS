@@ -27,7 +27,9 @@ open PreOrm
 
 type pFIELD = {
 mutable Name: Chars
-mutable Desc: Text}
+mutable Desc: Text
+mutable Project: FK
+mutable Table: FK}
 
 
 type FIELD = Rcd<pFIELD>
@@ -35,33 +37,41 @@ type FIELD = Rcd<pFIELD>
 let FIELD_fieldorders() =
     match rdbms with
     | Rdbms.SqlServer ->
-        "[ID],[Createdat],[Updatedat],[Sort],[Name],[Desc]"
+        "[ID],[Createdat],[Updatedat],[Sort],[Name],[Desc],[Project],[Table]"
     | Rdbms.PostgreSql ->
-        $""" "id","createdat","updatedat","sort", "name","desc" """
+        $""" "id","createdat","updatedat","sort", "name","desc","project","table" """
 
 let pFIELD_fieldordersArray = [|
     "Name"
-    "Desc" |]
+    "Desc"
+    "Project"
+    "Table" |]
 
 let FIELD_sql_update() =
     match rdbms with
-    | Rdbms.SqlServer -> "[Name]=@Name,[Desc]=@Desc"
-    | Rdbms.PostgreSql -> "name=@name,desc=@desc"
+    | Rdbms.SqlServer -> "[Name]=@Name,[Desc]=@Desc,[Project]=@Project,[Table]=@Table"
+    | Rdbms.PostgreSql -> "name=@name,desc=@desc,project=@project,table=@table"
 
 let pFIELD_fields() =
     match rdbms with
     | Rdbms.SqlServer ->
         [|
             Chars("Name", 64)
-            Text("Desc") |]
+            Text("Desc")
+            FK("Project")
+            FK("Table") |]
     | Rdbms.PostgreSql ->
         [|
             Chars("name", 64)
-            Text("desc") |]
+            Text("desc")
+            FK("project")
+            FK("table") |]
 
 let pFIELD_empty(): pFIELD = {
     Name = ""
-    Desc = "" }
+    Desc = ""
+    Project = 0L
+    Table = 0L }
 
 let FIELD_id = ref 7523431L
 let FIELD_count = ref 0
@@ -115,7 +125,8 @@ let PROJECT_table = "Ts_Project"
 
 type pTABLE = {
 mutable Name: Chars
-mutable Desc: Text}
+mutable Desc: Text
+mutable Project: FK}
 
 
 type TABLE = Rcd<pTABLE>
@@ -123,33 +134,37 @@ type TABLE = Rcd<pTABLE>
 let TABLE_fieldorders() =
     match rdbms with
     | Rdbms.SqlServer ->
-        "[ID],[Createdat],[Updatedat],[Sort],[Name],[Desc]"
+        "[ID],[Createdat],[Updatedat],[Sort],[Name],[Desc],[Project]"
     | Rdbms.PostgreSql ->
-        $""" "id","createdat","updatedat","sort", "name","desc" """
+        $""" "id","createdat","updatedat","sort", "name","desc","project" """
 
 let pTABLE_fieldordersArray = [|
     "Name"
-    "Desc" |]
+    "Desc"
+    "Project" |]
 
 let TABLE_sql_update() =
     match rdbms with
-    | Rdbms.SqlServer -> "[Name]=@Name,[Desc]=@Desc"
-    | Rdbms.PostgreSql -> "name=@name,desc=@desc"
+    | Rdbms.SqlServer -> "[Name]=@Name,[Desc]=@Desc,[Project]=@Project"
+    | Rdbms.PostgreSql -> "name=@name,desc=@desc,project=@project"
 
 let pTABLE_fields() =
     match rdbms with
     | Rdbms.SqlServer ->
         [|
             Chars("Name", 64)
-            Text("Desc") |]
+            Text("Desc")
+            FK("Project") |]
     | Rdbms.PostgreSql ->
         [|
             Chars("name", 64)
-            Text("desc") |]
+            Text("desc")
+            FK("project") |]
 
 let pTABLE_empty(): pTABLE = {
     Name = ""
-    Desc = "" }
+    Desc = ""
+    Project = 0L }
 
 let TABLE_id = ref 7523431L
 let TABLE_count = ref 0
@@ -159,7 +174,8 @@ let TABLE_table = "Ts_Table"
 
 type pCOMP = {
 mutable Code: Chars
-mutable Caption: Chars}
+mutable Caption: Chars
+mutable Project: FK}
 
 
 type COMP = Rcd<pCOMP>
@@ -167,33 +183,37 @@ type COMP = Rcd<pCOMP>
 let COMP_fieldorders() =
     match rdbms with
     | Rdbms.SqlServer ->
-        "[ID],[Createdat],[Updatedat],[Sort],[Code],[Caption]"
+        "[ID],[Createdat],[Updatedat],[Sort],[Code],[Caption],[Project]"
     | Rdbms.PostgreSql ->
-        $""" "id","createdat","updatedat","sort", "code","caption" """
+        $""" "id","createdat","updatedat","sort", "code","caption","project" """
 
 let pCOMP_fieldordersArray = [|
     "Code"
-    "Caption" |]
+    "Caption"
+    "Project" |]
 
 let COMP_sql_update() =
     match rdbms with
-    | Rdbms.SqlServer -> "[Code]=@Code,[Caption]=@Caption"
-    | Rdbms.PostgreSql -> "code=@code,caption=@caption"
+    | Rdbms.SqlServer -> "[Code]=@Code,[Caption]=@Caption,[Project]=@Project"
+    | Rdbms.PostgreSql -> "code=@code,caption=@caption,project=@project"
 
 let pCOMP_fields() =
     match rdbms with
     | Rdbms.SqlServer ->
         [|
             Chars("Code", 64)
-            Chars("Caption", 256) |]
+            Chars("Caption", 256)
+            FK("Project") |]
     | Rdbms.PostgreSql ->
         [|
             Chars("code", 64)
-            Chars("caption", 256) |]
+            Chars("caption", 256)
+            FK("project") |]
 
 let pCOMP_empty(): pCOMP = {
     Code = ""
-    Caption = "" }
+    Caption = ""
+    Project = 0L }
 
 let COMP_id = ref 6723431L
 let COMP_count = ref 0
@@ -202,8 +222,9 @@ let COMP_table = "Ts_UiComponent"
 // [Ts_UiPage] (PAGE)
 
 type pPAGE = {
-mutable Code: Chars
-mutable Caption: Chars}
+mutable Name: Chars
+mutable Caption: Chars
+mutable Project: FK}
 
 
 type PAGE = Rcd<pPAGE>
@@ -211,33 +232,37 @@ type PAGE = Rcd<pPAGE>
 let PAGE_fieldorders() =
     match rdbms with
     | Rdbms.SqlServer ->
-        "[ID],[Createdat],[Updatedat],[Sort],[Code],[Caption]"
+        "[ID],[Createdat],[Updatedat],[Sort],[Name],[Caption],[Project]"
     | Rdbms.PostgreSql ->
-        $""" "id","createdat","updatedat","sort", "code","caption" """
+        $""" "id","createdat","updatedat","sort", "name","caption","project" """
 
 let pPAGE_fieldordersArray = [|
-    "Code"
-    "Caption" |]
+    "Name"
+    "Caption"
+    "Project" |]
 
 let PAGE_sql_update() =
     match rdbms with
-    | Rdbms.SqlServer -> "[Code]=@Code,[Caption]=@Caption"
-    | Rdbms.PostgreSql -> "code=@code,caption=@caption"
+    | Rdbms.SqlServer -> "[Name]=@Name,[Caption]=@Caption,[Project]=@Project"
+    | Rdbms.PostgreSql -> "name=@name,caption=@caption,project=@project"
 
 let pPAGE_fields() =
     match rdbms with
     | Rdbms.SqlServer ->
         [|
-            Chars("Code", 64)
-            Chars("Caption", 256) |]
+            Chars("Name", 64)
+            Chars("Caption", 256)
+            FK("Project") |]
     | Rdbms.PostgreSql ->
         [|
-            Chars("code", 64)
-            Chars("caption", 256) |]
+            Chars("name", 64)
+            Chars("caption", 256)
+            FK("project") |]
 
 let pPAGE_empty(): pPAGE = {
-    Code = ""
-    Caption = "" }
+    Name = ""
+    Caption = ""
+    Project = 0L }
 
 let PAGE_id = ref 6723431L
 let PAGE_count = ref 0

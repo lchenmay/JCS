@@ -13,6 +13,10 @@ export const pFIELD__bin = (bb:BytesBuilder) => (p:jcs.pFIELD) => {
     marshall.str__bin (bb) (p.Name)
     
     marshall.str__bin (bb) (p.Desc)
+    
+    marshall.int64__bin (bb) (p.Project)
+    
+    marshall.int64__bin (bb) (p.Table)
 }
 
 export const FIELD__bin = (bb:BytesBuilder) => (v:jcs.FIELD) => {
@@ -29,6 +33,8 @@ export const bin__pFIELD = (bi:BinIndexed):jcs.pFIELD => {
     let p = pFIELD_empty()
     p.Name = marshall.bin__str (bi)
     p.Desc = marshall.bin__str (bi)
+    p.Project = marshall.bin__int64 (bi)
+    p.Table = marshall.bin__int64 (bi)
 
     return p
 }
@@ -105,6 +111,8 @@ export const pTABLE__bin = (bb:BytesBuilder) => (p:jcs.pTABLE) => {
     marshall.str__bin (bb) (p.Name)
     
     marshall.str__bin (bb) (p.Desc)
+    
+    marshall.int64__bin (bb) (p.Project)
 }
 
 export const TABLE__bin = (bb:BytesBuilder) => (v:jcs.TABLE) => {
@@ -121,6 +129,7 @@ export const bin__pTABLE = (bi:BinIndexed):jcs.pTABLE => {
     let p = pTABLE_empty()
     p.Name = marshall.bin__str (bi)
     p.Desc = marshall.bin__str (bi)
+    p.Project = marshall.bin__int64 (bi)
 
     return p
 }
@@ -151,6 +160,8 @@ export const pCOMP__bin = (bb:BytesBuilder) => (p:jcs.pCOMP) => {
     marshall.str__bin (bb) (p.Code)
     
     marshall.str__bin (bb) (p.Caption)
+    
+    marshall.int64__bin (bb) (p.Project)
 }
 
 export const COMP__bin = (bb:BytesBuilder) => (v:jcs.COMP) => {
@@ -167,6 +178,7 @@ export const bin__pCOMP = (bi:BinIndexed):jcs.pCOMP => {
     let p = pCOMP_empty()
     p.Code = marshall.bin__str (bi)
     p.Caption = marshall.bin__str (bi)
+    p.Project = marshall.bin__int64 (bi)
 
     return p
 }
@@ -194,9 +206,11 @@ export const bin__COMP = (bi:BinIndexed):jcs.COMP => {
 export const pPAGE__bin = (bb:BytesBuilder) => (p:jcs.pPAGE) => {
 
     
-    marshall.str__bin (bb) (p.Code)
+    marshall.str__bin (bb) (p.Name)
     
     marshall.str__bin (bb) (p.Caption)
+    
+    marshall.int64__bin (bb) (p.Project)
 }
 
 export const PAGE__bin = (bb:BytesBuilder) => (v:jcs.PAGE) => {
@@ -211,8 +225,9 @@ export const PAGE__bin = (bb:BytesBuilder) => (v:jcs.PAGE) => {
 export const bin__pPAGE = (bi:BinIndexed):jcs.pPAGE => {
 
     let p = pPAGE_empty()
-    p.Code = marshall.bin__str (bi)
+    p.Name = marshall.bin__str (bi)
     p.Caption = marshall.bin__str (bi)
+    p.Project = marshall.bin__int64 (bi)
 
     return p
 }
@@ -236,7 +251,9 @@ export const bin__PAGE = (bi:BinIndexed):jcs.PAGE => {
 export const pFIELD_empty = (): jcs.pFIELD => {
     return {
         Name: "",
-        Desc: "" }
+        Desc: "",
+        Project: 0,
+        Table: 0 }
 }
 
 export const FIELD_empty = (): jcs.FIELD => {
@@ -266,7 +283,8 @@ export const PROJECT_empty = (): jcs.PROJECT => {
 export const pTABLE_empty = (): jcs.pTABLE => {
     return {
         Name: "",
-        Desc: "" }
+        Desc: "",
+        Project: 0 }
 }
 
 export const TABLE_empty = (): jcs.TABLE => {
@@ -281,7 +299,8 @@ export const TABLE_empty = (): jcs.TABLE => {
 export const pCOMP_empty = (): jcs.pCOMP => {
     return {
         Code: "",
-        Caption: "" }
+        Caption: "",
+        Project: 0 }
 }
 
 export const COMP_empty = (): jcs.COMP => {
@@ -295,8 +314,9 @@ export const COMP_empty = (): jcs.COMP => {
 
 export const pPAGE_empty = (): jcs.pPAGE => {
     return {
-        Code: "",
-        Caption: "" }
+        Name: "",
+        Caption: "",
+        Project: 0 }
 }
 
 export const PAGE_empty = (): jcs.PAGE => {

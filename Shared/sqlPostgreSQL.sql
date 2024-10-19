@@ -12,7 +12,9 @@ BEGIN
         ,updatedat BIGINT NOT NULL
         ,sort BIGINT NOT NULL
         ,"name" VARCHAR(64)
-        ,"desc" TEXT);
+        ,"desc" TEXT
+        ,"project" BIGINT
+        ,"table" BIGINT);
 
    END IF;
 END $$;
@@ -43,6 +45,34 @@ BEGIN
 
     IF not condition THEN
         ALTER TABLE ts_field ADD "desc" text;
+    END IF;
+END $$;
+
+-- [Ts_Field.Project] -------------
+
+
+DO $$
+DECLARE
+    condition boolean;
+BEGIN
+    condition := (SELECT EXISTS(SELECT column_name FROM information_schema.columns WHERE table_name='ts_field' AND column_name='project'));
+
+    IF not condition THEN
+        ALTER TABLE ts_field ADD "project" bigint;
+    END IF;
+END $$;
+
+-- [Ts_Field.Table] -------------
+
+
+DO $$
+DECLARE
+    condition boolean;
+BEGIN
+    condition := (SELECT EXISTS(SELECT column_name FROM information_schema.columns WHERE table_name='ts_field' AND column_name='table'));
+
+    IF not condition THEN
+        ALTER TABLE ts_field ADD "table" bigint;
     END IF;
 END $$;
 -- [Ts_Project] ----------------------
@@ -106,7 +136,8 @@ BEGIN
         ,updatedat BIGINT NOT NULL
         ,sort BIGINT NOT NULL
         ,"name" VARCHAR(64)
-        ,"desc" TEXT);
+        ,"desc" TEXT
+        ,"project" BIGINT);
 
    END IF;
 END $$;
@@ -139,6 +170,20 @@ BEGIN
         ALTER TABLE ts_table ADD "desc" text;
     END IF;
 END $$;
+
+-- [Ts_Table.Project] -------------
+
+
+DO $$
+DECLARE
+    condition boolean;
+BEGIN
+    condition := (SELECT EXISTS(SELECT column_name FROM information_schema.columns WHERE table_name='ts_table' AND column_name='project'));
+
+    IF not condition THEN
+        ALTER TABLE ts_table ADD "project" bigint;
+    END IF;
+END $$;
 -- [Ts_UiComponent] ----------------------
 
 DO $$
@@ -153,7 +198,8 @@ BEGIN
         ,updatedat BIGINT NOT NULL
         ,sort BIGINT NOT NULL
         ,"code" VARCHAR(64)
-        ,"caption" VARCHAR(256));
+        ,"caption" VARCHAR(256)
+        ,"project" BIGINT);
 
    END IF;
 END $$;
@@ -186,6 +232,20 @@ BEGIN
         ALTER TABLE ts_uicomponent ADD "caption" varchar(256);
     END IF;
 END $$;
+
+-- [Ts_UiComponent.Project] -------------
+
+
+DO $$
+DECLARE
+    condition boolean;
+BEGIN
+    condition := (SELECT EXISTS(SELECT column_name FROM information_schema.columns WHERE table_name='ts_uicomponent' AND column_name='project'));
+
+    IF not condition THEN
+        ALTER TABLE ts_uicomponent ADD "project" bigint;
+    END IF;
+END $$;
 -- [Ts_UiPage] ----------------------
 
 DO $$
@@ -199,24 +259,25 @@ BEGIN
         ,createdat BIGINT NOT NULL
         ,updatedat BIGINT NOT NULL
         ,sort BIGINT NOT NULL
-        ,"code" VARCHAR(64)
-        ,"caption" VARCHAR(256));
+        ,"name" VARCHAR(64)
+        ,"caption" VARCHAR(256)
+        ,"project" BIGINT);
 
    END IF;
 END $$;
 
 
--- [Ts_UiPage.Code] -------------
+-- [Ts_UiPage.Name] -------------
 
 
 DO $$
 DECLARE
     condition boolean;
 BEGIN
-    condition := (SELECT EXISTS(SELECT column_name FROM information_schema.columns WHERE table_name='ts_uipage' AND column_name='code'));
+    condition := (SELECT EXISTS(SELECT column_name FROM information_schema.columns WHERE table_name='ts_uipage' AND column_name='name'));
 
     IF not condition THEN
-        ALTER TABLE ts_uipage ADD "code" varchar(64);
+        ALTER TABLE ts_uipage ADD "name" varchar(64);
     END IF;
 END $$;
 
@@ -231,5 +292,19 @@ BEGIN
 
     IF not condition THEN
         ALTER TABLE ts_uipage ADD "caption" varchar(256);
+    END IF;
+END $$;
+
+-- [Ts_UiPage.Project] -------------
+
+
+DO $$
+DECLARE
+    condition boolean;
+BEGIN
+    condition := (SELECT EXISTS(SELECT column_name FROM information_schema.columns WHERE table_name='ts_uipage' AND column_name='project'));
+
+    IF not condition THEN
+        ALTER TABLE ts_uipage ADD "project" bigint;
     END IF;
 END $$;

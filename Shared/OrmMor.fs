@@ -42,6 +42,10 @@ let pFIELD__bin (bb:BytesBuilder) (p:pFIELD) =
     let binDesc = p.Desc |> Encoding.UTF8.GetBytes
     binDesc.Length |> BitConverter.GetBytes |> bb.append
     binDesc |> bb.append
+    
+    p.Project |> BitConverter.GetBytes |> bb.append
+    
+    p.Table |> BitConverter.GetBytes |> bb.append
 
 let FIELD__bin (bb:BytesBuilder) (v:FIELD) =
     v.ID |> BitConverter.GetBytes |> bb.append
@@ -65,6 +69,12 @@ let bin__pFIELD (bi:BinIndexed):pFIELD =
     index.Value <- index.Value + 4
     p.Desc <- Encoding.UTF8.GetString(bin,index.Value,count_Desc)
     index.Value <- index.Value + count_Desc
+    
+    p.Project <- BitConverter.ToInt64(bin,index.Value)
+    index.Value <- index.Value + 8
+    
+    p.Table <- BitConverter.ToInt64(bin,index.Value)
+    index.Value <- index.Value + 8
     
     p
 
@@ -92,7 +102,9 @@ let pFIELD__json (p:pFIELD) =
 
     [|
         ("Name",p.Name |> Json.Str)
-        ("Desc",p.Desc |> Json.Str) |]
+        ("Desc",p.Desc |> Json.Str)
+        ("Project",p.Project.ToString() |> Json.Num)
+        ("Table",p.Table.ToString() |> Json.Num) |]
     |> Json.Braket
 
 let FIELD__json (v:FIELD) =
@@ -122,6 +134,10 @@ let json__pFIELDo (json:Json):pFIELD option =
     
     p.Desc <- checkfield fields "Desc"
     
+    p.Project <- checkfield fields "Project" |> parse_int64
+    
+    p.Table <- checkfield fields "Table" |> parse_int64
+    
     p |> Some
     
 
@@ -146,6 +162,10 @@ let json__FIELDo (json:Json):FIELD option =
         p.Name <- checkfieldz fields "Name" 64
         
         p.Desc <- checkfield fields "Desc"
+        
+        p.Project <- checkfield fields "Project" |> parse_int64
+        
+        p.Table <- checkfield fields "Table" |> parse_int64
         
         {
             ID = ID
@@ -296,6 +316,8 @@ let pTABLE__bin (bb:BytesBuilder) (p:pTABLE) =
     let binDesc = p.Desc |> Encoding.UTF8.GetBytes
     binDesc.Length |> BitConverter.GetBytes |> bb.append
     binDesc |> bb.append
+    
+    p.Project |> BitConverter.GetBytes |> bb.append
 
 let TABLE__bin (bb:BytesBuilder) (v:TABLE) =
     v.ID |> BitConverter.GetBytes |> bb.append
@@ -319,6 +341,9 @@ let bin__pTABLE (bi:BinIndexed):pTABLE =
     index.Value <- index.Value + 4
     p.Desc <- Encoding.UTF8.GetString(bin,index.Value,count_Desc)
     index.Value <- index.Value + count_Desc
+    
+    p.Project <- BitConverter.ToInt64(bin,index.Value)
+    index.Value <- index.Value + 8
     
     p
 
@@ -346,7 +371,8 @@ let pTABLE__json (p:pTABLE) =
 
     [|
         ("Name",p.Name |> Json.Str)
-        ("Desc",p.Desc |> Json.Str) |]
+        ("Desc",p.Desc |> Json.Str)
+        ("Project",p.Project.ToString() |> Json.Num) |]
     |> Json.Braket
 
 let TABLE__json (v:TABLE) =
@@ -376,6 +402,8 @@ let json__pTABLEo (json:Json):pTABLE option =
     
     p.Desc <- checkfield fields "Desc"
     
+    p.Project <- checkfield fields "Project" |> parse_int64
+    
     p |> Some
     
 
@@ -401,6 +429,8 @@ let json__TABLEo (json:Json):TABLE option =
         
         p.Desc <- checkfield fields "Desc"
         
+        p.Project <- checkfield fields "Project" |> parse_int64
+        
         {
             ID = ID
             Sort = Sort
@@ -423,6 +453,8 @@ let pCOMP__bin (bb:BytesBuilder) (p:pCOMP) =
     let binCaption = p.Caption |> Encoding.UTF8.GetBytes
     binCaption.Length |> BitConverter.GetBytes |> bb.append
     binCaption |> bb.append
+    
+    p.Project |> BitConverter.GetBytes |> bb.append
 
 let COMP__bin (bb:BytesBuilder) (v:COMP) =
     v.ID |> BitConverter.GetBytes |> bb.append
@@ -446,6 +478,9 @@ let bin__pCOMP (bi:BinIndexed):pCOMP =
     index.Value <- index.Value + 4
     p.Caption <- Encoding.UTF8.GetString(bin,index.Value,count_Caption)
     index.Value <- index.Value + count_Caption
+    
+    p.Project <- BitConverter.ToInt64(bin,index.Value)
+    index.Value <- index.Value + 8
     
     p
 
@@ -473,7 +508,8 @@ let pCOMP__json (p:pCOMP) =
 
     [|
         ("Code",p.Code |> Json.Str)
-        ("Caption",p.Caption |> Json.Str) |]
+        ("Caption",p.Caption |> Json.Str)
+        ("Project",p.Project.ToString() |> Json.Num) |]
     |> Json.Braket
 
 let COMP__json (v:COMP) =
@@ -503,6 +539,8 @@ let json__pCOMPo (json:Json):pCOMP option =
     
     p.Caption <- checkfieldz fields "Caption" 256
     
+    p.Project <- checkfield fields "Project" |> parse_int64
+    
     p |> Some
     
 
@@ -528,6 +566,8 @@ let json__COMPo (json:Json):COMP option =
         
         p.Caption <- checkfieldz fields "Caption" 256
         
+        p.Project <- checkfield fields "Project" |> parse_int64
+        
         {
             ID = ID
             Sort = Sort
@@ -543,13 +583,15 @@ let json__COMPo (json:Json):COMP option =
 let pPAGE__bin (bb:BytesBuilder) (p:pPAGE) =
 
     
-    let binCode = p.Code |> Encoding.UTF8.GetBytes
-    binCode.Length |> BitConverter.GetBytes |> bb.append
-    binCode |> bb.append
+    let binName = p.Name |> Encoding.UTF8.GetBytes
+    binName.Length |> BitConverter.GetBytes |> bb.append
+    binName |> bb.append
     
     let binCaption = p.Caption |> Encoding.UTF8.GetBytes
     binCaption.Length |> BitConverter.GetBytes |> bb.append
     binCaption |> bb.append
+    
+    p.Project |> BitConverter.GetBytes |> bb.append
 
 let PAGE__bin (bb:BytesBuilder) (v:PAGE) =
     v.ID |> BitConverter.GetBytes |> bb.append
@@ -564,15 +606,18 @@ let bin__pPAGE (bi:BinIndexed):pPAGE =
 
     let p = pPAGE_empty()
     
-    let count_Code = BitConverter.ToInt32(bin,index.Value)
+    let count_Name = BitConverter.ToInt32(bin,index.Value)
     index.Value <- index.Value + 4
-    p.Code <- Encoding.UTF8.GetString(bin,index.Value,count_Code)
-    index.Value <- index.Value + count_Code
+    p.Name <- Encoding.UTF8.GetString(bin,index.Value,count_Name)
+    index.Value <- index.Value + count_Name
     
     let count_Caption = BitConverter.ToInt32(bin,index.Value)
     index.Value <- index.Value + 4
     p.Caption <- Encoding.UTF8.GetString(bin,index.Value,count_Caption)
     index.Value <- index.Value + count_Caption
+    
+    p.Project <- BitConverter.ToInt64(bin,index.Value)
+    index.Value <- index.Value + 8
     
     p
 
@@ -599,8 +644,9 @@ let bin__PAGE (bi:BinIndexed):PAGE =
 let pPAGE__json (p:pPAGE) =
 
     [|
-        ("Code",p.Code |> Json.Str)
-        ("Caption",p.Caption |> Json.Str) |]
+        ("Name",p.Name |> Json.Str)
+        ("Caption",p.Caption |> Json.Str)
+        ("Project",p.Project.ToString() |> Json.Num) |]
     |> Json.Braket
 
 let PAGE__json (v:PAGE) =
@@ -626,9 +672,11 @@ let json__pPAGEo (json:Json):pPAGE option =
 
     let p = pPAGE_empty()
     
-    p.Code <- checkfieldz fields "Code" 64
+    p.Name <- checkfieldz fields "Name" 64
     
     p.Caption <- checkfieldz fields "Caption" 256
+    
+    p.Project <- checkfield fields "Project" |> parse_int64
     
     p |> Some
     
@@ -651,9 +699,11 @@ let json__PAGEo (json:Json):PAGE option =
     match o with
     | Some p ->
         
-        p.Code <- checkfieldz fields "Code" 64
+        p.Name <- checkfieldz fields "Name" 64
         
         p.Caption <- checkfieldz fields "Caption" 256
+        
+        p.Project <- checkfield fields "Project" |> parse_int64
         
         {
             ID = ID
@@ -671,6 +721,8 @@ let db__pFIELD(line:Object[]): pFIELD =
 
     p.Name <- string(line.[4]).TrimEnd()
     p.Desc <- string(line.[5]).TrimEnd()
+    p.Project <- if Convert.IsDBNull(line.[6]) then 0L else line.[6] :?> int64
+    p.Table <- if Convert.IsDBNull(line.[7]) then 0L else line.[7] :?> int64
 
     p
 
@@ -679,11 +731,15 @@ let pFIELD__sps (p:pFIELD) =
     | Rdbms.SqlServer ->
         [|
             ("Name", p.Name) |> kvp__sqlparam
-            ("Desc", p.Desc) |> kvp__sqlparam |]
+            ("Desc", p.Desc) |> kvp__sqlparam
+            ("Project", p.Project) |> kvp__sqlparam
+            ("Table", p.Table) |> kvp__sqlparam |]
     | Rdbms.PostgreSql ->
         [|
             ("name", p.Name) |> kvp__sqlparam
-            ("desc", p.Desc) |> kvp__sqlparam |]
+            ("desc", p.Desc) |> kvp__sqlparam
+            ("project", p.Project) |> kvp__sqlparam
+            ("table", p.Table) |> kvp__sqlparam |]
 
 let db__FIELD = db__Rcd db__pFIELD
 
@@ -693,7 +749,9 @@ let FIELD_wrapper item: FIELD =
 
 let pFIELD_clone (p:pFIELD): pFIELD = {
     Name = p.Name
-    Desc = p.Desc }
+    Desc = p.Desc
+    Project = p.Project
+    Table = p.Table }
 
 let FIELD_update_transaction output (updater,suc,fail) (rcd:FIELD) =
     let rollback_p = rcd.p |> pFIELD_clone
@@ -754,7 +812,9 @@ let FIELDTxSqlServer =
     ,[Updatedat] BIGINT NOT NULL
     ,[Sort] BIGINT NOT NULL,
     ,[Name]
-    ,[Desc])
+    ,[Desc]
+    ,[Project]
+    ,[Table])
     END
     """
 
@@ -857,6 +917,7 @@ let db__pTABLE(line:Object[]): pTABLE =
 
     p.Name <- string(line.[4]).TrimEnd()
     p.Desc <- string(line.[5]).TrimEnd()
+    p.Project <- if Convert.IsDBNull(line.[6]) then 0L else line.[6] :?> int64
 
     p
 
@@ -865,11 +926,13 @@ let pTABLE__sps (p:pTABLE) =
     | Rdbms.SqlServer ->
         [|
             ("Name", p.Name) |> kvp__sqlparam
-            ("Desc", p.Desc) |> kvp__sqlparam |]
+            ("Desc", p.Desc) |> kvp__sqlparam
+            ("Project", p.Project) |> kvp__sqlparam |]
     | Rdbms.PostgreSql ->
         [|
             ("name", p.Name) |> kvp__sqlparam
-            ("desc", p.Desc) |> kvp__sqlparam |]
+            ("desc", p.Desc) |> kvp__sqlparam
+            ("project", p.Project) |> kvp__sqlparam |]
 
 let db__TABLE = db__Rcd db__pTABLE
 
@@ -879,7 +942,8 @@ let TABLE_wrapper item: TABLE =
 
 let pTABLE_clone (p:pTABLE): pTABLE = {
     Name = p.Name
-    Desc = p.Desc }
+    Desc = p.Desc
+    Project = p.Project }
 
 let TABLE_update_transaction output (updater,suc,fail) (rcd:TABLE) =
     let rollback_p = rcd.p |> pTABLE_clone
@@ -940,7 +1004,8 @@ let TABLETxSqlServer =
     ,[Updatedat] BIGINT NOT NULL
     ,[Sort] BIGINT NOT NULL,
     ,[Name]
-    ,[Desc])
+    ,[Desc]
+    ,[Project])
     END
     """
 
@@ -950,6 +1015,7 @@ let db__pCOMP(line:Object[]): pCOMP =
 
     p.Code <- string(line.[4]).TrimEnd()
     p.Caption <- string(line.[5]).TrimEnd()
+    p.Project <- if Convert.IsDBNull(line.[6]) then 0L else line.[6] :?> int64
 
     p
 
@@ -958,11 +1024,13 @@ let pCOMP__sps (p:pCOMP) =
     | Rdbms.SqlServer ->
         [|
             ("Code", p.Code) |> kvp__sqlparam
-            ("Caption", p.Caption) |> kvp__sqlparam |]
+            ("Caption", p.Caption) |> kvp__sqlparam
+            ("Project", p.Project) |> kvp__sqlparam |]
     | Rdbms.PostgreSql ->
         [|
             ("code", p.Code) |> kvp__sqlparam
-            ("caption", p.Caption) |> kvp__sqlparam |]
+            ("caption", p.Caption) |> kvp__sqlparam
+            ("project", p.Project) |> kvp__sqlparam |]
 
 let db__COMP = db__Rcd db__pCOMP
 
@@ -972,7 +1040,8 @@ let COMP_wrapper item: COMP =
 
 let pCOMP_clone (p:pCOMP): pCOMP = {
     Code = p.Code
-    Caption = p.Caption }
+    Caption = p.Caption
+    Project = p.Project }
 
 let COMP_update_transaction output (updater,suc,fail) (rcd:COMP) =
     let rollback_p = rcd.p |> pCOMP_clone
@@ -1033,7 +1102,8 @@ let COMPTxSqlServer =
     ,[Updatedat] BIGINT NOT NULL
     ,[Sort] BIGINT NOT NULL,
     ,[Code]
-    ,[Caption])
+    ,[Caption]
+    ,[Project])
     END
     """
 
@@ -1041,8 +1111,9 @@ let COMPTxSqlServer =
 let db__pPAGE(line:Object[]): pPAGE =
     let p = pPAGE_empty()
 
-    p.Code <- string(line.[4]).TrimEnd()
+    p.Name <- string(line.[4]).TrimEnd()
     p.Caption <- string(line.[5]).TrimEnd()
+    p.Project <- if Convert.IsDBNull(line.[6]) then 0L else line.[6] :?> int64
 
     p
 
@@ -1050,12 +1121,14 @@ let pPAGE__sps (p:pPAGE) =
     match rdbms with
     | Rdbms.SqlServer ->
         [|
-            ("Code", p.Code) |> kvp__sqlparam
-            ("Caption", p.Caption) |> kvp__sqlparam |]
+            ("Name", p.Name) |> kvp__sqlparam
+            ("Caption", p.Caption) |> kvp__sqlparam
+            ("Project", p.Project) |> kvp__sqlparam |]
     | Rdbms.PostgreSql ->
         [|
-            ("code", p.Code) |> kvp__sqlparam
-            ("caption", p.Caption) |> kvp__sqlparam |]
+            ("name", p.Name) |> kvp__sqlparam
+            ("caption", p.Caption) |> kvp__sqlparam
+            ("project", p.Project) |> kvp__sqlparam |]
 
 let db__PAGE = db__Rcd db__pPAGE
 
@@ -1064,8 +1137,9 @@ let PAGE_wrapper item: PAGE =
     { ID = i; Createdat = c; Updatedat = u; Sort = s; p = p }
 
 let pPAGE_clone (p:pPAGE): pPAGE = {
-    Code = p.Code
-    Caption = p.Caption }
+    Name = p.Name
+    Caption = p.Caption
+    Project = p.Project }
 
 let PAGE_update_transaction output (updater,suc,fail) (rcd:PAGE) =
     let rollback_p = rcd.p |> pPAGE_clone
@@ -1125,8 +1199,9 @@ let PAGETxSqlServer =
     ,[Createdat] BIGINT NOT NULL
     ,[Updatedat] BIGINT NOT NULL
     ,[Sort] BIGINT NOT NULL,
-    ,[Code]
-    ,[Caption])
+    ,[Name]
+    ,[Caption]
+    ,[Project])
     END
     """
 

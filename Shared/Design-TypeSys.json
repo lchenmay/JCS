@@ -29,6 +29,10 @@
       {
         "enum": "Text",
         "name": "Desc"
+      },
+      {
+        "enum": "FK",
+        "name": "Project"
       }
     ]
   },
@@ -45,6 +49,14 @@
       {
         "enum": "Text",
         "name": "Desc"
+      },
+      {
+        "enum": "FK",
+        "name": "Project"
+      },
+      {
+        "enum": "FK",
+        "name": "Table"
       }
     ]
   },
@@ -62,6 +74,10 @@
         "enum": "Chars",
         "length": 256,
         "name": "Caption"
+      },
+      {
+        "enum": "FK",
+        "name": "Project"
       }
     ]
   },
@@ -73,12 +89,16 @@
       {
         "enum": "Chars",
         "length": 64,
-        "name": "Code"
+        "name": "Name"
       },
       {
         "enum": "Chars",
         "length": 256,
         "name": "Caption"
+      },
+      {
+        "enum": "FK",
+        "name": "Project"
       }
     ]
   }

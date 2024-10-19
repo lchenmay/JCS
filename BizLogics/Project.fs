@@ -1,4 +1,4 @@
-﻿module BizLogics.Db
+﻿module BizLogics.Project
 
 open System
 open System.Threading
@@ -9,6 +9,7 @@ open System.Collections.Concurrent
 open Util.Text
 open Util.Perf
 open Util.Crypto
+open Util.CollectionModDict
 open Util.Db
 open Util.DbTx
 open Util.Orm
@@ -25,16 +26,6 @@ open Shared.CustomMor
 
 open BizLogics.Common
 
-let creator metadata populate = 
-    let p = metadata.empty__p()
-    populate p
-    p__createRcd p metadata metadata.table conn
-
-let createProject code = 
-    (fun (p:pPROJECT) ->
-        p.Code <- code) |> creator PROJECT_metadata
-
-let createPage project name = 
-    (fun (p:pPAGE) ->
-        p.Project <- project.ID
-        p.Name <- name) |> creator PAGE_metadata
+let project__ProjectComplex project = 
+    {   pages = createModDictInt64 4
+        project = project }

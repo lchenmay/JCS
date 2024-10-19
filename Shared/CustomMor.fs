@@ -88,17 +88,23 @@ let json__EuComplexo (json:Json):EuComplex option =
 
 let ProjectComplex_empty(): ProjectComplex =
     {
+        pages = ModDict_empty()
         project = { ID = 0L; Sort = 0L; Createdat = DateTime.MinValue; Updatedat = DateTime.MinValue; p = pPROJECT_empty() }
     }
 
 let ProjectComplex__bin (bb:BytesBuilder) (v:ProjectComplex) =
 
+    
+    ModDictInt64__bin (PAGE__bin) bb v.pages
     PROJECT__bin bb v.project
 
 let bin__ProjectComplex (bi:BinIndexed):ProjectComplex =
     let bin,index = bi
 
     {
+        pages = 
+            bi
+            |> bin__ModDictInt64(bin__PAGE)
         project = 
             bi
             |> bin__PROJECT
@@ -106,7 +112,8 @@ let bin__ProjectComplex (bi:BinIndexed):ProjectComplex =
 
 let ProjectComplex__json (v:ProjectComplex) =
 
-    [|  ("project",PROJECT__json v.project)
+    [|  ("pages",ModDictInt64__json (PAGE__json) v.pages)
+        ("project",PROJECT__json v.project)
          |]
     |> Json.Braket
 
@@ -122,6 +129,18 @@ let json__ProjectComplexo (json:Json):ProjectComplex option =
 
     let mutable passOptions = true
 
+    let pageso =
+        match json__tryFindByName json "pages" with
+        | None ->
+            passOptions <- false
+            None
+        | Some v -> 
+            match v |> (fun json ->json__ModDictInt64o (json__PAGEo) (new Dictionary<int64,PAGE>()) json) with
+            | Some res -> Some res
+            | None ->
+                passOptions <- false
+                None
+
     let projecto =
         match json__tryFindByName json "project" with
         | None ->
@@ -136,6 +155,7 @@ let json__ProjectComplexo (json:Json):ProjectComplex option =
 
     if passOptions then
         {
+            pages = pageso.Value
             project = projecto.Value } |> Some
     else
         None
@@ -199,7 +219,7 @@ let RuntimeData__bin (bb:BytesBuilder) (v:RuntimeData) =
     
     ListImmutable__bin (Fact__bin) bb v.facts
     
-    ModDictStr__bin (ProjectComplex__bin) bb v.pcs
+    ModDictInt64__bin (ProjectComplex__bin) bb v.pcs
 
 let bin__RuntimeData (bi:BinIndexed):RuntimeData =
     let bin,index = bi
@@ -210,13 +230,13 @@ let bin__RuntimeData (bi:BinIndexed):RuntimeData =
             |> bin__ListImmutable (bin__Fact)
         pcs = 
             bi
-            |> bin__ModDictStr(bin__ProjectComplex)
+            |> bin__ModDictInt64(bin__ProjectComplex)
     }
 
 let RuntimeData__json (v:RuntimeData) =
 
     [|  ("facts",ListImmutable__json (Fact__json) v.facts)
-        ("pcs",ModDictStr__json (ProjectComplex__json) v.pcs)
+        ("pcs",ModDictInt64__json (ProjectComplex__json) v.pcs)
          |]
     |> Json.Braket
 
@@ -250,7 +270,7 @@ let json__RuntimeDatao (json:Json):RuntimeData option =
             passOptions <- false
             None
         | Some v -> 
-            match v |> (fun json ->json__ModDictStro (json__ProjectComplexo) (new Dictionary<string,ProjectComplex>()) json) with
+            match v |> (fun json ->json__ModDictInt64o (json__ProjectComplexo) (new Dictionary<int64,ProjectComplex>()) json) with
             | Some res -> Some res
             | None ->
                 passOptions <- false

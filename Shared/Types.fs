@@ -17,6 +17,7 @@ type EuComplex = {
 eu: int64 }
 
 type ProjectComplex = {
+pages: ModDictInt64<PAGE>
 project: PROJECT }
 
 type Fact = 
@@ -24,7 +25,7 @@ type Fact =
 
 type RuntimeData = {
 mutable facts: Fact list
-pcs: ModDictStr<ProjectComplex> }
+pcs: ModDictInt64<ProjectComplex> }
 
 type Msg = 
 | Heartbeat

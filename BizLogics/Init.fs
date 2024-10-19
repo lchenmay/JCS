@@ -27,6 +27,7 @@ open Shared.Types
 open Shared.CustomMor
 
 open BizLogics.Common
+open BizLogics.Project
 open BizLogics.Db
 
 let init (runtime:Runtime) = 
@@ -45,15 +46,22 @@ let init (runtime:Runtime) =
 
     let loader metadata = loadAll runtime.output conn metadata
 
-    (fun (i:PROJECT) -> runtime.data.pcs[i.p.Code] <- { project = i }) |> loader PROJECT_metadata
-    [|  "JCS"
-        "Game" |]
-    |> Array.iter(fun code ->
-        if runtime.data.pcs.ContainsKey code = false then
-            match createProject code with
-            | Some project -> runtime.data.pcs[code] <- { project = project }
-            | None -> halt runtime.output ("BizLogics.Init.createProj [" + code + "]") "")
+    (fun (i:PROJECT) -> runtime.data.pcs[i.ID] <- i |> project__ProjectComplex) |> loader PROJECT_metadata
 
+    (fun (i:PAGE) -> 
+        let pc = runtime.data.pcs[i.p.Project]
+        pc.pages[i.ID] <- i) |> loader PAGE_metadata
+
+    let pc = runtime.data.pcs[234346L]
+
+    [|  "/CodeRobot/Projects" |]
+    |> Array.iter(fun name ->
+        match pc.pages.ToArray() |> Array.tryFind(fun i -> i.Value.p.Name = name) with
+        | Some page -> ()
+        | None -> 
+            match createPage pc.project name with
+            | Some page -> pc.pages[page.ID] <- page
+            | None -> halt runtime.output ("BizLogics.Init.createPage [" + name + "]") "")
 
 
 

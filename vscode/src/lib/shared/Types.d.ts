@@ -10,6 +10,8 @@ eu:number
 
 // [ProjectComplex]
 export type ProjectComplex = {
+pages:{[key:number]: PAGE},
+
 project:PROJECT
 }
 
@@ -24,7 +26,7 @@ val: any
 export type RuntimeData = {
 facts:Array<Fact>,
 
-pcs:{[key:string]: ProjectComplex}
+pcs:{[key:number]: ProjectComplex}
 }
 
 // [Msg]
