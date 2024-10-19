@@ -54,12 +54,25 @@ let init (runtime:Runtime) =
 
     let pc = runtime.data.pcs[234346L]
 
-    [|  "/CodeRobot/Projects" |]
+    [|  "Public"
+        "CodeRobot" |]
+    |> Array.iter(fun name ->
+        match pc.templates.ToArray() |> Array.tryFind(fun i -> i.Value.p.Name = name) with
+        | Some template -> ()
+        | None -> 
+            match createTemplate pc.project name with
+            | Some template -> pc.templates[template.ID] <- template
+            | None -> halt runtime.output ("BizLogics.Init.createTemplate [" + name + "]") "")
+
+    let template = pc.templates.Values |> Array.find(fun i -> i.p.Name = "CodeRobot")
+
+    [|  "/CodeRobot/Projects"
+        "/CodeRobot/Project" |]
     |> Array.iter(fun name ->
         match pc.pages.ToArray() |> Array.tryFind(fun i -> i.Value.p.Name = name) with
         | Some page -> ()
         | None -> 
-            match createPage pc.project name with
+            match createPage pc.project template name with
             | Some page -> pc.pages[page.ID] <- page
             | None -> halt runtime.output ("BizLogics.Init.createPage [" + name + "]") "")
 

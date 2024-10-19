@@ -372,7 +372,7 @@ BEGIN
         ,[Createdat] BIGINT NOT NULL
         ,[Updatedat] BIGINT NOT NULL
         ,[Sort] BIGINT NOT NULL,
-        [Code] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS
+        [Name] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS
         ,[Caption] NVARCHAR(256) COLLATE Chinese_PRC_CI_AS
         ,[Project] BIGINT
 , CONSTRAINT [PK_Ts_UiComponent] PRIMARY KEY CLUSTERED ([ID] ASC)) ON [PRIMARY]
@@ -382,7 +382,7 @@ END
 -- Dropping obsolete fields -----------
 DECLARE @name_Ts_UiComponent NVARCHAR(64)
 DECLARE cursor_Ts_UiComponent CURSOR FOR 
-    SELECT name FROM SYSCOLUMNS WHERE id=object_id('Ts_UiComponent') AND (name NOT IN ('ID','Createdat','Updatedat','Sort','Code','Caption','Project'))
+    SELECT name FROM SYSCOLUMNS WHERE id=object_id('Ts_UiComponent') AND (name NOT IN ('ID','Createdat','Updatedat','Sort','Name','Caption','Project'))
 
 OPEN cursor_Ts_UiComponent
 FETCH NEXT FROM cursor_Ts_UiComponent INTO @name_Ts_UiComponent
@@ -403,31 +403,31 @@ CLOSE cursor_Ts_UiComponent;
 DEALLOCATE cursor_Ts_UiComponent;
 
 
--- [Ts_UiComponent.Code] -------------
+-- [Ts_UiComponent.Name] -------------
 
 
--- [Ts_UiComponent.Code] -------------
+-- [Ts_UiComponent.Name] -------------
 
-IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ts_UiComponent') AND name='Code')
+IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ts_UiComponent') AND name='Name')
     BEGIN
-     ALTER TABLE Ts_UiComponent ALTER COLUMN [Code] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS
+     ALTER TABLE Ts_UiComponent ALTER COLUMN [Name] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS
     END
 ELSE
     BEGIN
-    DECLARE @sql_add_Ts_UiComponent_Code NVARCHAR(MAX);
-    SET @sql_add_Ts_UiComponent_Code = 'ALTER TABLE Ts_UiComponent ADD [Code] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS'
-    EXEC sp_executesql @sql_add_Ts_UiComponent_Code
+    DECLARE @sql_add_Ts_UiComponent_Name NVARCHAR(MAX);
+    SET @sql_add_Ts_UiComponent_Name = 'ALTER TABLE Ts_UiComponent ADD [Name] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS'
+    EXEC sp_executesql @sql_add_Ts_UiComponent_Name
     END
 
 
-IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ts_UiComponentCode')
+IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ts_UiComponentName')
     BEGIN
-    ALTER TABLE Ts_UiComponent DROP  CONSTRAINT [Constraint_Ts_UiComponentCode]
+    ALTER TABLE Ts_UiComponent DROP  CONSTRAINT [Constraint_Ts_UiComponentName]
     END
 
-IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ts_UiComponentCode')
+IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ts_UiComponentName')
     BEGIN
-    ALTER TABLE Ts_UiComponent DROP  CONSTRAINT [UniqueNonclustered_Ts_UiComponentCode]
+    ALTER TABLE Ts_UiComponent DROP  CONSTRAINT [UniqueNonclustered_Ts_UiComponentName]
     END
 
 -- [Ts_UiComponent.Caption] -------------
@@ -495,6 +495,10 @@ BEGIN
         ,[Sort] BIGINT NOT NULL,
         [Name] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS
         ,[Caption] NVARCHAR(256) COLLATE Chinese_PRC_CI_AS
+        ,[OgTitle] NVARCHAR(MAX)
+        ,[OgDesc] NVARCHAR(MAX)
+        ,[OgImage] NVARCHAR(MAX)
+        ,[Template] BIGINT
         ,[Project] BIGINT
 , CONSTRAINT [PK_Ts_UiPage] PRIMARY KEY CLUSTERED ([ID] ASC)) ON [PRIMARY]
 END
@@ -503,7 +507,7 @@ END
 -- Dropping obsolete fields -----------
 DECLARE @name_Ts_UiPage NVARCHAR(64)
 DECLARE cursor_Ts_UiPage CURSOR FOR 
-    SELECT name FROM SYSCOLUMNS WHERE id=object_id('Ts_UiPage') AND (name NOT IN ('ID','Createdat','Updatedat','Sort','Name','Caption','Project'))
+    SELECT name FROM SYSCOLUMNS WHERE id=object_id('Ts_UiPage') AND (name NOT IN ('ID','Createdat','Updatedat','Sort','Name','Caption','OgTitle','OgDesc','OgImage','Template','Project'))
 
 OPEN cursor_Ts_UiPage
 FETCH NEXT FROM cursor_Ts_UiPage INTO @name_Ts_UiPage
@@ -578,6 +582,114 @@ IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ts_UiPageCapti
     ALTER TABLE Ts_UiPage DROP  CONSTRAINT [UniqueNonclustered_Ts_UiPageCaption]
     END
 
+-- [Ts_UiPage.OgTitle] -------------
+
+
+-- [Ts_UiPage.OgTitle] -------------
+
+IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ts_UiPage') AND name='OgTitle')
+    BEGIN
+     ALTER TABLE Ts_UiPage ALTER COLUMN [OgTitle] NVARCHAR(MAX)
+    END
+ELSE
+    BEGIN
+    DECLARE @sql_add_Ts_UiPage_OgTitle NVARCHAR(MAX);
+    SET @sql_add_Ts_UiPage_OgTitle = 'ALTER TABLE Ts_UiPage ADD [OgTitle] NVARCHAR(MAX)'
+    EXEC sp_executesql @sql_add_Ts_UiPage_OgTitle
+    END
+
+
+IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ts_UiPageOgTitle')
+    BEGIN
+    ALTER TABLE Ts_UiPage DROP  CONSTRAINT [Constraint_Ts_UiPageOgTitle]
+    END
+
+IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ts_UiPageOgTitle')
+    BEGIN
+    ALTER TABLE Ts_UiPage DROP  CONSTRAINT [UniqueNonclustered_Ts_UiPageOgTitle]
+    END
+
+-- [Ts_UiPage.OgDesc] -------------
+
+
+-- [Ts_UiPage.OgDesc] -------------
+
+IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ts_UiPage') AND name='OgDesc')
+    BEGIN
+     ALTER TABLE Ts_UiPage ALTER COLUMN [OgDesc] NVARCHAR(MAX)
+    END
+ELSE
+    BEGIN
+    DECLARE @sql_add_Ts_UiPage_OgDesc NVARCHAR(MAX);
+    SET @sql_add_Ts_UiPage_OgDesc = 'ALTER TABLE Ts_UiPage ADD [OgDesc] NVARCHAR(MAX)'
+    EXEC sp_executesql @sql_add_Ts_UiPage_OgDesc
+    END
+
+
+IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ts_UiPageOgDesc')
+    BEGIN
+    ALTER TABLE Ts_UiPage DROP  CONSTRAINT [Constraint_Ts_UiPageOgDesc]
+    END
+
+IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ts_UiPageOgDesc')
+    BEGIN
+    ALTER TABLE Ts_UiPage DROP  CONSTRAINT [UniqueNonclustered_Ts_UiPageOgDesc]
+    END
+
+-- [Ts_UiPage.OgImage] -------------
+
+
+-- [Ts_UiPage.OgImage] -------------
+
+IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ts_UiPage') AND name='OgImage')
+    BEGIN
+     ALTER TABLE Ts_UiPage ALTER COLUMN [OgImage] NVARCHAR(MAX)
+    END
+ELSE
+    BEGIN
+    DECLARE @sql_add_Ts_UiPage_OgImage NVARCHAR(MAX);
+    SET @sql_add_Ts_UiPage_OgImage = 'ALTER TABLE Ts_UiPage ADD [OgImage] NVARCHAR(MAX)'
+    EXEC sp_executesql @sql_add_Ts_UiPage_OgImage
+    END
+
+
+IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ts_UiPageOgImage')
+    BEGIN
+    ALTER TABLE Ts_UiPage DROP  CONSTRAINT [Constraint_Ts_UiPageOgImage]
+    END
+
+IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ts_UiPageOgImage')
+    BEGIN
+    ALTER TABLE Ts_UiPage DROP  CONSTRAINT [UniqueNonclustered_Ts_UiPageOgImage]
+    END
+
+-- [Ts_UiPage.Template] -------------
+
+
+-- [Ts_UiPage.Template] -------------
+
+IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ts_UiPage') AND name='Template')
+    BEGIN
+     ALTER TABLE Ts_UiPage ALTER COLUMN [Template] BIGINT
+    END
+ELSE
+    BEGIN
+    DECLARE @sql_add_Ts_UiPage_Template NVARCHAR(MAX);
+    SET @sql_add_Ts_UiPage_Template = 'ALTER TABLE Ts_UiPage ADD [Template] BIGINT'
+    EXEC sp_executesql @sql_add_Ts_UiPage_Template
+    END
+
+
+IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ts_UiPageTemplate')
+    BEGIN
+    ALTER TABLE Ts_UiPage DROP  CONSTRAINT [Constraint_Ts_UiPageTemplate]
+    END
+
+IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ts_UiPageTemplate')
+    BEGIN
+    ALTER TABLE Ts_UiPage DROP  CONSTRAINT [UniqueNonclustered_Ts_UiPageTemplate]
+    END
+
 -- [Ts_UiPage.Project] -------------
 
 
@@ -603,4 +715,125 @@ IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ts_UiPage
 IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ts_UiPageProject')
     BEGIN
     ALTER TABLE Ts_UiPage DROP  CONSTRAINT [UniqueNonclustered_Ts_UiPageProject]
+    END
+-- [Ts_UiTemplate] ----------------------
+
+IF NOT EXISTS(SELECT * FROM sysobjects WHERE [name]='Ts_UiTemplate' AND xtype='U')
+
+BEGIN
+
+    CREATE TABLE Ts_UiTemplate ([ID] BIGINT NOT NULL
+        ,[Createdat] BIGINT NOT NULL
+        ,[Updatedat] BIGINT NOT NULL
+        ,[Sort] BIGINT NOT NULL,
+        [Name] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS
+        ,[Caption] NVARCHAR(256) COLLATE Chinese_PRC_CI_AS
+        ,[Project] BIGINT
+, CONSTRAINT [PK_Ts_UiTemplate] PRIMARY KEY CLUSTERED ([ID] ASC)) ON [PRIMARY]
+END
+
+
+-- Dropping obsolete fields -----------
+DECLARE @name_Ts_UiTemplate NVARCHAR(64)
+DECLARE cursor_Ts_UiTemplate CURSOR FOR 
+    SELECT name FROM SYSCOLUMNS WHERE id=object_id('Ts_UiTemplate') AND (name NOT IN ('ID','Createdat','Updatedat','Sort','Name','Caption','Project'))
+
+OPEN cursor_Ts_UiTemplate
+FETCH NEXT FROM cursor_Ts_UiTemplate INTO @name_Ts_UiTemplate
+
+WHILE @@FETCH_STATUS = 0
+BEGIN
+    PRINT 'Dropping Ts_UiTemplate.' + @name_Ts_UiTemplate;
+    
+    DECLARE @sql_Ts_UiTemplate NVARCHAR(MAX);
+    SET @sql_Ts_UiTemplate = 'ALTER TABLE Ts_UiTemplate DROP COLUMN ' + QUOTENAME(@name_Ts_UiTemplate)
+    EXEC sp_executesql @sql_Ts_UiTemplate
+    
+    
+    FETCH NEXT FROM cursor_Ts_UiTemplate INTO @name_Ts_UiTemplate
+END
+
+CLOSE cursor_Ts_UiTemplate;
+DEALLOCATE cursor_Ts_UiTemplate;
+
+
+-- [Ts_UiTemplate.Name] -------------
+
+
+-- [Ts_UiTemplate.Name] -------------
+
+IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ts_UiTemplate') AND name='Name')
+    BEGIN
+     ALTER TABLE Ts_UiTemplate ALTER COLUMN [Name] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS
+    END
+ELSE
+    BEGIN
+    DECLARE @sql_add_Ts_UiTemplate_Name NVARCHAR(MAX);
+    SET @sql_add_Ts_UiTemplate_Name = 'ALTER TABLE Ts_UiTemplate ADD [Name] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS'
+    EXEC sp_executesql @sql_add_Ts_UiTemplate_Name
+    END
+
+
+IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ts_UiTemplateName')
+    BEGIN
+    ALTER TABLE Ts_UiTemplate DROP  CONSTRAINT [Constraint_Ts_UiTemplateName]
+    END
+
+IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ts_UiTemplateName')
+    BEGIN
+    ALTER TABLE Ts_UiTemplate DROP  CONSTRAINT [UniqueNonclustered_Ts_UiTemplateName]
+    END
+
+-- [Ts_UiTemplate.Caption] -------------
+
+
+-- [Ts_UiTemplate.Caption] -------------
+
+IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ts_UiTemplate') AND name='Caption')
+    BEGIN
+     ALTER TABLE Ts_UiTemplate ALTER COLUMN [Caption] NVARCHAR(256) COLLATE Chinese_PRC_CI_AS
+    END
+ELSE
+    BEGIN
+    DECLARE @sql_add_Ts_UiTemplate_Caption NVARCHAR(MAX);
+    SET @sql_add_Ts_UiTemplate_Caption = 'ALTER TABLE Ts_UiTemplate ADD [Caption] NVARCHAR(256) COLLATE Chinese_PRC_CI_AS'
+    EXEC sp_executesql @sql_add_Ts_UiTemplate_Caption
+    END
+
+
+IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ts_UiTemplateCaption')
+    BEGIN
+    ALTER TABLE Ts_UiTemplate DROP  CONSTRAINT [Constraint_Ts_UiTemplateCaption]
+    END
+
+IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ts_UiTemplateCaption')
+    BEGIN
+    ALTER TABLE Ts_UiTemplate DROP  CONSTRAINT [UniqueNonclustered_Ts_UiTemplateCaption]
+    END
+
+-- [Ts_UiTemplate.Project] -------------
+
+
+-- [Ts_UiTemplate.Project] -------------
+
+IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ts_UiTemplate') AND name='Project')
+    BEGIN
+     ALTER TABLE Ts_UiTemplate ALTER COLUMN [Project] BIGINT
+    END
+ELSE
+    BEGIN
+    DECLARE @sql_add_Ts_UiTemplate_Project NVARCHAR(MAX);
+    SET @sql_add_Ts_UiTemplate_Project = 'ALTER TABLE Ts_UiTemplate ADD [Project] BIGINT'
+    EXEC sp_executesql @sql_add_Ts_UiTemplate_Project
+    END
+
+
+IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ts_UiTemplateProject')
+    BEGIN
+    ALTER TABLE Ts_UiTemplate DROP  CONSTRAINT [Constraint_Ts_UiTemplateProject]
+    END
+
+IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ts_UiTemplateProject')
+    BEGIN
+    ALTER TABLE Ts_UiTemplate DROP  CONSTRAINT [UniqueNonclustered_Ts_UiTemplateProject]
     END

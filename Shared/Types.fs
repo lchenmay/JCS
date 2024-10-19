@@ -17,6 +17,8 @@ type EuComplex = {
 eu: int64 }
 
 type ProjectComplex = {
+comps: ModDictInt64<COMP>
+templates: ModDictInt64<TEMPLATE>
 pages: ModDictInt64<PAGE>
 project: PROJECT }
 

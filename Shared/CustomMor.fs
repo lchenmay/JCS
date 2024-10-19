@@ -88,12 +88,18 @@ let json__EuComplexo (json:Json):EuComplex option =
 
 let ProjectComplex_empty(): ProjectComplex =
     {
+        comps = ModDict_empty()
+        templates = ModDict_empty()
         pages = ModDict_empty()
         project = { ID = 0L; Sort = 0L; Createdat = DateTime.MinValue; Updatedat = DateTime.MinValue; p = pPROJECT_empty() }
     }
 
 let ProjectComplex__bin (bb:BytesBuilder) (v:ProjectComplex) =
 
+    
+    ModDictInt64__bin (COMP__bin) bb v.comps
+    
+    ModDictInt64__bin (TEMPLATE__bin) bb v.templates
     
     ModDictInt64__bin (PAGE__bin) bb v.pages
     PROJECT__bin bb v.project
@@ -102,6 +108,12 @@ let bin__ProjectComplex (bi:BinIndexed):ProjectComplex =
     let bin,index = bi
 
     {
+        comps = 
+            bi
+            |> bin__ModDictInt64(bin__COMP)
+        templates = 
+            bi
+            |> bin__ModDictInt64(bin__TEMPLATE)
         pages = 
             bi
             |> bin__ModDictInt64(bin__PAGE)
@@ -112,7 +124,9 @@ let bin__ProjectComplex (bi:BinIndexed):ProjectComplex =
 
 let ProjectComplex__json (v:ProjectComplex) =
 
-    [|  ("pages",ModDictInt64__json (PAGE__json) v.pages)
+    [|  ("comps",ModDictInt64__json (COMP__json) v.comps)
+        ("templates",ModDictInt64__json (TEMPLATE__json) v.templates)
+        ("pages",ModDictInt64__json (PAGE__json) v.pages)
         ("project",PROJECT__json v.project)
          |]
     |> Json.Braket
@@ -128,6 +142,30 @@ let json__ProjectComplexo (json:Json):ProjectComplex option =
     let fields = json |> json__items
 
     let mutable passOptions = true
+
+    let compso =
+        match json__tryFindByName json "comps" with
+        | None ->
+            passOptions <- false
+            None
+        | Some v -> 
+            match v |> (fun json ->json__ModDictInt64o (json__COMPo) (new Dictionary<int64,COMP>()) json) with
+            | Some res -> Some res
+            | None ->
+                passOptions <- false
+                None
+
+    let templateso =
+        match json__tryFindByName json "templates" with
+        | None ->
+            passOptions <- false
+            None
+        | Some v -> 
+            match v |> (fun json ->json__ModDictInt64o (json__TEMPLATEo) (new Dictionary<int64,TEMPLATE>()) json) with
+            | Some res -> Some res
+            | None ->
+                passOptions <- false
+                None
 
     let pageso =
         match json__tryFindByName json "pages" with
@@ -155,6 +193,8 @@ let json__ProjectComplexo (json:Json):ProjectComplex option =
 
     if passOptions then
         {
+            comps = compso.Value
+            templates = templateso.Value
             pages = pageso.Value
             project = projecto.Value } |> Some
     else

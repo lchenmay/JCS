@@ -68,7 +68,28 @@
       {
         "enum": "Chars",
         "length": 64,
-        "name": "Code"
+        "name": "Name"
+      },
+      {
+        "enum": "Chars",
+        "length": 256,
+        "name": "Caption"
+      },
+      {
+        "enum": "FK",
+        "name": "Project"
+      }
+    ]
+  },
+  {
+    "name": "Ts_UiTemplate",
+    "shorthand": "template",
+    "id": 6723431,
+    "fields": [
+      {
+        "enum": "Chars",
+        "length": 64,
+        "name": "Name"
       },
       {
         "enum": "Chars",
@@ -95,6 +116,22 @@
         "enum": "Chars",
         "length": 256,
         "name": "Caption"
+      },
+      {
+        "enum": "Text",
+        "name": "OgTitle"
+      },
+      {
+        "enum": "Text",
+        "name": "OgDesc"
+      },
+      {
+        "enum": "Text",
+        "name": "OgImage"
+      },
+      {
+        "enum": "FK",
+        "name": "Template"
       },
       {
         "enum": "FK",

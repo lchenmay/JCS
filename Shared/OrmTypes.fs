@@ -173,7 +173,7 @@ let TABLE_table = "Ts_Table"
 // [Ts_UiComponent] (COMP)
 
 type pCOMP = {
-mutable Code: Chars
+mutable Name: Chars
 mutable Caption: Chars
 mutable Project: FK}
 
@@ -183,70 +183,21 @@ type COMP = Rcd<pCOMP>
 let COMP_fieldorders() =
     match rdbms with
     | Rdbms.SqlServer ->
-        "[ID],[Createdat],[Updatedat],[Sort],[Code],[Caption],[Project]"
+        "[ID],[Createdat],[Updatedat],[Sort],[Name],[Caption],[Project]"
     | Rdbms.PostgreSql ->
-        $""" "id","createdat","updatedat","sort", "code","caption","project" """
+        $""" "id","createdat","updatedat","sort", "name","caption","project" """
 
 let pCOMP_fieldordersArray = [|
-    "Code"
+    "Name"
     "Caption"
     "Project" |]
 
 let COMP_sql_update() =
     match rdbms with
-    | Rdbms.SqlServer -> "[Code]=@Code,[Caption]=@Caption,[Project]=@Project"
-    | Rdbms.PostgreSql -> "code=@code,caption=@caption,project=@project"
-
-let pCOMP_fields() =
-    match rdbms with
-    | Rdbms.SqlServer ->
-        [|
-            Chars("Code", 64)
-            Chars("Caption", 256)
-            FK("Project") |]
-    | Rdbms.PostgreSql ->
-        [|
-            Chars("code", 64)
-            Chars("caption", 256)
-            FK("project") |]
-
-let pCOMP_empty(): pCOMP = {
-    Code = ""
-    Caption = ""
-    Project = 0L }
-
-let COMP_id = ref 6723431L
-let COMP_count = ref 0
-let COMP_table = "Ts_UiComponent"
-
-// [Ts_UiPage] (PAGE)
-
-type pPAGE = {
-mutable Name: Chars
-mutable Caption: Chars
-mutable Project: FK}
-
-
-type PAGE = Rcd<pPAGE>
-
-let PAGE_fieldorders() =
-    match rdbms with
-    | Rdbms.SqlServer ->
-        "[ID],[Createdat],[Updatedat],[Sort],[Name],[Caption],[Project]"
-    | Rdbms.PostgreSql ->
-        $""" "id","createdat","updatedat","sort", "name","caption","project" """
-
-let pPAGE_fieldordersArray = [|
-    "Name"
-    "Caption"
-    "Project" |]
-
-let PAGE_sql_update() =
-    match rdbms with
     | Rdbms.SqlServer -> "[Name]=@Name,[Caption]=@Caption,[Project]=@Project"
     | Rdbms.PostgreSql -> "name=@name,caption=@caption,project=@project"
 
-let pPAGE_fields() =
+let pCOMP_fields() =
     match rdbms with
     | Rdbms.SqlServer ->
         [|
@@ -259,11 +210,129 @@ let pPAGE_fields() =
             Chars("caption", 256)
             FK("project") |]
 
+let pCOMP_empty(): pCOMP = {
+    Name = ""
+    Caption = ""
+    Project = 0L }
+
+let COMP_id = ref 6723431L
+let COMP_count = ref 0
+let COMP_table = "Ts_UiComponent"
+
+// [Ts_UiPage] (PAGE)
+
+type pPAGE = {
+mutable Name: Chars
+mutable Caption: Chars
+mutable OgTitle: Text
+mutable OgDesc: Text
+mutable OgImage: Text
+mutable Template: FK
+mutable Project: FK}
+
+
+type PAGE = Rcd<pPAGE>
+
+let PAGE_fieldorders() =
+    match rdbms with
+    | Rdbms.SqlServer ->
+        "[ID],[Createdat],[Updatedat],[Sort],[Name],[Caption],[OgTitle],[OgDesc],[OgImage],[Template],[Project]"
+    | Rdbms.PostgreSql ->
+        $""" "id","createdat","updatedat","sort", "name","caption","ogtitle","ogdesc","ogimage","template","project" """
+
+let pPAGE_fieldordersArray = [|
+    "Name"
+    "Caption"
+    "OgTitle"
+    "OgDesc"
+    "OgImage"
+    "Template"
+    "Project" |]
+
+let PAGE_sql_update() =
+    match rdbms with
+    | Rdbms.SqlServer -> "[Name]=@Name,[Caption]=@Caption,[OgTitle]=@OgTitle,[OgDesc]=@OgDesc,[OgImage]=@OgImage,[Template]=@Template,[Project]=@Project"
+    | Rdbms.PostgreSql -> "name=@name,caption=@caption,ogtitle=@ogtitle,ogdesc=@ogdesc,ogimage=@ogimage,template=@template,project=@project"
+
+let pPAGE_fields() =
+    match rdbms with
+    | Rdbms.SqlServer ->
+        [|
+            Chars("Name", 64)
+            Chars("Caption", 256)
+            Text("OgTitle")
+            Text("OgDesc")
+            Text("OgImage")
+            FK("Template")
+            FK("Project") |]
+    | Rdbms.PostgreSql ->
+        [|
+            Chars("name", 64)
+            Chars("caption", 256)
+            Text("ogtitle")
+            Text("ogdesc")
+            Text("ogimage")
+            FK("template")
+            FK("project") |]
+
 let pPAGE_empty(): pPAGE = {
     Name = ""
     Caption = ""
+    OgTitle = ""
+    OgDesc = ""
+    OgImage = ""
+    Template = 0L
     Project = 0L }
 
 let PAGE_id = ref 6723431L
 let PAGE_count = ref 0
 let PAGE_table = "Ts_UiPage"
+
+// [Ts_UiTemplate] (TEMPLATE)
+
+type pTEMPLATE = {
+mutable Name: Chars
+mutable Caption: Chars
+mutable Project: FK}
+
+
+type TEMPLATE = Rcd<pTEMPLATE>
+
+let TEMPLATE_fieldorders() =
+    match rdbms with
+    | Rdbms.SqlServer ->
+        "[ID],[Createdat],[Updatedat],[Sort],[Name],[Caption],[Project]"
+    | Rdbms.PostgreSql ->
+        $""" "id","createdat","updatedat","sort", "name","caption","project" """
+
+let pTEMPLATE_fieldordersArray = [|
+    "Name"
+    "Caption"
+    "Project" |]
+
+let TEMPLATE_sql_update() =
+    match rdbms with
+    | Rdbms.SqlServer -> "[Name]=@Name,[Caption]=@Caption,[Project]=@Project"
+    | Rdbms.PostgreSql -> "name=@name,caption=@caption,project=@project"
+
+let pTEMPLATE_fields() =
+    match rdbms with
+    | Rdbms.SqlServer ->
+        [|
+            Chars("Name", 64)
+            Chars("Caption", 256)
+            FK("Project") |]
+    | Rdbms.PostgreSql ->
+        [|
+            Chars("name", 64)
+            Chars("caption", 256)
+            FK("project") |]
+
+let pTEMPLATE_empty(): pTEMPLATE = {
+    Name = ""
+    Caption = ""
+    Project = 0L }
+
+let TEMPLATE_id = ref 6723431L
+let TEMPLATE_count = ref 0
+let TEMPLATE_table = "Ts_UiTemplate"

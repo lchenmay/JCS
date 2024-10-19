@@ -157,7 +157,7 @@ export const bin__TABLE = (bi:BinIndexed):jcs.TABLE => {
 export const pCOMP__bin = (bb:BytesBuilder) => (p:jcs.pCOMP) => {
 
     
-    marshall.str__bin (bb) (p.Code)
+    marshall.str__bin (bb) (p.Name)
     
     marshall.str__bin (bb) (p.Caption)
     
@@ -176,7 +176,7 @@ export const COMP__bin = (bb:BytesBuilder) => (v:jcs.COMP) => {
 export const bin__pCOMP = (bi:BinIndexed):jcs.pCOMP => {
 
     let p = pCOMP_empty()
-    p.Code = marshall.bin__str (bi)
+    p.Name = marshall.bin__str (bi)
     p.Caption = marshall.bin__str (bi)
     p.Project = marshall.bin__int64 (bi)
 
@@ -210,6 +210,14 @@ export const pPAGE__bin = (bb:BytesBuilder) => (p:jcs.pPAGE) => {
     
     marshall.str__bin (bb) (p.Caption)
     
+    marshall.str__bin (bb) (p.OgTitle)
+    
+    marshall.str__bin (bb) (p.OgDesc)
+    
+    marshall.str__bin (bb) (p.OgImage)
+    
+    marshall.int64__bin (bb) (p.Template)
+    
     marshall.int64__bin (bb) (p.Project)
 }
 
@@ -227,6 +235,10 @@ export const bin__pPAGE = (bi:BinIndexed):jcs.pPAGE => {
     let p = pPAGE_empty()
     p.Name = marshall.bin__str (bi)
     p.Caption = marshall.bin__str (bi)
+    p.OgTitle = marshall.bin__str (bi)
+    p.OgDesc = marshall.bin__str (bi)
+    p.OgImage = marshall.bin__str (bi)
+    p.Template = marshall.bin__int64 (bi)
     p.Project = marshall.bin__int64 (bi)
 
     return p
@@ -246,6 +258,55 @@ export const bin__PAGE = (bi:BinIndexed):jcs.PAGE => {
         createdat: Createdat,
         updatedat: Updatedat,
         p:  bin__pPAGE (bi)
+    }
+}
+
+// [TEMPLATE] Structure
+
+
+export const pTEMPLATE__bin = (bb:BytesBuilder) => (p:jcs.pTEMPLATE) => {
+
+    
+    marshall.str__bin (bb) (p.Name)
+    
+    marshall.str__bin (bb) (p.Caption)
+    
+    marshall.int64__bin (bb) (p.Project)
+}
+
+export const TEMPLATE__bin = (bb:BytesBuilder) => (v:jcs.TEMPLATE) => {
+    marshall.int64__bin (bb) (v.id)
+    marshall.int64__bin (bb) (v.sort)
+    marshall.DateTime__bin (bb) (v.createdat)
+    marshall.DateTime__bin (bb) (v.updatedat)
+
+    pTEMPLATE__bin (bb) (v.p)
+}
+
+export const bin__pTEMPLATE = (bi:BinIndexed):jcs.pTEMPLATE => {
+
+    let p = pTEMPLATE_empty()
+    p.Name = marshall.bin__str (bi)
+    p.Caption = marshall.bin__str (bi)
+    p.Project = marshall.bin__int64 (bi)
+
+    return p
+}
+
+
+export const bin__TEMPLATE = (bi:BinIndexed):jcs.TEMPLATE => {
+
+    let ID = marshall.bin__int64 (bi)
+    let Sort = marshall.bin__int64 (bi)
+    let Createdat = marshall.bin__DateTime (bi)
+    let Updatedat = marshall.bin__DateTime (bi)
+    
+    return {
+        id: ID,
+        sort: Sort,
+        createdat: Createdat,
+        updatedat: Updatedat,
+        p:  bin__pTEMPLATE (bi)
     }
 }
 export const pFIELD_empty = (): jcs.pFIELD => {
@@ -298,7 +359,7 @@ export const TABLE_empty = (): jcs.TABLE => {
 
 export const pCOMP_empty = (): jcs.pCOMP => {
     return {
-        Code: "",
+        Name: "",
         Caption: "",
         Project: 0 }
 }
@@ -316,6 +377,10 @@ export const pPAGE_empty = (): jcs.pPAGE => {
     return {
         Name: "",
         Caption: "",
+        OgTitle: "",
+        OgDesc: "",
+        OgImage: "",
+        Template: 0,
         Project: 0 }
 }
 
@@ -326,4 +391,20 @@ export const PAGE_empty = (): jcs.PAGE => {
         updatedat: new Date(),
         sort: 0,
         p: pPAGE_empty() }
+}
+
+export const pTEMPLATE_empty = (): jcs.pTEMPLATE => {
+    return {
+        Name: "",
+        Caption: "",
+        Project: 0 }
+}
+
+export const TEMPLATE_empty = (): jcs.TEMPLATE => {
+    return {
+        id: 0,
+        createdat: new Date(),
+        updatedat: new Date(),
+        sort: 0,
+        p: pTEMPLATE_empty() }
 }

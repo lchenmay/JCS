@@ -34,7 +34,13 @@ let createProject code =
     (fun (p:pPROJECT) ->
         p.Code <- code) |> creator PROJECT_metadata
 
-let createPage project name = 
+let createTemplate project name = 
+    (fun (p:pTEMPLATE) ->
+        p.Project <- project.ID
+        p.Name <- name) |> creator TEMPLATE_metadata
+
+let createPage project template name = 
     (fun (p:pPAGE) ->
         p.Project <- project.ID
+        p.Template <- template.ID
         p.Name <- name) |> creator PAGE_metadata

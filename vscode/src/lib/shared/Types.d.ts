@@ -10,6 +10,10 @@ eu:number
 
 // [ProjectComplex]
 export type ProjectComplex = {
+comps:{[key:number]: COMP},
+
+templates:{[key:number]: TEMPLATE},
+
 pages:{[key:number]: PAGE},
 
 project:PROJECT

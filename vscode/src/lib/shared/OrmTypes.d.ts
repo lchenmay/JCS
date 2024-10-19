@@ -53,7 +53,7 @@ p:pTABLE
 // [Ts_UiComponent] (COMP)
 
 export type pCOMP = {
-    Code: string
+    Name: string
     Caption: string
     Project: number
 }
@@ -71,6 +71,10 @@ p:pCOMP
 export type pPAGE = {
     Name: string
     Caption: string
+    OgTitle: string
+    OgDesc: string
+    OgImage: string
+    Template: number
     Project: number
 }
 
@@ -80,6 +84,22 @@ createdat:Date
 updatedat:Date
 sort:number
 p:pPAGE
+}
+
+// [Ts_UiTemplate] (TEMPLATE)
+
+export type pTEMPLATE = {
+    Name: string
+    Caption: string
+    Project: number
+}
+
+export type TEMPLATE = {
+id:number
+createdat:Date
+updatedat:Date
+sort:number
+p:pTEMPLATE
 }
 
 
