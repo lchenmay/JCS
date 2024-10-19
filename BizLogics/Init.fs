@@ -25,9 +25,9 @@ open Shared.OrmTypes
 open Shared.OrmMor
 open Shared.Types
 open Shared.CustomMor
+open Shared.Project
 
 open BizLogics.Common
-open BizLogics.Project
 open BizLogics.Db
 
 let init (runtime:Runtime) = 

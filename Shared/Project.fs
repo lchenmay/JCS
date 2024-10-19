@@ -1,4 +1,4 @@
-﻿module BizLogics.Project
+﻿module Shared.Project
 
 open System
 open System.Threading
@@ -15,16 +15,10 @@ open Util.DbTx
 open Util.Orm
 open Util.Zmq
 
-open UtilWebServer.DbLogger
-open UtilWebServer.Db
-open UtilWebServer.Common
-
 open Shared.OrmTypes
 open Shared.Types
 open Shared.OrmMor
 open Shared.CustomMor
-
-open BizLogics.Common
 
 let project__ProjectComplex project = 
     {   hostconfigs = createModDictStr 4    

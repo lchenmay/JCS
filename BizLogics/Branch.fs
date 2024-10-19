@@ -32,7 +32,6 @@ open Shared.CustomMor
 
 open BizLogics.Common
 
-
 let branching x = 
 
     let bindx p = 
@@ -42,14 +41,9 @@ let branching x =
     match x.service with
     | "public" -> 
         match x.api with
-        | "monitorPerf" -> bindx (fun x -> apiMonitorPerf())
-        | "monitorServer" -> bindx (fun x -> apiMonitor x.runtime)
+        | "ping" -> bindx apiPing
+        | "perf" -> bindx apiMonitorPerf
         | _ -> Fail(Er.ApiNotExists,x)
-    | "eu" -> 
-        match x.api with
-        | _ -> Fail(Er.ApiNotExists,x)
-    | "admin" -> Fail(Er.ApiNotExists,x)
-    | "open" -> Fail(Er.ApiNotExists,x)
     | _ -> Fail(Er.ApiNotExists,x)
 
 
@@ -60,6 +54,7 @@ let branch service api json =
     let mutable x = incoming__x runtime service api "" json
     
     match service with
+
     | _ -> ()
 
     runApi branching x

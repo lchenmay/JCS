@@ -7,7 +7,6 @@
 
   <ItemGroup>
     <Compile Include="Common.fs" />
-    <Compile Include="Project.fs" />
     <Compile Include="Db.fs" />
     <Compile Include="Init.fs" />
     <Compile Include="Branch.fs" />

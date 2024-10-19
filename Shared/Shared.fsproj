@@ -19,6 +19,7 @@
     <Compile Include="Types.fs" />
     <Compile Include="OrmMor.fs" />
     <Compile Include="CustomMor.fs" />
+    <Compile Include="Project.fs" />
   </ItemGroup>
 
   <ItemGroup>
