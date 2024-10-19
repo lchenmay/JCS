@@ -16,12 +16,15 @@ open Shared.OrmTypes
 type EuComplex = {
 eu: int64 }
 
+type ProjectComplex = {
+project: PROJECT }
 
 type Fact = 
 | Undefined
 
 type RuntimeData = {
-mutable facts: Fact list }
+mutable facts: Fact list
+pcs: ModDictStr<ProjectComplex> }
 
 type Msg = 
 | Heartbeat

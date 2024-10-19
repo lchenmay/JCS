@@ -27,6 +27,7 @@ open Shared.Types
 open Shared.CustomMor
 
 open BizLogics.Common
+open BizLogics.Db
 
 let init (runtime:Runtime) = 
 
@@ -39,6 +40,20 @@ let init (runtime:Runtime) =
         updateDbStructure runtime conn
 
     Shared.OrmMor.init()
+
+    runtime.data.pcs.Reset 4
+
+    let loader metadata = loadAll runtime.output conn metadata
+
+    (fun (i:PROJECT) -> runtime.data.pcs[i.p.Code] <- { project = i }) |> loader PROJECT_metadata
+    [|  "JCS"
+        "Game" |]
+    |> Array.iter(fun code ->
+        if runtime.data.pcs.ContainsKey code = false then
+            match createProject code with
+            | Some project -> runtime.data.pcs[code] <- { project = project }
+            | None -> halt runtime.output ("BizLogics.Init.createProj [" + code + "]") "")
+
 
 
 

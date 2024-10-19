@@ -1,8 +1,74 @@
 ﻿[
   {
     "name": "Ts_Project",
-    "shorthand": "proj",
+    "shorthand": "project",
     "id": 234345,
+    "fields": [
+      {
+        "enum": "Chars",
+        "length": 64,
+        "name": "Code"
+      },
+      {
+        "enum": "Chars",
+        "length": 256,
+        "name": "Caption"
+      }
+    ]
+  },
+  {
+    "name": "Ts_Table",
+    "shorthand": "table",
+    "id": 7523431,
+    "fields": [
+      {
+        "enum": "Chars",
+        "length": 64,
+        "name": "Name"
+      },
+      {
+        "enum": "Text",
+        "name": "Desc"
+      }
+    ]
+  },
+  {
+    "name": "Ts_Field",
+    "shorthand": "field",
+    "id": 7523431,
+    "fields": [
+      {
+        "enum": "Chars",
+        "length": 64,
+        "name": "Name"
+      },
+      {
+        "enum": "Text",
+        "name": "Desc"
+      }
+    ]
+  },
+  {
+    "name": "Ts_UiComponent",
+    "shorthand": "comp",
+    "id": 6723431,
+    "fields": [
+      {
+        "enum": "Chars",
+        "length": 64,
+        "name": "Code"
+      },
+      {
+        "enum": "Chars",
+        "length": 256,
+        "name": "Caption"
+      }
+    ]
+  },
+  {
+    "name": "Ts_UiPage",
+    "shorthand": "page",
+    "id": 6723431,
     "fields": [
       {
         "enum": "Chars",

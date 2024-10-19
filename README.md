@@ -40,3 +40,36 @@ We advocate strong-typed functional programming languages that have been equippe
 - Cite DOI: 10.5281/zenodo.11397406
 
 
+
+# Component
+
+### /Common/UserAuth
+- Layout = Hor: Avatar,{Ver: Caption,Tagline}
+- Props = ec:EuComplex option
+
+### /Common/MainMenu
+
+### /Common/MainHeader
+- Layout = Ver: {Banner = {Hor: Logo,UserAuth}},MainMenu
+
+# Template
+
+### Main
+- Layout = Ver: MainHeader,Body,{Footer = {Ver: About Us,Term of Use,Privacy Policy,Contact Us,Site Map}}
+
+### Admin
+- Layout = Ver: AdminHeader,{Hor: SideMenu,Body}
+
+# Page
+
+### /Main/Home
+- Route = /
+- OgTitle = ""
+- OgDesc = ""
+- OgImage = ""
+- Template = Main
+- Layout = Ver: Focus,Filter,{Hor: Timeline,Side}
+
+
+
+

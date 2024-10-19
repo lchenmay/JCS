@@ -84,6 +84,62 @@ let json__EuComplexo (json:Json):EuComplex option =
     else
         None
 
+// [ProjectComplex] Structure
+
+let ProjectComplex_empty(): ProjectComplex =
+    {
+        project = { ID = 0L; Sort = 0L; Createdat = DateTime.MinValue; Updatedat = DateTime.MinValue; p = pPROJECT_empty() }
+    }
+
+let ProjectComplex__bin (bb:BytesBuilder) (v:ProjectComplex) =
+
+    PROJECT__bin bb v.project
+
+let bin__ProjectComplex (bi:BinIndexed):ProjectComplex =
+    let bin,index = bi
+
+    {
+        project = 
+            bi
+            |> bin__PROJECT
+    }
+
+let ProjectComplex__json (v:ProjectComplex) =
+
+    [|  ("project",PROJECT__json v.project)
+         |]
+    |> Json.Braket
+
+let ProjectComplex__jsonTbw (w:TextBlockWriter) (v:ProjectComplex) =
+    json__str w (ProjectComplex__json v)
+
+let ProjectComplex__jsonStr (v:ProjectComplex) =
+    (ProjectComplex__json v) |> json__strFinal
+
+
+let json__ProjectComplexo (json:Json):ProjectComplex option =
+    let fields = json |> json__items
+
+    let mutable passOptions = true
+
+    let projecto =
+        match json__tryFindByName json "project" with
+        | None ->
+            passOptions <- false
+            None
+        | Some v -> 
+            match v |> json__PROJECTo with
+            | Some res -> Some res
+            | None ->
+                passOptions <- false
+                None
+
+    if passOptions then
+        {
+            project = projecto.Value } |> Some
+    else
+        None
+
 // [Fact] Structure
 
 let Fact_empty(): Fact =Fact.Undefined
@@ -135,12 +191,15 @@ let json__Facto (json:Json):Fact option =
 let RuntimeData_empty(): RuntimeData =
     {
         facts = []
+        pcs = ModDict_empty()
     }
 
 let RuntimeData__bin (bb:BytesBuilder) (v:RuntimeData) =
 
     
     ListImmutable__bin (Fact__bin) bb v.facts
+    
+    ModDictStr__bin (ProjectComplex__bin) bb v.pcs
 
 let bin__RuntimeData (bi:BinIndexed):RuntimeData =
     let bin,index = bi
@@ -149,11 +208,15 @@ let bin__RuntimeData (bi:BinIndexed):RuntimeData =
         facts = 
             bi
             |> bin__ListImmutable (bin__Fact)
+        pcs = 
+            bi
+            |> bin__ModDictStr(bin__ProjectComplex)
     }
 
 let RuntimeData__json (v:RuntimeData) =
 
     [|  ("facts",ListImmutable__json (Fact__json) v.facts)
+        ("pcs",ModDictStr__json (ProjectComplex__json) v.pcs)
          |]
     |> Json.Braket
 
@@ -181,9 +244,22 @@ let json__RuntimeDatao (json:Json):RuntimeData option =
                 passOptions <- false
                 None
 
+    let pcso =
+        match json__tryFindByName json "pcs" with
+        | None ->
+            passOptions <- false
+            None
+        | Some v -> 
+            match v |> (fun json ->json__ModDictStro (json__ProjectComplexo) (new Dictionary<string,ProjectComplex>()) json) with
+            | Some res -> Some res
+            | None ->
+                passOptions <- false
+                None
+
     if passOptions then
         {
-            facts = factso.Value } |> Some
+            facts = factso.Value
+            pcs = pcso.Value } |> Some
     else
         None
 
