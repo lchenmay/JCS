@@ -34,6 +34,11 @@ let createProject code =
     (fun (p:pPROJECT) ->
         p.Code <- code) |> creator PROJECT_metadata
 
+let createComp project name = 
+    (fun (p:pCOMP) ->
+        p.Project <- project.ID
+        p.Name <- name) |> creator COMP_metadata
+
 let createTemplate project name = 
     (fun (p:pTEMPLATE) ->
         p.Project <- project.ID

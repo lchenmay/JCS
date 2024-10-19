@@ -48,16 +48,28 @@ let init (runtime:Runtime) =
 
     (fun (i:PROJECT) -> runtime.data.pcs[i.ID] <- i |> project__ProjectComplex) |> loader PROJECT_metadata
 
-    (fun (i:PAGE) -> 
-        let pc = runtime.data.pcs[i.p.Project]
-        pc.pages[i.ID] <- i) |> loader PAGE_metadata
+    (fun (i:COMP) -> runtime.data.pcs[i.p.Project].comps[i.ID] <- i) |> loader COMP_metadata
+    (fun (i:TEMPLATE) -> runtime.data.pcs[i.p.Project].templates[i.ID] <- i) |> loader TEMPLATE_metadata
+    (fun (i:PAGE) -> runtime.data.pcs[i.p.Project].pages[i.ID] <- i) |> loader PAGE_metadata
 
     let pc = runtime.data.pcs[234346L]
+
+    [|  "/Common/ProjectView"
+        "/Common/CompView"
+        "/Common/TemplateView"
+        "/Common/PageView" |]
+    |> Array.iter(fun name ->
+        match pc.comps.Values |> Array.tryFind(fun i -> i.p.Name = name) with
+        | Some comp -> ()
+        | None -> 
+            match createComp pc.project name with
+            | Some comp -> pc.comps[comp.ID] <- comp
+            | None -> halt runtime.output ("BizLogics.Init.createComp [" + name + "]") "")
 
     [|  "Public"
         "CodeRobot" |]
     |> Array.iter(fun name ->
-        match pc.templates.ToArray() |> Array.tryFind(fun i -> i.Value.p.Name = name) with
+        match pc.templates.Values |> Array.tryFind(fun i -> i.p.Name = name) with
         | Some template -> ()
         | None -> 
             match createTemplate pc.project name with
@@ -69,7 +81,7 @@ let init (runtime:Runtime) =
     [|  "/CodeRobot/Projects"
         "/CodeRobot/Project" |]
     |> Array.iter(fun name ->
-        match pc.pages.ToArray() |> Array.tryFind(fun i -> i.Value.p.Name = name) with
+        match pc.pages.Values |> Array.tryFind(fun i -> i.p.Name = name) with
         | Some page -> ()
         | None -> 
             match createPage pc.project template name with
