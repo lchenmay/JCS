@@ -1,5 +1,6 @@
 <template>
-ss
+
+<router-link to="/code-robot">Code Robot</router-link>
 
 </template>
 

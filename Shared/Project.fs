@@ -22,6 +22,7 @@ open Shared.CustomMor
 
 let project__ProjectComplex project = 
     {   hostconfigs = createModDictStr 4    
+        tables = createModDictStr 4
         comps = createModDictInt64 4
         templates = createModDictInt64 4
         pages = createModDictInt64 4

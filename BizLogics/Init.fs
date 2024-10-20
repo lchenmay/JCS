@@ -42,23 +42,33 @@ let init (runtime:Runtime) =
 
     Shared.OrmMor.init()
 
-    runtime.data.pcs.Reset 4
+    runtime.data.pcs.Reset 1
 
     let loader metadata = loadAll runtime.output conn metadata
 
     (fun (i:PROJECT) -> runtime.data.pcs[i.ID] <- i |> project__ProjectComplex) |> loader PROJECT_metadata
     (fun (i:HOSTCONFIG) -> runtime.data.pcs[i.p.Project].hostconfigs[i.p.Hostname] <- i) |> loader HOSTCONFIG_metadata
 
+    (fun (i:TABLE) -> runtime.data.pcs[i.p.Project].tables[i.p.Name] <- {
+        fields = createModDictStr 4
+        table = i }) |> loader TABLE_metadata
+    (fun (i:FIELD) -> 
+        let pc = runtime.data.pcs[i.p.Project]
+        let tc = pc.tables.Values |> Array.find(fun t -> t.table.ID = i.p.Table)
+        tc.fields[i.p.Name] <- i) |> loader FIELD_metadata
+
     (fun (i:COMP) -> runtime.data.pcs[i.p.Project].comps[i.ID] <- i) |> loader COMP_metadata
     (fun (i:TEMPLATE) -> runtime.data.pcs[i.p.Project].templates[i.ID] <- i) |> loader TEMPLATE_metadata
     (fun (i:PAGE) -> runtime.data.pcs[i.p.Project].pages[i.ID] <- i) |> loader PAGE_metadata
 
-    let pc = runtime.data.pcs[234346L]
+    let pc = runtime.data.pcs.Values |> Array.find(fun i -> i.project.p.Code = "JCS")
 
-    [|  "/Common/ProjectView"
-        "/Common/CompView"
-        "/Common/TemplateView"
-        "/Common/PageView" |]
+    [|  "/Common/Project"
+        "/Common/Table"
+        "/Common/Field"
+        "/Common/Template"
+        "/Common/Comp"
+        "/Common/Page" |]
     |> Array.iter(fun name ->
         match pc.comps.Values |> Array.tryFind(fun i -> i.p.Name = name) with
         | Some comp -> ()

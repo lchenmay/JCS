@@ -8,9 +8,18 @@ export type EuComplex = {
 eu:number
 }
 
+// [TableComplex]
+export type TableComplex = {
+fields:{[key:string]: FIELD},
+
+table:TABLE
+}
+
 // [ProjectComplex]
 export type ProjectComplex = {
 hostconfigs:{[key:string]: HOSTCONFIG},
+
+tables:{[key:string]: TableComplex},
 
 comps:{[key:number]: COMP},
 

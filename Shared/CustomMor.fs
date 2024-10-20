@@ -84,11 +84,88 @@ let json__EuComplexo (json:Json):EuComplex option =
     else
         None
 
+// [TableComplex] Structure
+
+let TableComplex_empty(): TableComplex =
+    {
+        fields = ModDict_empty()
+        table = { ID = 0L; Sort = 0L; Createdat = DateTime.MinValue; Updatedat = DateTime.MinValue; p = pTABLE_empty() }
+    }
+
+let TableComplex__bin (bb:BytesBuilder) (v:TableComplex) =
+
+    
+    ModDictStr__bin (FIELD__bin) bb v.fields
+    TABLE__bin bb v.table
+
+let bin__TableComplex (bi:BinIndexed):TableComplex =
+    let bin,index = bi
+
+    {
+        fields = 
+            bi
+            |> bin__ModDictStr(bin__FIELD)
+        table = 
+            bi
+            |> bin__TABLE
+    }
+
+let TableComplex__json (v:TableComplex) =
+
+    [|  ("fields",ModDictStr__json (FIELD__json) v.fields)
+        ("table",TABLE__json v.table)
+         |]
+    |> Json.Braket
+
+let TableComplex__jsonTbw (w:TextBlockWriter) (v:TableComplex) =
+    json__str w (TableComplex__json v)
+
+let TableComplex__jsonStr (v:TableComplex) =
+    (TableComplex__json v) |> json__strFinal
+
+
+let json__TableComplexo (json:Json):TableComplex option =
+    let fields = json |> json__items
+
+    let mutable passOptions = true
+
+    let fieldso =
+        match json__tryFindByName json "fields" with
+        | None ->
+            passOptions <- false
+            None
+        | Some v -> 
+            match v |> (fun json ->json__ModDictStro (json__FIELDo) (new Dictionary<string,FIELD>()) json) with
+            | Some res -> Some res
+            | None ->
+                passOptions <- false
+                None
+
+    let tableo =
+        match json__tryFindByName json "table" with
+        | None ->
+            passOptions <- false
+            None
+        | Some v -> 
+            match v |> json__TABLEo with
+            | Some res -> Some res
+            | None ->
+                passOptions <- false
+                None
+
+    if passOptions then
+        {
+            fields = fieldso.Value
+            table = tableo.Value } |> Some
+    else
+        None
+
 // [ProjectComplex] Structure
 
 let ProjectComplex_empty(): ProjectComplex =
     {
         hostconfigs = ModDict_empty()
+        tables = ModDict_empty()
         comps = ModDict_empty()
         templates = ModDict_empty()
         pages = ModDict_empty()
@@ -99,6 +176,8 @@ let ProjectComplex__bin (bb:BytesBuilder) (v:ProjectComplex) =
 
     
     ModDictStr__bin (HOSTCONFIG__bin) bb v.hostconfigs
+    
+    ModDictStr__bin (TableComplex__bin) bb v.tables
     
     ModDictInt64__bin (COMP__bin) bb v.comps
     
@@ -114,6 +193,9 @@ let bin__ProjectComplex (bi:BinIndexed):ProjectComplex =
         hostconfigs = 
             bi
             |> bin__ModDictStr(bin__HOSTCONFIG)
+        tables = 
+            bi
+            |> bin__ModDictStr(bin__TableComplex)
         comps = 
             bi
             |> bin__ModDictInt64(bin__COMP)
@@ -131,6 +213,7 @@ let bin__ProjectComplex (bi:BinIndexed):ProjectComplex =
 let ProjectComplex__json (v:ProjectComplex) =
 
     [|  ("hostconfigs",ModDictStr__json (HOSTCONFIG__json) v.hostconfigs)
+        ("tables",ModDictStr__json (TableComplex__json) v.tables)
         ("comps",ModDictInt64__json (COMP__json) v.comps)
         ("templates",ModDictInt64__json (TEMPLATE__json) v.templates)
         ("pages",ModDictInt64__json (PAGE__json) v.pages)
@@ -157,6 +240,18 @@ let json__ProjectComplexo (json:Json):ProjectComplex option =
             None
         | Some v -> 
             match v |> (fun json ->json__ModDictStro (json__HOSTCONFIGo) (new Dictionary<string,HOSTCONFIG>()) json) with
+            | Some res -> Some res
+            | None ->
+                passOptions <- false
+                None
+
+    let tableso =
+        match json__tryFindByName json "tables" with
+        | None ->
+            passOptions <- false
+            None
+        | Some v -> 
+            match v |> (fun json ->json__ModDictStro (json__TableComplexo) (new Dictionary<string,TableComplex>()) json) with
             | Some res -> Some res
             | None ->
                 passOptions <- false
@@ -213,6 +308,7 @@ let json__ProjectComplexo (json:Json):ProjectComplex option =
     if passOptions then
         {
             hostconfigs = hostconfigso.Value
+            tables = tableso.Value
             comps = compso.Value
             templates = templateso.Value
             pages = pageso.Value

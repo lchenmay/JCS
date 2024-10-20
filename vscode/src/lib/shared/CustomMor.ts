@@ -45,11 +45,36 @@ export const bin__EuComplex = (bi:BinIndexed):jcs.EuComplex => {
     }
 }
 
+// [TableComplex] Structure
+
+export const TableComplex_empty = (): jcs.TableComplex => { 
+    return {
+        fields: {},
+        table: { id: 0, sort: 0, createdat: new Date(), updatedat: new Date(), p: marshall.pTABLE_empty() },
+    } as jcs.TableComplex
+}
+
+export const TableComplex__bin = (bb:BytesBuilder) => (v:any) => {
+
+    
+    marshall.dict__bin (marshall.str__bin)(marshall.FIELD__bin) (bb) (v.fields)
+    marshall.TABLE__bin (bb) (v.table)
+}
+
+export const bin__TableComplex = (bi:BinIndexed):jcs.TableComplex => {
+
+    return {
+        fields: marshall.bin__dict(marshall.bin__str)(marshall.bin__FIELD) (bi),
+        table: marshall.bin__TABLE (bi),
+    }
+}
+
 // [ProjectComplex] Structure
 
 export const ProjectComplex_empty = (): jcs.ProjectComplex => { 
     return {
         hostconfigs: {},
+        tables: {},
         comps: {},
         templates: {},
         pages: {},
@@ -61,6 +86,8 @@ export const ProjectComplex__bin = (bb:BytesBuilder) => (v:any) => {
 
     
     marshall.dict__bin (marshall.str__bin)(marshall.HOSTCONFIG__bin) (bb) (v.hostconfigs)
+    
+    marshall.dict__bin (marshall.str__bin)(TableComplex__bin) (bb) (v.tables)
     
     marshall.dict__bin (marshall.int64__bin)(marshall.COMP__bin) (bb) (v.comps)
     
@@ -74,6 +101,7 @@ export const bin__ProjectComplex = (bi:BinIndexed):jcs.ProjectComplex => {
 
     return {
         hostconfigs: marshall.bin__dict(marshall.bin__str)(marshall.bin__HOSTCONFIG) (bi),
+        tables: marshall.bin__dict(marshall.bin__str)(bin__TableComplex) (bi),
         comps: marshall.bin__dict(marshall.bin__int64)(marshall.bin__COMP) (bi),
         templates: marshall.bin__dict(marshall.bin__int64)(marshall.bin__TEMPLATE) (bi),
         pages: marshall.bin__dict(marshall.bin__int64)(marshall.bin__PAGE) (bi),

@@ -16,8 +16,13 @@ open Shared.OrmTypes
 type EuComplex = {
 eu: int64 }
 
+type TableComplex = {
+fields: ModDictStr<FIELD>
+table: TABLE }
+
 type ProjectComplex = {
 hostconfigs: ModDictStr<HOSTCONFIG>
+tables: ModDictStr<TableComplex>
 comps: ModDictInt64<COMP>
 templates: ModDictInt64<TEMPLATE>
 pages: ModDictInt64<PAGE>
