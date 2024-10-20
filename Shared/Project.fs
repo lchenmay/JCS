@@ -23,10 +23,10 @@ open Shared.CustomMor
 let project__ProjectComplex project = 
     {   hostconfigs = createModDictStr 4    
         tables = createModDictStr 4
-        comps = createModDictInt64 4
-        templates = createModDictInt64 4
-        pages = createModDictInt64 4
-        apis = createModDictInt64 4
+        comps = createModDictStr 4
+        templates = createModDictStr 4
+        pages = createModDictStr 4
+        apis = createModDictStr 4
         project = project }
 
 let comp__CompComplex comp = 
@@ -46,3 +46,22 @@ let api__ApiComplex api =
         reqs = createModDictStr 4
         reps = createModDictStr 4
         api = api }
+
+let projx__lines projx = 
+
+    let res = new List<string>()
+    
+    [|  projx.project.ID.ToString()
+        projx.project.p.Code    |]
+    |> res.AddRange
+
+    projx.comps.Values
+    |> Array.iter(fun x -> 
+
+        x.comp.p.Name |> res.Add
+
+        x.props.Values
+        |> Array.iter(fun xx -> 
+            "Prop: " + xx.p.Name + ":" + xx.p.Type |> res.Add))
+
+    res.ToArray()

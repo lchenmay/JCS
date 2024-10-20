@@ -309,7 +309,7 @@ let pHOSTCONFIG__bin (bb:BytesBuilder) (p:pHOSTCONFIG) =
     binHostname.Length |> BitConverter.GetBytes |> bb.append
     binHostname |> bb.append
     
-    p.Gender |> EnumToValue |> BitConverter.GetBytes |> bb.append
+    p.Database |> EnumToValue |> BitConverter.GetBytes |> bb.append
     
     let binDatabaseName = p.DatabaseName |> Encoding.UTF8.GetBytes
     binDatabaseName.Length |> BitConverter.GetBytes |> bb.append
@@ -347,7 +347,7 @@ let bin__pHOSTCONFIG (bi:BinIndexed):pHOSTCONFIG =
     p.Hostname <- Encoding.UTF8.GetString(bin,index.Value,count_Hostname)
     index.Value <- index.Value + count_Hostname
     
-    p.Gender <- BitConverter.ToInt32(bin,index.Value) |> EnumOfValue
+    p.Database <- BitConverter.ToInt32(bin,index.Value) |> EnumOfValue
     index.Value <- index.Value + 4
     
     let count_DatabaseName = BitConverter.ToInt32(bin,index.Value)
@@ -399,7 +399,7 @@ let pHOSTCONFIG__json (p:pHOSTCONFIG) =
 
     [|
         ("Hostname",p.Hostname |> Json.Str)
-        ("Gender",(p.Gender |> EnumToValue).ToString() |> Json.Num)
+        ("Database",(p.Database |> EnumToValue).ToString() |> Json.Num)
         ("DatabaseName",p.DatabaseName |> Json.Str)
         ("DatabaseConn",p.DatabaseConn |> Json.Str)
         ("DirVsShared",p.DirVsShared |> Json.Str)
@@ -432,7 +432,7 @@ let json__pHOSTCONFIGo (json:Json):pHOSTCONFIG option =
     
     p.Hostname <- checkfieldz fields "Hostname" 64
     
-    p.Gender <- checkfield fields "Gender" |> parse_int32 |> EnumOfValue
+    p.Database <- checkfield fields "Database" |> parse_int32 |> EnumOfValue
     
     p.DatabaseName <- checkfieldz fields "DatabaseName" 64
     
@@ -467,7 +467,7 @@ let json__HOSTCONFIGo (json:Json):HOSTCONFIG option =
         
         p.Hostname <- checkfieldz fields "Hostname" 64
         
-        p.Gender <- checkfield fields "Gender" |> parse_int32 |> EnumOfValue
+        p.Database <- checkfield fields "Database" |> parse_int32 |> EnumOfValue
         
         p.DatabaseName <- checkfieldz fields "DatabaseName" 64
         
@@ -1588,7 +1588,7 @@ let db__pHOSTCONFIG(line:Object[]): pHOSTCONFIG =
     let p = pHOSTCONFIG_empty()
 
     p.Hostname <- string(line.[4]).TrimEnd()
-    p.Gender <- EnumOfValue(if Convert.IsDBNull(line.[5]) then 0 else line.[5] :?> int)
+    p.Database <- EnumOfValue(if Convert.IsDBNull(line.[5]) then 0 else line.[5] :?> int)
     p.DatabaseName <- string(line.[6]).TrimEnd()
     p.DatabaseConn <- string(line.[7]).TrimEnd()
     p.DirVsShared <- string(line.[8]).TrimEnd()
@@ -1602,7 +1602,7 @@ let pHOSTCONFIG__sps (p:pHOSTCONFIG) =
     | Rdbms.SqlServer ->
         [|
             ("Hostname", p.Hostname) |> kvp__sqlparam
-            ("Gender", p.Gender) |> kvp__sqlparam
+            ("Database", p.Database) |> kvp__sqlparam
             ("DatabaseName", p.DatabaseName) |> kvp__sqlparam
             ("DatabaseConn", p.DatabaseConn) |> kvp__sqlparam
             ("DirVsShared", p.DirVsShared) |> kvp__sqlparam
@@ -1611,7 +1611,7 @@ let pHOSTCONFIG__sps (p:pHOSTCONFIG) =
     | Rdbms.PostgreSql ->
         [|
             ("hostname", p.Hostname) |> kvp__sqlparam
-            ("gender", p.Gender) |> kvp__sqlparam
+            ("database", p.Database) |> kvp__sqlparam
             ("databasename", p.DatabaseName) |> kvp__sqlparam
             ("databaseconn", p.DatabaseConn) |> kvp__sqlparam
             ("dirvsshared", p.DirVsShared) |> kvp__sqlparam
@@ -1626,7 +1626,7 @@ let HOSTCONFIG_wrapper item: HOSTCONFIG =
 
 let pHOSTCONFIG_clone (p:pHOSTCONFIG): pHOSTCONFIG = {
     Hostname = p.Hostname
-    Gender = p.Gender
+    Database = p.Database
     DatabaseName = p.DatabaseName
     DatabaseConn = p.DatabaseConn
     DirVsShared = p.DirVsShared
@@ -1692,7 +1692,7 @@ let HOSTCONFIGTxSqlServer =
     ,[Updatedat] BIGINT NOT NULL
     ,[Sort] BIGINT NOT NULL,
     ,[Hostname]
-    ,[Gender]
+    ,[Database]
     ,[DatabaseName]
     ,[DatabaseConn]
     ,[DirVsShared]

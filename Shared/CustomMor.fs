@@ -468,13 +468,13 @@ let ProjectComplex__bin (bb:BytesBuilder) (v:ProjectComplex) =
     
     ModDictStr__bin (TableComplex__bin) bb v.tables
     
-    ModDictInt64__bin (CompComplex__bin) bb v.comps
+    ModDictStr__bin (CompComplex__bin) bb v.comps
     
-    ModDictInt64__bin (TEMPLATE__bin) bb v.templates
+    ModDictStr__bin (TEMPLATE__bin) bb v.templates
     
-    ModDictInt64__bin (PageComplex__bin) bb v.pages
+    ModDictStr__bin (PageComplex__bin) bb v.pages
     
-    ModDictInt64__bin (ApiComplex__bin) bb v.apis
+    ModDictStr__bin (ApiComplex__bin) bb v.apis
     PROJECT__bin bb v.project
 
 let bin__ProjectComplex (bi:BinIndexed):ProjectComplex =
@@ -489,16 +489,16 @@ let bin__ProjectComplex (bi:BinIndexed):ProjectComplex =
             |> bin__ModDictStr(bin__TableComplex)
         comps = 
             bi
-            |> bin__ModDictInt64(bin__CompComplex)
+            |> bin__ModDictStr(bin__CompComplex)
         templates = 
             bi
-            |> bin__ModDictInt64(bin__TEMPLATE)
+            |> bin__ModDictStr(bin__TEMPLATE)
         pages = 
             bi
-            |> bin__ModDictInt64(bin__PageComplex)
+            |> bin__ModDictStr(bin__PageComplex)
         apis = 
             bi
-            |> bin__ModDictInt64(bin__ApiComplex)
+            |> bin__ModDictStr(bin__ApiComplex)
         project = 
             bi
             |> bin__PROJECT
@@ -508,10 +508,10 @@ let ProjectComplex__json (v:ProjectComplex) =
 
     [|  ("hostconfigs",ModDictStr__json (HOSTCONFIG__json) v.hostconfigs)
         ("tables",ModDictStr__json (TableComplex__json) v.tables)
-        ("comps",ModDictInt64__json (CompComplex__json) v.comps)
-        ("templates",ModDictInt64__json (TEMPLATE__json) v.templates)
-        ("pages",ModDictInt64__json (PageComplex__json) v.pages)
-        ("apis",ModDictInt64__json (ApiComplex__json) v.apis)
+        ("comps",ModDictStr__json (CompComplex__json) v.comps)
+        ("templates",ModDictStr__json (TEMPLATE__json) v.templates)
+        ("pages",ModDictStr__json (PageComplex__json) v.pages)
+        ("apis",ModDictStr__json (ApiComplex__json) v.apis)
         ("project",PROJECT__json v.project)
          |]
     |> Json.Braket
@@ -558,7 +558,7 @@ let json__ProjectComplexo (json:Json):ProjectComplex option =
             passOptions <- false
             None
         | Some v -> 
-            match v |> (fun json ->json__ModDictInt64o (json__CompComplexo) (new Dictionary<int64,CompComplex>()) json) with
+            match v |> (fun json ->json__ModDictStro (json__CompComplexo) (new Dictionary<string,CompComplex>()) json) with
             | Some res -> Some res
             | None ->
                 passOptions <- false
@@ -570,7 +570,7 @@ let json__ProjectComplexo (json:Json):ProjectComplex option =
             passOptions <- false
             None
         | Some v -> 
-            match v |> (fun json ->json__ModDictInt64o (json__TEMPLATEo) (new Dictionary<int64,TEMPLATE>()) json) with
+            match v |> (fun json ->json__ModDictStro (json__TEMPLATEo) (new Dictionary<string,TEMPLATE>()) json) with
             | Some res -> Some res
             | None ->
                 passOptions <- false
@@ -582,7 +582,7 @@ let json__ProjectComplexo (json:Json):ProjectComplex option =
             passOptions <- false
             None
         | Some v -> 
-            match v |> (fun json ->json__ModDictInt64o (json__PageComplexo) (new Dictionary<int64,PageComplex>()) json) with
+            match v |> (fun json ->json__ModDictStro (json__PageComplexo) (new Dictionary<string,PageComplex>()) json) with
             | Some res -> Some res
             | None ->
                 passOptions <- false
@@ -594,7 +594,7 @@ let json__ProjectComplexo (json:Json):ProjectComplex option =
             passOptions <- false
             None
         | Some v -> 
-            match v |> (fun json ->json__ModDictInt64o (json__ApiComplexo) (new Dictionary<int64,ApiComplex>()) json) with
+            match v |> (fun json ->json__ModDictStro (json__ApiComplexo) (new Dictionary<string,ApiComplex>()) json) with
             | Some res -> Some res
             | None ->
                 passOptions <- false

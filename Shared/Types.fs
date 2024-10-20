@@ -38,10 +38,10 @@ api: API }
 type ProjectComplex = {
 hostconfigs: ModDictStr<HOSTCONFIG>
 tables: ModDictStr<TableComplex>
-comps: ModDictInt64<CompComplex>
-templates: ModDictInt64<TEMPLATE>
-pages: ModDictInt64<PageComplex>
-apis: ModDictInt64<ApiComplex>
+comps: ModDictStr<CompComplex>
+templates: ModDictStr<TEMPLATE>
+pages: ModDictStr<PageComplex>
+apis: ModDictStr<ApiComplex>
 project: PROJECT }
 
 type Fact = 

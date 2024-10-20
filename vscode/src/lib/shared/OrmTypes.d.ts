@@ -36,12 +36,12 @@ p:pFIELD
 
 // [Ts_HostConfig] (HOSTCONFIG)
 
-const hostconfigGenderEnum_SQLSERVER = 0 // SQL Server
-const hostconfigGenderEnum_PostgreSQL = 1 // PostgreSQL
+const hostconfigDatabaseEnum_SQLSERVER = 0 // SQL Server
+const hostconfigDatabaseEnum_PostgreSQL = 1 // PostgreSQL
 
 export type pHOSTCONFIG = {
     Hostname: string
-    Gender: number
+    Database: number
     DatabaseName: string
     DatabaseConn: string
     DirVsShared: string

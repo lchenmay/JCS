@@ -48,13 +48,13 @@ hostconfigs:{[key:string]: HOSTCONFIG},
 
 tables:{[key:string]: TableComplex},
 
-comps:{[key:number]: CompComplex},
+comps:{[key:string]: CompComplex},
 
-templates:{[key:number]: TEMPLATE},
+templates:{[key:string]: TEMPLATE},
 
-pages:{[key:number]: PageComplex},
+pages:{[key:string]: PageComplex},
 
-apis:{[key:number]: ApiComplex},
+apis:{[key:string]: ApiComplex},
 
 project:PROJECT
 }

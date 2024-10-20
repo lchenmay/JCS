@@ -29,7 +29,7 @@
       {
         "enum": "SelectLines",
         "lines": "SQLSERVER//SQL Server///PostgreSQL//PostgreSQL",
-        "name": "Gender"
+        "name": "Database"
       },
       {
         "enum": "Chars",

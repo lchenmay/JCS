@@ -174,13 +174,13 @@ export const ProjectComplex__bin = (bb:BytesBuilder) => (v:any) => {
     
     marshall.dict__bin (marshall.str__bin)(TableComplex__bin) (bb) (v.tables)
     
-    marshall.dict__bin (marshall.int64__bin)(CompComplex__bin) (bb) (v.comps)
+    marshall.dict__bin (marshall.str__bin)(CompComplex__bin) (bb) (v.comps)
     
-    marshall.dict__bin (marshall.int64__bin)(marshall.TEMPLATE__bin) (bb) (v.templates)
+    marshall.dict__bin (marshall.str__bin)(marshall.TEMPLATE__bin) (bb) (v.templates)
     
-    marshall.dict__bin (marshall.int64__bin)(PageComplex__bin) (bb) (v.pages)
+    marshall.dict__bin (marshall.str__bin)(PageComplex__bin) (bb) (v.pages)
     
-    marshall.dict__bin (marshall.int64__bin)(ApiComplex__bin) (bb) (v.apis)
+    marshall.dict__bin (marshall.str__bin)(ApiComplex__bin) (bb) (v.apis)
     marshall.PROJECT__bin (bb) (v.project)
 }
 
@@ -189,10 +189,10 @@ export const bin__ProjectComplex = (bi:BinIndexed):jcs.ProjectComplex => {
     return {
         hostconfigs: marshall.bin__dict(marshall.bin__str)(marshall.bin__HOSTCONFIG) (bi),
         tables: marshall.bin__dict(marshall.bin__str)(bin__TableComplex) (bi),
-        comps: marshall.bin__dict(marshall.bin__int64)(bin__CompComplex) (bi),
-        templates: marshall.bin__dict(marshall.bin__int64)(marshall.bin__TEMPLATE) (bi),
-        pages: marshall.bin__dict(marshall.bin__int64)(bin__PageComplex) (bi),
-        apis: marshall.bin__dict(marshall.bin__int64)(bin__ApiComplex) (bi),
+        comps: marshall.bin__dict(marshall.bin__str)(bin__CompComplex) (bi),
+        templates: marshall.bin__dict(marshall.bin__str)(marshall.bin__TEMPLATE) (bi),
+        pages: marshall.bin__dict(marshall.bin__str)(bin__PageComplex) (bi),
+        apis: marshall.bin__dict(marshall.bin__str)(bin__ApiComplex) (bi),
         project: marshall.bin__PROJECT (bi),
     }
 }

@@ -123,35 +123,35 @@ let FIELD_table = "Ts_Field"
 
 // [Ts_HostConfig] (HOSTCONFIG)
 
-type hostconfigGenderEnum = 
+type hostconfigDatabaseEnum = 
 | SQLSERVER = 0 // SQL Server
 | PostgreSQL = 1 // PostgreSQL
 
-let hostconfigGenderEnums = [| hostconfigGenderEnum.SQLSERVER; hostconfigGenderEnum.PostgreSQL |]
-let hostconfigGenderEnumstrs = [| "hostconfigGenderEnum"; "hostconfigGenderEnum" |]
-let hostconfigGenderNum = 2
+let hostconfigDatabaseEnums = [| hostconfigDatabaseEnum.SQLSERVER; hostconfigDatabaseEnum.PostgreSQL |]
+let hostconfigDatabaseEnumstrs = [| "hostconfigDatabaseEnum"; "hostconfigDatabaseEnum" |]
+let hostconfigDatabaseNum = 2
 
-let int__hostconfigGenderEnum v =
+let int__hostconfigDatabaseEnum v =
     match v with
-    | 0 -> Some hostconfigGenderEnum.SQLSERVER
-    | 1 -> Some hostconfigGenderEnum.PostgreSQL
+    | 0 -> Some hostconfigDatabaseEnum.SQLSERVER
+    | 1 -> Some hostconfigDatabaseEnum.PostgreSQL
     | _ -> None
 
-let str__hostconfigGenderEnum s =
+let str__hostconfigDatabaseEnum s =
     match s with
-    | "SQLSERVER" -> Some hostconfigGenderEnum.SQLSERVER
-    | "PostgreSQL" -> Some hostconfigGenderEnum.PostgreSQL
+    | "SQLSERVER" -> Some hostconfigDatabaseEnum.SQLSERVER
+    | "PostgreSQL" -> Some hostconfigDatabaseEnum.PostgreSQL
     | _ -> None
 
-let hostconfigGenderEnum__caption e =
+let hostconfigDatabaseEnum__caption e =
     match e with
-    | hostconfigGenderEnum.SQLSERVER -> "SQL Server"
-    | hostconfigGenderEnum.PostgreSQL -> "PostgreSQL"
+    | hostconfigDatabaseEnum.SQLSERVER -> "SQL Server"
+    | hostconfigDatabaseEnum.PostgreSQL -> "PostgreSQL"
     | _ -> ""
 
 type pHOSTCONFIG = {
 mutable Hostname: Chars
-mutable Gender: hostconfigGenderEnum
+mutable Database: hostconfigDatabaseEnum
 mutable DatabaseName: Chars
 mutable DatabaseConn: Chars
 mutable DirVsShared: Chars
@@ -164,13 +164,13 @@ type HOSTCONFIG = Rcd<pHOSTCONFIG>
 let HOSTCONFIG_fieldorders() =
     match rdbms with
     | Rdbms.SqlServer ->
-        "[ID],[Createdat],[Updatedat],[Sort],[Hostname],[Gender],[DatabaseName],[DatabaseConn],[DirVsShared],[DirVsCodeWeb],[Project]"
+        "[ID],[Createdat],[Updatedat],[Sort],[Hostname],[Database],[DatabaseName],[DatabaseConn],[DirVsShared],[DirVsCodeWeb],[Project]"
     | Rdbms.PostgreSql ->
-        $""" "id","createdat","updatedat","sort", "hostname","gender","databasename","databaseconn","dirvsshared","dirvscodeweb","project" """
+        $""" "id","createdat","updatedat","sort", "hostname","database","databasename","databaseconn","dirvsshared","dirvscodeweb","project" """
 
 let pHOSTCONFIG_fieldordersArray = [|
     "Hostname"
-    "Gender"
+    "Database"
     "DatabaseName"
     "DatabaseConn"
     "DirVsShared"
@@ -179,15 +179,15 @@ let pHOSTCONFIG_fieldordersArray = [|
 
 let HOSTCONFIG_sql_update() =
     match rdbms with
-    | Rdbms.SqlServer -> "[Hostname]=@Hostname,[Gender]=@Gender,[DatabaseName]=@DatabaseName,[DatabaseConn]=@DatabaseConn,[DirVsShared]=@DirVsShared,[DirVsCodeWeb]=@DirVsCodeWeb,[Project]=@Project"
-    | Rdbms.PostgreSql -> "hostname=@hostname,gender=@gender,databasename=@databasename,databaseconn=@databaseconn,dirvsshared=@dirvsshared,dirvscodeweb=@dirvscodeweb,project=@project"
+    | Rdbms.SqlServer -> "[Hostname]=@Hostname,[Database]=@Database,[DatabaseName]=@DatabaseName,[DatabaseConn]=@DatabaseConn,[DirVsShared]=@DirVsShared,[DirVsCodeWeb]=@DirVsCodeWeb,[Project]=@Project"
+    | Rdbms.PostgreSql -> "hostname=@hostname,database=@database,databasename=@databasename,databaseconn=@databaseconn,dirvsshared=@dirvsshared,dirvscodeweb=@dirvscodeweb,project=@project"
 
 let pHOSTCONFIG_fields() =
     match rdbms with
     | Rdbms.SqlServer ->
         [|
             Chars("Hostname", 64)
-            SelectLines("Gender", [| ("SQLSERVER","SQL Server");("PostgreSQL","PostgreSQL") |])
+            SelectLines("Database", [| ("SQLSERVER","SQL Server");("PostgreSQL","PostgreSQL") |])
             Chars("DatabaseName", 64)
             Chars("DatabaseConn", 64)
             Chars("DirVsShared", 64)
@@ -196,7 +196,7 @@ let pHOSTCONFIG_fields() =
     | Rdbms.PostgreSql ->
         [|
             Chars("hostname", 64)
-            SelectLines("gender", [| ("SQLSERVER","SQL Server");("PostgreSQL","PostgreSQL") |])
+            SelectLines("database", [| ("SQLSERVER","SQL Server");("PostgreSQL","PostgreSQL") |])
             Chars("databasename", 64)
             Chars("databaseconn", 64)
             Chars("dirvsshared", 64)
@@ -205,7 +205,7 @@ let pHOSTCONFIG_fields() =
 
 let pHOSTCONFIG_empty(): pHOSTCONFIG = {
     Hostname = ""
-    Gender = EnumOfValue 0
+    Database = EnumOfValue 0
     DatabaseName = ""
     DatabaseConn = ""
     DirVsShared = ""

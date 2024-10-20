@@ -252,7 +252,7 @@ BEGIN
         ,[Updatedat] BIGINT NOT NULL
         ,[Sort] BIGINT NOT NULL,
         [Hostname] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS
-        ,[Gender] INT
+        ,[Database] INT
         ,[DatabaseName] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS
         ,[DatabaseConn] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS
         ,[DirVsShared] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS
@@ -265,7 +265,7 @@ END
 -- Dropping obsolete fields -----------
 DECLARE @name_Ts_HostConfig NVARCHAR(64)
 DECLARE cursor_Ts_HostConfig CURSOR FOR 
-    SELECT name FROM SYSCOLUMNS WHERE id=object_id('Ts_HostConfig') AND (name NOT IN ('ID','Createdat','Updatedat','Sort','Hostname','Gender','DatabaseName','DatabaseConn','DirVsShared','DirVsCodeWeb','Project'))
+    SELECT name FROM SYSCOLUMNS WHERE id=object_id('Ts_HostConfig') AND (name NOT IN ('ID','Createdat','Updatedat','Sort','Hostname','Database','DatabaseName','DatabaseConn','DirVsShared','DirVsCodeWeb','Project'))
 
 OPEN cursor_Ts_HostConfig
 FETCH NEXT FROM cursor_Ts_HostConfig INTO @name_Ts_HostConfig
@@ -313,31 +313,31 @@ IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ts_HostConfigH
     ALTER TABLE Ts_HostConfig DROP  CONSTRAINT [UniqueNonclustered_Ts_HostConfigHostname]
     END
 
--- [Ts_HostConfig.Gender] -------------
+-- [Ts_HostConfig.Database] -------------
 
 
--- [Ts_HostConfig.Gender] -------------
+-- [Ts_HostConfig.Database] -------------
 
-IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ts_HostConfig') AND name='Gender')
+IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ts_HostConfig') AND name='Database')
     BEGIN
-     ALTER TABLE Ts_HostConfig ALTER COLUMN [Gender] INT
+     ALTER TABLE Ts_HostConfig ALTER COLUMN [Database] INT
     END
 ELSE
     BEGIN
-    DECLARE @sql_add_Ts_HostConfig_Gender NVARCHAR(MAX);
-    SET @sql_add_Ts_HostConfig_Gender = 'ALTER TABLE Ts_HostConfig ADD [Gender] INT'
-    EXEC sp_executesql @sql_add_Ts_HostConfig_Gender
+    DECLARE @sql_add_Ts_HostConfig_Database NVARCHAR(MAX);
+    SET @sql_add_Ts_HostConfig_Database = 'ALTER TABLE Ts_HostConfig ADD [Database] INT'
+    EXEC sp_executesql @sql_add_Ts_HostConfig_Database
     END
 
 
-IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ts_HostConfigGender')
+IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ts_HostConfigDatabase')
     BEGIN
-    ALTER TABLE Ts_HostConfig DROP  CONSTRAINT [Constraint_Ts_HostConfigGender]
+    ALTER TABLE Ts_HostConfig DROP  CONSTRAINT [Constraint_Ts_HostConfigDatabase]
     END
 
-IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ts_HostConfigGender')
+IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ts_HostConfigDatabase')
     BEGIN
-    ALTER TABLE Ts_HostConfig DROP  CONSTRAINT [UniqueNonclustered_Ts_HostConfigGender]
+    ALTER TABLE Ts_HostConfig DROP  CONSTRAINT [UniqueNonclustered_Ts_HostConfigDatabase]
     END
 
 -- [Ts_HostConfig.DatabaseName] -------------

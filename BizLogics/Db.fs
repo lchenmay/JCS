@@ -34,10 +34,15 @@ let createProject code =
     (fun (p:pPROJECT) ->
         p.Code <- code) |> creator PROJECT_metadata
 
-let createLocalHostConfig project = 
-    (fun (p:pHOSTCONFIG) ->
-        p.Project <- project.ID
-        p.Hostname <- System.Environment.MachineName.ToUpper()) |> creator HOSTCONFIG_metadata
+let checkLocalHostConfig projectx = 
+    match 
+        projectx.hostconfigs.Values 
+        |> Array.tryFind(fun i -> i.p.Hostname.ToUpper() = System.Environment.MachineName.ToUpper()) with
+    | Some v -> Some v
+    | None -> 
+        (fun (p:pHOSTCONFIG) ->
+            p.Project <- projectx.project.ID
+            p.Hostname <- System.Environment.MachineName.ToUpper()) |> creator HOSTCONFIG_metadata
 
 let createComp project name = 
     (fun (p:pCOMP) ->
@@ -54,3 +59,20 @@ let createPage project template name =
         p.Project <- project.ID
         p.Template <- template.ID
         p.Name <- name) |> creator PAGE_metadata
+
+
+let createCompProp project comp name t = 
+    (fun (p:pVARTYPE) ->
+        p.Project <- project.ID
+        p.BindType <- vartypeBindTypeEnum.CompProps
+        p.Bind <- comp.ID
+        p.Name <- name
+        p.Type <- t) |> creator VARTYPE_metadata
+
+let createPageProp project page name t = 
+    (fun (p:pVARTYPE) ->
+        p.Project <- project.ID
+        p.BindType <- vartypeBindTypeEnum.PageProps
+        p.Bind <- page.ID
+        p.Name <- name
+        p.Type <- t) |> creator VARTYPE_metadata

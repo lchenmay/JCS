@@ -37,40 +37,13 @@ open BizLogics.Branch
 let conn = "server=127.0.0.1; user=sa; database=JCS"
 let mainDir = @"C:\Dev\JCS\Shared"
 let JsDir = @"C:\Dev\JCS\vscode\src\lib\shared"
-
-let compFile() = 
-    let w = empty__TextBlockWriter()
-    [|  "<template>"
-        "</template>"
-        ""
-        """<script setup lang="ts">"""
-        ""
-        "import { glib } from '~/lib/glib'"
-        ""
-        "</script>"  |]
-    |> w.multiLine
-
-    w.Buffer().ToArray()
     
-let buildComps pc (hostconfig:HOSTCONFIG) = 
-
-    let path = hostconfig.p.DirVsCodeWeb + "/src/comps"
-    Util.FileSys.checkpath path |> ignore
-
-    pc.comps.Values
-    |> Array.iter(fun i -> 
-        let f = path + i.comp.p.Name + ".vue"
-
-        let path = Directory.GetParent f
-        Util.FileSys.checkpath path.FullName |> ignore
-
-        File.WriteAllLines(f,compFile())
-
-        ())
 
 type VueFile = {
 mutable template: string[]
-mutable imports: string[] }
+mutable imports: string[]
+mutable states: string[]
+mutable onMounted: string[] }
 
 let buildVueFile() = 
     {   template =     
@@ -79,7 +52,15 @@ let buildVueFile() =
 
         imports =    
             [|  "import { glib } from '~/lib/glib'"
-                "import * as Common from '~/lib/store/common'" |] }
+                "import * as Common from '~/lib/store/common'" |]
+
+        states =    
+            [|  "const s = glib.vue.reactive({"
+                "})" |]
+                
+        onMounted =    
+            [|  "glib.vue.onMounted(async () => {"
+                "})" |] }
 
 let VueFile__src vueFile = 
     let res = new List<string>()
@@ -90,40 +71,77 @@ let VueFile__src vueFile =
     "" |> res.Add
     vueFile.imports |> res.AddRange
     "" |> res.Add
+    vueFile.states |> res.AddRange
+    "" |> res.Add
+    vueFile.onMounted |> res.AddRange
+    "" |> res.Add
     "</script>" |> res.Add
 
     res.ToArray()
     
-let tryTake (lines:string[]) (head:string) (rear:string) =
-    let i1 = lines |> Array.tryFindIndex(fun line -> line.StartsWith head)
-    let i2 = lines |> Array.tryFindIndexBack(fun line -> line.StartsWith rear)
-
-    if i1.IsSome && i2.IsSome then
-        Array.sub lines i1.Value (i2.Value - i1.Value + 1)
-    else
-        [| |]
-
 let src__VueFile (lines:string[]) = 
     let res = buildVueFile()
 
-    let template = tryTake lines "<template>" "</template>"
+    let template = tryTake lines ("<template>","</template>") true
     if template.Length > 0 then
         res.template <- template
 
-    let imports = tryTake lines "imports " "imports "
+    let imports = tryTake lines ("imports ","imports ") true
     if imports.Length > 0 then
         res.imports <- imports
 
+    let states = tryTake lines ("const s = glib.vue.reactive({","})") false
+    if states.Length > 0 then
+        res.states <- states
+    
+    let onMounted = tryTake lines ("glib.vue.onMounted(async () => {","})") false
+    if onMounted.Length > 0 then
+        res.onMounted <- onMounted
+
     res
 
-let buildPages pc (hostconfig:HOSTCONFIG) = 
+let buildComps projectx (hostconfig:HOSTCONFIG) = 
+
+    let path = hostconfig.p.DirVsCodeWeb + "/src/comps"
+    Util.FileSys.checkpath path |> ignore
+
+    projectx.comps.Values
+    |> Array.iter(fun compx -> 
+        let f = path + compx.comp.p.Name + ".vue"
+
+        let path = Directory.GetParent f
+        Util.FileSys.checkpath path.FullName |> ignore
+
+        let vueFile = 
+            if File.Exists f then
+                File.ReadAllLines f
+                |> src__VueFile
+            else
+                buildVueFile()
+
+        compx.props.Values
+        |> Array.iter(fun prop ->
+            match
+                vueFile.states
+                |> Array.tryFind(fun line -> line.StartsWith (prop.p.Name + ":")) with
+            | Some line -> ()
+            | None -> 
+                let ls = new List<string>(vueFile.states)
+                ls.Insert(1,prop.p.Name + ":" + projectx.project.p.Code.ToLower() + "." + prop.p.Type + ",")
+                vueFile.states <- ls.ToArray())
+
+        File.WriteAllLines(f,VueFile__src vueFile)
+
+        ())
+
+let buildPages projectx (hostconfig:HOSTCONFIG) = 
 
     let path = hostconfig.p.DirVsCodeWeb + "/src/pages"
     Util.FileSys.checkpath path |> ignore
 
-    pc.pages.Values
-    |> Array.iter(fun i -> 
-        let f = path + i.page.p.Name + ".vue"
+    projectx.pages.Values
+    |> Array.iter(fun pagex -> 
+        let f = path + pagex.page.p.Name + ".vue"
 
         let path = Directory.GetParent f
         Util.FileSys.checkpath path.FullName |> ignore
@@ -138,7 +156,6 @@ let buildPages pc (hostconfig:HOSTCONFIG) =
         File.WriteAllLines(f,VueFile__src vueFile)
 
         ())
-
 
 let run() =
 

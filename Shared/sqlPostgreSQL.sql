@@ -136,7 +136,7 @@ BEGIN
         ,updatedat BIGINT NOT NULL
         ,sort BIGINT NOT NULL
         ,"hostname" VARCHAR(64)
-        ,"gender" INT
+        ,"database" INT
         ,"databasename" VARCHAR(64)
         ,"databaseconn" VARCHAR(64)
         ,"dirvsshared" VARCHAR(64)
@@ -161,17 +161,17 @@ BEGIN
     END IF;
 END $$;
 
--- [Ts_HostConfig.Gender] -------------
+-- [Ts_HostConfig.Database] -------------
 
 
 DO $$
 DECLARE
     condition boolean;
 BEGIN
-    condition := (SELECT EXISTS(SELECT column_name FROM information_schema.columns WHERE table_name='ts_hostconfig' AND column_name='gender'));
+    condition := (SELECT EXISTS(SELECT column_name FROM information_schema.columns WHERE table_name='ts_hostconfig' AND column_name='database'));
 
     IF not condition THEN
-        ALTER TABLE ts_hostconfig ADD "gender" int;
+        ALTER TABLE ts_hostconfig ADD "database" int;
     END IF;
 END $$;
 
