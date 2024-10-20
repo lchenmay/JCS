@@ -4,6 +4,52 @@ import * as binCommon from '~/lib/util/bin'
 const marshall = {...binCommon }
 
 
+// [API] Structure
+
+
+export const pAPI__bin = (bb:BytesBuilder) => (p:jcs.pAPI) => {
+
+    
+    marshall.str__bin (bb) (p.Name)
+    
+    marshall.int64__bin (bb) (p.Project)
+}
+
+export const API__bin = (bb:BytesBuilder) => (v:jcs.API) => {
+    marshall.int64__bin (bb) (v.id)
+    marshall.int64__bin (bb) (v.sort)
+    marshall.DateTime__bin (bb) (v.createdat)
+    marshall.DateTime__bin (bb) (v.updatedat)
+
+    pAPI__bin (bb) (v.p)
+}
+
+export const bin__pAPI = (bi:BinIndexed):jcs.pAPI => {
+
+    let p = pAPI_empty()
+    p.Name = marshall.bin__str (bi)
+    p.Project = marshall.bin__int64 (bi)
+
+    return p
+}
+
+
+export const bin__API = (bi:BinIndexed):jcs.API => {
+
+    let ID = marshall.bin__int64 (bi)
+    let Sort = marshall.bin__int64 (bi)
+    let Createdat = marshall.bin__DateTime (bi)
+    let Updatedat = marshall.bin__DateTime (bi)
+    
+    return {
+        id: ID,
+        sort: Sort,
+        createdat: Createdat,
+        updatedat: Updatedat,
+        p:  bin__pAPI (bi)
+    }
+}
+
 // [FIELD] Structure
 
 
@@ -428,6 +474,21 @@ export const bin__VARTYPE = (bi:BinIndexed):jcs.VARTYPE => {
         p:  bin__pVARTYPE (bi)
     }
 }
+export const pAPI_empty = (): jcs.pAPI => {
+    return {
+        Name: "",
+        Project: 0 }
+}
+
+export const API_empty = (): jcs.API => {
+    return {
+        id: 0,
+        createdat: new Date(),
+        updatedat: new Date(),
+        sort: 0,
+        p: pAPI_empty() }
+}
+
 export const pFIELD_empty = (): jcs.pFIELD => {
     return {
         Name: "",

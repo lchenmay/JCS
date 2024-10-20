@@ -61,6 +61,8 @@ let init (runtime:Runtime) =
     (fun (i:TEMPLATE) -> runtime.data.pcs[i.p.Project].templates[i.ID] <- i) |> loader TEMPLATE_metadata
     (fun (i:PAGE) -> runtime.data.pcs[i.p.Project].pages[i.ID] <- i |> page__CompComplex) |> loader PAGE_metadata
 
+    (fun (i:API) -> runtime.data.pcs[i.p.Project].apis[i.ID] <- i |> api__ApiComplex) |> loader API_metadata
+
     (fun (i:VARTYPE) -> 
         let pc = runtime.data.pcs[i.p.Project]
         match i.p.BindType with
@@ -84,7 +86,9 @@ let init (runtime:Runtime) =
     [|  "/Common/Project"
         "/Common/Table"
         "/Common/Field"
+        "/Common/Api"
         "/Common/Template"
+        "/Common/VarType"
         "/Common/Comp"
         "/Common/Page" |]
     |> Array.iter(fun name ->

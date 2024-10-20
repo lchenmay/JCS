@@ -29,6 +29,129 @@ open Util.Bin
 open Shared.OrmTypes
 open Shared.Types
 
+// [API] Structure
+
+
+let pAPI__bin (bb:BytesBuilder) (p:pAPI) =
+
+    
+    let binName = p.Name |> Encoding.UTF8.GetBytes
+    binName.Length |> BitConverter.GetBytes |> bb.append
+    binName |> bb.append
+    
+    p.Project |> BitConverter.GetBytes |> bb.append
+
+let API__bin (bb:BytesBuilder) (v:API) =
+    v.ID |> BitConverter.GetBytes |> bb.append
+    v.Sort |> BitConverter.GetBytes |> bb.append
+    DateTime__bin bb v.Createdat
+    DateTime__bin bb v.Updatedat
+    
+    pAPI__bin bb v.p
+
+let bin__pAPI (bi:BinIndexed):pAPI =
+    let bin,index = bi
+
+    let p = pAPI_empty()
+    
+    let count_Name = BitConverter.ToInt32(bin,index.Value)
+    index.Value <- index.Value + 4
+    p.Name <- Encoding.UTF8.GetString(bin,index.Value,count_Name)
+    index.Value <- index.Value + count_Name
+    
+    p.Project <- BitConverter.ToInt64(bin,index.Value)
+    index.Value <- index.Value + 8
+    
+    p
+
+let bin__API (bi:BinIndexed):API =
+    let bin,index = bi
+
+    let ID = BitConverter.ToInt64(bin,index.Value)
+    index.Value <- index.Value + 8
+    
+    let Sort = BitConverter.ToInt64(bin,index.Value)
+    index.Value <- index.Value + 8
+    
+    let Createdat = bin__DateTime bi
+    
+    let Updatedat = bin__DateTime bi
+    
+    {
+        ID = ID
+        Sort = Sort
+        Createdat = Createdat
+        Updatedat = Updatedat
+        p = bin__pAPI bi }
+
+let pAPI__json (p:pAPI) =
+
+    [|
+        ("Name",p.Name |> Json.Str)
+        ("Project",p.Project.ToString() |> Json.Num) |]
+    |> Json.Braket
+
+let API__json (v:API) =
+
+    let p = v.p
+    
+    [|  ("id",v.ID.ToString() |> Json.Num)
+        ("sort",v.Sort.ToString() |> Json.Num)
+        ("createdat",(v.Createdat |> Util.Time.wintime__unixtime).ToString() |> Json.Num)
+        ("updatedat",(v.Updatedat |> Util.Time.wintime__unixtime).ToString() |> Json.Num)
+        ("p",pAPI__json v.p) |]
+    |> Json.Braket
+
+let API__jsonTbw (w:TextBlockWriter) (v:API) =
+    json__str w (API__json v)
+
+let API__jsonStr (v:API) =
+    (API__json v) |> json__strFinal
+
+
+let json__pAPIo (json:Json):pAPI option =
+    let fields = json |> json__items
+
+    let p = pAPI_empty()
+    
+    p.Name <- checkfieldz fields "Name" 64
+    
+    p.Project <- checkfield fields "Project" |> parse_int64
+    
+    p |> Some
+    
+
+let json__APIo (json:Json):API option =
+    let fields = json |> json__items
+
+    let ID = checkfield fields "id" |> parse_int64
+    let Sort = checkfield fields "sort" |> parse_int64
+    let Createdat = checkfield fields "createdat" |> parse_int64 |> DateTime.FromBinary
+    let Updatedat = checkfield fields "updatedat" |> parse_int64 |> DateTime.FromBinary
+    
+    let o  =
+        match
+            json
+            |> tryFindByAtt "p" with
+        | Some (s,v) -> json__pAPIo v
+        | None -> None
+    
+    match o with
+    | Some p ->
+        
+        p.Name <- checkfieldz fields "Name" 64
+        
+        p.Project <- checkfield fields "Project" |> parse_int64
+        
+        {
+            ID = ID
+            Sort = Sort
+            Createdat = Createdat
+            Updatedat = Updatedat
+            p = p } |> Some
+        
+    | None -> None
+
 // [FIELD] Structure
 
 
@@ -1265,6 +1388,99 @@ let json__VARTYPEo (json:Json):VARTYPE option =
 
 let mutable conn = ""
 
+let db__pAPI(line:Object[]): pAPI =
+    let p = pAPI_empty()
+
+    p.Name <- string(line.[4]).TrimEnd()
+    p.Project <- if Convert.IsDBNull(line.[5]) then 0L else line.[5] :?> int64
+
+    p
+
+let pAPI__sps (p:pAPI) =
+    match rdbms with
+    | Rdbms.SqlServer ->
+        [|
+            ("Name", p.Name) |> kvp__sqlparam
+            ("Project", p.Project) |> kvp__sqlparam |]
+    | Rdbms.PostgreSql ->
+        [|
+            ("name", p.Name) |> kvp__sqlparam
+            ("project", p.Project) |> kvp__sqlparam |]
+
+let db__API = db__Rcd db__pAPI
+
+let API_wrapper item: API =
+    let (i,c,u,s),p = item
+    { ID = i; Createdat = c; Updatedat = u; Sort = s; p = p }
+
+let pAPI_clone (p:pAPI): pAPI = {
+    Name = p.Name
+    Project = p.Project }
+
+let API_update_transaction output (updater,suc,fail) (rcd:API) =
+    let rollback_p = rcd.p |> pAPI_clone
+    let rollback_updatedat = rcd.Updatedat
+    updater rcd.p
+    let ctime,res =
+        (rcd.ID,rcd.p,rollback_p,rollback_updatedat)
+        |> update (conn,output,API_table,API_sql_update(),pAPI__sps,suc,fail)
+    match res with
+    | Suc ctx ->
+        rcd.Updatedat <- ctime
+        suc(ctime,ctx)
+    | Fail(eso,ctx) ->
+        rcd.p <- rollback_p
+        rcd.Updatedat <- rollback_updatedat
+        fail eso
+
+let API_update output (rcd:API) =
+    rcd
+    |> API_update_transaction output ((fun p -> ()),(fun (ctime,ctx) -> ()),(fun dte -> ()))
+
+let API_create_incremental_transaction output (suc,fail) p =
+    let cid = Interlocked.Increment API_id
+    let ctime = DateTime.UtcNow
+    match create (conn,output,API_table,pAPI__sps) (cid,ctime,p) with
+    | Suc ctx -> ((cid,ctime,ctime,cid),p) |> API_wrapper |> suc
+    | Fail(eso,ctx) -> fail(eso,ctx)
+
+let API_create output p =
+    API_create_incremental_transaction output ((fun rcd -> ()),(fun (eso,ctx) -> ())) p
+    
+
+let id__APIo id: API option = id__rcd(conn,API_fieldorders(),API_table,db__API) id
+
+let API_metadata = {
+    fieldorders = API_fieldorders
+    db__rcd = db__API 
+    wrapper = API_wrapper
+    sps = pAPI__sps
+    id = API_id
+    id__rcdo = id__APIo
+    clone = pAPI_clone
+    empty__p = pAPI_empty
+    rcd__bin = API__bin
+    bin__rcd = bin__API
+    sql_update = API_sql_update
+    rcd_update = API_update
+    table = API_table
+    shorthand = "api" }
+
+let APITxSqlServer =
+    """
+    IF NOT EXISTS(SELECT * FROM sysobjects WHERE [name]='Ts_Api' AND xtype='U')
+    BEGIN
+
+        CREATE TABLE Ts_Api ([ID] BIGINT NOT NULL
+    ,[Createdat] BIGINT NOT NULL
+    ,[Updatedat] BIGINT NOT NULL
+    ,[Sort] BIGINT NOT NULL,
+    ,[Name]
+    ,[Project])
+    END
+    """
+
+
 let db__pFIELD(line:Object[]): pFIELD =
     let p = pFIELD_empty()
 
@@ -2105,16 +2321,18 @@ let VARTYPETxSqlServer =
 
 
 type MetadataEnum = 
-| FIELD = 0
-| HOSTCONFIG = 1
-| PROJECT = 2
-| TABLE = 3
-| COMP = 4
-| PAGE = 5
-| TEMPLATE = 6
-| VARTYPE = 7
+| API = 0
+| FIELD = 1
+| HOSTCONFIG = 2
+| PROJECT = 3
+| TABLE = 4
+| COMP = 5
+| PAGE = 6
+| TEMPLATE = 7
+| VARTYPE = 8
 
 let tablenames = [|
+    API_metadata.table
     FIELD_metadata.table
     HOSTCONFIG_metadata.table
     PROJECT_metadata.table
@@ -2125,6 +2343,25 @@ let tablenames = [|
     VARTYPE_metadata.table |]
 
 let init() =
+
+    let sqlMaxTs_Api, sqlCountTs_Api =
+        match rdbms with
+        | Rdbms.SqlServer -> "SELECT MAX(ID) FROM [Ts_Api]", "SELECT COUNT(ID) FROM [Ts_Api]"
+        | Rdbms.PostgreSql -> "SELECT MAX(id) FROM ts_api", "SELECT COUNT(id) FROM ts_api"
+    match singlevalue_query conn (str__sql sqlMaxTs_Api) with
+    | Some v ->
+        let max = v :?> int64
+        if max > API_id.Value then
+            API_id.Value <- max
+    | None -> ()
+
+    match singlevalue_query conn (str__sql sqlCountTs_Api) with
+    | Some v ->
+        API_count.Value <-
+            match rdbms with
+            | Rdbms.SqlServer -> v :?> int32
+            | Rdbms.PostgreSql -> v :?> int64 |> int32
+    | None -> ()
 
     let sqlMaxTs_Field, sqlCountTs_Field =
         match rdbms with

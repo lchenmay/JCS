@@ -33,6 +33,15 @@ props:{[key:string]: VARTYPE},
 page:PAGE
 }
 
+// [ApiComplex]
+export type ApiComplex = {
+reqs:{[key:string]: VARTYPE},
+
+reps:{[key:string]: VARTYPE},
+
+api:API
+}
+
 // [ProjectComplex]
 export type ProjectComplex = {
 hostconfigs:{[key:string]: HOSTCONFIG},
@@ -44,6 +53,8 @@ comps:{[key:number]: CompComplex},
 templates:{[key:number]: TEMPLATE},
 
 pages:{[key:number]: PageComplex},
+
+apis:{[key:number]: ApiComplex},
 
 project:PROJECT
 }

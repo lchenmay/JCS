@@ -185,8 +185,24 @@
     ]
   },
   {
+    "name": "Ts_Api",
+    "shorthand": "api",
+    "id": 7523431,
+    "fields": [
+      {
+        "enum": "Chars",
+        "length": 64,
+        "name": "Name"
+      },
+      {
+        "enum": "FK",
+        "name": "Project"
+      }
+    ]
+  },
+  {
     "name": "Ts_VarType",
-    "shorthand": "VARTYPE",
+    "shorthand": "vartype",
     "id": 7523431,
     "fields": [
       {
@@ -201,7 +217,7 @@
       },
       {
         "enum": "SelectLines",
-        "lines": "CompState//Component State///CompProps//Component Propos///PageState//Page State///PageProps//Page Propos",
+        "lines": "ApiRequest//API Request///ApiResponse//API Response///CompState//Component State///CompProps//Component Propos///PageState//Page State///PageProps//Page Propos",
         "name": "BindType"
       },
       {

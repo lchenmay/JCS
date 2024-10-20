@@ -2,6 +2,21 @@ declare global {
 
 namespace jcs {
 
+// [Ts_Api] (API)
+
+export type pAPI = {
+    Name: string
+    Project: number
+}
+
+export type API = {
+id:number
+createdat:Date
+updatedat:Date
+sort:number
+p:pAPI
+}
+
 // [Ts_Field] (FIELD)
 
 export type pFIELD = {
@@ -128,10 +143,12 @@ p:pTEMPLATE
 
 // [Ts_VarType] (VARTYPE)
 
-const vartypeBindTypeEnum_CompState = 0 // Component State
-const vartypeBindTypeEnum_CompProps = 1 // Component Propos
-const vartypeBindTypeEnum_PageState = 2 // Page State
-const vartypeBindTypeEnum_PageProps = 3 // Page Propos
+const vartypeBindTypeEnum_ApiRequest = 0 // API Request
+const vartypeBindTypeEnum_ApiResponse = 1 // API Response
+const vartypeBindTypeEnum_CompState = 2 // Component State
+const vartypeBindTypeEnum_CompProps = 3 // Component Propos
+const vartypeBindTypeEnum_PageState = 4 // Page State
+const vartypeBindTypeEnum_PageProps = 5 // Page Propos
 
 export type pVARTYPE = {
     Name: string

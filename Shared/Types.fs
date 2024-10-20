@@ -30,12 +30,18 @@ states: ModDictStr<VARTYPE>
 props: ModDictStr<VARTYPE>
 page: PAGE }
 
+type ApiComplex = {
+reqs: ModDictStr<VARTYPE>
+reps: ModDictStr<VARTYPE>
+api: API }
+
 type ProjectComplex = {
 hostconfigs: ModDictStr<HOSTCONFIG>
 tables: ModDictStr<TableComplex>
 comps: ModDictInt64<CompComplex>
 templates: ModDictInt64<TEMPLATE>
 pages: ModDictInt64<PageComplex>
+apis: ModDictInt64<ApiComplex>
 project: PROJECT }
 
 type Fact = 

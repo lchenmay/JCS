@@ -1,4 +1,97 @@
 USE [JCS]
+-- [Ts_Api] ----------------------
+
+IF NOT EXISTS(SELECT * FROM sysobjects WHERE [name]='Ts_Api' AND xtype='U')
+
+BEGIN
+
+    CREATE TABLE Ts_Api ([ID] BIGINT NOT NULL
+        ,[Createdat] BIGINT NOT NULL
+        ,[Updatedat] BIGINT NOT NULL
+        ,[Sort] BIGINT NOT NULL,
+        [Name] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS
+        ,[Project] BIGINT
+, CONSTRAINT [PK_Ts_Api] PRIMARY KEY CLUSTERED ([ID] ASC)) ON [PRIMARY]
+END
+
+
+-- Dropping obsolete fields -----------
+DECLARE @name_Ts_Api NVARCHAR(64)
+DECLARE cursor_Ts_Api CURSOR FOR 
+    SELECT name FROM SYSCOLUMNS WHERE id=object_id('Ts_Api') AND (name NOT IN ('ID','Createdat','Updatedat','Sort','Name','Project'))
+
+OPEN cursor_Ts_Api
+FETCH NEXT FROM cursor_Ts_Api INTO @name_Ts_Api
+
+WHILE @@FETCH_STATUS = 0
+BEGIN
+    PRINT 'Dropping Ts_Api.' + @name_Ts_Api;
+    
+    DECLARE @sql_Ts_Api NVARCHAR(MAX);
+    SET @sql_Ts_Api = 'ALTER TABLE Ts_Api DROP COLUMN ' + QUOTENAME(@name_Ts_Api)
+    EXEC sp_executesql @sql_Ts_Api
+    
+    
+    FETCH NEXT FROM cursor_Ts_Api INTO @name_Ts_Api
+END
+
+CLOSE cursor_Ts_Api;
+DEALLOCATE cursor_Ts_Api;
+
+
+-- [Ts_Api.Name] -------------
+
+
+-- [Ts_Api.Name] -------------
+
+IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ts_Api') AND name='Name')
+    BEGIN
+     ALTER TABLE Ts_Api ALTER COLUMN [Name] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS
+    END
+ELSE
+    BEGIN
+    DECLARE @sql_add_Ts_Api_Name NVARCHAR(MAX);
+    SET @sql_add_Ts_Api_Name = 'ALTER TABLE Ts_Api ADD [Name] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS'
+    EXEC sp_executesql @sql_add_Ts_Api_Name
+    END
+
+
+IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ts_ApiName')
+    BEGIN
+    ALTER TABLE Ts_Api DROP  CONSTRAINT [Constraint_Ts_ApiName]
+    END
+
+IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ts_ApiName')
+    BEGIN
+    ALTER TABLE Ts_Api DROP  CONSTRAINT [UniqueNonclustered_Ts_ApiName]
+    END
+
+-- [Ts_Api.Project] -------------
+
+
+-- [Ts_Api.Project] -------------
+
+IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ts_Api') AND name='Project')
+    BEGIN
+     ALTER TABLE Ts_Api ALTER COLUMN [Project] BIGINT
+    END
+ELSE
+    BEGIN
+    DECLARE @sql_add_Ts_Api_Project NVARCHAR(MAX);
+    SET @sql_add_Ts_Api_Project = 'ALTER TABLE Ts_Api ADD [Project] BIGINT'
+    EXEC sp_executesql @sql_add_Ts_Api_Project
+    END
+
+
+IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ts_ApiProject')
+    BEGIN
+    ALTER TABLE Ts_Api DROP  CONSTRAINT [Constraint_Ts_ApiProject]
+    END
+
+IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ts_ApiProject')
+    BEGIN
+    ALTER TABLE Ts_Api DROP  CONSTRAINT [UniqueNonclustered_Ts_ApiProject]
+    END
 -- [Ts_Field] ----------------------
 
 IF NOT EXISTS(SELECT * FROM sysobjects WHERE [name]='Ts_Field' AND xtype='U')

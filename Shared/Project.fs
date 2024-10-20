@@ -26,6 +26,7 @@ let project__ProjectComplex project =
         comps = createModDictInt64 4
         templates = createModDictInt64 4
         pages = createModDictInt64 4
+        apis = createModDictInt64 4
         project = project }
 
 let comp__CompComplex comp = 
@@ -39,3 +40,9 @@ let page__CompComplex page =
         states = createModDictStr 4
         props = createModDictStr 4
         page = page }
+
+let api__ApiComplex api = 
+    {
+        reqs = createModDictStr 4
+        reps = createModDictStr 4
+        api = api }

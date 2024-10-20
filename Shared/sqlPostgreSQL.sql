@@ -1,3 +1,50 @@
+-- [Ts_Api] ----------------------
+
+DO $$
+DECLARE
+    condition boolean;
+BEGIN
+    condition := (SELECT EXISTS(SELECT * FROM information_schema.tables WHERE table_name = 'ts_api'));
+
+    IF not condition THEN
+    CREATE TABLE ts_api (id BIGINT NOT NULL
+        ,createdat BIGINT NOT NULL
+        ,updatedat BIGINT NOT NULL
+        ,sort BIGINT NOT NULL
+        ,"name" VARCHAR(64)
+        ,"project" BIGINT);
+
+   END IF;
+END $$;
+
+
+-- [Ts_Api.Name] -------------
+
+
+DO $$
+DECLARE
+    condition boolean;
+BEGIN
+    condition := (SELECT EXISTS(SELECT column_name FROM information_schema.columns WHERE table_name='ts_api' AND column_name='name'));
+
+    IF not condition THEN
+        ALTER TABLE ts_api ADD "name" varchar(64);
+    END IF;
+END $$;
+
+-- [Ts_Api.Project] -------------
+
+
+DO $$
+DECLARE
+    condition boolean;
+BEGIN
+    condition := (SELECT EXISTS(SELECT column_name FROM information_schema.columns WHERE table_name='ts_api' AND column_name='project'));
+
+    IF not condition THEN
+        ALTER TABLE ts_api ADD "project" bigint;
+    END IF;
+END $$;
 -- [Ts_Field] ----------------------
 
 DO $$

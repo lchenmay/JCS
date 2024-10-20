@@ -352,6 +352,102 @@ let json__PageComplexo (json:Json):PageComplex option =
     else
         None
 
+// [ApiComplex] Structure
+
+let ApiComplex_empty(): ApiComplex =
+    {
+        reqs = ModDict_empty()
+        reps = ModDict_empty()
+        api = { ID = 0L; Sort = 0L; Createdat = DateTime.MinValue; Updatedat = DateTime.MinValue; p = pAPI_empty() }
+    }
+
+let ApiComplex__bin (bb:BytesBuilder) (v:ApiComplex) =
+
+    
+    ModDictStr__bin (VARTYPE__bin) bb v.reqs
+    
+    ModDictStr__bin (VARTYPE__bin) bb v.reps
+    API__bin bb v.api
+
+let bin__ApiComplex (bi:BinIndexed):ApiComplex =
+    let bin,index = bi
+
+    {
+        reqs = 
+            bi
+            |> bin__ModDictStr(bin__VARTYPE)
+        reps = 
+            bi
+            |> bin__ModDictStr(bin__VARTYPE)
+        api = 
+            bi
+            |> bin__API
+    }
+
+let ApiComplex__json (v:ApiComplex) =
+
+    [|  ("reqs",ModDictStr__json (VARTYPE__json) v.reqs)
+        ("reps",ModDictStr__json (VARTYPE__json) v.reps)
+        ("api",API__json v.api)
+         |]
+    |> Json.Braket
+
+let ApiComplex__jsonTbw (w:TextBlockWriter) (v:ApiComplex) =
+    json__str w (ApiComplex__json v)
+
+let ApiComplex__jsonStr (v:ApiComplex) =
+    (ApiComplex__json v) |> json__strFinal
+
+
+let json__ApiComplexo (json:Json):ApiComplex option =
+    let fields = json |> json__items
+
+    let mutable passOptions = true
+
+    let reqso =
+        match json__tryFindByName json "reqs" with
+        | None ->
+            passOptions <- false
+            None
+        | Some v -> 
+            match v |> (fun json ->json__ModDictStro (json__VARTYPEo) (new Dictionary<string,VARTYPE>()) json) with
+            | Some res -> Some res
+            | None ->
+                passOptions <- false
+                None
+
+    let repso =
+        match json__tryFindByName json "reps" with
+        | None ->
+            passOptions <- false
+            None
+        | Some v -> 
+            match v |> (fun json ->json__ModDictStro (json__VARTYPEo) (new Dictionary<string,VARTYPE>()) json) with
+            | Some res -> Some res
+            | None ->
+                passOptions <- false
+                None
+
+    let apio =
+        match json__tryFindByName json "api" with
+        | None ->
+            passOptions <- false
+            None
+        | Some v -> 
+            match v |> json__APIo with
+            | Some res -> Some res
+            | None ->
+                passOptions <- false
+                None
+
+    if passOptions then
+        {
+            reqs = reqso.Value
+            reps = repso.Value
+            api = apio.Value } |> Some
+    else
+        None
+
 // [ProjectComplex] Structure
 
 let ProjectComplex_empty(): ProjectComplex =
@@ -361,6 +457,7 @@ let ProjectComplex_empty(): ProjectComplex =
         comps = ModDict_empty()
         templates = ModDict_empty()
         pages = ModDict_empty()
+        apis = ModDict_empty()
         project = { ID = 0L; Sort = 0L; Createdat = DateTime.MinValue; Updatedat = DateTime.MinValue; p = pPROJECT_empty() }
     }
 
@@ -376,6 +473,8 @@ let ProjectComplex__bin (bb:BytesBuilder) (v:ProjectComplex) =
     ModDictInt64__bin (TEMPLATE__bin) bb v.templates
     
     ModDictInt64__bin (PageComplex__bin) bb v.pages
+    
+    ModDictInt64__bin (ApiComplex__bin) bb v.apis
     PROJECT__bin bb v.project
 
 let bin__ProjectComplex (bi:BinIndexed):ProjectComplex =
@@ -397,6 +496,9 @@ let bin__ProjectComplex (bi:BinIndexed):ProjectComplex =
         pages = 
             bi
             |> bin__ModDictInt64(bin__PageComplex)
+        apis = 
+            bi
+            |> bin__ModDictInt64(bin__ApiComplex)
         project = 
             bi
             |> bin__PROJECT
@@ -409,6 +511,7 @@ let ProjectComplex__json (v:ProjectComplex) =
         ("comps",ModDictInt64__json (CompComplex__json) v.comps)
         ("templates",ModDictInt64__json (TEMPLATE__json) v.templates)
         ("pages",ModDictInt64__json (PageComplex__json) v.pages)
+        ("apis",ModDictInt64__json (ApiComplex__json) v.apis)
         ("project",PROJECT__json v.project)
          |]
     |> Json.Braket
@@ -485,6 +588,18 @@ let json__ProjectComplexo (json:Json):ProjectComplex option =
                 passOptions <- false
                 None
 
+    let apiso =
+        match json__tryFindByName json "apis" with
+        | None ->
+            passOptions <- false
+            None
+        | Some v -> 
+            match v |> (fun json ->json__ModDictInt64o (json__ApiComplexo) (new Dictionary<int64,ApiComplex>()) json) with
+            | Some res -> Some res
+            | None ->
+                passOptions <- false
+                None
+
     let projecto =
         match json__tryFindByName json "project" with
         | None ->
@@ -504,6 +619,7 @@ let json__ProjectComplexo (json:Json):ProjectComplex option =
             comps = compso.Value
             templates = templateso.Value
             pages = pageso.Value
+            apis = apiso.Value
             project = projecto.Value } |> Some
     else
         None

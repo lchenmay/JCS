@@ -23,6 +23,50 @@ open Util.Stat
 
 open PreOrm
 
+// [Ts_Api] (API)
+
+type pAPI = {
+mutable Name: Chars
+mutable Project: FK}
+
+
+type API = Rcd<pAPI>
+
+let API_fieldorders() =
+    match rdbms with
+    | Rdbms.SqlServer ->
+        "[ID],[Createdat],[Updatedat],[Sort],[Name],[Project]"
+    | Rdbms.PostgreSql ->
+        $""" "id","createdat","updatedat","sort", "name","project" """
+
+let pAPI_fieldordersArray = [|
+    "Name"
+    "Project" |]
+
+let API_sql_update() =
+    match rdbms with
+    | Rdbms.SqlServer -> "[Name]=@Name,[Project]=@Project"
+    | Rdbms.PostgreSql -> "name=@name,project=@project"
+
+let pAPI_fields() =
+    match rdbms with
+    | Rdbms.SqlServer ->
+        [|
+            Chars("Name", 64)
+            FK("Project") |]
+    | Rdbms.PostgreSql ->
+        [|
+            Chars("name", 64)
+            FK("project") |]
+
+let pAPI_empty(): pAPI = {
+    Name = ""
+    Project = 0L }
+
+let API_id = ref 7523431L
+let API_count = ref 0
+let API_table = "Ts_Api"
+
 // [Ts_Field] (FIELD)
 
 type pFIELD = {
@@ -440,25 +484,31 @@ let TEMPLATE_table = "Ts_UiTemplate"
 // [Ts_VarType] (VARTYPE)
 
 type vartypeBindTypeEnum = 
-| CompState = 0 // Component State
-| CompProps = 1 // Component Propos
-| PageState = 2 // Page State
-| PageProps = 3 // Page Propos
+| ApiRequest = 0 // API Request
+| ApiResponse = 1 // API Response
+| CompState = 2 // Component State
+| CompProps = 3 // Component Propos
+| PageState = 4 // Page State
+| PageProps = 5 // Page Propos
 
-let vartypeBindTypeEnums = [| vartypeBindTypeEnum.CompState; vartypeBindTypeEnum.CompProps; vartypeBindTypeEnum.PageState; vartypeBindTypeEnum.PageProps |]
-let vartypeBindTypeEnumstrs = [| "vartypeBindTypeEnum"; "vartypeBindTypeEnum"; "vartypeBindTypeEnum"; "vartypeBindTypeEnum" |]
-let vartypeBindTypeNum = 4
+let vartypeBindTypeEnums = [| vartypeBindTypeEnum.ApiRequest; vartypeBindTypeEnum.ApiResponse; vartypeBindTypeEnum.CompState; vartypeBindTypeEnum.CompProps; vartypeBindTypeEnum.PageState; vartypeBindTypeEnum.PageProps |]
+let vartypeBindTypeEnumstrs = [| "vartypeBindTypeEnum"; "vartypeBindTypeEnum"; "vartypeBindTypeEnum"; "vartypeBindTypeEnum"; "vartypeBindTypeEnum"; "vartypeBindTypeEnum" |]
+let vartypeBindTypeNum = 6
 
 let int__vartypeBindTypeEnum v =
     match v with
-    | 0 -> Some vartypeBindTypeEnum.CompState
-    | 1 -> Some vartypeBindTypeEnum.CompProps
-    | 2 -> Some vartypeBindTypeEnum.PageState
-    | 3 -> Some vartypeBindTypeEnum.PageProps
+    | 0 -> Some vartypeBindTypeEnum.ApiRequest
+    | 1 -> Some vartypeBindTypeEnum.ApiResponse
+    | 2 -> Some vartypeBindTypeEnum.CompState
+    | 3 -> Some vartypeBindTypeEnum.CompProps
+    | 4 -> Some vartypeBindTypeEnum.PageState
+    | 5 -> Some vartypeBindTypeEnum.PageProps
     | _ -> None
 
 let str__vartypeBindTypeEnum s =
     match s with
+    | "ApiRequest" -> Some vartypeBindTypeEnum.ApiRequest
+    | "ApiResponse" -> Some vartypeBindTypeEnum.ApiResponse
     | "CompState" -> Some vartypeBindTypeEnum.CompState
     | "CompProps" -> Some vartypeBindTypeEnum.CompProps
     | "PageState" -> Some vartypeBindTypeEnum.PageState
@@ -467,6 +517,8 @@ let str__vartypeBindTypeEnum s =
 
 let vartypeBindTypeEnum__caption e =
     match e with
+    | vartypeBindTypeEnum.ApiRequest -> "API Request"
+    | vartypeBindTypeEnum.ApiResponse -> "API Response"
     | vartypeBindTypeEnum.CompState -> "Component State"
     | vartypeBindTypeEnum.CompProps -> "Component Propos"
     | vartypeBindTypeEnum.PageState -> "Page State"
@@ -508,14 +560,14 @@ let pVARTYPE_fields() =
         [|
             Chars("Name", 64)
             Chars("Type", 64)
-            SelectLines("BindType", [| ("CompState","Component State");("CompProps","Component Propos");("PageState","Page State");("PageProps","Page Propos") |])
+            SelectLines("BindType", [| ("ApiRequest","API Request");("ApiResponse","API Response");("CompState","Component State");("CompProps","Component Propos");("PageState","Page State");("PageProps","Page Propos") |])
             Integer("Bind")
             FK("Project") |]
     | Rdbms.PostgreSql ->
         [|
             Chars("name", 64)
             Chars("type", 64)
-            SelectLines("bindtype", [| ("CompState","Component State");("CompProps","Component Propos");("PageState","Page State");("PageProps","Page Propos") |])
+            SelectLines("bindtype", [| ("ApiRequest","API Request");("ApiResponse","API Response");("CompState","Component State");("CompProps","Component Propos");("PageState","Page State");("PageProps","Page Propos") |])
             Integer("bind")
             FK("project") |]
 
