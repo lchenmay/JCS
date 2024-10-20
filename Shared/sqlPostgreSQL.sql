@@ -60,6 +60,9 @@ BEGIN
         ,sort BIGINT NOT NULL
         ,"name" VARCHAR(64)
         ,"desc" TEXT
+        ,"fieldtype" INT
+        ,"length" BIGINT
+        ,"selectlines" TEXT
         ,"project" BIGINT
         ,"table" BIGINT);
 
@@ -92,6 +95,48 @@ BEGIN
 
     IF not condition THEN
         ALTER TABLE ts_field ADD "desc" text;
+    END IF;
+END $$;
+
+-- [Ts_Field.FieldType] -------------
+
+
+DO $$
+DECLARE
+    condition boolean;
+BEGIN
+    condition := (SELECT EXISTS(SELECT column_name FROM information_schema.columns WHERE table_name='ts_field' AND column_name='fieldtype'));
+
+    IF not condition THEN
+        ALTER TABLE ts_field ADD "fieldtype" int;
+    END IF;
+END $$;
+
+-- [Ts_Field.Length] -------------
+
+
+DO $$
+DECLARE
+    condition boolean;
+BEGIN
+    condition := (SELECT EXISTS(SELECT column_name FROM information_schema.columns WHERE table_name='ts_field' AND column_name='length'));
+
+    IF not condition THEN
+        ALTER TABLE ts_field ADD "length" bigint;
+    END IF;
+END $$;
+
+-- [Ts_Field.SelectLines] -------------
+
+
+DO $$
+DECLARE
+    condition boolean;
+BEGIN
+    condition := (SELECT EXISTS(SELECT column_name FROM information_schema.columns WHERE table_name='ts_field' AND column_name='selectlines'));
+
+    IF not condition THEN
+        ALTER TABLE ts_field ADD "selectlines" text;
     END IF;
 END $$;
 

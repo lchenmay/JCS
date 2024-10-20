@@ -19,9 +19,26 @@ p:pAPI
 
 // [Ts_Field] (FIELD)
 
+const fieldFieldTypeEnum_Undefined = 0 // Undefined
+const fieldFieldTypeEnum_FK = 1 // FK
+const fieldFieldTypeEnum_Caption = 2 // Caption
+const fieldFieldTypeEnum_Chars = 3 // Chars
+const fieldFieldTypeEnum_Link = 4 // Link
+const fieldFieldTypeEnum_Text = 5 // Text
+const fieldFieldTypeEnum_Bin = 6 // Bin
+const fieldFieldTypeEnum_Integer = 7 // Integer
+const fieldFieldTypeEnum_Float = 8 // Float
+const fieldFieldTypeEnum_Boolean = 9 // Boolean
+const fieldFieldTypeEnum_SelectLines = 10 // Select Lines
+const fieldFieldTypeEnum_Timestamp = 11 // Time Stamp
+const fieldFieldTypeEnum_TimeSeries = 12 // Time Series
+
 export type pFIELD = {
     Name: string
     Desc: string
+    FieldType: number
+    Length: number
+    SelectLines: string
     Project: number
     Table: number
 }

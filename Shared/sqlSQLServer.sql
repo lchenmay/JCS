@@ -104,6 +104,9 @@ BEGIN
         ,[Sort] BIGINT NOT NULL,
         [Name] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS
         ,[Desc] NVARCHAR(MAX)
+        ,[FieldType] INT
+        ,[Length] BIGINT
+        ,[SelectLines] NVARCHAR(MAX)
         ,[Project] BIGINT
         ,[Table] BIGINT
 , CONSTRAINT [PK_Ts_Field] PRIMARY KEY CLUSTERED ([ID] ASC)) ON [PRIMARY]
@@ -113,7 +116,7 @@ END
 -- Dropping obsolete fields -----------
 DECLARE @name_Ts_Field NVARCHAR(64)
 DECLARE cursor_Ts_Field CURSOR FOR 
-    SELECT name FROM SYSCOLUMNS WHERE id=object_id('Ts_Field') AND (name NOT IN ('ID','Createdat','Updatedat','Sort','Name','Desc','Project','Table'))
+    SELECT name FROM SYSCOLUMNS WHERE id=object_id('Ts_Field') AND (name NOT IN ('ID','Createdat','Updatedat','Sort','Name','Desc','FieldType','Length','SelectLines','Project','Table'))
 
 OPEN cursor_Ts_Field
 FETCH NEXT FROM cursor_Ts_Field INTO @name_Ts_Field
@@ -186,6 +189,87 @@ IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ts_FieldD
 IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ts_FieldDesc')
     BEGIN
     ALTER TABLE Ts_Field DROP  CONSTRAINT [UniqueNonclustered_Ts_FieldDesc]
+    END
+
+-- [Ts_Field.FieldType] -------------
+
+
+-- [Ts_Field.FieldType] -------------
+
+IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ts_Field') AND name='FieldType')
+    BEGIN
+     ALTER TABLE Ts_Field ALTER COLUMN [FieldType] INT
+    END
+ELSE
+    BEGIN
+    DECLARE @sql_add_Ts_Field_FieldType NVARCHAR(MAX);
+    SET @sql_add_Ts_Field_FieldType = 'ALTER TABLE Ts_Field ADD [FieldType] INT'
+    EXEC sp_executesql @sql_add_Ts_Field_FieldType
+    END
+
+
+IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ts_FieldFieldType')
+    BEGIN
+    ALTER TABLE Ts_Field DROP  CONSTRAINT [Constraint_Ts_FieldFieldType]
+    END
+
+IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ts_FieldFieldType')
+    BEGIN
+    ALTER TABLE Ts_Field DROP  CONSTRAINT [UniqueNonclustered_Ts_FieldFieldType]
+    END
+
+-- [Ts_Field.Length] -------------
+
+
+-- [Ts_Field.Length] -------------
+
+IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ts_Field') AND name='Length')
+    BEGIN
+     ALTER TABLE Ts_Field ALTER COLUMN [Length] BIGINT
+    END
+ELSE
+    BEGIN
+    DECLARE @sql_add_Ts_Field_Length NVARCHAR(MAX);
+    SET @sql_add_Ts_Field_Length = 'ALTER TABLE Ts_Field ADD [Length] BIGINT'
+    EXEC sp_executesql @sql_add_Ts_Field_Length
+    END
+
+
+IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ts_FieldLength')
+    BEGIN
+    ALTER TABLE Ts_Field DROP  CONSTRAINT [Constraint_Ts_FieldLength]
+    END
+
+IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ts_FieldLength')
+    BEGIN
+    ALTER TABLE Ts_Field DROP  CONSTRAINT [UniqueNonclustered_Ts_FieldLength]
+    END
+
+-- [Ts_Field.SelectLines] -------------
+
+
+-- [Ts_Field.SelectLines] -------------
+
+IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ts_Field') AND name='SelectLines')
+    BEGIN
+     ALTER TABLE Ts_Field ALTER COLUMN [SelectLines] NVARCHAR(MAX)
+    END
+ELSE
+    BEGIN
+    DECLARE @sql_add_Ts_Field_SelectLines NVARCHAR(MAX);
+    SET @sql_add_Ts_Field_SelectLines = 'ALTER TABLE Ts_Field ADD [SelectLines] NVARCHAR(MAX)'
+    EXEC sp_executesql @sql_add_Ts_Field_SelectLines
+    END
+
+
+IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ts_FieldSelectLines')
+    BEGIN
+    ALTER TABLE Ts_Field DROP  CONSTRAINT [Constraint_Ts_FieldSelectLines]
+    END
+
+IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ts_FieldSelectLines')
+    BEGIN
+    ALTER TABLE Ts_Field DROP  CONSTRAINT [UniqueNonclustered_Ts_FieldSelectLines]
     END
 
 -- [Ts_Field.Project] -------------

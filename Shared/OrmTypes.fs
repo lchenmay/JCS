@@ -69,9 +69,82 @@ let API_table = "Ts_Api"
 
 // [Ts_Field] (FIELD)
 
+type fieldFieldTypeEnum = 
+| Undefined = 0 // Undefined
+| FK = 1 // FK
+| Caption = 2 // Caption
+| Chars = 3 // Chars
+| Link = 4 // Link
+| Text = 5 // Text
+| Bin = 6 // Bin
+| Integer = 7 // Integer
+| Float = 8 // Float
+| Boolean = 9 // Boolean
+| SelectLines = 10 // Select Lines
+| Timestamp = 11 // Time Stamp
+| TimeSeries = 12 // Time Series
+
+let fieldFieldTypeEnums = [| fieldFieldTypeEnum.Undefined; fieldFieldTypeEnum.FK; fieldFieldTypeEnum.Caption; fieldFieldTypeEnum.Chars; fieldFieldTypeEnum.Link; fieldFieldTypeEnum.Text; fieldFieldTypeEnum.Bin; fieldFieldTypeEnum.Integer; fieldFieldTypeEnum.Float; fieldFieldTypeEnum.Boolean; fieldFieldTypeEnum.SelectLines; fieldFieldTypeEnum.Timestamp; fieldFieldTypeEnum.TimeSeries |]
+let fieldFieldTypeEnumstrs = [| "fieldFieldTypeEnum"; "fieldFieldTypeEnum"; "fieldFieldTypeEnum"; "fieldFieldTypeEnum"; "fieldFieldTypeEnum"; "fieldFieldTypeEnum"; "fieldFieldTypeEnum"; "fieldFieldTypeEnum"; "fieldFieldTypeEnum"; "fieldFieldTypeEnum"; "fieldFieldTypeEnum"; "fieldFieldTypeEnum"; "fieldFieldTypeEnum" |]
+let fieldFieldTypeNum = 13
+
+let int__fieldFieldTypeEnum v =
+    match v with
+    | 0 -> Some fieldFieldTypeEnum.Undefined
+    | 1 -> Some fieldFieldTypeEnum.FK
+    | 2 -> Some fieldFieldTypeEnum.Caption
+    | 3 -> Some fieldFieldTypeEnum.Chars
+    | 4 -> Some fieldFieldTypeEnum.Link
+    | 5 -> Some fieldFieldTypeEnum.Text
+    | 6 -> Some fieldFieldTypeEnum.Bin
+    | 7 -> Some fieldFieldTypeEnum.Integer
+    | 8 -> Some fieldFieldTypeEnum.Float
+    | 9 -> Some fieldFieldTypeEnum.Boolean
+    | 10 -> Some fieldFieldTypeEnum.SelectLines
+    | 11 -> Some fieldFieldTypeEnum.Timestamp
+    | 12 -> Some fieldFieldTypeEnum.TimeSeries
+    | _ -> None
+
+let str__fieldFieldTypeEnum s =
+    match s with
+    | "Undefined" -> Some fieldFieldTypeEnum.Undefined
+    | "FK" -> Some fieldFieldTypeEnum.FK
+    | "Caption" -> Some fieldFieldTypeEnum.Caption
+    | "Chars" -> Some fieldFieldTypeEnum.Chars
+    | "Link" -> Some fieldFieldTypeEnum.Link
+    | "Text" -> Some fieldFieldTypeEnum.Text
+    | "Bin" -> Some fieldFieldTypeEnum.Bin
+    | "Integer" -> Some fieldFieldTypeEnum.Integer
+    | "Float" -> Some fieldFieldTypeEnum.Float
+    | "Boolean" -> Some fieldFieldTypeEnum.Boolean
+    | "SelectLines" -> Some fieldFieldTypeEnum.SelectLines
+    | "Timestamp" -> Some fieldFieldTypeEnum.Timestamp
+    | "TimeSeries" -> Some fieldFieldTypeEnum.TimeSeries
+    | _ -> None
+
+let fieldFieldTypeEnum__caption e =
+    match e with
+    | fieldFieldTypeEnum.Undefined -> "Undefined"
+    | fieldFieldTypeEnum.FK -> "FK"
+    | fieldFieldTypeEnum.Caption -> "Caption"
+    | fieldFieldTypeEnum.Chars -> "Chars"
+    | fieldFieldTypeEnum.Link -> "Link"
+    | fieldFieldTypeEnum.Text -> "Text"
+    | fieldFieldTypeEnum.Bin -> "Bin"
+    | fieldFieldTypeEnum.Integer -> "Integer"
+    | fieldFieldTypeEnum.Float -> "Float"
+    | fieldFieldTypeEnum.Boolean -> "Boolean"
+    | fieldFieldTypeEnum.SelectLines -> "Select Lines"
+    | fieldFieldTypeEnum.Timestamp -> "Time Stamp"
+    | fieldFieldTypeEnum.TimeSeries -> "Time Series"
+    | _ -> ""
+
 type pFIELD = {
 mutable Name: Chars
 mutable Desc: Text
+mutable FieldType: fieldFieldTypeEnum
+mutable Length: Integer
+mutable SelectLines: Text
 mutable Project: FK
 mutable Table: FK}
 
@@ -81,20 +154,23 @@ type FIELD = Rcd<pFIELD>
 let FIELD_fieldorders() =
     match rdbms with
     | Rdbms.SqlServer ->
-        "[ID],[Createdat],[Updatedat],[Sort],[Name],[Desc],[Project],[Table]"
+        "[ID],[Createdat],[Updatedat],[Sort],[Name],[Desc],[FieldType],[Length],[SelectLines],[Project],[Table]"
     | Rdbms.PostgreSql ->
-        $""" "id","createdat","updatedat","sort", "name","desc","project","table" """
+        $""" "id","createdat","updatedat","sort", "name","desc","fieldtype","length","selectlines","project","table" """
 
 let pFIELD_fieldordersArray = [|
     "Name"
     "Desc"
+    "FieldType"
+    "Length"
+    "SelectLines"
     "Project"
     "Table" |]
 
 let FIELD_sql_update() =
     match rdbms with
-    | Rdbms.SqlServer -> "[Name]=@Name,[Desc]=@Desc,[Project]=@Project,[Table]=@Table"
-    | Rdbms.PostgreSql -> "name=@name,desc=@desc,project=@project,table=@table"
+    | Rdbms.SqlServer -> "[Name]=@Name,[Desc]=@Desc,[FieldType]=@FieldType,[Length]=@Length,[SelectLines]=@SelectLines,[Project]=@Project,[Table]=@Table"
+    | Rdbms.PostgreSql -> "name=@name,desc=@desc,fieldtype=@fieldtype,length=@length,selectlines=@selectlines,project=@project,table=@table"
 
 let pFIELD_fields() =
     match rdbms with
@@ -102,18 +178,27 @@ let pFIELD_fields() =
         [|
             Chars("Name", 64)
             Text("Desc")
+            SelectLines("FieldType", [| ("Undefined","Undefined");("FK","FK");("Caption","Caption");("Chars","Chars");("Link","Link");("Text","Text");("Bin","Bin");("Integer","Integer");("Float","Float");("Boolean","Boolean");("SelectLines","Select Lines");("Timestamp","Time Stamp");("TimeSeries","Time Series") |])
+            Integer("Length")
+            Text("SelectLines")
             FK("Project")
             FK("Table") |]
     | Rdbms.PostgreSql ->
         [|
             Chars("name", 64)
             Text("desc")
+            SelectLines("fieldtype", [| ("Undefined","Undefined");("FK","FK");("Caption","Caption");("Chars","Chars");("Link","Link");("Text","Text");("Bin","Bin");("Integer","Integer");("Float","Float");("Boolean","Boolean");("SelectLines","Select Lines");("Timestamp","Time Stamp");("TimeSeries","Time Series") |])
+            Integer("length")
+            Text("selectlines")
             FK("project")
             FK("table") |]
 
 let pFIELD_empty(): pFIELD = {
     Name = ""
     Desc = ""
+    FieldType = EnumOfValue 0
+    Length = 0L
+    SelectLines = ""
     Project = 0L
     Table = 0L }
 

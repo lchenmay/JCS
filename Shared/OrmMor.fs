@@ -166,6 +166,14 @@ let pFIELD__bin (bb:BytesBuilder) (p:pFIELD) =
     binDesc.Length |> BitConverter.GetBytes |> bb.append
     binDesc |> bb.append
     
+    p.FieldType |> EnumToValue |> BitConverter.GetBytes |> bb.append
+    
+    p.Length |> BitConverter.GetBytes |> bb.append
+    
+    let binSelectLines = p.SelectLines |> Encoding.UTF8.GetBytes
+    binSelectLines.Length |> BitConverter.GetBytes |> bb.append
+    binSelectLines |> bb.append
+    
     p.Project |> BitConverter.GetBytes |> bb.append
     
     p.Table |> BitConverter.GetBytes |> bb.append
@@ -192,6 +200,17 @@ let bin__pFIELD (bi:BinIndexed):pFIELD =
     index.Value <- index.Value + 4
     p.Desc <- Encoding.UTF8.GetString(bin,index.Value,count_Desc)
     index.Value <- index.Value + count_Desc
+    
+    p.FieldType <- BitConverter.ToInt32(bin,index.Value) |> EnumOfValue
+    index.Value <- index.Value + 4
+    
+    p.Length <- BitConverter.ToInt64(bin,index.Value)
+    index.Value <- index.Value + 8
+    
+    let count_SelectLines = BitConverter.ToInt32(bin,index.Value)
+    index.Value <- index.Value + 4
+    p.SelectLines <- Encoding.UTF8.GetString(bin,index.Value,count_SelectLines)
+    index.Value <- index.Value + count_SelectLines
     
     p.Project <- BitConverter.ToInt64(bin,index.Value)
     index.Value <- index.Value + 8
@@ -226,6 +245,9 @@ let pFIELD__json (p:pFIELD) =
     [|
         ("Name",p.Name |> Json.Str)
         ("Desc",p.Desc |> Json.Str)
+        ("FieldType",(p.FieldType |> EnumToValue).ToString() |> Json.Num)
+        ("Length",p.Length.ToString() |> Json.Num)
+        ("SelectLines",p.SelectLines |> Json.Str)
         ("Project",p.Project.ToString() |> Json.Num)
         ("Table",p.Table.ToString() |> Json.Num) |]
     |> Json.Braket
@@ -257,6 +279,12 @@ let json__pFIELDo (json:Json):pFIELD option =
     
     p.Desc <- checkfield fields "Desc"
     
+    p.FieldType <- checkfield fields "FieldType" |> parse_int32 |> EnumOfValue
+    
+    p.Length <- checkfield fields "Length" |> parse_int64
+    
+    p.SelectLines <- checkfield fields "SelectLines"
+    
     p.Project <- checkfield fields "Project" |> parse_int64
     
     p.Table <- checkfield fields "Table" |> parse_int64
@@ -285,6 +313,12 @@ let json__FIELDo (json:Json):FIELD option =
         p.Name <- checkfieldz fields "Name" 64
         
         p.Desc <- checkfield fields "Desc"
+        
+        p.FieldType <- checkfield fields "FieldType" |> parse_int32 |> EnumOfValue
+        
+        p.Length <- checkfield fields "Length" |> parse_int64
+        
+        p.SelectLines <- checkfield fields "SelectLines"
         
         p.Project <- checkfield fields "Project" |> parse_int64
         
@@ -1486,8 +1520,11 @@ let db__pFIELD(line:Object[]): pFIELD =
 
     p.Name <- string(line.[4]).TrimEnd()
     p.Desc <- string(line.[5]).TrimEnd()
-    p.Project <- if Convert.IsDBNull(line.[6]) then 0L else line.[6] :?> int64
-    p.Table <- if Convert.IsDBNull(line.[7]) then 0L else line.[7] :?> int64
+    p.FieldType <- EnumOfValue(if Convert.IsDBNull(line.[6]) then 0 else line.[6] :?> int)
+    p.Length <- if Convert.IsDBNull(line.[7]) then 0L else line.[7] :?> int64
+    p.SelectLines <- string(line.[8]).TrimEnd()
+    p.Project <- if Convert.IsDBNull(line.[9]) then 0L else line.[9] :?> int64
+    p.Table <- if Convert.IsDBNull(line.[10]) then 0L else line.[10] :?> int64
 
     p
 
@@ -1497,12 +1534,18 @@ let pFIELD__sps (p:pFIELD) =
         [|
             ("Name", p.Name) |> kvp__sqlparam
             ("Desc", p.Desc) |> kvp__sqlparam
+            ("FieldType", p.FieldType) |> kvp__sqlparam
+            ("Length", p.Length) |> kvp__sqlparam
+            ("SelectLines", p.SelectLines) |> kvp__sqlparam
             ("Project", p.Project) |> kvp__sqlparam
             ("Table", p.Table) |> kvp__sqlparam |]
     | Rdbms.PostgreSql ->
         [|
             ("name", p.Name) |> kvp__sqlparam
             ("desc", p.Desc) |> kvp__sqlparam
+            ("fieldtype", p.FieldType) |> kvp__sqlparam
+            ("length", p.Length) |> kvp__sqlparam
+            ("selectlines", p.SelectLines) |> kvp__sqlparam
             ("project", p.Project) |> kvp__sqlparam
             ("table", p.Table) |> kvp__sqlparam |]
 
@@ -1515,6 +1558,9 @@ let FIELD_wrapper item: FIELD =
 let pFIELD_clone (p:pFIELD): pFIELD = {
     Name = p.Name
     Desc = p.Desc
+    FieldType = p.FieldType
+    Length = p.Length
+    SelectLines = p.SelectLines
     Project = p.Project
     Table = p.Table }
 
@@ -1578,6 +1624,9 @@ let FIELDTxSqlServer =
     ,[Sort] BIGINT NOT NULL,
     ,[Name]
     ,[Desc]
+    ,[FieldType]
+    ,[Length]
+    ,[SelectLines]
     ,[Project]
     ,[Table])
     END

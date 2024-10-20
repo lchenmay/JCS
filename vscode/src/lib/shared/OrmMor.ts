@@ -60,6 +60,12 @@ export const pFIELD__bin = (bb:BytesBuilder) => (p:jcs.pFIELD) => {
     
     marshall.str__bin (bb) (p.Desc)
     
+    marshall.int32__bin (bb) (p.FieldType)
+    
+    marshall.int64__bin (bb) (p.Length)
+    
+    marshall.str__bin (bb) (p.SelectLines)
+    
     marshall.int64__bin (bb) (p.Project)
     
     marshall.int64__bin (bb) (p.Table)
@@ -79,6 +85,9 @@ export const bin__pFIELD = (bi:BinIndexed):jcs.pFIELD => {
     let p = pFIELD_empty()
     p.Name = marshall.bin__str (bi)
     p.Desc = marshall.bin__str (bi)
+    p.FieldType = marshall.bin__int32 (bi)
+    p.Length = marshall.bin__int64 (bi)
+    p.SelectLines = marshall.bin__str (bi)
     p.Project = marshall.bin__int64 (bi)
     p.Table = marshall.bin__int64 (bi)
 
@@ -493,6 +502,9 @@ export const pFIELD_empty = (): jcs.pFIELD => {
     return {
         Name: "",
         Desc: "",
+        FieldType: 0,
+        Length: 0,
+        SelectLines: "",
         Project: 0,
         Table: 0 }
 }

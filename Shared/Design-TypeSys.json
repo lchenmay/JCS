@@ -92,6 +92,19 @@
         "name": "Desc"
       },
       {
+        "enum": "SelectLines",
+        "lines": "Undefined//Undefined///FK//FK///Caption//Caption///Chars//Chars///Link//Link///Text//Text///Bin//Bin///Integer//Integer///Float//Float///Boolean//Boolean///SelectLines//Select Lines///Timestamp//Time Stamp///TimeSeries//Time Series",
+        "name": "FieldType"
+      },
+      {
+        "enum": "Integer",
+        "name": "Length"
+      },
+      {
+        "enum": "Text",
+        "name": "SelectLines"
+      },
+      {
         "enum": "FK",
         "name": "Project"
       },
