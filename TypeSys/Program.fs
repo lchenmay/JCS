@@ -9,7 +9,7 @@ open Util.Db
 
 open Loadcfg
 
-TypeSys.Relational.run()
+BizLogics.CodeRobot.run()
 
 Console.OutputEncoding <- System.Text.Encoding.Unicode
 let output (s:string) = Console.WriteLine s

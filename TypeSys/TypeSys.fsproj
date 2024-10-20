@@ -18,7 +18,6 @@
     <Compile Include="FrontendPackVue.fs" />
     <Compile Include="CodeRobot.fs" />
     <Compile Include="Loadcfg.fs" />
-    <Compile Include="Relational.fs" />
     <Compile Include="Program.fs" />
     <Content Include="set.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

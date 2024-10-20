@@ -34,6 +34,11 @@ let createProject code =
     (fun (p:pPROJECT) ->
         p.Code <- code) |> creator PROJECT_metadata
 
+let createLocalHostConfig project = 
+    (fun (p:pHOSTCONFIG) ->
+        p.Project <- project.ID
+        p.Hostname <- System.Environment.MachineName.ToUpper()) |> creator HOSTCONFIG_metadata
+
 let createComp project name = 
     (fun (p:pCOMP) ->
         p.Project <- project.ID

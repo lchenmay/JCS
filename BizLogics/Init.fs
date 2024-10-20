@@ -44,8 +44,6 @@ let init (runtime:Runtime) =
 
     runtime.data.pcs.Reset 4
 
-    let localhost = System.Environment.MachineName
-
     let loader metadata = loadAll runtime.output conn metadata
 
     (fun (i:PROJECT) -> runtime.data.pcs[i.ID] <- i |> project__ProjectComplex) |> loader PROJECT_metadata
