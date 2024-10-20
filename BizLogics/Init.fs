@@ -46,6 +46,18 @@ let init (runtime:Runtime) =
 
     let loader metadata = loadAll runtime.output conn metadata
 
+    let pc = 
+
+        let self = "JCS"
+        match runtime.data.pcs.Values |> Array.tryFind(fun i -> i.project.p.Code = self) with
+        | Some pc -> ()
+        | None -> 
+            match createProject self with
+            | Some project -> runtime.data.pcs[project.ID] <- project |> project__ProjectComplex
+            | None -> halt runtime.output ("BizLogics.Init.createComp [" + self + "]") ""
+
+        runtime.data.pcs.Values |> Array.find(fun i -> i.project.p.Code = self)
+
     (fun (i:PROJECT) -> runtime.data.pcs[i.ID] <- i |> project__ProjectComplex) |> loader PROJECT_metadata
     (fun (i:HOSTCONFIG) -> runtime.data.pcs[i.p.Project].hostconfigs[i.p.Hostname] <- i) |> loader HOSTCONFIG_metadata
 
@@ -79,9 +91,6 @@ let init (runtime:Runtime) =
             let page = pc.pages.Values |> Array.find(fun ii-> ii.page.ID = i.p.Bind)
             page.props[i.p.Name] <- i
         | _ -> ()) |> loader VARTYPE_metadata
-
-
-    let pc = runtime.data.pcs.Values |> Array.find(fun i -> i.project.p.Code = "JCS")
 
     [|  "/Common/Project"
         "/Common/Table"
