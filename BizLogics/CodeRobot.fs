@@ -118,7 +118,7 @@ let buildComps projectx (hostconfig:HOSTCONFIG) =
     let path = hostconfig.p.DirVsCodeWeb + "/src/comps"
     Util.FileSys.checkpath path |> ignore
 
-    projectx.comps.Values
+    projectx.compxs.Values
     |> Array.iter(fun compx -> 
         let f = path + compx.comp.p.Name + ".vue"
 
@@ -152,7 +152,7 @@ let buildPages projectx (hostconfig:HOSTCONFIG) =
     let path = hostconfig.p.DirVsCodeWeb + "/src/pages"
     Util.FileSys.checkpath path |> ignore
 
-    projectx.pages.Values
+    projectx.pagexs.Values
     |> Array.iter(fun pagex -> 
         let f = path + pagex.page.p.Name + ".vue"
 
@@ -174,7 +174,7 @@ let run() =
 
     BizLogics.Init.init runtime
 
-    let pc = runtime.data.pcs[234346L]
+    let pc = runtime.data.projectxs[234346L]
 
     let hostconfig = 
         pc.hostconfigs.Values

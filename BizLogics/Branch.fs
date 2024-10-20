@@ -42,11 +42,9 @@ let branching x =
     match x.service with
     | "public" -> 
         match x.api with
-        | "ping" -> bindx apiPing
-        | "perf" -> bindx apiMonitorPerf
-        | "reloadProjects" -> bindx (fun x -> 
-            runtime.data.pcs.Values
-            |> apiList ProjectComplex__json)
+        | "ping" -> apiPing |> bindx
+        | "perf" -> apiMonitorPerf |> bindx
+        | "reloadProjects" -> (fun x -> runtime.data.projectxs.Values |> apiList ProjectComplex__json) |> bindx
         | _ -> Fail(Er.ApiNotExists,x)
     | _ -> Fail(Er.ApiNotExists,x)
 

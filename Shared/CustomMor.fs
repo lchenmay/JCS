@@ -453,11 +453,11 @@ let json__ApiComplexo (json:Json):ApiComplex option =
 let ProjectComplex_empty(): ProjectComplex =
     {
         hostconfigs = ModDict_empty()
-        tables = ModDict_empty()
-        comps = ModDict_empty()
-        templates = ModDict_empty()
-        pages = ModDict_empty()
-        apis = ModDict_empty()
+        tablexs = ModDict_empty()
+        compxs = ModDict_empty()
+        templatexs = ModDict_empty()
+        pagexs = ModDict_empty()
+        apixs = ModDict_empty()
         project = { ID = 0L; Sort = 0L; Createdat = DateTime.MinValue; Updatedat = DateTime.MinValue; p = pPROJECT_empty() }
     }
 
@@ -466,15 +466,15 @@ let ProjectComplex__bin (bb:BytesBuilder) (v:ProjectComplex) =
     
     ModDictStr__bin (HOSTCONFIG__bin) bb v.hostconfigs
     
-    ModDictStr__bin (TableComplex__bin) bb v.tables
+    ModDictStr__bin (TableComplex__bin) bb v.tablexs
     
-    ModDictStr__bin (CompComplex__bin) bb v.comps
+    ModDictStr__bin (CompComplex__bin) bb v.compxs
     
-    ModDictStr__bin (TEMPLATE__bin) bb v.templates
+    ModDictStr__bin (TEMPLATE__bin) bb v.templatexs
     
-    ModDictStr__bin (PageComplex__bin) bb v.pages
+    ModDictStr__bin (PageComplex__bin) bb v.pagexs
     
-    ModDictStr__bin (ApiComplex__bin) bb v.apis
+    ModDictStr__bin (ApiComplex__bin) bb v.apixs
     PROJECT__bin bb v.project
 
 let bin__ProjectComplex (bi:BinIndexed):ProjectComplex =
@@ -484,19 +484,19 @@ let bin__ProjectComplex (bi:BinIndexed):ProjectComplex =
         hostconfigs = 
             bi
             |> bin__ModDictStr(bin__HOSTCONFIG)
-        tables = 
+        tablexs = 
             bi
             |> bin__ModDictStr(bin__TableComplex)
-        comps = 
+        compxs = 
             bi
             |> bin__ModDictStr(bin__CompComplex)
-        templates = 
+        templatexs = 
             bi
             |> bin__ModDictStr(bin__TEMPLATE)
-        pages = 
+        pagexs = 
             bi
             |> bin__ModDictStr(bin__PageComplex)
-        apis = 
+        apixs = 
             bi
             |> bin__ModDictStr(bin__ApiComplex)
         project = 
@@ -507,11 +507,11 @@ let bin__ProjectComplex (bi:BinIndexed):ProjectComplex =
 let ProjectComplex__json (v:ProjectComplex) =
 
     [|  ("hostconfigs",ModDictStr__json (HOSTCONFIG__json) v.hostconfigs)
-        ("tables",ModDictStr__json (TableComplex__json) v.tables)
-        ("comps",ModDictStr__json (CompComplex__json) v.comps)
-        ("templates",ModDictStr__json (TEMPLATE__json) v.templates)
-        ("pages",ModDictStr__json (PageComplex__json) v.pages)
-        ("apis",ModDictStr__json (ApiComplex__json) v.apis)
+        ("tablexs",ModDictStr__json (TableComplex__json) v.tablexs)
+        ("compxs",ModDictStr__json (CompComplex__json) v.compxs)
+        ("templatexs",ModDictStr__json (TEMPLATE__json) v.templatexs)
+        ("pagexs",ModDictStr__json (PageComplex__json) v.pagexs)
+        ("apixs",ModDictStr__json (ApiComplex__json) v.apixs)
         ("project",PROJECT__json v.project)
          |]
     |> Json.Braket
@@ -540,8 +540,8 @@ let json__ProjectComplexo (json:Json):ProjectComplex option =
                 passOptions <- false
                 None
 
-    let tableso =
-        match json__tryFindByName json "tables" with
+    let tablexso =
+        match json__tryFindByName json "tablexs" with
         | None ->
             passOptions <- false
             None
@@ -552,8 +552,8 @@ let json__ProjectComplexo (json:Json):ProjectComplex option =
                 passOptions <- false
                 None
 
-    let compso =
-        match json__tryFindByName json "comps" with
+    let compxso =
+        match json__tryFindByName json "compxs" with
         | None ->
             passOptions <- false
             None
@@ -564,8 +564,8 @@ let json__ProjectComplexo (json:Json):ProjectComplex option =
                 passOptions <- false
                 None
 
-    let templateso =
-        match json__tryFindByName json "templates" with
+    let templatexso =
+        match json__tryFindByName json "templatexs" with
         | None ->
             passOptions <- false
             None
@@ -576,8 +576,8 @@ let json__ProjectComplexo (json:Json):ProjectComplex option =
                 passOptions <- false
                 None
 
-    let pageso =
-        match json__tryFindByName json "pages" with
+    let pagexso =
+        match json__tryFindByName json "pagexs" with
         | None ->
             passOptions <- false
             None
@@ -588,8 +588,8 @@ let json__ProjectComplexo (json:Json):ProjectComplex option =
                 passOptions <- false
                 None
 
-    let apiso =
-        match json__tryFindByName json "apis" with
+    let apixso =
+        match json__tryFindByName json "apixs" with
         | None ->
             passOptions <- false
             None
@@ -615,11 +615,11 @@ let json__ProjectComplexo (json:Json):ProjectComplex option =
     if passOptions then
         {
             hostconfigs = hostconfigso.Value
-            tables = tableso.Value
-            comps = compso.Value
-            templates = templateso.Value
-            pages = pageso.Value
-            apis = apiso.Value
+            tablexs = tablexso.Value
+            compxs = compxso.Value
+            templatexs = templatexso.Value
+            pagexs = pagexso.Value
+            apixs = apixso.Value
             project = projecto.Value } |> Some
     else
         None
@@ -675,7 +675,7 @@ let json__Facto (json:Json):Fact option =
 let RuntimeData_empty(): RuntimeData =
     {
         facts = []
-        pcs = ModDict_empty()
+        projectxs = ModDict_empty()
     }
 
 let RuntimeData__bin (bb:BytesBuilder) (v:RuntimeData) =
@@ -683,7 +683,7 @@ let RuntimeData__bin (bb:BytesBuilder) (v:RuntimeData) =
     
     ListImmutable__bin (Fact__bin) bb v.facts
     
-    ModDictInt64__bin (ProjectComplex__bin) bb v.pcs
+    ModDictInt64__bin (ProjectComplex__bin) bb v.projectxs
 
 let bin__RuntimeData (bi:BinIndexed):RuntimeData =
     let bin,index = bi
@@ -692,7 +692,7 @@ let bin__RuntimeData (bi:BinIndexed):RuntimeData =
         facts = 
             bi
             |> bin__ListImmutable (bin__Fact)
-        pcs = 
+        projectxs = 
             bi
             |> bin__ModDictInt64(bin__ProjectComplex)
     }
@@ -700,7 +700,7 @@ let bin__RuntimeData (bi:BinIndexed):RuntimeData =
 let RuntimeData__json (v:RuntimeData) =
 
     [|  ("facts",ListImmutable__json (Fact__json) v.facts)
-        ("pcs",ModDictInt64__json (ProjectComplex__json) v.pcs)
+        ("projectxs",ModDictInt64__json (ProjectComplex__json) v.projectxs)
          |]
     |> Json.Braket
 
@@ -728,8 +728,8 @@ let json__RuntimeDatao (json:Json):RuntimeData option =
                 passOptions <- false
                 None
 
-    let pcso =
-        match json__tryFindByName json "pcs" with
+    let projectxso =
+        match json__tryFindByName json "projectxs" with
         | None ->
             passOptions <- false
             None
@@ -743,7 +743,7 @@ let json__RuntimeDatao (json:Json):RuntimeData option =
     if passOptions then
         {
             facts = factso.Value
-            pcs = pcso.Value } |> Some
+            projectxs = projectxso.Value } |> Some
     else
         None
 

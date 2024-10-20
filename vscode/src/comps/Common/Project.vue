@@ -1,8 +1,8 @@
 <template>
 
 <div>
-Project Code = {{ props.project.project.p.Code }}
-<button>Edit</button>
+Project Code = {{ props.projectx.project.p.Code }}
+<button v-on:click="router.push('/CodeRobot/Project/' + projectx.project.id)">Edit</button>
 </div>
 
 </template>
@@ -12,8 +12,8 @@ Project Code = {{ props.project.project.p.Code }}
 import { glib } from '~/lib/glib'
 import * as Common from '~/lib/store/common'
 
-const props = defineProps(['project'])
-props.project as jcs.ProjectComplex
+const props = defineProps(['projectx'])
+props.projectx as jcs.ProjectComplex
 
 const s = glib.vue.reactive({
 data: runtime.data

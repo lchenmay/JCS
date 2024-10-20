@@ -46,15 +46,15 @@ api:API
 export type ProjectComplex = {
 hostconfigs:{[key:string]: HOSTCONFIG},
 
-tables:{[key:string]: TableComplex},
+tablexs:{[key:string]: TableComplex},
 
-comps:{[key:string]: CompComplex},
+compxs:{[key:string]: CompComplex},
 
-templates:{[key:string]: TEMPLATE},
+templatexs:{[key:string]: TEMPLATE},
 
-pages:{[key:string]: PageComplex},
+pagexs:{[key:string]: PageComplex},
 
-apis:{[key:string]: ApiComplex},
+apixs:{[key:string]: ApiComplex},
 
 project:PROJECT
 }
@@ -70,7 +70,7 @@ val: any
 export type RuntimeData = {
 facts:Array<Fact>,
 
-pcs:{[key:number]: ProjectComplex}
+projectxs:{[key:number]: ProjectComplex}
 }
 
 // [Msg]

@@ -37,11 +37,11 @@ api: API }
 
 type ProjectComplex = {
 hostconfigs: ModDictStr<HOSTCONFIG>
-tables: ModDictStr<TableComplex>
-comps: ModDictStr<CompComplex>
-templates: ModDictStr<TEMPLATE>
-pages: ModDictStr<PageComplex>
-apis: ModDictStr<ApiComplex>
+tablexs: ModDictStr<TableComplex>
+compxs: ModDictStr<CompComplex>
+templatexs: ModDictStr<TEMPLATE>
+pagexs: ModDictStr<PageComplex>
+apixs: ModDictStr<ApiComplex>
 project: PROJECT }
 
 type Fact = 
@@ -49,7 +49,7 @@ type Fact =
 
 type RuntimeData = {
 mutable facts: Fact list
-pcs: ModDictInt64<ProjectComplex> }
+projectxs: ModDictInt64<ProjectComplex> }
 
 type Msg = 
 | Heartbeat

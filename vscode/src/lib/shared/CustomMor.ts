@@ -158,11 +158,11 @@ export const bin__ApiComplex = (bi:BinIndexed):jcs.ApiComplex => {
 export const ProjectComplex_empty = (): jcs.ProjectComplex => { 
     return {
         hostconfigs: {},
-        tables: {},
-        comps: {},
-        templates: {},
-        pages: {},
-        apis: {},
+        tablexs: {},
+        compxs: {},
+        templatexs: {},
+        pagexs: {},
+        apixs: {},
         project: { id: 0, sort: 0, createdat: new Date(), updatedat: new Date(), p: marshall.pPROJECT_empty() },
     } as jcs.ProjectComplex
 }
@@ -172,15 +172,15 @@ export const ProjectComplex__bin = (bb:BytesBuilder) => (v:any) => {
     
     marshall.dict__bin (marshall.str__bin)(marshall.HOSTCONFIG__bin) (bb) (v.hostconfigs)
     
-    marshall.dict__bin (marshall.str__bin)(TableComplex__bin) (bb) (v.tables)
+    marshall.dict__bin (marshall.str__bin)(TableComplex__bin) (bb) (v.tablexs)
     
-    marshall.dict__bin (marshall.str__bin)(CompComplex__bin) (bb) (v.comps)
+    marshall.dict__bin (marshall.str__bin)(CompComplex__bin) (bb) (v.compxs)
     
-    marshall.dict__bin (marshall.str__bin)(marshall.TEMPLATE__bin) (bb) (v.templates)
+    marshall.dict__bin (marshall.str__bin)(marshall.TEMPLATE__bin) (bb) (v.templatexs)
     
-    marshall.dict__bin (marshall.str__bin)(PageComplex__bin) (bb) (v.pages)
+    marshall.dict__bin (marshall.str__bin)(PageComplex__bin) (bb) (v.pagexs)
     
-    marshall.dict__bin (marshall.str__bin)(ApiComplex__bin) (bb) (v.apis)
+    marshall.dict__bin (marshall.str__bin)(ApiComplex__bin) (bb) (v.apixs)
     marshall.PROJECT__bin (bb) (v.project)
 }
 
@@ -188,11 +188,11 @@ export const bin__ProjectComplex = (bi:BinIndexed):jcs.ProjectComplex => {
 
     return {
         hostconfigs: marshall.bin__dict(marshall.bin__str)(marshall.bin__HOSTCONFIG) (bi),
-        tables: marshall.bin__dict(marshall.bin__str)(bin__TableComplex) (bi),
-        comps: marshall.bin__dict(marshall.bin__str)(bin__CompComplex) (bi),
-        templates: marshall.bin__dict(marshall.bin__str)(marshall.bin__TEMPLATE) (bi),
-        pages: marshall.bin__dict(marshall.bin__str)(bin__PageComplex) (bi),
-        apis: marshall.bin__dict(marshall.bin__str)(bin__ApiComplex) (bi),
+        tablexs: marshall.bin__dict(marshall.bin__str)(bin__TableComplex) (bi),
+        compxs: marshall.bin__dict(marshall.bin__str)(bin__CompComplex) (bi),
+        templatexs: marshall.bin__dict(marshall.bin__str)(marshall.bin__TEMPLATE) (bi),
+        pagexs: marshall.bin__dict(marshall.bin__str)(bin__PageComplex) (bi),
+        apixs: marshall.bin__dict(marshall.bin__str)(bin__ApiComplex) (bi),
         project: marshall.bin__PROJECT (bi),
     }
 }
@@ -230,7 +230,7 @@ export const bin__Fact = (bi:BinIndexed):jcs.Fact => {
 export const RuntimeData_empty = (): jcs.RuntimeData => { 
     return {
         facts: [],
-        pcs: {},
+        projectxs: {},
     } as jcs.RuntimeData
 }
 
@@ -239,14 +239,14 @@ export const RuntimeData__bin = (bb:BytesBuilder) => (v:any) => {
     
     marshall.array__bin (Fact__bin) (bb) (v.facts)
     
-    marshall.dict__bin (marshall.int64__bin)(ProjectComplex__bin) (bb) (v.pcs)
+    marshall.dict__bin (marshall.int64__bin)(ProjectComplex__bin) (bb) (v.projectxs)
 }
 
 export const bin__RuntimeData = (bi:BinIndexed):jcs.RuntimeData => {
 
     return {
         facts: marshall.bin__array (bin__Fact) (bi),
-        pcs: marshall.bin__dict(marshall.bin__int64)(bin__ProjectComplex) (bi),
+        projectxs: marshall.bin__dict(marshall.bin__int64)(bin__ProjectComplex) (bi),
     }
 }
 

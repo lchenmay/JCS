@@ -10,7 +10,7 @@
 
 import { glib } from '~/lib/glib'
 import * as Common from '~/lib/store/common'
-import Project from '~/comps/Common/Project.vue'
+
 
 const s = glib.vue.reactive({
 data: runtime.data
@@ -21,7 +21,7 @@ glib.vue.onMounted(async () => {
   },(rep:any) => { 
     s.data.pcs = {}
     rep.list.forEach((i:jcs.ProjectComplex) => {
-      s.data.pcs[i.project.id] = i
+      s.data.projectxs[i.project.id] = i
     })
   })
 })

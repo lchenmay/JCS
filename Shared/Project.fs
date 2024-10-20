@@ -22,11 +22,11 @@ open Shared.CustomMor
 
 let project__ProjectComplex project = 
     {   hostconfigs = createModDictStr 4    
-        tables = createModDictStr 4
-        comps = createModDictStr 4
-        templates = createModDictStr 4
-        pages = createModDictStr 4
-        apis = createModDictStr 4
+        tablexs = createModDictStr 4
+        compxs = createModDictStr 4
+        templatexs = createModDictStr 4
+        pagexs = createModDictStr 4
+        apixs = createModDictStr 4
         project = project }
 
 let comp__CompComplex comp = 
@@ -55,7 +55,7 @@ let projx__lines projx =
         projx.project.p.Code    |]
     |> res.AddRange
 
-    projx.comps.Values
+    projx.compxs.Values
     |> Array.iter(fun x -> 
 
         x.comp.p.Name |> res.Add
