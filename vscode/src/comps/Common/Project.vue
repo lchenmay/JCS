@@ -1,8 +1,31 @@
 <template>
 
-<div>
-Project Code = {{ props.projectx.project.p.Code }}
-<button v-on:click="router.push('/CodeRobot/Project/' + projectx.project.id)">Edit</button>
+<h1>{{ props.projectx.project.p.Code }}</h1>
+<!--button v-on:click="router.push('/CodeRobot/Project/' + projectx.project.id)">Edit</button-->
+
+<h2>Host Configurations</h2>
+<div v-for="[k,v] in (Object.entries(props.projectx.hostconfigs) as [string,jcs.HOSTCONFIG][])">
+    {{ v.p.Hostname }}
+</div>
+
+<h2>Tables</h2>
+<div v-for="[k,v] in (Object.entries(props.projectx.tablexs) as [string,jcs.TableComplex][])">
+    {{ v.table.p.Name }}
+</div>
+
+<h2>Components</h2>
+<div v-for="[compName,compx] in (Object.entries(props.projectx.compxs) as [string,jcs.CompComplex][])">
+    <div>{{ compx.comp.p.Name }}</div>
+    <div v-for="[k,v] in (Object.entries(compx.props) as [string,jcs.VARTYPE][])">
+        Props: {{ v.p.Name }} : {{ v.p.Type }}
+    </div>
+</div>
+
+<h2>
+Pages
+</h2>
+<div v-for="[k,v] in (Object.entries(props.projectx.pagexs) as [string,jcs.PageComplex][])">
+    {{ v.page.p.Name }}
 </div>
 
 </template>
