@@ -8,6 +8,7 @@ open System.Threading
 open Util.Cat
 open Util.Text
 open Util.Bin
+open Util.CollectionModDict
 open Util.Perf
 open Util.Json
 open Util.Http
@@ -43,6 +44,9 @@ let branching x =
         match x.api with
         | "ping" -> bindx apiPing
         | "perf" -> bindx apiMonitorPerf
+        | "reloadProjects" -> bindx (fun x -> 
+            runtime.data.pcs.Values
+            |> apiList ProjectComplex__json)
         | _ -> Fail(Er.ApiNotExists,x)
     | _ -> Fail(Er.ApiNotExists,x)
 

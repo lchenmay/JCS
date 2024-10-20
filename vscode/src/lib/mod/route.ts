@@ -29,7 +29,7 @@ const updateRoute = updateRouteb(originalRoutes)
 const initRoutes = (): RouteRecordRaw[] => {
   switch (true) {
     default:
-      return updateRoute('game')
+      return updateRoute('jcs')
   }
 }
 

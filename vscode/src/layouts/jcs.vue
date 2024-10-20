@@ -1,5 +1,5 @@
 <template>
-  <div><button @click="$router.push('/CodeRobotCenter')">Code Robot Center</button></div>
+  <div><button @click="$router.push('/CodeRobot/Projects')">Code Robot Center</button></div>
   <router-view />
 </template>
 

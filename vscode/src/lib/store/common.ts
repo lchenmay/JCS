@@ -34,7 +34,7 @@ export const compareNowHours = (positive:Date) => {
 }
 
 export const filtering = 
-  (filter:game.Filter) => 
+  (filter:jcs.Filter) => 
   (league:string) => {
   let res = true
 
@@ -45,30 +45,4 @@ export const filtering =
 //  if(filter.teamCode != "" && filter.teamCode != ha && filter.teamCode != aw)
 //    res = false
   return res
-}
-
-export const oddsAmerican__rpp = (odds:number) => {
-  let r = 0
-  if(odds > 0.0)
-    r = odds / 100.0
-  else if(odds < 0.0)
-    r = - 100.0 / odds
-  return r
-}
-
-export const odds__impliedProb = (odds:number) => {
-  let r = oddsAmerican__rpp(odds)
-  let p = r + 1
-  return 1/p
-}
-
-export const odds__ev = (odds:number,prob:number) => {
-  let r = oddsAmerican__rpp(odds)
-  let p = r + 1
-  return p * prob - 1
-}
-
-export const odds__Kelly = (odds:number,prob:number) => {
-  let r = oddsAmerican__rpp(odds)
-  return (r * prob - (1 - prob))/r
 }

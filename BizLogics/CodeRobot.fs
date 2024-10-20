@@ -9,6 +9,7 @@ open System.Threading
 open Util.Cat
 open Util.Text
 open Util.Bin
+open Util.CollectionModDict
 open Util.Perf
 open Util.Json
 open Util.FileSys
@@ -56,13 +57,14 @@ let buildVueFile() =
 
         states =    
             [|  "const s = glib.vue.reactive({"
+                "data: runtime.data"
                 "})" |]
                 
         onMounted =    
             [|  "glib.vue.onMounted(async () => {"
                 "})" |] }
 
-let VueFile__src vueFile = 
+let VueFile__src vueFile projectx (props: ModDictStr<VARTYPE>) = 
     let res = new List<string>()
 
     vueFile.template |> res.AddRange
@@ -71,6 +73,17 @@ let VueFile__src vueFile =
     "" |> res.Add
     vueFile.imports |> res.AddRange
     "" |> res.Add
+
+    if props.count > 0 then
+        let vs = props.Values
+        let names = vs |> Array.map(fun i -> "'" + i.p.Name + "'") |> String.concat ","
+        "const props = defineProps([" + names + "])" |> res.Add
+        vs
+        |> Array.iter(fun i -> 
+            "props." + i.p.Name + " as " + projectx.project.p.Code.ToLower() + "." + i.p.Type
+            |> res.Add)
+    "" |> res.Add
+
     vueFile.states |> res.AddRange
     "" |> res.Add
     vueFile.onMounted |> res.AddRange
@@ -119,7 +132,7 @@ let buildComps projectx (hostconfig:HOSTCONFIG) =
             else
                 buildVueFile()
 
-        compx.props.Values
+        compx.states.Values
         |> Array.iter(fun prop ->
             match
                 vueFile.states
@@ -130,7 +143,7 @@ let buildComps projectx (hostconfig:HOSTCONFIG) =
                 ls.Insert(1,prop.p.Name + ":" + projectx.project.p.Code.ToLower() + "." + prop.p.Type + ",")
                 vueFile.states <- ls.ToArray())
 
-        File.WriteAllLines(f,VueFile__src vueFile)
+        File.WriteAllLines(f,VueFile__src vueFile projectx compx.props)
 
         ())
 
@@ -153,7 +166,7 @@ let buildPages projectx (hostconfig:HOSTCONFIG) =
             else
                 buildVueFile()
 
-        File.WriteAllLines(f,VueFile__src vueFile)
+        File.WriteAllLines(f,VueFile__src vueFile projectx pagex.props)
 
         ())
 

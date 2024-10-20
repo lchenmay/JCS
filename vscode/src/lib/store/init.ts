@@ -16,7 +16,7 @@ let wsOnError = (runtime: Runtime) => (event: any) => {
 }
 
 let wsOnMsg = (runtime: Runtime) => (event: any) => {
-    let msg = event.data as game.Msg
+    let msg = event.data as jcs.Msg
     switch (msg.e as MsgEnum) {
         case MsgEnum.ApiResponse:
             console.log(msg.val)
