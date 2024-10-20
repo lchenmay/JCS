@@ -79,8 +79,35 @@ let FIELD_table = "Ts_Field"
 
 // [Ts_HostConfig] (HOSTCONFIG)
 
+type hostconfigGenderEnum = 
+| SQLSERVER = 0 // SQL Server
+| PostgreSQL = 1 // PostgreSQL
+
+let hostconfigGenderEnums = [| hostconfigGenderEnum.SQLSERVER; hostconfigGenderEnum.PostgreSQL |]
+let hostconfigGenderEnumstrs = [| "hostconfigGenderEnum"; "hostconfigGenderEnum" |]
+let hostconfigGenderNum = 2
+
+let int__hostconfigGenderEnum v =
+    match v with
+    | 0 -> Some hostconfigGenderEnum.SQLSERVER
+    | 1 -> Some hostconfigGenderEnum.PostgreSQL
+    | _ -> None
+
+let str__hostconfigGenderEnum s =
+    match s with
+    | "SQLSERVER" -> Some hostconfigGenderEnum.SQLSERVER
+    | "PostgreSQL" -> Some hostconfigGenderEnum.PostgreSQL
+    | _ -> None
+
+let hostconfigGenderEnum__caption e =
+    match e with
+    | hostconfigGenderEnum.SQLSERVER -> "SQL Server"
+    | hostconfigGenderEnum.PostgreSQL -> "PostgreSQL"
+    | _ -> ""
+
 type pHOSTCONFIG = {
 mutable Hostname: Chars
+mutable Gender: hostconfigGenderEnum
 mutable DatabaseName: Chars
 mutable DatabaseConn: Chars
 mutable DirVsShared: Chars
@@ -93,12 +120,13 @@ type HOSTCONFIG = Rcd<pHOSTCONFIG>
 let HOSTCONFIG_fieldorders() =
     match rdbms with
     | Rdbms.SqlServer ->
-        "[ID],[Createdat],[Updatedat],[Sort],[Hostname],[DatabaseName],[DatabaseConn],[DirVsShared],[DirVsCodeWeb],[Project]"
+        "[ID],[Createdat],[Updatedat],[Sort],[Hostname],[Gender],[DatabaseName],[DatabaseConn],[DirVsShared],[DirVsCodeWeb],[Project]"
     | Rdbms.PostgreSql ->
-        $""" "id","createdat","updatedat","sort", "hostname","databasename","databaseconn","dirvsshared","dirvscodeweb","project" """
+        $""" "id","createdat","updatedat","sort", "hostname","gender","databasename","databaseconn","dirvsshared","dirvscodeweb","project" """
 
 let pHOSTCONFIG_fieldordersArray = [|
     "Hostname"
+    "Gender"
     "DatabaseName"
     "DatabaseConn"
     "DirVsShared"
@@ -107,14 +135,15 @@ let pHOSTCONFIG_fieldordersArray = [|
 
 let HOSTCONFIG_sql_update() =
     match rdbms with
-    | Rdbms.SqlServer -> "[Hostname]=@Hostname,[DatabaseName]=@DatabaseName,[DatabaseConn]=@DatabaseConn,[DirVsShared]=@DirVsShared,[DirVsCodeWeb]=@DirVsCodeWeb,[Project]=@Project"
-    | Rdbms.PostgreSql -> "hostname=@hostname,databasename=@databasename,databaseconn=@databaseconn,dirvsshared=@dirvsshared,dirvscodeweb=@dirvscodeweb,project=@project"
+    | Rdbms.SqlServer -> "[Hostname]=@Hostname,[Gender]=@Gender,[DatabaseName]=@DatabaseName,[DatabaseConn]=@DatabaseConn,[DirVsShared]=@DirVsShared,[DirVsCodeWeb]=@DirVsCodeWeb,[Project]=@Project"
+    | Rdbms.PostgreSql -> "hostname=@hostname,gender=@gender,databasename=@databasename,databaseconn=@databaseconn,dirvsshared=@dirvsshared,dirvscodeweb=@dirvscodeweb,project=@project"
 
 let pHOSTCONFIG_fields() =
     match rdbms with
     | Rdbms.SqlServer ->
         [|
             Chars("Hostname", 64)
+            SelectLines("Gender", [| ("SQLSERVER","SQL Server");("PostgreSQL","PostgreSQL") |])
             Chars("DatabaseName", 64)
             Chars("DatabaseConn", 64)
             Chars("DirVsShared", 64)
@@ -123,6 +152,7 @@ let pHOSTCONFIG_fields() =
     | Rdbms.PostgreSql ->
         [|
             Chars("hostname", 64)
+            SelectLines("gender", [| ("SQLSERVER","SQL Server");("PostgreSQL","PostgreSQL") |])
             Chars("databasename", 64)
             Chars("databaseconn", 64)
             Chars("dirvsshared", 64)
@@ -131,6 +161,7 @@ let pHOSTCONFIG_fields() =
 
 let pHOSTCONFIG_empty(): pHOSTCONFIG = {
     Hostname = ""
+    Gender = EnumOfValue 0
     DatabaseName = ""
     DatabaseConn = ""
     DirVsShared = ""
@@ -405,3 +436,96 @@ let pTEMPLATE_empty(): pTEMPLATE = {
 let TEMPLATE_id = ref 6723431L
 let TEMPLATE_count = ref 0
 let TEMPLATE_table = "Ts_UiTemplate"
+
+// [Ts_VarType] (VARTYPE)
+
+type vartypeBindTypeEnum = 
+| CompState = 0 // Component State
+| CompProps = 1 // Component Propos
+| PageState = 2 // Page State
+| PageProps = 3 // Page Propos
+
+let vartypeBindTypeEnums = [| vartypeBindTypeEnum.CompState; vartypeBindTypeEnum.CompProps; vartypeBindTypeEnum.PageState; vartypeBindTypeEnum.PageProps |]
+let vartypeBindTypeEnumstrs = [| "vartypeBindTypeEnum"; "vartypeBindTypeEnum"; "vartypeBindTypeEnum"; "vartypeBindTypeEnum" |]
+let vartypeBindTypeNum = 4
+
+let int__vartypeBindTypeEnum v =
+    match v with
+    | 0 -> Some vartypeBindTypeEnum.CompState
+    | 1 -> Some vartypeBindTypeEnum.CompProps
+    | 2 -> Some vartypeBindTypeEnum.PageState
+    | 3 -> Some vartypeBindTypeEnum.PageProps
+    | _ -> None
+
+let str__vartypeBindTypeEnum s =
+    match s with
+    | "CompState" -> Some vartypeBindTypeEnum.CompState
+    | "CompProps" -> Some vartypeBindTypeEnum.CompProps
+    | "PageState" -> Some vartypeBindTypeEnum.PageState
+    | "PageProps" -> Some vartypeBindTypeEnum.PageProps
+    | _ -> None
+
+let vartypeBindTypeEnum__caption e =
+    match e with
+    | vartypeBindTypeEnum.CompState -> "Component State"
+    | vartypeBindTypeEnum.CompProps -> "Component Propos"
+    | vartypeBindTypeEnum.PageState -> "Page State"
+    | vartypeBindTypeEnum.PageProps -> "Page Propos"
+    | _ -> ""
+
+type pVARTYPE = {
+mutable Name: Chars
+mutable Type: Chars
+mutable BindType: vartypeBindTypeEnum
+mutable Bind: Integer
+mutable Project: FK}
+
+
+type VARTYPE = Rcd<pVARTYPE>
+
+let VARTYPE_fieldorders() =
+    match rdbms with
+    | Rdbms.SqlServer ->
+        "[ID],[Createdat],[Updatedat],[Sort],[Name],[Type],[BindType],[Bind],[Project]"
+    | Rdbms.PostgreSql ->
+        $""" "id","createdat","updatedat","sort", "name","type","bindtype","bind","project" """
+
+let pVARTYPE_fieldordersArray = [|
+    "Name"
+    "Type"
+    "BindType"
+    "Bind"
+    "Project" |]
+
+let VARTYPE_sql_update() =
+    match rdbms with
+    | Rdbms.SqlServer -> "[Name]=@Name,[Type]=@Type,[BindType]=@BindType,[Bind]=@Bind,[Project]=@Project"
+    | Rdbms.PostgreSql -> "name=@name,type=@type,bindtype=@bindtype,bind=@bind,project=@project"
+
+let pVARTYPE_fields() =
+    match rdbms with
+    | Rdbms.SqlServer ->
+        [|
+            Chars("Name", 64)
+            Chars("Type", 64)
+            SelectLines("BindType", [| ("CompState","Component State");("CompProps","Component Propos");("PageState","Page State");("PageProps","Page Propos") |])
+            Integer("Bind")
+            FK("Project") |]
+    | Rdbms.PostgreSql ->
+        [|
+            Chars("name", 64)
+            Chars("type", 64)
+            SelectLines("bindtype", [| ("CompState","Component State");("CompProps","Component Propos");("PageState","Page State");("PageProps","Page Propos") |])
+            Integer("bind")
+            FK("project") |]
+
+let pVARTYPE_empty(): pVARTYPE = {
+    Name = ""
+    Type = ""
+    BindType = EnumOfValue 0
+    Bind = 0L
+    Project = 0L }
+
+let VARTYPE_id = ref 7523431L
+let VARTYPE_count = ref 0
+let VARTYPE_table = "Ts_VarType"

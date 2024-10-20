@@ -160,6 +160,198 @@ let json__TableComplexo (json:Json):TableComplex option =
     else
         None
 
+// [CompComplex] Structure
+
+let CompComplex_empty(): CompComplex =
+    {
+        states = ModDict_empty()
+        props = ModDict_empty()
+        comp = { ID = 0L; Sort = 0L; Createdat = DateTime.MinValue; Updatedat = DateTime.MinValue; p = pCOMP_empty() }
+    }
+
+let CompComplex__bin (bb:BytesBuilder) (v:CompComplex) =
+
+    
+    ModDictStr__bin (VARTYPE__bin) bb v.states
+    
+    ModDictStr__bin (VARTYPE__bin) bb v.props
+    COMP__bin bb v.comp
+
+let bin__CompComplex (bi:BinIndexed):CompComplex =
+    let bin,index = bi
+
+    {
+        states = 
+            bi
+            |> bin__ModDictStr(bin__VARTYPE)
+        props = 
+            bi
+            |> bin__ModDictStr(bin__VARTYPE)
+        comp = 
+            bi
+            |> bin__COMP
+    }
+
+let CompComplex__json (v:CompComplex) =
+
+    [|  ("states",ModDictStr__json (VARTYPE__json) v.states)
+        ("props",ModDictStr__json (VARTYPE__json) v.props)
+        ("comp",COMP__json v.comp)
+         |]
+    |> Json.Braket
+
+let CompComplex__jsonTbw (w:TextBlockWriter) (v:CompComplex) =
+    json__str w (CompComplex__json v)
+
+let CompComplex__jsonStr (v:CompComplex) =
+    (CompComplex__json v) |> json__strFinal
+
+
+let json__CompComplexo (json:Json):CompComplex option =
+    let fields = json |> json__items
+
+    let mutable passOptions = true
+
+    let stateso =
+        match json__tryFindByName json "states" with
+        | None ->
+            passOptions <- false
+            None
+        | Some v -> 
+            match v |> (fun json ->json__ModDictStro (json__VARTYPEo) (new Dictionary<string,VARTYPE>()) json) with
+            | Some res -> Some res
+            | None ->
+                passOptions <- false
+                None
+
+    let propso =
+        match json__tryFindByName json "props" with
+        | None ->
+            passOptions <- false
+            None
+        | Some v -> 
+            match v |> (fun json ->json__ModDictStro (json__VARTYPEo) (new Dictionary<string,VARTYPE>()) json) with
+            | Some res -> Some res
+            | None ->
+                passOptions <- false
+                None
+
+    let compo =
+        match json__tryFindByName json "comp" with
+        | None ->
+            passOptions <- false
+            None
+        | Some v -> 
+            match v |> json__COMPo with
+            | Some res -> Some res
+            | None ->
+                passOptions <- false
+                None
+
+    if passOptions then
+        {
+            states = stateso.Value
+            props = propso.Value
+            comp = compo.Value } |> Some
+    else
+        None
+
+// [PageComplex] Structure
+
+let PageComplex_empty(): PageComplex =
+    {
+        states = ModDict_empty()
+        props = ModDict_empty()
+        page = { ID = 0L; Sort = 0L; Createdat = DateTime.MinValue; Updatedat = DateTime.MinValue; p = pPAGE_empty() }
+    }
+
+let PageComplex__bin (bb:BytesBuilder) (v:PageComplex) =
+
+    
+    ModDictStr__bin (VARTYPE__bin) bb v.states
+    
+    ModDictStr__bin (VARTYPE__bin) bb v.props
+    PAGE__bin bb v.page
+
+let bin__PageComplex (bi:BinIndexed):PageComplex =
+    let bin,index = bi
+
+    {
+        states = 
+            bi
+            |> bin__ModDictStr(bin__VARTYPE)
+        props = 
+            bi
+            |> bin__ModDictStr(bin__VARTYPE)
+        page = 
+            bi
+            |> bin__PAGE
+    }
+
+let PageComplex__json (v:PageComplex) =
+
+    [|  ("states",ModDictStr__json (VARTYPE__json) v.states)
+        ("props",ModDictStr__json (VARTYPE__json) v.props)
+        ("page",PAGE__json v.page)
+         |]
+    |> Json.Braket
+
+let PageComplex__jsonTbw (w:TextBlockWriter) (v:PageComplex) =
+    json__str w (PageComplex__json v)
+
+let PageComplex__jsonStr (v:PageComplex) =
+    (PageComplex__json v) |> json__strFinal
+
+
+let json__PageComplexo (json:Json):PageComplex option =
+    let fields = json |> json__items
+
+    let mutable passOptions = true
+
+    let stateso =
+        match json__tryFindByName json "states" with
+        | None ->
+            passOptions <- false
+            None
+        | Some v -> 
+            match v |> (fun json ->json__ModDictStro (json__VARTYPEo) (new Dictionary<string,VARTYPE>()) json) with
+            | Some res -> Some res
+            | None ->
+                passOptions <- false
+                None
+
+    let propso =
+        match json__tryFindByName json "props" with
+        | None ->
+            passOptions <- false
+            None
+        | Some v -> 
+            match v |> (fun json ->json__ModDictStro (json__VARTYPEo) (new Dictionary<string,VARTYPE>()) json) with
+            | Some res -> Some res
+            | None ->
+                passOptions <- false
+                None
+
+    let pageo =
+        match json__tryFindByName json "page" with
+        | None ->
+            passOptions <- false
+            None
+        | Some v -> 
+            match v |> json__PAGEo with
+            | Some res -> Some res
+            | None ->
+                passOptions <- false
+                None
+
+    if passOptions then
+        {
+            states = stateso.Value
+            props = propso.Value
+            page = pageo.Value } |> Some
+    else
+        None
+
 // [ProjectComplex] Structure
 
 let ProjectComplex_empty(): ProjectComplex =
@@ -179,11 +371,11 @@ let ProjectComplex__bin (bb:BytesBuilder) (v:ProjectComplex) =
     
     ModDictStr__bin (TableComplex__bin) bb v.tables
     
-    ModDictInt64__bin (COMP__bin) bb v.comps
+    ModDictInt64__bin (CompComplex__bin) bb v.comps
     
     ModDictInt64__bin (TEMPLATE__bin) bb v.templates
     
-    ModDictInt64__bin (PAGE__bin) bb v.pages
+    ModDictInt64__bin (PageComplex__bin) bb v.pages
     PROJECT__bin bb v.project
 
 let bin__ProjectComplex (bi:BinIndexed):ProjectComplex =
@@ -198,13 +390,13 @@ let bin__ProjectComplex (bi:BinIndexed):ProjectComplex =
             |> bin__ModDictStr(bin__TableComplex)
         comps = 
             bi
-            |> bin__ModDictInt64(bin__COMP)
+            |> bin__ModDictInt64(bin__CompComplex)
         templates = 
             bi
             |> bin__ModDictInt64(bin__TEMPLATE)
         pages = 
             bi
-            |> bin__ModDictInt64(bin__PAGE)
+            |> bin__ModDictInt64(bin__PageComplex)
         project = 
             bi
             |> bin__PROJECT
@@ -214,9 +406,9 @@ let ProjectComplex__json (v:ProjectComplex) =
 
     [|  ("hostconfigs",ModDictStr__json (HOSTCONFIG__json) v.hostconfigs)
         ("tables",ModDictStr__json (TableComplex__json) v.tables)
-        ("comps",ModDictInt64__json (COMP__json) v.comps)
+        ("comps",ModDictInt64__json (CompComplex__json) v.comps)
         ("templates",ModDictInt64__json (TEMPLATE__json) v.templates)
-        ("pages",ModDictInt64__json (PAGE__json) v.pages)
+        ("pages",ModDictInt64__json (PageComplex__json) v.pages)
         ("project",PROJECT__json v.project)
          |]
     |> Json.Braket
@@ -263,7 +455,7 @@ let json__ProjectComplexo (json:Json):ProjectComplex option =
             passOptions <- false
             None
         | Some v -> 
-            match v |> (fun json ->json__ModDictInt64o (json__COMPo) (new Dictionary<int64,COMP>()) json) with
+            match v |> (fun json ->json__ModDictInt64o (json__CompComplexo) (new Dictionary<int64,CompComplex>()) json) with
             | Some res -> Some res
             | None ->
                 passOptions <- false
@@ -287,7 +479,7 @@ let json__ProjectComplexo (json:Json):ProjectComplex option =
             passOptions <- false
             None
         | Some v -> 
-            match v |> (fun json ->json__ModDictInt64o (json__PAGEo) (new Dictionary<int64,PAGE>()) json) with
+            match v |> (fun json ->json__ModDictInt64o (json__PageComplexo) (new Dictionary<int64,PageComplex>()) json) with
             | Some res -> Some res
             | None ->
                 passOptions <- false

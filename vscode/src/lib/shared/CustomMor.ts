@@ -69,6 +69,62 @@ export const bin__TableComplex = (bi:BinIndexed):jcs.TableComplex => {
     }
 }
 
+// [CompComplex] Structure
+
+export const CompComplex_empty = (): jcs.CompComplex => { 
+    return {
+        states: {},
+        props: {},
+        comp: { id: 0, sort: 0, createdat: new Date(), updatedat: new Date(), p: marshall.pCOMP_empty() },
+    } as jcs.CompComplex
+}
+
+export const CompComplex__bin = (bb:BytesBuilder) => (v:any) => {
+
+    
+    marshall.dict__bin (marshall.str__bin)(marshall.VARTYPE__bin) (bb) (v.states)
+    
+    marshall.dict__bin (marshall.str__bin)(marshall.VARTYPE__bin) (bb) (v.props)
+    marshall.COMP__bin (bb) (v.comp)
+}
+
+export const bin__CompComplex = (bi:BinIndexed):jcs.CompComplex => {
+
+    return {
+        states: marshall.bin__dict(marshall.bin__str)(marshall.bin__VARTYPE) (bi),
+        props: marshall.bin__dict(marshall.bin__str)(marshall.bin__VARTYPE) (bi),
+        comp: marshall.bin__COMP (bi),
+    }
+}
+
+// [PageComplex] Structure
+
+export const PageComplex_empty = (): jcs.PageComplex => { 
+    return {
+        states: {},
+        props: {},
+        page: { id: 0, sort: 0, createdat: new Date(), updatedat: new Date(), p: marshall.pPAGE_empty() },
+    } as jcs.PageComplex
+}
+
+export const PageComplex__bin = (bb:BytesBuilder) => (v:any) => {
+
+    
+    marshall.dict__bin (marshall.str__bin)(marshall.VARTYPE__bin) (bb) (v.states)
+    
+    marshall.dict__bin (marshall.str__bin)(marshall.VARTYPE__bin) (bb) (v.props)
+    marshall.PAGE__bin (bb) (v.page)
+}
+
+export const bin__PageComplex = (bi:BinIndexed):jcs.PageComplex => {
+
+    return {
+        states: marshall.bin__dict(marshall.bin__str)(marshall.bin__VARTYPE) (bi),
+        props: marshall.bin__dict(marshall.bin__str)(marshall.bin__VARTYPE) (bi),
+        page: marshall.bin__PAGE (bi),
+    }
+}
+
 // [ProjectComplex] Structure
 
 export const ProjectComplex_empty = (): jcs.ProjectComplex => { 
@@ -89,11 +145,11 @@ export const ProjectComplex__bin = (bb:BytesBuilder) => (v:any) => {
     
     marshall.dict__bin (marshall.str__bin)(TableComplex__bin) (bb) (v.tables)
     
-    marshall.dict__bin (marshall.int64__bin)(marshall.COMP__bin) (bb) (v.comps)
+    marshall.dict__bin (marshall.int64__bin)(CompComplex__bin) (bb) (v.comps)
     
     marshall.dict__bin (marshall.int64__bin)(marshall.TEMPLATE__bin) (bb) (v.templates)
     
-    marshall.dict__bin (marshall.int64__bin)(marshall.PAGE__bin) (bb) (v.pages)
+    marshall.dict__bin (marshall.int64__bin)(PageComplex__bin) (bb) (v.pages)
     marshall.PROJECT__bin (bb) (v.project)
 }
 
@@ -102,9 +158,9 @@ export const bin__ProjectComplex = (bi:BinIndexed):jcs.ProjectComplex => {
     return {
         hostconfigs: marshall.bin__dict(marshall.bin__str)(marshall.bin__HOSTCONFIG) (bi),
         tables: marshall.bin__dict(marshall.bin__str)(bin__TableComplex) (bi),
-        comps: marshall.bin__dict(marshall.bin__int64)(marshall.bin__COMP) (bi),
+        comps: marshall.bin__dict(marshall.bin__int64)(bin__CompComplex) (bi),
         templates: marshall.bin__dict(marshall.bin__int64)(marshall.bin__TEMPLATE) (bi),
-        pages: marshall.bin__dict(marshall.bin__int64)(marshall.bin__PAGE) (bi),
+        pages: marshall.bin__dict(marshall.bin__int64)(bin__PageComplex) (bi),
         project: marshall.bin__PROJECT (bi),
     }
 }

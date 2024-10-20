@@ -21,8 +21,12 @@ p:pFIELD
 
 // [Ts_HostConfig] (HOSTCONFIG)
 
+const hostconfigGenderEnum_SQLSERVER = 0 // SQL Server
+const hostconfigGenderEnum_PostgreSQL = 1 // PostgreSQL
+
 export type pHOSTCONFIG = {
     Hostname: string
+    Gender: number
     DatabaseName: string
     DatabaseConn: string
     DirVsShared: string
@@ -120,6 +124,29 @@ createdat:Date
 updatedat:Date
 sort:number
 p:pTEMPLATE
+}
+
+// [Ts_VarType] (VARTYPE)
+
+const vartypeBindTypeEnum_CompState = 0 // Component State
+const vartypeBindTypeEnum_CompProps = 1 // Component Propos
+const vartypeBindTypeEnum_PageState = 2 // Page State
+const vartypeBindTypeEnum_PageProps = 3 // Page Propos
+
+export type pVARTYPE = {
+    Name: string
+    Type: string
+    BindType: number
+    Bind: number
+    Project: number
+}
+
+export type VARTYPE = {
+id:number
+createdat:Date
+updatedat:Date
+sort:number
+p:pVARTYPE
 }
 
 

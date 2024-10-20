@@ -64,6 +64,8 @@ export const pHOSTCONFIG__bin = (bb:BytesBuilder) => (p:jcs.pHOSTCONFIG) => {
     
     marshall.str__bin (bb) (p.Hostname)
     
+    marshall.int32__bin (bb) (p.Gender)
+    
     marshall.str__bin (bb) (p.DatabaseName)
     
     marshall.str__bin (bb) (p.DatabaseConn)
@@ -88,6 +90,7 @@ export const bin__pHOSTCONFIG = (bi:BinIndexed):jcs.pHOSTCONFIG => {
 
     let p = pHOSTCONFIG_empty()
     p.Hostname = marshall.bin__str (bi)
+    p.Gender = marshall.bin__int32 (bi)
     p.DatabaseName = marshall.bin__str (bi)
     p.DatabaseConn = marshall.bin__str (bi)
     p.DirVsShared = marshall.bin__str (bi)
@@ -370,6 +373,61 @@ export const bin__TEMPLATE = (bi:BinIndexed):jcs.TEMPLATE => {
         p:  bin__pTEMPLATE (bi)
     }
 }
+
+// [VARTYPE] Structure
+
+
+export const pVARTYPE__bin = (bb:BytesBuilder) => (p:jcs.pVARTYPE) => {
+
+    
+    marshall.str__bin (bb) (p.Name)
+    
+    marshall.str__bin (bb) (p.Type)
+    
+    marshall.int32__bin (bb) (p.BindType)
+    
+    marshall.int64__bin (bb) (p.Bind)
+    
+    marshall.int64__bin (bb) (p.Project)
+}
+
+export const VARTYPE__bin = (bb:BytesBuilder) => (v:jcs.VARTYPE) => {
+    marshall.int64__bin (bb) (v.id)
+    marshall.int64__bin (bb) (v.sort)
+    marshall.DateTime__bin (bb) (v.createdat)
+    marshall.DateTime__bin (bb) (v.updatedat)
+
+    pVARTYPE__bin (bb) (v.p)
+}
+
+export const bin__pVARTYPE = (bi:BinIndexed):jcs.pVARTYPE => {
+
+    let p = pVARTYPE_empty()
+    p.Name = marshall.bin__str (bi)
+    p.Type = marshall.bin__str (bi)
+    p.BindType = marshall.bin__int32 (bi)
+    p.Bind = marshall.bin__int64 (bi)
+    p.Project = marshall.bin__int64 (bi)
+
+    return p
+}
+
+
+export const bin__VARTYPE = (bi:BinIndexed):jcs.VARTYPE => {
+
+    let ID = marshall.bin__int64 (bi)
+    let Sort = marshall.bin__int64 (bi)
+    let Createdat = marshall.bin__DateTime (bi)
+    let Updatedat = marshall.bin__DateTime (bi)
+    
+    return {
+        id: ID,
+        sort: Sort,
+        createdat: Createdat,
+        updatedat: Updatedat,
+        p:  bin__pVARTYPE (bi)
+    }
+}
 export const pFIELD_empty = (): jcs.pFIELD => {
     return {
         Name: "",
@@ -390,6 +448,7 @@ export const FIELD_empty = (): jcs.FIELD => {
 export const pHOSTCONFIG_empty = (): jcs.pHOSTCONFIG => {
     return {
         Hostname: "",
+        Gender: 0,
         DatabaseName: "",
         DatabaseConn: "",
         DirVsShared: "",
@@ -488,4 +547,22 @@ export const TEMPLATE_empty = (): jcs.TEMPLATE => {
         updatedat: new Date(),
         sort: 0,
         p: pTEMPLATE_empty() }
+}
+
+export const pVARTYPE_empty = (): jcs.pVARTYPE => {
+    return {
+        Name: "",
+        Type: "",
+        BindType: 0,
+        Bind: 0,
+        Project: 0 }
+}
+
+export const VARTYPE_empty = (): jcs.VARTYPE => {
+    return {
+        id: 0,
+        createdat: new Date(),
+        updatedat: new Date(),
+        sort: 0,
+        p: pVARTYPE_empty() }
 }

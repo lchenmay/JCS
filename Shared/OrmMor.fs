@@ -186,6 +186,8 @@ let pHOSTCONFIG__bin (bb:BytesBuilder) (p:pHOSTCONFIG) =
     binHostname.Length |> BitConverter.GetBytes |> bb.append
     binHostname |> bb.append
     
+    p.Gender |> EnumToValue |> BitConverter.GetBytes |> bb.append
+    
     let binDatabaseName = p.DatabaseName |> Encoding.UTF8.GetBytes
     binDatabaseName.Length |> BitConverter.GetBytes |> bb.append
     binDatabaseName |> bb.append
@@ -221,6 +223,9 @@ let bin__pHOSTCONFIG (bi:BinIndexed):pHOSTCONFIG =
     index.Value <- index.Value + 4
     p.Hostname <- Encoding.UTF8.GetString(bin,index.Value,count_Hostname)
     index.Value <- index.Value + count_Hostname
+    
+    p.Gender <- BitConverter.ToInt32(bin,index.Value) |> EnumOfValue
+    index.Value <- index.Value + 4
     
     let count_DatabaseName = BitConverter.ToInt32(bin,index.Value)
     index.Value <- index.Value + 4
@@ -271,6 +276,7 @@ let pHOSTCONFIG__json (p:pHOSTCONFIG) =
 
     [|
         ("Hostname",p.Hostname |> Json.Str)
+        ("Gender",(p.Gender |> EnumToValue).ToString() |> Json.Num)
         ("DatabaseName",p.DatabaseName |> Json.Str)
         ("DatabaseConn",p.DatabaseConn |> Json.Str)
         ("DirVsShared",p.DirVsShared |> Json.Str)
@@ -302,6 +308,8 @@ let json__pHOSTCONFIGo (json:Json):pHOSTCONFIG option =
     let p = pHOSTCONFIG_empty()
     
     p.Hostname <- checkfieldz fields "Hostname" 64
+    
+    p.Gender <- checkfield fields "Gender" |> parse_int32 |> EnumOfValue
     
     p.DatabaseName <- checkfieldz fields "DatabaseName" 64
     
@@ -335,6 +343,8 @@ let json__HOSTCONFIGo (json:Json):HOSTCONFIG option =
     | Some p ->
         
         p.Hostname <- checkfieldz fields "Hostname" 64
+        
+        p.Gender <- checkfield fields "Gender" |> parse_int32 |> EnumOfValue
         
         p.DatabaseName <- checkfieldz fields "DatabaseName" 64
         
@@ -1096,6 +1106,163 @@ let json__TEMPLATEo (json:Json):TEMPLATE option =
         
     | None -> None
 
+// [VARTYPE] Structure
+
+
+let pVARTYPE__bin (bb:BytesBuilder) (p:pVARTYPE) =
+
+    
+    let binName = p.Name |> Encoding.UTF8.GetBytes
+    binName.Length |> BitConverter.GetBytes |> bb.append
+    binName |> bb.append
+    
+    let binType = p.Type |> Encoding.UTF8.GetBytes
+    binType.Length |> BitConverter.GetBytes |> bb.append
+    binType |> bb.append
+    
+    p.BindType |> EnumToValue |> BitConverter.GetBytes |> bb.append
+    
+    p.Bind |> BitConverter.GetBytes |> bb.append
+    
+    p.Project |> BitConverter.GetBytes |> bb.append
+
+let VARTYPE__bin (bb:BytesBuilder) (v:VARTYPE) =
+    v.ID |> BitConverter.GetBytes |> bb.append
+    v.Sort |> BitConverter.GetBytes |> bb.append
+    DateTime__bin bb v.Createdat
+    DateTime__bin bb v.Updatedat
+    
+    pVARTYPE__bin bb v.p
+
+let bin__pVARTYPE (bi:BinIndexed):pVARTYPE =
+    let bin,index = bi
+
+    let p = pVARTYPE_empty()
+    
+    let count_Name = BitConverter.ToInt32(bin,index.Value)
+    index.Value <- index.Value + 4
+    p.Name <- Encoding.UTF8.GetString(bin,index.Value,count_Name)
+    index.Value <- index.Value + count_Name
+    
+    let count_Type = BitConverter.ToInt32(bin,index.Value)
+    index.Value <- index.Value + 4
+    p.Type <- Encoding.UTF8.GetString(bin,index.Value,count_Type)
+    index.Value <- index.Value + count_Type
+    
+    p.BindType <- BitConverter.ToInt32(bin,index.Value) |> EnumOfValue
+    index.Value <- index.Value + 4
+    
+    p.Bind <- BitConverter.ToInt64(bin,index.Value)
+    index.Value <- index.Value + 8
+    
+    p.Project <- BitConverter.ToInt64(bin,index.Value)
+    index.Value <- index.Value + 8
+    
+    p
+
+let bin__VARTYPE (bi:BinIndexed):VARTYPE =
+    let bin,index = bi
+
+    let ID = BitConverter.ToInt64(bin,index.Value)
+    index.Value <- index.Value + 8
+    
+    let Sort = BitConverter.ToInt64(bin,index.Value)
+    index.Value <- index.Value + 8
+    
+    let Createdat = bin__DateTime bi
+    
+    let Updatedat = bin__DateTime bi
+    
+    {
+        ID = ID
+        Sort = Sort
+        Createdat = Createdat
+        Updatedat = Updatedat
+        p = bin__pVARTYPE bi }
+
+let pVARTYPE__json (p:pVARTYPE) =
+
+    [|
+        ("Name",p.Name |> Json.Str)
+        ("Type",p.Type |> Json.Str)
+        ("BindType",(p.BindType |> EnumToValue).ToString() |> Json.Num)
+        ("Bind",p.Bind.ToString() |> Json.Num)
+        ("Project",p.Project.ToString() |> Json.Num) |]
+    |> Json.Braket
+
+let VARTYPE__json (v:VARTYPE) =
+
+    let p = v.p
+    
+    [|  ("id",v.ID.ToString() |> Json.Num)
+        ("sort",v.Sort.ToString() |> Json.Num)
+        ("createdat",(v.Createdat |> Util.Time.wintime__unixtime).ToString() |> Json.Num)
+        ("updatedat",(v.Updatedat |> Util.Time.wintime__unixtime).ToString() |> Json.Num)
+        ("p",pVARTYPE__json v.p) |]
+    |> Json.Braket
+
+let VARTYPE__jsonTbw (w:TextBlockWriter) (v:VARTYPE) =
+    json__str w (VARTYPE__json v)
+
+let VARTYPE__jsonStr (v:VARTYPE) =
+    (VARTYPE__json v) |> json__strFinal
+
+
+let json__pVARTYPEo (json:Json):pVARTYPE option =
+    let fields = json |> json__items
+
+    let p = pVARTYPE_empty()
+    
+    p.Name <- checkfieldz fields "Name" 64
+    
+    p.Type <- checkfieldz fields "Type" 64
+    
+    p.BindType <- checkfield fields "BindType" |> parse_int32 |> EnumOfValue
+    
+    p.Bind <- checkfield fields "Bind" |> parse_int64
+    
+    p.Project <- checkfield fields "Project" |> parse_int64
+    
+    p |> Some
+    
+
+let json__VARTYPEo (json:Json):VARTYPE option =
+    let fields = json |> json__items
+
+    let ID = checkfield fields "id" |> parse_int64
+    let Sort = checkfield fields "sort" |> parse_int64
+    let Createdat = checkfield fields "createdat" |> parse_int64 |> DateTime.FromBinary
+    let Updatedat = checkfield fields "updatedat" |> parse_int64 |> DateTime.FromBinary
+    
+    let o  =
+        match
+            json
+            |> tryFindByAtt "p" with
+        | Some (s,v) -> json__pVARTYPEo v
+        | None -> None
+    
+    match o with
+    | Some p ->
+        
+        p.Name <- checkfieldz fields "Name" 64
+        
+        p.Type <- checkfieldz fields "Type" 64
+        
+        p.BindType <- checkfield fields "BindType" |> parse_int32 |> EnumOfValue
+        
+        p.Bind <- checkfield fields "Bind" |> parse_int64
+        
+        p.Project <- checkfield fields "Project" |> parse_int64
+        
+        {
+            ID = ID
+            Sort = Sort
+            Createdat = Createdat
+            Updatedat = Updatedat
+            p = p } |> Some
+        
+    | None -> None
+
 let mutable conn = ""
 
 let db__pFIELD(line:Object[]): pFIELD =
@@ -1205,11 +1372,12 @@ let db__pHOSTCONFIG(line:Object[]): pHOSTCONFIG =
     let p = pHOSTCONFIG_empty()
 
     p.Hostname <- string(line.[4]).TrimEnd()
-    p.DatabaseName <- string(line.[5]).TrimEnd()
-    p.DatabaseConn <- string(line.[6]).TrimEnd()
-    p.DirVsShared <- string(line.[7]).TrimEnd()
-    p.DirVsCodeWeb <- string(line.[8]).TrimEnd()
-    p.Project <- if Convert.IsDBNull(line.[9]) then 0L else line.[9] :?> int64
+    p.Gender <- EnumOfValue(if Convert.IsDBNull(line.[5]) then 0 else line.[5] :?> int)
+    p.DatabaseName <- string(line.[6]).TrimEnd()
+    p.DatabaseConn <- string(line.[7]).TrimEnd()
+    p.DirVsShared <- string(line.[8]).TrimEnd()
+    p.DirVsCodeWeb <- string(line.[9]).TrimEnd()
+    p.Project <- if Convert.IsDBNull(line.[10]) then 0L else line.[10] :?> int64
 
     p
 
@@ -1218,6 +1386,7 @@ let pHOSTCONFIG__sps (p:pHOSTCONFIG) =
     | Rdbms.SqlServer ->
         [|
             ("Hostname", p.Hostname) |> kvp__sqlparam
+            ("Gender", p.Gender) |> kvp__sqlparam
             ("DatabaseName", p.DatabaseName) |> kvp__sqlparam
             ("DatabaseConn", p.DatabaseConn) |> kvp__sqlparam
             ("DirVsShared", p.DirVsShared) |> kvp__sqlparam
@@ -1226,6 +1395,7 @@ let pHOSTCONFIG__sps (p:pHOSTCONFIG) =
     | Rdbms.PostgreSql ->
         [|
             ("hostname", p.Hostname) |> kvp__sqlparam
+            ("gender", p.Gender) |> kvp__sqlparam
             ("databasename", p.DatabaseName) |> kvp__sqlparam
             ("databaseconn", p.DatabaseConn) |> kvp__sqlparam
             ("dirvsshared", p.DirVsShared) |> kvp__sqlparam
@@ -1240,6 +1410,7 @@ let HOSTCONFIG_wrapper item: HOSTCONFIG =
 
 let pHOSTCONFIG_clone (p:pHOSTCONFIG): pHOSTCONFIG = {
     Hostname = p.Hostname
+    Gender = p.Gender
     DatabaseName = p.DatabaseName
     DatabaseConn = p.DatabaseConn
     DirVsShared = p.DirVsShared
@@ -1305,6 +1476,7 @@ let HOSTCONFIGTxSqlServer =
     ,[Updatedat] BIGINT NOT NULL
     ,[Sort] BIGINT NOT NULL,
     ,[Hostname]
+    ,[Gender]
     ,[DatabaseName]
     ,[DatabaseConn]
     ,[DirVsShared]
@@ -1824,6 +1996,114 @@ let TEMPLATETxSqlServer =
     """
 
 
+let db__pVARTYPE(line:Object[]): pVARTYPE =
+    let p = pVARTYPE_empty()
+
+    p.Name <- string(line.[4]).TrimEnd()
+    p.Type <- string(line.[5]).TrimEnd()
+    p.BindType <- EnumOfValue(if Convert.IsDBNull(line.[6]) then 0 else line.[6] :?> int)
+    p.Bind <- if Convert.IsDBNull(line.[7]) then 0L else line.[7] :?> int64
+    p.Project <- if Convert.IsDBNull(line.[8]) then 0L else line.[8] :?> int64
+
+    p
+
+let pVARTYPE__sps (p:pVARTYPE) =
+    match rdbms with
+    | Rdbms.SqlServer ->
+        [|
+            ("Name", p.Name) |> kvp__sqlparam
+            ("Type", p.Type) |> kvp__sqlparam
+            ("BindType", p.BindType) |> kvp__sqlparam
+            ("Bind", p.Bind) |> kvp__sqlparam
+            ("Project", p.Project) |> kvp__sqlparam |]
+    | Rdbms.PostgreSql ->
+        [|
+            ("name", p.Name) |> kvp__sqlparam
+            ("type", p.Type) |> kvp__sqlparam
+            ("bindtype", p.BindType) |> kvp__sqlparam
+            ("bind", p.Bind) |> kvp__sqlparam
+            ("project", p.Project) |> kvp__sqlparam |]
+
+let db__VARTYPE = db__Rcd db__pVARTYPE
+
+let VARTYPE_wrapper item: VARTYPE =
+    let (i,c,u,s),p = item
+    { ID = i; Createdat = c; Updatedat = u; Sort = s; p = p }
+
+let pVARTYPE_clone (p:pVARTYPE): pVARTYPE = {
+    Name = p.Name
+    Type = p.Type
+    BindType = p.BindType
+    Bind = p.Bind
+    Project = p.Project }
+
+let VARTYPE_update_transaction output (updater,suc,fail) (rcd:VARTYPE) =
+    let rollback_p = rcd.p |> pVARTYPE_clone
+    let rollback_updatedat = rcd.Updatedat
+    updater rcd.p
+    let ctime,res =
+        (rcd.ID,rcd.p,rollback_p,rollback_updatedat)
+        |> update (conn,output,VARTYPE_table,VARTYPE_sql_update(),pVARTYPE__sps,suc,fail)
+    match res with
+    | Suc ctx ->
+        rcd.Updatedat <- ctime
+        suc(ctime,ctx)
+    | Fail(eso,ctx) ->
+        rcd.p <- rollback_p
+        rcd.Updatedat <- rollback_updatedat
+        fail eso
+
+let VARTYPE_update output (rcd:VARTYPE) =
+    rcd
+    |> VARTYPE_update_transaction output ((fun p -> ()),(fun (ctime,ctx) -> ()),(fun dte -> ()))
+
+let VARTYPE_create_incremental_transaction output (suc,fail) p =
+    let cid = Interlocked.Increment VARTYPE_id
+    let ctime = DateTime.UtcNow
+    match create (conn,output,VARTYPE_table,pVARTYPE__sps) (cid,ctime,p) with
+    | Suc ctx -> ((cid,ctime,ctime,cid),p) |> VARTYPE_wrapper |> suc
+    | Fail(eso,ctx) -> fail(eso,ctx)
+
+let VARTYPE_create output p =
+    VARTYPE_create_incremental_transaction output ((fun rcd -> ()),(fun (eso,ctx) -> ())) p
+    
+
+let id__VARTYPEo id: VARTYPE option = id__rcd(conn,VARTYPE_fieldorders(),VARTYPE_table,db__VARTYPE) id
+
+let VARTYPE_metadata = {
+    fieldorders = VARTYPE_fieldorders
+    db__rcd = db__VARTYPE 
+    wrapper = VARTYPE_wrapper
+    sps = pVARTYPE__sps
+    id = VARTYPE_id
+    id__rcdo = id__VARTYPEo
+    clone = pVARTYPE_clone
+    empty__p = pVARTYPE_empty
+    rcd__bin = VARTYPE__bin
+    bin__rcd = bin__VARTYPE
+    sql_update = VARTYPE_sql_update
+    rcd_update = VARTYPE_update
+    table = VARTYPE_table
+    shorthand = "vartype" }
+
+let VARTYPETxSqlServer =
+    """
+    IF NOT EXISTS(SELECT * FROM sysobjects WHERE [name]='Ts_VarType' AND xtype='U')
+    BEGIN
+
+        CREATE TABLE Ts_VarType ([ID] BIGINT NOT NULL
+    ,[Createdat] BIGINT NOT NULL
+    ,[Updatedat] BIGINT NOT NULL
+    ,[Sort] BIGINT NOT NULL,
+    ,[Name]
+    ,[Type]
+    ,[BindType]
+    ,[Bind]
+    ,[Project])
+    END
+    """
+
+
 type MetadataEnum = 
 | FIELD = 0
 | HOSTCONFIG = 1
@@ -1832,6 +2112,7 @@ type MetadataEnum =
 | COMP = 4
 | PAGE = 5
 | TEMPLATE = 6
+| VARTYPE = 7
 
 let tablenames = [|
     FIELD_metadata.table
@@ -1840,7 +2121,8 @@ let tablenames = [|
     TABLE_metadata.table
     COMP_metadata.table
     PAGE_metadata.table
-    TEMPLATE_metadata.table |]
+    TEMPLATE_metadata.table
+    VARTYPE_metadata.table |]
 
 let init() =
 
@@ -1972,6 +2254,25 @@ let init() =
     match singlevalue_query conn (str__sql sqlCountTs_UiTemplate) with
     | Some v ->
         TEMPLATE_count.Value <-
+            match rdbms with
+            | Rdbms.SqlServer -> v :?> int32
+            | Rdbms.PostgreSql -> v :?> int64 |> int32
+    | None -> ()
+
+    let sqlMaxTs_VarType, sqlCountTs_VarType =
+        match rdbms with
+        | Rdbms.SqlServer -> "SELECT MAX(ID) FROM [Ts_VarType]", "SELECT COUNT(ID) FROM [Ts_VarType]"
+        | Rdbms.PostgreSql -> "SELECT MAX(id) FROM ts_vartype", "SELECT COUNT(id) FROM ts_vartype"
+    match singlevalue_query conn (str__sql sqlMaxTs_VarType) with
+    | Some v ->
+        let max = v :?> int64
+        if max > VARTYPE_id.Value then
+            VARTYPE_id.Value <- max
+    | None -> ()
+
+    match singlevalue_query conn (str__sql sqlCountTs_VarType) with
+    | Some v ->
+        VARTYPE_count.Value <-
             match rdbms with
             | Rdbms.SqlServer -> v :?> int32
             | Rdbms.PostgreSql -> v :?> int64 |> int32

@@ -57,9 +57,27 @@ let init (runtime:Runtime) =
         let tc = pc.tables.Values |> Array.find(fun t -> t.table.ID = i.p.Table)
         tc.fields[i.p.Name] <- i) |> loader FIELD_metadata
 
-    (fun (i:COMP) -> runtime.data.pcs[i.p.Project].comps[i.ID] <- i) |> loader COMP_metadata
+    (fun (i:COMP) -> runtime.data.pcs[i.p.Project].comps[i.ID] <- i |> comp__CompComplex) |> loader COMP_metadata
     (fun (i:TEMPLATE) -> runtime.data.pcs[i.p.Project].templates[i.ID] <- i) |> loader TEMPLATE_metadata
-    (fun (i:PAGE) -> runtime.data.pcs[i.p.Project].pages[i.ID] <- i) |> loader PAGE_metadata
+    (fun (i:PAGE) -> runtime.data.pcs[i.p.Project].pages[i.ID] <- i |> page__CompComplex) |> loader PAGE_metadata
+
+    (fun (i:VARTYPE) -> 
+        let pc = runtime.data.pcs[i.p.Project]
+        match i.p.BindType with
+        | vartypeBindTypeEnum.CompState -> 
+            let comp = pc.comps.Values |> Array.find(fun ii-> ii.comp.ID = i.p.Bind)
+            comp.states[i.p.Name] <- i
+        | vartypeBindTypeEnum.CompProps -> 
+            let comp = pc.comps.Values |> Array.find(fun ii-> ii.comp.ID = i.p.Bind)
+            comp.props[i.p.Name] <- i
+        | vartypeBindTypeEnum.PageState -> 
+            let page = pc.pages.Values |> Array.find(fun ii-> ii.page.ID = i.p.Bind)
+            page.states[i.p.Name] <- i
+        | vartypeBindTypeEnum.PageProps -> 
+            let page = pc.pages.Values |> Array.find(fun ii-> ii.page.ID = i.p.Bind)
+            page.props[i.p.Name] <- i
+        | _ -> ()) |> loader VARTYPE_metadata
+
 
     let pc = runtime.data.pcs.Values |> Array.find(fun i -> i.project.p.Code = "JCS")
 
@@ -70,11 +88,11 @@ let init (runtime:Runtime) =
         "/Common/Comp"
         "/Common/Page" |]
     |> Array.iter(fun name ->
-        match pc.comps.Values |> Array.tryFind(fun i -> i.p.Name = name) with
+        match pc.comps.Values |> Array.tryFind(fun i -> i.comp.p.Name = name) with
         | Some comp -> ()
         | None -> 
             match createComp pc.project name with
-            | Some comp -> pc.comps[comp.ID] <- comp
+            | Some comp -> pc.comps[comp.ID] <- comp |> comp__CompComplex
             | None -> halt runtime.output ("BizLogics.Init.createComp [" + name + "]") "")
 
     [|  "Public"
@@ -93,11 +111,11 @@ let init (runtime:Runtime) =
         "/CodeRobot/Projects"
         "/CodeRobot/Project" |]
     |> Array.iter(fun name ->
-        match pc.pages.Values |> Array.tryFind(fun i -> i.p.Name = name) with
+        match pc.pages.Values |> Array.tryFind(fun i -> i.page.p.Name = name) with
         | Some page -> ()
         | None -> 
             match createPage pc.project template name with
-            | Some page -> pc.pages[page.ID] <- page
+            | Some page -> pc.pages[page.ID] <- page |> page__CompComplex
             | None -> halt runtime.output ("BizLogics.Init.createPage [" + name + "]") "")
 
 

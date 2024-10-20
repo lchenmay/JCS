@@ -159,6 +159,7 @@ BEGIN
         ,[Updatedat] BIGINT NOT NULL
         ,[Sort] BIGINT NOT NULL,
         [Hostname] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS
+        ,[Gender] INT
         ,[DatabaseName] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS
         ,[DatabaseConn] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS
         ,[DirVsShared] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS
@@ -171,7 +172,7 @@ END
 -- Dropping obsolete fields -----------
 DECLARE @name_Ts_HostConfig NVARCHAR(64)
 DECLARE cursor_Ts_HostConfig CURSOR FOR 
-    SELECT name FROM SYSCOLUMNS WHERE id=object_id('Ts_HostConfig') AND (name NOT IN ('ID','Createdat','Updatedat','Sort','Hostname','DatabaseName','DatabaseConn','DirVsShared','DirVsCodeWeb','Project'))
+    SELECT name FROM SYSCOLUMNS WHERE id=object_id('Ts_HostConfig') AND (name NOT IN ('ID','Createdat','Updatedat','Sort','Hostname','Gender','DatabaseName','DatabaseConn','DirVsShared','DirVsCodeWeb','Project'))
 
 OPEN cursor_Ts_HostConfig
 FETCH NEXT FROM cursor_Ts_HostConfig INTO @name_Ts_HostConfig
@@ -217,6 +218,33 @@ IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ts_HostCo
 IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ts_HostConfigHostname')
     BEGIN
     ALTER TABLE Ts_HostConfig DROP  CONSTRAINT [UniqueNonclustered_Ts_HostConfigHostname]
+    END
+
+-- [Ts_HostConfig.Gender] -------------
+
+
+-- [Ts_HostConfig.Gender] -------------
+
+IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ts_HostConfig') AND name='Gender')
+    BEGIN
+     ALTER TABLE Ts_HostConfig ALTER COLUMN [Gender] INT
+    END
+ELSE
+    BEGIN
+    DECLARE @sql_add_Ts_HostConfig_Gender NVARCHAR(MAX);
+    SET @sql_add_Ts_HostConfig_Gender = 'ALTER TABLE Ts_HostConfig ADD [Gender] INT'
+    EXEC sp_executesql @sql_add_Ts_HostConfig_Gender
+    END
+
+
+IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ts_HostConfigGender')
+    BEGIN
+    ALTER TABLE Ts_HostConfig DROP  CONSTRAINT [Constraint_Ts_HostConfigGender]
+    END
+
+IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ts_HostConfigGender')
+    BEGIN
+    ALTER TABLE Ts_HostConfig DROP  CONSTRAINT [UniqueNonclustered_Ts_HostConfigGender]
     END
 
 -- [Ts_HostConfig.DatabaseName] -------------
@@ -1069,4 +1097,181 @@ IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ts_UiTemp
 IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ts_UiTemplateProject')
     BEGIN
     ALTER TABLE Ts_UiTemplate DROP  CONSTRAINT [UniqueNonclustered_Ts_UiTemplateProject]
+    END
+-- [Ts_VarType] ----------------------
+
+IF NOT EXISTS(SELECT * FROM sysobjects WHERE [name]='Ts_VarType' AND xtype='U')
+
+BEGIN
+
+    CREATE TABLE Ts_VarType ([ID] BIGINT NOT NULL
+        ,[Createdat] BIGINT NOT NULL
+        ,[Updatedat] BIGINT NOT NULL
+        ,[Sort] BIGINT NOT NULL,
+        [Name] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS
+        ,[Type] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS
+        ,[BindType] INT
+        ,[Bind] BIGINT
+        ,[Project] BIGINT
+, CONSTRAINT [PK_Ts_VarType] PRIMARY KEY CLUSTERED ([ID] ASC)) ON [PRIMARY]
+END
+
+
+-- Dropping obsolete fields -----------
+DECLARE @name_Ts_VarType NVARCHAR(64)
+DECLARE cursor_Ts_VarType CURSOR FOR 
+    SELECT name FROM SYSCOLUMNS WHERE id=object_id('Ts_VarType') AND (name NOT IN ('ID','Createdat','Updatedat','Sort','Name','Type','BindType','Bind','Project'))
+
+OPEN cursor_Ts_VarType
+FETCH NEXT FROM cursor_Ts_VarType INTO @name_Ts_VarType
+
+WHILE @@FETCH_STATUS = 0
+BEGIN
+    PRINT 'Dropping Ts_VarType.' + @name_Ts_VarType;
+    
+    DECLARE @sql_Ts_VarType NVARCHAR(MAX);
+    SET @sql_Ts_VarType = 'ALTER TABLE Ts_VarType DROP COLUMN ' + QUOTENAME(@name_Ts_VarType)
+    EXEC sp_executesql @sql_Ts_VarType
+    
+    
+    FETCH NEXT FROM cursor_Ts_VarType INTO @name_Ts_VarType
+END
+
+CLOSE cursor_Ts_VarType;
+DEALLOCATE cursor_Ts_VarType;
+
+
+-- [Ts_VarType.Name] -------------
+
+
+-- [Ts_VarType.Name] -------------
+
+IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ts_VarType') AND name='Name')
+    BEGIN
+     ALTER TABLE Ts_VarType ALTER COLUMN [Name] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS
+    END
+ELSE
+    BEGIN
+    DECLARE @sql_add_Ts_VarType_Name NVARCHAR(MAX);
+    SET @sql_add_Ts_VarType_Name = 'ALTER TABLE Ts_VarType ADD [Name] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS'
+    EXEC sp_executesql @sql_add_Ts_VarType_Name
+    END
+
+
+IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ts_VarTypeName')
+    BEGIN
+    ALTER TABLE Ts_VarType DROP  CONSTRAINT [Constraint_Ts_VarTypeName]
+    END
+
+IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ts_VarTypeName')
+    BEGIN
+    ALTER TABLE Ts_VarType DROP  CONSTRAINT [UniqueNonclustered_Ts_VarTypeName]
+    END
+
+-- [Ts_VarType.Type] -------------
+
+
+-- [Ts_VarType.Type] -------------
+
+IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ts_VarType') AND name='Type')
+    BEGIN
+     ALTER TABLE Ts_VarType ALTER COLUMN [Type] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS
+    END
+ELSE
+    BEGIN
+    DECLARE @sql_add_Ts_VarType_Type NVARCHAR(MAX);
+    SET @sql_add_Ts_VarType_Type = 'ALTER TABLE Ts_VarType ADD [Type] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS'
+    EXEC sp_executesql @sql_add_Ts_VarType_Type
+    END
+
+
+IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ts_VarTypeType')
+    BEGIN
+    ALTER TABLE Ts_VarType DROP  CONSTRAINT [Constraint_Ts_VarTypeType]
+    END
+
+IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ts_VarTypeType')
+    BEGIN
+    ALTER TABLE Ts_VarType DROP  CONSTRAINT [UniqueNonclustered_Ts_VarTypeType]
+    END
+
+-- [Ts_VarType.BindType] -------------
+
+
+-- [Ts_VarType.BindType] -------------
+
+IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ts_VarType') AND name='BindType')
+    BEGIN
+     ALTER TABLE Ts_VarType ALTER COLUMN [BindType] INT
+    END
+ELSE
+    BEGIN
+    DECLARE @sql_add_Ts_VarType_BindType NVARCHAR(MAX);
+    SET @sql_add_Ts_VarType_BindType = 'ALTER TABLE Ts_VarType ADD [BindType] INT'
+    EXEC sp_executesql @sql_add_Ts_VarType_BindType
+    END
+
+
+IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ts_VarTypeBindType')
+    BEGIN
+    ALTER TABLE Ts_VarType DROP  CONSTRAINT [Constraint_Ts_VarTypeBindType]
+    END
+
+IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ts_VarTypeBindType')
+    BEGIN
+    ALTER TABLE Ts_VarType DROP  CONSTRAINT [UniqueNonclustered_Ts_VarTypeBindType]
+    END
+
+-- [Ts_VarType.Bind] -------------
+
+
+-- [Ts_VarType.Bind] -------------
+
+IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ts_VarType') AND name='Bind')
+    BEGIN
+     ALTER TABLE Ts_VarType ALTER COLUMN [Bind] BIGINT
+    END
+ELSE
+    BEGIN
+    DECLARE @sql_add_Ts_VarType_Bind NVARCHAR(MAX);
+    SET @sql_add_Ts_VarType_Bind = 'ALTER TABLE Ts_VarType ADD [Bind] BIGINT'
+    EXEC sp_executesql @sql_add_Ts_VarType_Bind
+    END
+
+
+IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ts_VarTypeBind')
+    BEGIN
+    ALTER TABLE Ts_VarType DROP  CONSTRAINT [Constraint_Ts_VarTypeBind]
+    END
+
+IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ts_VarTypeBind')
+    BEGIN
+    ALTER TABLE Ts_VarType DROP  CONSTRAINT [UniqueNonclustered_Ts_VarTypeBind]
+    END
+
+-- [Ts_VarType.Project] -------------
+
+
+-- [Ts_VarType.Project] -------------
+
+IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ts_VarType') AND name='Project')
+    BEGIN
+     ALTER TABLE Ts_VarType ALTER COLUMN [Project] BIGINT
+    END
+ELSE
+    BEGIN
+    DECLARE @sql_add_Ts_VarType_Project NVARCHAR(MAX);
+    SET @sql_add_Ts_VarType_Project = 'ALTER TABLE Ts_VarType ADD [Project] BIGINT'
+    EXEC sp_executesql @sql_add_Ts_VarType_Project
+    END
+
+
+IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ts_VarTypeProject')
+    BEGIN
+    ALTER TABLE Ts_VarType DROP  CONSTRAINT [Constraint_Ts_VarTypeProject]
+    END
+
+IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ts_VarTypeProject')
+    BEGIN
+    ALTER TABLE Ts_VarType DROP  CONSTRAINT [UniqueNonclustered_Ts_VarTypeProject]
     END

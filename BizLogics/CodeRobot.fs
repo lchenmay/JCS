@@ -59,7 +59,7 @@ let buildComps pc (hostconfig:HOSTCONFIG) =
 
     pc.comps.Values
     |> Array.iter(fun i -> 
-        let f = path + i.p.Name + ".vue"
+        let f = path + i.comp.p.Name + ".vue"
 
         let path = Directory.GetParent f
         Util.FileSys.checkpath path.FullName |> ignore
@@ -123,7 +123,7 @@ let buildPages pc (hostconfig:HOSTCONFIG) =
 
     pc.pages.Values
     |> Array.iter(fun i -> 
-        let f = path + i.p.Name + ".vue"
+        let f = path + i.page.p.Name + ".vue"
 
         let path = Directory.GetParent f
         Util.FileSys.checkpath path.FullName |> ignore

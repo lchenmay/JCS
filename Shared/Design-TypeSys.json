@@ -27,7 +27,7 @@
         "name": "Hostname"
       },
       {
-        "enum": "Database",
+        "enum": "SelectLines",
         "lines": "SQLSERVER//SQL Server///PostgreSQL//PostgreSQL",
         "name": "Gender"
       },
@@ -177,6 +177,36 @@
       {
         "enum": "FK",
         "name": "Template"
+      },
+      {
+        "enum": "FK",
+        "name": "Project"
+      }
+    ]
+  },
+  {
+    "name": "Ts_VarType",
+    "shorthand": "VARTYPE",
+    "id": 7523431,
+    "fields": [
+      {
+        "enum": "Chars",
+        "length": 64,
+        "name": "Name"
+      },
+      {
+        "enum": "Chars",
+        "length": 64,
+        "name": "Type"
+      },
+      {
+        "enum": "SelectLines",
+        "lines": "CompState//Component State///CompProps//Component Propos///PageState//Page State///PageProps//Page Propos",
+        "name": "BindType"
+      },
+      {
+        "enum": "Integer",
+        "name": "Bind"
       },
       {
         "enum": "FK",

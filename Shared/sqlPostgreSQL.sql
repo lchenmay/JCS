@@ -89,6 +89,7 @@ BEGIN
         ,updatedat BIGINT NOT NULL
         ,sort BIGINT NOT NULL
         ,"hostname" VARCHAR(64)
+        ,"gender" INT
         ,"databasename" VARCHAR(64)
         ,"databaseconn" VARCHAR(64)
         ,"dirvsshared" VARCHAR(64)
@@ -110,6 +111,20 @@ BEGIN
 
     IF not condition THEN
         ALTER TABLE ts_hostconfig ADD "hostname" varchar(64);
+    END IF;
+END $$;
+
+-- [Ts_HostConfig.Gender] -------------
+
+
+DO $$
+DECLARE
+    condition boolean;
+BEGIN
+    condition := (SELECT EXISTS(SELECT column_name FROM information_schema.columns WHERE table_name='ts_hostconfig' AND column_name='gender'));
+
+    IF not condition THEN
+        ALTER TABLE ts_hostconfig ADD "gender" int;
     END IF;
 END $$;
 
@@ -550,5 +565,97 @@ BEGIN
 
     IF not condition THEN
         ALTER TABLE ts_uitemplate ADD "project" bigint;
+    END IF;
+END $$;
+-- [Ts_VarType] ----------------------
+
+DO $$
+DECLARE
+    condition boolean;
+BEGIN
+    condition := (SELECT EXISTS(SELECT * FROM information_schema.tables WHERE table_name = 'ts_vartype'));
+
+    IF not condition THEN
+    CREATE TABLE ts_vartype (id BIGINT NOT NULL
+        ,createdat BIGINT NOT NULL
+        ,updatedat BIGINT NOT NULL
+        ,sort BIGINT NOT NULL
+        ,"name" VARCHAR(64)
+        ,"type" VARCHAR(64)
+        ,"bindtype" INT
+        ,"bind" BIGINT
+        ,"project" BIGINT);
+
+   END IF;
+END $$;
+
+
+-- [Ts_VarType.Name] -------------
+
+
+DO $$
+DECLARE
+    condition boolean;
+BEGIN
+    condition := (SELECT EXISTS(SELECT column_name FROM information_schema.columns WHERE table_name='ts_vartype' AND column_name='name'));
+
+    IF not condition THEN
+        ALTER TABLE ts_vartype ADD "name" varchar(64);
+    END IF;
+END $$;
+
+-- [Ts_VarType.Type] -------------
+
+
+DO $$
+DECLARE
+    condition boolean;
+BEGIN
+    condition := (SELECT EXISTS(SELECT column_name FROM information_schema.columns WHERE table_name='ts_vartype' AND column_name='type'));
+
+    IF not condition THEN
+        ALTER TABLE ts_vartype ADD "type" varchar(64);
+    END IF;
+END $$;
+
+-- [Ts_VarType.BindType] -------------
+
+
+DO $$
+DECLARE
+    condition boolean;
+BEGIN
+    condition := (SELECT EXISTS(SELECT column_name FROM information_schema.columns WHERE table_name='ts_vartype' AND column_name='bindtype'));
+
+    IF not condition THEN
+        ALTER TABLE ts_vartype ADD "bindtype" int;
+    END IF;
+END $$;
+
+-- [Ts_VarType.Bind] -------------
+
+
+DO $$
+DECLARE
+    condition boolean;
+BEGIN
+    condition := (SELECT EXISTS(SELECT column_name FROM information_schema.columns WHERE table_name='ts_vartype' AND column_name='bind'));
+
+    IF not condition THEN
+        ALTER TABLE ts_vartype ADD "bind" bigint;
+    END IF;
+END $$;
+
+-- [Ts_VarType.Project] -------------
+
+
+DO $$
+DECLARE
+    condition boolean;
+BEGIN
+    condition := (SELECT EXISTS(SELECT column_name FROM information_schema.columns WHERE table_name='ts_vartype' AND column_name='project'));
+
+    IF not condition THEN
+        ALTER TABLE ts_vartype ADD "project" bigint;
     END IF;
 END $$;

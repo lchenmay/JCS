@@ -27,3 +27,15 @@ let project__ProjectComplex project =
         templates = createModDictInt64 4
         pages = createModDictInt64 4
         project = project }
+
+let comp__CompComplex comp = 
+    {
+        states = createModDictStr 4
+        props = createModDictStr 4
+        comp = comp }
+
+let page__CompComplex page = 
+    {
+        states = createModDictStr 4
+        props = createModDictStr 4
+        page = page }

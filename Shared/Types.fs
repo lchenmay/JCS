@@ -20,12 +20,22 @@ type TableComplex = {
 fields: ModDictStr<FIELD>
 table: TABLE }
 
+type CompComplex = {
+states: ModDictStr<VARTYPE>
+props: ModDictStr<VARTYPE>
+comp: COMP }
+
+type PageComplex = {
+states: ModDictStr<VARTYPE>
+props: ModDictStr<VARTYPE>
+page: PAGE }
+
 type ProjectComplex = {
 hostconfigs: ModDictStr<HOSTCONFIG>
 tables: ModDictStr<TableComplex>
-comps: ModDictInt64<COMP>
+comps: ModDictInt64<CompComplex>
 templates: ModDictInt64<TEMPLATE>
-pages: ModDictInt64<PAGE>
+pages: ModDictInt64<PageComplex>
 project: PROJECT }
 
 type Fact = 
