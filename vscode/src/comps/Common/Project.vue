@@ -8,17 +8,20 @@
     {{ v.p.Hostname }}
 </div>
 
-<h2>Tables</h2>
-<div v-for="[k,v] in (Object.entries(props.projectx.tablexs) as [string,jcs.TableComplex][])">
-    {{ v.table.p.Name }}
-</div>
+<h2 class="caption-full-width">Tables</h2>
+<Table :tablex="TableComplex_empty()" />
+<Table
+  :tablex="v"
+  v-for="[k,v] in (Object.entries(props.projectx.tablexs) as [string,jcs.TableComplex][])" />
 
-<h2>Components</h2>
+<h2 class="caption-full-width">Components</h2>
+<Comp :compx="CompComplex_empty()" />
 <Comp 
   :compx="v"
   v-for="[k,v] in (Object.entries(props.projectx.compxs) as [string,jcs.CompComplex][])" />
 
-<h2>Pages</h2>
+<h2 class="caption-full-width">Pages</h2>
+<Page :pagex="PageComplex_empty()" />
 <Page 
   :pagex="v"
   v-for="[k,v] in (Object.entries(props.projectx.pagexs) as [string,jcs.PageComplex][])" />
@@ -29,6 +32,8 @@
 
 import { glib } from '~/lib/glib'
 import * as Common from '~/lib/store/common'
+import { TableComplex_empty,CompComplex_empty,PageComplex_empty } from '~/lib/shared/CustomMor'
+import Table from '~/comps/Common/Table.vue'
 import Comp from '~/comps/Common/Comp.vue'
 import Page from '~/comps/Common/Page.vue'
 

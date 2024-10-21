@@ -146,6 +146,8 @@ let init (runtime:Runtime) =
     |> Array.iter runtime.output
 
     [|  ("projectx","ProjectComplex","/Common/Project")
+        ("tablex","TableComplex","/Common/Table")
+        ("field","FIELD","/Common/Field")
         ("compx","CompComplex","/Common/Comp")
         ("pagex","PageComplex","/Common/Page")
         ("vt","VARTYPE","/Common/VarType") |]

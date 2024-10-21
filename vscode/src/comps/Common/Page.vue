@@ -1,8 +1,15 @@
 <template>
 
-<div class="panel-main">
-    
-<div>{{ props.pagex.page.p.Name }}</div>
+<div class="card">
+
+<div class="card-caption">
+  <div v-if="props.pagex.page.id > 0">
+    {{ props.pagex.page.p.Name }}
+  </div>
+  <div v-else>
+    Create New Page
+  </div>
+</div>
     
 <div>Props</div>
 <VarType :vt="VARTYPE_empty()" />

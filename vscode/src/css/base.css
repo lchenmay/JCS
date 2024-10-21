@@ -21,7 +21,14 @@ input:placeholder {
   @apply text-gray-700 dark:text-gray-300;
 }
 
+.caption-full-width{
+  @apply flex w-[99%] bg-blue-700 m-2 p-2 text-white text-2xl font-bold
+}
 
-.panel-main{
+.card{
   @apply m-[20px] p-[20px] shadow-2xl rounded-lg
+}
+
+.card-caption{
+  @apply m-2 text-blue-700 text-xl font-bold
 }

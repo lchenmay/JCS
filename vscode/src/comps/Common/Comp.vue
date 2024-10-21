@@ -1,8 +1,15 @@
 <template>
 
-<div class="panel-main">
+<div class="card">
 
-<div>{{ props.compx.comp.p.Name }}</div>
+<div class="card-caption">
+  <div v-if="props.compx.comp.id > 0">
+    {{ props.compx.comp.p.Name }}
+  </div>
+  <div v-else>
+    Create New Component
+  </div>
+</div>
 
 <div>Props</div>
 <VarType :vt="VARTYPE_empty()" />
