@@ -99,7 +99,7 @@ let src__VueFile (lines:string[]) =
     if template.Length > 0 then
         res.template <- template
 
-    let imports = tryTake lines ("imports ","imports ") true
+    let imports = tryTake lines ("import ","import ") true
     if imports.Length > 0 then
         res.imports <- imports
 

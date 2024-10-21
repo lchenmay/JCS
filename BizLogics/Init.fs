@@ -145,7 +145,10 @@ let init (runtime:Runtime) =
     |> projx__lines
     |> Array.iter runtime.output
 
-    [|  ("projectx","ProjectComplex","/Common/Project") |]
+    [|  ("projectx","ProjectComplex","/Common/Project")
+        ("compx","CompComplex","/Common/Comp")
+        ("pagex","PageComplex","/Common/Page")
+        ("vt","VARTYPE","/Common/VarType") |]
     |> Array.iter(fun (propName,propType,comp) ->
         let compx = pc.compxs[comp]
         match compx.props.Values |> Array.tryFind(fun i -> i.p.Name = propName) with

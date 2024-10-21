@@ -1,35 +1,18 @@
 
-
-
-
-
-body {
-  @apply text-base font-normal tracking-tight font-sans tabular-nums;
-  @apply min-h-screen;
-  @apply text-[#202020] bg-[#FAFAFA];
-  @apply dark:text-[#F4F4F4] dark:bg-[#1B1B1B];
-}
-
-a {
-  @apply text-blue-500 hover:text-green-600 active:text-red-600;
-}
-
-video,
-audio {
-  @apply mx-auto;
-}
-
-code,
-kbd,
-samp,
-pre {
-  @apply whitespace-pre-wrap;
+button {
+  @apply transition duration-500 ease-in-out p-1;
+  @apply rounded-lg flex cursor-pointer justify-center items-center flex-shrink-0;
+  @apply bg-blue-500 hover:bg-orange-500 dark:hover:bg-orange-700 active:bg-red-700;
+  @apply disabled:bg-gray-600 disabled:cursor-not-allowed;
+  @apply text-white;
+  @apply m-2 p-2 min-w-[100px]
 }
 
 input,textarea,option,select {
   @apply border border-gray-500 rounded-lg px-2;
   @apply bg-white dark:bg-gray-950 text-black dark:text-white;
   @apply font-normal;
+  @apply m-2
 }
 input:disabled {
   @apply bg-red-300;
@@ -38,132 +21,7 @@ input:placeholder {
   @apply text-gray-700 dark:text-gray-300;
 }
 
-small {
-  @apply text-sm;
-}
-
-p,
-a,
-div,
-span {
-  @apply text-base font-normal;
-}
-
-p {
-  @apply py-2
-}
-
-article {
-  @apply text-2xl font-normal;
-}
-
-h1 {
-  @apply text-3xl font-bold;
-}
-
-h2 {
-  @apply text-2xl font-bold;
-}
-
-h3 {
-  @apply text-xl font-medium;
-}
-
-h4 {
-  @apply text-lg;
-}
-
-h5 {
-  @apply text-base;
-}
-
-table{
-  @apply min-w-full text-left text-sm font-light dark:text-white;
-}
-
-thead{
-  @apply border-b border-neutral-200 font-medium dark:border-white/10;
-}
-
-th{
-  @apply px-6 py-4;
-}
-
-tr{
-  @apply border-b border-neutral-200 dark:border-white/10 border-slate-500;
-}
-
-td {
-  @apply whitespace-nowrap px-6 py-2;
-}
-
-summary {
-  @apply text-gray-800 dark:text-gray-300;
-  @apply font-normal list-none;
-}
-
-button {
-  @apply transition duration-500 ease-in-out p-1;
-  @apply rounded-lg flex cursor-pointer justify-center items-center flex-shrink-0;
-  @apply bg-blue-500 hover:bg-orange-500 dark:hover:bg-orange-700 active:bg-red-700;
-  @apply disabled:bg-gray-600 disabled:cursor-not-allowed;
-  @apply text-white;
-  @apply m-2 p-2;
-}
-
-.global{
-  @apply max-w-[2000px];
-}
-
-.header{
-  @apply h-[100px];
-}
-
-.body{
-}
-
-.footer{
-  @apply h-[100px];
-}
-
-.header-banner{
-  @apply flex-row bg-blue-100 h-[100px]
-}
-
-.logo{
-  @apply text-5xl font-sans font-bold text-black m-2 p-2
-}
-
-.header-menu-hor{
-  @apply flex-row bg-blue-100 h-[100px]
-}
-
-
-.fade-enter-active,
- .fade-leave-active {
-  transition: all 0.5s ease;
-}
-
-
-.fade-enter-from,
- .fade-leave-to {
-  opacity: 0;
-  transform: translateY(-10px);
-}
-.fadein {
-  animation: fadeIn 5s ease-in-out;
-}
-
-
-.caption{
-  @apply font-bold
-}
 
 .panel-main{
   @apply m-[20px] p-[20px] shadow-2xl rounded-lg
 }
-
-.button-set{
-  @apply flex
-}
-

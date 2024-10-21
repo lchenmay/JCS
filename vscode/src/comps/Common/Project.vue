@@ -14,19 +14,14 @@
 </div>
 
 <h2>Components</h2>
-<div v-for="[compName,compx] in (Object.entries(props.projectx.compxs) as [string,jcs.CompComplex][])">
-    <div>{{ compx.comp.p.Name }}</div>
-    <div v-for="[k,v] in (Object.entries(compx.props) as [string,jcs.VARTYPE][])">
-        Props: {{ v.p.Name }} : {{ v.p.Type }}
-    </div>
-</div>
+<Comp 
+  :compx="v"
+  v-for="[k,v] in (Object.entries(props.projectx.compxs) as [string,jcs.CompComplex][])" />
 
-<h2>
-Pages
-</h2>
-<div v-for="[k,v] in (Object.entries(props.projectx.pagexs) as [string,jcs.PageComplex][])">
-    {{ v.page.p.Name }}
-</div>
+<h2>Pages</h2>
+<Page 
+  :pagex="v"
+  v-for="[k,v] in (Object.entries(props.projectx.pagexs) as [string,jcs.PageComplex][])" />
 
 </template>
 
@@ -34,6 +29,8 @@ Pages
 
 import { glib } from '~/lib/glib'
 import * as Common from '~/lib/store/common'
+import Comp from '~/comps/Common/Comp.vue'
+import Page from '~/comps/Common/Page.vue'
 
 const props = defineProps(['projectx'])
 props.projectx as jcs.ProjectComplex
