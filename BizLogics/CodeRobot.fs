@@ -53,10 +53,12 @@ let buildVueFile() =
 
         imports =    
             [|  "import { glib } from '~/lib/glib'"
+                "import { useRoute } from 'vue-router'"
                 "import * as Common from '~/lib/store/common'" |]
 
         states =    
             [|  "const s = glib.vue.reactive({"
+                "query: useRoute().query,"
                 "data: runtime.data"
                 "})" |]
                 

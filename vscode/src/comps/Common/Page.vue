@@ -11,6 +11,13 @@
   </div>
 </div>
     
+<div>
+  Route <input v-model="props.pagex.page.p.Route" />
+</div>
+<div>
+  OG Title <input v-model="props.pagex.page.p.OgTitle" />
+</div>
+
 <div>Props</div>
 <VarType :vt="VARTYPE_empty()" />
 <VarType 
