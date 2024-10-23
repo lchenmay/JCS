@@ -1,5 +1,11 @@
 <template>
 
+<div v-if="props.projectx.id == 0">
+...
+</div>
+
+<div v-else>
+
 <h1>{{ props.projectx.project.p.Code }}</h1>
 <!--button v-on:click="router.push('/CodeRobot/Project/' + projectx.project.id)">Edit</button-->
 
@@ -25,6 +31,8 @@
 <Page 
   :pagex="v"
   v-for="[k,v] in (Object.entries(props.projectx.pagexs) as [string,jcs.PageComplex][])" />
+
+</div>
 
 </template>
 

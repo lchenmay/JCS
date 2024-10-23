@@ -160,5 +160,14 @@ let init (runtime:Runtime) =
             | Some vt -> compx.props[propName] <- vt
             | None -> halt runtime.output ("BizLogics.Init.createPageProp") "")
 
+    [|  ("projectx","ProjectComplex","/CodeRobot/Project") |]
+    |> Array.iter(fun (propName,propType,page) ->
+        let pagex = pc.pagexs[page]
+        match pagex.props.Values |> Array.tryFind(fun i -> i.p.Name = propName) with
+        | Some prop -> ()
+        | None -> 
+            match createPageProp pc.project pagex.page propName propType with
+            | Some vt -> pagex.props[propName] <- vt
+            | None -> halt runtime.output ("BizLogics.Init.createPageProp") "")
 
 

@@ -6,6 +6,13 @@
   Query = {{ useRoute().query }}
 </div>
 
+<button 
+   @click="$router.push('/CodeRobot/Project?id=' + v.project.id)"
+  v-for="[k,v] in (Object.entries(s.data.projectxs) as [string,jcs.ProjectComplex][])">
+  {{  v.project.p.Code }}
+</button>
+
+
 <Project 
   :projectx="v" 
   v-for="[k,v] in (Object.entries(s.data.projectxs) as [string,jcs.ProjectComplex][])" />
