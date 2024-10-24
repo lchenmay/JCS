@@ -15,6 +15,9 @@ import { useRoute } from 'vue-router'
 import * as Common from '~/lib/store/common'
 import Project from '~/comps/Common/Project.vue'
 
+const props = defineProps(['projectx'])
+props.projectx as jcs.ProjectComplex
+
 const s = glib.vue.reactive({
 query: useRoute().query,
 data: runtime.data

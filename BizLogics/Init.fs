@@ -145,6 +145,7 @@ let init (runtime:Runtime) =
     |> projx__lines
     |> Array.iter runtime.output
 
+    // Comp Props
     [|  ("projectx","ProjectComplex","/Common/Project")
         ("tablex","TableComplex","/Common/Table")
         ("field","FIELD","/Common/Field")
@@ -160,6 +161,18 @@ let init (runtime:Runtime) =
             | Some vt -> compx.props[propName] <- vt
             | None -> halt runtime.output ("BizLogics.Init.createPageProp") "")
 
+    // Comp States
+    [|  ("expand","false","/Common/Project") |]
+    |> Array.iter(fun (stateName,stateVal,comp) ->
+        let compx = pc.compxs[comp]
+        match compx.states.Values |> Array.tryFind(fun i -> i.p.Name = stateName) with
+        | Some state -> ()
+        | None -> 
+            match createCompState pc.project compx.comp stateName stateVal with
+            | Some vt -> compx.states[stateName] <- vt
+            | None -> halt runtime.output ("BizLogics.Init.createCompState") "")
+
+    // Page Props
     [|  ("projectx","ProjectComplex","/CodeRobot/Project") |]
     |> Array.iter(fun (propName,propType,page) ->
         let pagex = pc.pagexs[page]

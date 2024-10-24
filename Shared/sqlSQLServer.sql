@@ -1287,6 +1287,7 @@ BEGIN
         ,[Sort] BIGINT NOT NULL,
         [Name] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS
         ,[Type] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS
+        ,[Val] NVARCHAR(MAX)
         ,[BindType] INT
         ,[Bind] BIGINT
         ,[Project] BIGINT
@@ -1297,7 +1298,7 @@ END
 -- Dropping obsolete fields -----------
 DECLARE @name_Ts_VarType NVARCHAR(64)
 DECLARE cursor_Ts_VarType CURSOR FOR 
-    SELECT name FROM SYSCOLUMNS WHERE id=object_id('Ts_VarType') AND (name NOT IN ('ID','Createdat','Updatedat','Sort','Name','Type','BindType','Bind','Project'))
+    SELECT name FROM SYSCOLUMNS WHERE id=object_id('Ts_VarType') AND (name NOT IN ('ID','Createdat','Updatedat','Sort','Name','Type','Val','BindType','Bind','Project'))
 
 OPEN cursor_Ts_VarType
 FETCH NEXT FROM cursor_Ts_VarType INTO @name_Ts_VarType
@@ -1370,6 +1371,33 @@ IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ts_VarTyp
 IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ts_VarTypeType')
     BEGIN
     ALTER TABLE Ts_VarType DROP  CONSTRAINT [UniqueNonclustered_Ts_VarTypeType]
+    END
+
+-- [Ts_VarType.Val] -------------
+
+
+-- [Ts_VarType.Val] -------------
+
+IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ts_VarType') AND name='Val')
+    BEGIN
+     ALTER TABLE Ts_VarType ALTER COLUMN [Val] NVARCHAR(MAX)
+    END
+ELSE
+    BEGIN
+    DECLARE @sql_add_Ts_VarType_Val NVARCHAR(MAX);
+    SET @sql_add_Ts_VarType_Val = 'ALTER TABLE Ts_VarType ADD [Val] NVARCHAR(MAX)'
+    EXEC sp_executesql @sql_add_Ts_VarType_Val
+    END
+
+
+IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ts_VarTypeVal')
+    BEGIN
+    ALTER TABLE Ts_VarType DROP  CONSTRAINT [Constraint_Ts_VarTypeVal]
+    END
+
+IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ts_VarTypeVal')
+    BEGIN
+    ALTER TABLE Ts_VarType DROP  CONSTRAINT [UniqueNonclustered_Ts_VarTypeVal]
     END
 
 -- [Ts_VarType.BindType] -------------

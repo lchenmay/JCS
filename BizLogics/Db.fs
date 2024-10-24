@@ -30,9 +30,13 @@ let creator metadata populate =
     populate p
     p__createRcd p metadata metadata.table conn
 
-let createProject code = 
-    (fun (p:pPROJECT) ->
-        p.Code <- code) |> creator PROJECT_metadata
+let createProject (code:string) = 
+    let code = code.Trim()
+    if code.Length > 0 then
+        (fun (p:pPROJECT) ->
+            p.Code <- code) |> creator PROJECT_metadata
+    else
+        None
 
 let checkLocalHostConfig projectx = 
     match 
@@ -68,6 +72,14 @@ let createCompProp project comp name t =
         p.Bind <- comp.ID
         p.Name <- name
         p.Type <- t) |> creator VARTYPE_metadata
+
+let createCompState project comp name v = 
+    (fun (p:pVARTYPE) ->
+        p.Project <- project.ID
+        p.BindType <- vartypeBindTypeEnum.CompState
+        p.Bind <- comp.ID
+        p.Name <- name
+        p.Val <- v) |> creator VARTYPE_metadata
 
 let createPageProp project page name t = 
     (fun (p:pVARTYPE) ->

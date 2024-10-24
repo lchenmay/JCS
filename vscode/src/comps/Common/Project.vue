@@ -1,13 +1,27 @@
 <template>
 
-<div v-if="props.projectx.id == 0">
-...
+<h1>
+    <button
+        @click="s.expand = !s.expand"
+        class="caption-full-width">{{ props.projectx.project.p.Code }}</button>
+</h1>
+<!--button v-on:click="router.push('/CodeRobot/Project/' + projectx.project.id)">Edit</button-->
+
+<div v-if="s.expand">
+
+<div v-if="props.projectx.project.id == 0">
+
+    Project Code:
+    <input v-model="props.projectx.project.p.Code" />
+    
+    <button
+        @click="Common.loader('/api/public/createProject', {code: props.projectx.project.p.Code },(rep:any) => { })">
+        Create New Project
+    </button>
+
 </div>
 
 <div v-else>
-
-<h1>{{ props.projectx.project.p.Code }}</h1>
-<!--button v-on:click="router.push('/CodeRobot/Project/' + projectx.project.id)">Edit</button-->
 
 <h2>Host Configurations</h2>
 <div v-for="[k,v] in (Object.entries(props.projectx.hostconfigs) as [string,jcs.HOSTCONFIG][])">
@@ -34,6 +48,8 @@
 
 </div>
 
+</div>
+
 </template>
 
 <script setup lang="ts">
@@ -49,6 +65,7 @@ const props = defineProps(['projectx'])
 props.projectx as jcs.ProjectComplex
 
 const s = glib.vue.reactive({
+expand: false,
 query: useRoute().query,
 data: runtime.data
 })

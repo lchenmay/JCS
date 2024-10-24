@@ -19,6 +19,7 @@ open Shared.OrmTypes
 open Shared.Types
 open Shared.OrmMor
 open Shared.CustomMor
+open Shared.Project
 
 open UtilWebServer.Common
 open UtilWebServer.Api
@@ -32,6 +33,7 @@ open Shared.Types
 open Shared.CustomMor
 
 open BizLogics.Common
+open BizLogics.Db
 
 let branching x = 
 
@@ -45,6 +47,13 @@ let branching x =
         | "ping" -> apiPing |> bindx
         | "perf" -> apiMonitorPerf |> bindx
         | "reloadProjects" -> (fun x -> runtime.data.projectxs.Values |> apiList ProjectComplex__json) |> bindx
+        | "createProject" -> (fun x ->
+            match tryFindStrByAtt "code" x.json |> createProject with
+            | Some project -> 
+                let json = project |> project__ProjectComplex
+                runtime.data.projectxs[project.ID] <- json
+                json |> ProjectComplex__json |> wrapOk "projectx"
+            | None -> er Er.InvalideParameter) |> bindx
         | _ -> Fail(Er.ApiNotExists,x)
     | _ -> Fail(Er.ApiNotExists,x)
 

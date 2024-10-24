@@ -170,6 +170,7 @@ const vartypeBindTypeEnum_PageProps = 5 // Page Propos
 export type pVARTYPE = {
     Name: string
     Type: string
+    Val: string
     BindType: number
     Bind: number
     Project: number

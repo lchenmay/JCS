@@ -17,6 +17,12 @@
 <div>
   OG Title <input v-model="props.pagex.page.p.OgTitle" />
 </div>
+<div>
+  OG Description <input v-model="props.pagex.page.p.OgDesc" />
+</div>
+<div>
+  OG Image <input v-model="props.pagex.page.p.OgImage" />
+</div>
 
 <div>Props</div>
 <VarType :vt="VARTYPE_empty()" />

@@ -439,6 +439,8 @@ export const pVARTYPE__bin = (bb:BytesBuilder) => (p:jcs.pVARTYPE) => {
     
     marshall.str__bin (bb) (p.Type)
     
+    marshall.str__bin (bb) (p.Val)
+    
     marshall.int32__bin (bb) (p.BindType)
     
     marshall.int64__bin (bb) (p.Bind)
@@ -460,6 +462,7 @@ export const bin__pVARTYPE = (bi:BinIndexed):jcs.pVARTYPE => {
     let p = pVARTYPE_empty()
     p.Name = marshall.bin__str (bi)
     p.Type = marshall.bin__str (bi)
+    p.Val = marshall.bin__str (bi)
     p.BindType = marshall.bin__int32 (bi)
     p.Bind = marshall.bin__int64 (bi)
     p.Project = marshall.bin__int64 (bi)
@@ -626,6 +629,7 @@ export const pVARTYPE_empty = (): jcs.pVARTYPE => {
     return {
         Name: "",
         Type: "",
+        Val: "",
         BindType: 0,
         Bind: 0,
         Project: 0 }

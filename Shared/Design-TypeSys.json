@@ -229,6 +229,10 @@
         "name": "Type"
       },
       {
+        "enum": "Text",
+        "name": "Val"
+      },
+      {
         "enum": "SelectLines",
         "lines": "ApiRequest//API Request///ApiResponse//API Response///CompState//Component State///CompProps//Component Propos///PageState//Page State///PageProps//Page Propos",
         "name": "BindType"

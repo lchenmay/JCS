@@ -6,12 +6,7 @@
   Query = {{ useRoute().query }}
 </div>
 
-<button 
-   @click="$router.push('/CodeRobot/Project?id=' + v.project.id)"
-  v-for="[k,v] in (Object.entries(s.data.projectxs) as [string,jcs.ProjectComplex][])">
-  {{  v.project.p.Code }}
-</button>
-
+<Project :projectx="ProjectComplex_empty()" />
 
 <Project 
   :projectx="v" 
@@ -25,6 +20,7 @@ import { glib } from '~/lib/glib'
 import { useRoute } from 'vue-router'
 import * as Common from '~/lib/store/common'
 import Project from '~/comps/Common/Project.vue'
+import { ProjectComplex_empty } from '~/lib/shared/CustomMor';
 
 
 const s = glib.vue.reactive({

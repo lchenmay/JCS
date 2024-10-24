@@ -613,6 +613,7 @@ let vartypeBindTypeEnum__caption e =
 type pVARTYPE = {
 mutable Name: Chars
 mutable Type: Chars
+mutable Val: Text
 mutable BindType: vartypeBindTypeEnum
 mutable Bind: Integer
 mutable Project: FK}
@@ -623,21 +624,22 @@ type VARTYPE = Rcd<pVARTYPE>
 let VARTYPE_fieldorders() =
     match rdbms with
     | Rdbms.SqlServer ->
-        "[ID],[Createdat],[Updatedat],[Sort],[Name],[Type],[BindType],[Bind],[Project]"
+        "[ID],[Createdat],[Updatedat],[Sort],[Name],[Type],[Val],[BindType],[Bind],[Project]"
     | Rdbms.PostgreSql ->
-        $""" "id","createdat","updatedat","sort", "name","type","bindtype","bind","project" """
+        $""" "id","createdat","updatedat","sort", "name","type","val","bindtype","bind","project" """
 
 let pVARTYPE_fieldordersArray = [|
     "Name"
     "Type"
+    "Val"
     "BindType"
     "Bind"
     "Project" |]
 
 let VARTYPE_sql_update() =
     match rdbms with
-    | Rdbms.SqlServer -> "[Name]=@Name,[Type]=@Type,[BindType]=@BindType,[Bind]=@Bind,[Project]=@Project"
-    | Rdbms.PostgreSql -> "name=@name,type=@type,bindtype=@bindtype,bind=@bind,project=@project"
+    | Rdbms.SqlServer -> "[Name]=@Name,[Type]=@Type,[Val]=@Val,[BindType]=@BindType,[Bind]=@Bind,[Project]=@Project"
+    | Rdbms.PostgreSql -> "name=@name,type=@type,val=@val,bindtype=@bindtype,bind=@bind,project=@project"
 
 let pVARTYPE_fields() =
     match rdbms with
@@ -645,6 +647,7 @@ let pVARTYPE_fields() =
         [|
             Chars("Name", 64)
             Chars("Type", 64)
+            Text("Val")
             SelectLines("BindType", [| ("ApiRequest","API Request");("ApiResponse","API Response");("CompState","Component State");("CompProps","Component Propos");("PageState","Page State");("PageProps","Page Propos") |])
             Integer("Bind")
             FK("Project") |]
@@ -652,6 +655,7 @@ let pVARTYPE_fields() =
         [|
             Chars("name", 64)
             Chars("type", 64)
+            Text("val")
             SelectLines("bindtype", [| ("ApiRequest","API Request");("ApiResponse","API Response");("CompState","Component State");("CompProps","Component Propos");("PageState","Page State");("PageProps","Page Propos") |])
             Integer("bind")
             FK("project") |]
@@ -659,6 +663,7 @@ let pVARTYPE_fields() =
 let pVARTYPE_empty(): pVARTYPE = {
     Name = ""
     Type = ""
+    Val = ""
     BindType = EnumOfValue 0
     Bind = 0L
     Project = 0L }

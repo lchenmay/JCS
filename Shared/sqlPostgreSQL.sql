@@ -674,6 +674,7 @@ BEGIN
         ,sort BIGINT NOT NULL
         ,"name" VARCHAR(64)
         ,"type" VARCHAR(64)
+        ,"val" TEXT
         ,"bindtype" INT
         ,"bind" BIGINT
         ,"project" BIGINT);
@@ -707,6 +708,20 @@ BEGIN
 
     IF not condition THEN
         ALTER TABLE ts_vartype ADD "type" varchar(64);
+    END IF;
+END $$;
+
+-- [Ts_VarType.Val] -------------
+
+
+DO $$
+DECLARE
+    condition boolean;
+BEGIN
+    condition := (SELECT EXISTS(SELECT column_name FROM information_schema.columns WHERE table_name='ts_vartype' AND column_name='val'));
+
+    IF not condition THEN
+        ALTER TABLE ts_vartype ADD "val" text;
     END IF;
 END $$;
 

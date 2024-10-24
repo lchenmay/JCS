@@ -135,14 +135,14 @@ let buildComps projectx (hostconfig:HOSTCONFIG) =
                 buildVueFile()
 
         compx.states.Values
-        |> Array.iter(fun prop ->
+        |> Array.iter(fun state ->
             match
                 vueFile.states
-                |> Array.tryFind(fun line -> line.StartsWith (prop.p.Name + ":")) with
+                |> Array.tryFind(fun line -> line.StartsWith (state.p.Name + ":")) with
             | Some line -> ()
             | None -> 
                 let ls = new List<string>(vueFile.states)
-                ls.Insert(1,prop.p.Name + ":" + projectx.project.p.Code.ToLower() + "." + prop.p.Type + ",")
+                ls.Insert(1,state.p.Name + ": " + state.p.Val + ",")
                 vueFile.states <- ls.ToArray())
 
         File.WriteAllLines(f,VueFile__src vueFile projectx compx.props)

@@ -1277,6 +1277,10 @@ let pVARTYPE__bin (bb:BytesBuilder) (p:pVARTYPE) =
     binType.Length |> BitConverter.GetBytes |> bb.append
     binType |> bb.append
     
+    let binVal = p.Val |> Encoding.UTF8.GetBytes
+    binVal.Length |> BitConverter.GetBytes |> bb.append
+    binVal |> bb.append
+    
     p.BindType |> EnumToValue |> BitConverter.GetBytes |> bb.append
     
     p.Bind |> BitConverter.GetBytes |> bb.append
@@ -1305,6 +1309,11 @@ let bin__pVARTYPE (bi:BinIndexed):pVARTYPE =
     index.Value <- index.Value + 4
     p.Type <- Encoding.UTF8.GetString(bin,index.Value,count_Type)
     index.Value <- index.Value + count_Type
+    
+    let count_Val = BitConverter.ToInt32(bin,index.Value)
+    index.Value <- index.Value + 4
+    p.Val <- Encoding.UTF8.GetString(bin,index.Value,count_Val)
+    index.Value <- index.Value + count_Val
     
     p.BindType <- BitConverter.ToInt32(bin,index.Value) |> EnumOfValue
     index.Value <- index.Value + 4
@@ -1342,6 +1351,7 @@ let pVARTYPE__json (p:pVARTYPE) =
     [|
         ("Name",p.Name |> Json.Str)
         ("Type",p.Type |> Json.Str)
+        ("Val",p.Val |> Json.Str)
         ("BindType",(p.BindType |> EnumToValue).ToString() |> Json.Num)
         ("Bind",p.Bind.ToString() |> Json.Num)
         ("Project",p.Project.ToString() |> Json.Num) |]
@@ -1374,6 +1384,8 @@ let json__pVARTYPEo (json:Json):pVARTYPE option =
     
     p.Type <- checkfieldz fields "Type" 64
     
+    p.Val <- checkfield fields "Val"
+    
     p.BindType <- checkfield fields "BindType" |> parse_int32 |> EnumOfValue
     
     p.Bind <- checkfield fields "Bind" |> parse_int64
@@ -1404,6 +1416,8 @@ let json__VARTYPEo (json:Json):VARTYPE option =
         p.Name <- checkfieldz fields "Name" 64
         
         p.Type <- checkfieldz fields "Type" 64
+        
+        p.Val <- checkfield fields "Val"
         
         p.BindType <- checkfield fields "BindType" |> parse_int32 |> EnumOfValue
         
@@ -2266,9 +2280,10 @@ let db__pVARTYPE(line:Object[]): pVARTYPE =
 
     p.Name <- string(line.[4]).TrimEnd()
     p.Type <- string(line.[5]).TrimEnd()
-    p.BindType <- EnumOfValue(if Convert.IsDBNull(line.[6]) then 0 else line.[6] :?> int)
-    p.Bind <- if Convert.IsDBNull(line.[7]) then 0L else line.[7] :?> int64
-    p.Project <- if Convert.IsDBNull(line.[8]) then 0L else line.[8] :?> int64
+    p.Val <- string(line.[6]).TrimEnd()
+    p.BindType <- EnumOfValue(if Convert.IsDBNull(line.[7]) then 0 else line.[7] :?> int)
+    p.Bind <- if Convert.IsDBNull(line.[8]) then 0L else line.[8] :?> int64
+    p.Project <- if Convert.IsDBNull(line.[9]) then 0L else line.[9] :?> int64
 
     p
 
@@ -2278,6 +2293,7 @@ let pVARTYPE__sps (p:pVARTYPE) =
         [|
             ("Name", p.Name) |> kvp__sqlparam
             ("Type", p.Type) |> kvp__sqlparam
+            ("Val", p.Val) |> kvp__sqlparam
             ("BindType", p.BindType) |> kvp__sqlparam
             ("Bind", p.Bind) |> kvp__sqlparam
             ("Project", p.Project) |> kvp__sqlparam |]
@@ -2285,6 +2301,7 @@ let pVARTYPE__sps (p:pVARTYPE) =
         [|
             ("name", p.Name) |> kvp__sqlparam
             ("type", p.Type) |> kvp__sqlparam
+            ("val", p.Val) |> kvp__sqlparam
             ("bindtype", p.BindType) |> kvp__sqlparam
             ("bind", p.Bind) |> kvp__sqlparam
             ("project", p.Project) |> kvp__sqlparam |]
@@ -2298,6 +2315,7 @@ let VARTYPE_wrapper item: VARTYPE =
 let pVARTYPE_clone (p:pVARTYPE): pVARTYPE = {
     Name = p.Name
     Type = p.Type
+    Val = p.Val
     BindType = p.BindType
     Bind = p.Bind
     Project = p.Project }
@@ -2362,6 +2380,7 @@ let VARTYPETxSqlServer =
     ,[Sort] BIGINT NOT NULL,
     ,[Name]
     ,[Type]
+    ,[Val]
     ,[BindType]
     ,[Bind]
     ,[Project])
