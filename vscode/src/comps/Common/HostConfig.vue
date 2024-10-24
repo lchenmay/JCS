@@ -1,6 +1,29 @@
 <template>
 
-{{ props.hostconfig.p.Hostname }}
+<div>
+  Host Name <input v-model="props.hostconfig.p.Hostname" />
+</div>
+
+<div>
+  Database <input v-model="props.hostconfig.p.Database" />
+</div>
+
+<div>
+  Database Name <input v-model="props.hostconfig.p.DatabaseName" />
+</div>
+
+<div>
+  Database Conn <input v-model="props.hostconfig.p.DatabaseConn" />
+</div>
+
+<div>
+  Dir Visual Studio /Shared <input v-model="props.hostconfig.p.DirVsShared" />
+</div>
+
+<div>
+  Dir VsCode Web <input v-model="props.hostconfig.p.DirVsCodeWeb" />
+</div>
+
 
 </template>
 
