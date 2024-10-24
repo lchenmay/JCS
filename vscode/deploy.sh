@@ -1,7 +1,5 @@
 VUE_BUILD_PATH="dist"
 DEPLOY_MAIN_FOLDER="../VueDeploy"
-DEPLOY_GCHAIN_PATH="../GChainVsOpen/Deploy"
-DEPLOY_CTC_PATH="../CrypTradeClubVsOpen/Deploy"
 
 FORCE_FLAG=0
 
@@ -25,14 +23,6 @@ execute_build_and_deploy() {
 
     if [ $? -eq 0 ]; then
         set -x
-        rm -rf "$DEPLOY_GCHAIN_PATH"
-        rm -rf "$DEPLOY_CTC_PATH"
-
-        mkdir -p "$DEPLOY_GCHAIN_PATH"
-        mkdir -p "$DEPLOY_CTC_PATH"
-
-        rsync -av --delete "$VUE_BUILD_PATH/" "$DEPLOY_GCHAIN_PATH/"
-        rsync -av --delete "$VUE_BUILD_PATH/" "$DEPLOY_CTC_PATH/"
         set +x
     fi
 }

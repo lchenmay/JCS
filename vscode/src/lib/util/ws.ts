@@ -65,7 +65,7 @@ export const tryApiRequest = async (req: any) => {
     let msg = {
       e: MsgEnum.ApiRequest as number,
       val: req
-    } as game.Msg
+    } as jcs.Msg
 
     console.log(JSON.stringify(msg))
     x.ws.send(JSON.stringify(msg))

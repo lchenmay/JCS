@@ -26,7 +26,6 @@ export default defineConfig({
   build: {
     target: ['esnext'],
     outDir: './dist',
-    //outDir: '../CrypTradeClubVsOpen/Deploy',
     chunkSizeWarningLimit: 3000,
     minify: false,//'esbuild',
     cssCodeSplit: true,

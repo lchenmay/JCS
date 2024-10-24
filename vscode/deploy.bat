@@ -3,8 +3,6 @@ setlocal
 
 set VUE_BUILD_PATH="dist"
 set DEPLOY_MAIN_FOLDER="../VueDeploy"
-set DEPLOY_GCHAIN_PATH="../GChainVsOpen/Deploy"
-set DEPLOY_CTC_PATH="../CrypTradeClubVsOpen/Deploy"
 
 set FORCE_FLAG=0
 
@@ -41,11 +39,6 @@ bun bd
 
 echo robocopy
 if %errorlevel% equ 0 (
-    rmdir /s /q %DEPLOY_GCHAIN_PATH%
-    rmdir /s /q %DEPLOY_CTC_PATH%
-
-    robocopy /mt /z /purge /s %VUE_BUILD_PATH% %DEPLOY_GCHAIN_PATH%
-    robocopy /mt /z /purge /s %VUE_BUILD_PATH% %DEPLOY_CTC_PATH%
 )
 
 :End_Script

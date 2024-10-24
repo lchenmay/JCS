@@ -46,8 +46,8 @@ async function generateRoutes(rootDir) {
             props: true,
           }
           route.path = `/${parentPath}/${componentName}`.replace(/\\/g, '/')
-          if((pathArray[0] == 'news' || pathArray[0] == 'otc' ||pathArray[0] == 'ex' ||pathArray[0] == 'rol' ||pathArray[0] == 'nm') &&  pathArray.length != 2){
-            route.path = `/${parentPath}/${componentName}`.replace(/\\/g, '/').replace(/^\/(news|otc|ex|rol|nm)/, '')
+          if((pathArray[0] == 'news' || pathArray[0] == 'otc' ||pathArray[0] == 'ex' || ||pathArray[0] == 'nm') &&  pathArray.length != 2){
+            route.path = `/${parentPath}/${componentName}`.replace(/\\/g, '/').replace(/^\/(news|otc|ex|nm)/, '')
           }
           if(pathArray.slice(-1)[0] == 'index' && pathArray.length != 1){
             route.path = route.path.replace(/\/index$/, '')

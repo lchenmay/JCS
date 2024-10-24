@@ -5,7 +5,7 @@ Vue + Vite + TSX + Tailwindcss
 1. Install ```bun``` from https://bun.sh/.
 2. Install ```VS Code``` https://code.visualstudio.com/ or other IDEs.
 3. Restart ```CMD``` Env to get the latest ```PATH```.
-4. ```git clone https://github.com/GCHAIN2024/fx.git```
+4. ```git clone https://github.com/abcxxx/fx.git```
 5. in ```fx``` folder, run ```bun install```.
 6. ```bun dev``` to run vite server at http://localhost:5173 or http://127.0.0.1:5173.
 * To run ts script, run ```bun XXX.ts```
