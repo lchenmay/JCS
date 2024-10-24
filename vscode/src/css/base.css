@@ -21,6 +21,10 @@ input:placeholder {
   @apply text-gray-700 dark:text-gray-300;
 }
 
+h1{
+  @apply flex w-[75%] bg-blue-700 m-2 p-2 text-white text-2xl font-bold
+}
+
 .caption-full-width{
   @apply flex w-[99%] bg-blue-700 m-2 p-2 text-white text-2xl font-bold
 }

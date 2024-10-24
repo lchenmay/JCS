@@ -112,7 +112,7 @@ let init (runtime:Runtime) =
         match pc.pagexs.Values |> Array.tryFind(fun i -> i.page.p.Name = name) with
         | Some page -> ()
         | None -> 
-            match createPage pc.project template name with
+            match createPage pc name with
             | Some page -> pc.pagexs[page.p.Name] <- page |> page__CompComplex
             | None -> halt runtime.output ("BizLogics.Init.createPage [" + name + "]") "")
 
@@ -149,8 +149,13 @@ let init (runtime:Runtime) =
     [|  ("projectx","ProjectComplex","/Common/Project")
         ("tablex","TableComplex","/Common/Table")
         ("field","FIELD","/Common/Field")
+
+        ("projectx","ProjectComplex","/Common/Comp")
         ("compx","CompComplex","/Common/Comp")
+
+        ("projectx","ProjectComplex","/Common/Page")
         ("pagex","PageComplex","/Common/Page")
+
         ("vt","VARTYPE","/Common/VarType") |]
     |> Array.iter(fun (propName,propType,comp) ->
         let compx = pc.compxs[comp]

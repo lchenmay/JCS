@@ -38,6 +38,15 @@ let createProject (code:string) =
     else
         None
 
+let createPage projectx (name:string) = 
+    let name = name.Trim()
+    if name.Length > 0 && projectx.pagexs.ContainsKey name = false then
+        (fun (p:pPAGE) ->
+            p.Project <- projectx.project.ID
+            p.Name <- name) |> creator PAGE_metadata
+    else
+        None
+
 let checkLocalHostConfig projectx = 
     match 
         projectx.hostconfigs.Values 
@@ -57,13 +66,6 @@ let createTemplate project name =
     (fun (p:pTEMPLATE) ->
         p.Project <- project.ID
         p.Name <- name) |> creator TEMPLATE_metadata
-
-let createPage project template name = 
-    (fun (p:pPAGE) ->
-        p.Project <- project.ID
-        p.Template <- template.ID
-        p.Name <- name) |> creator PAGE_metadata
-
 
 let createCompProp project comp name t = 
     (fun (p:pVARTYPE) ->

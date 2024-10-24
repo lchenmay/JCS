@@ -50,9 +50,22 @@ let branching x =
         | "createProject" -> (fun x ->
             match tryFindStrByAtt "code" x.json |> createProject with
             | Some project -> 
-                let json = project |> project__ProjectComplex
-                runtime.data.projectxs[project.ID] <- json
-                json |> ProjectComplex__json |> wrapOk "projectx"
+                let projectx = project |> project__ProjectComplex
+                runtime.data.projectxs[project.ID] <- projectx
+                projectx |> ProjectComplex__json |> wrapOk "projectx"
+            | None -> er Er.InvalideParameter) |> bindx
+        | "createPage" -> (fun x ->
+            match 
+                tryFindNumByAtt "project" x.json
+                |> parse_int64
+                |> runtime.data.projectxs.TryGet with
+            | Some projectx ->
+                match tryFindStrByAtt "name" x.json |> createPage projectx with
+                | Some page -> 
+                    let pagex = page |> page__CompComplex
+                    projectx.pagexs[page.p.Name] <- pagex
+                    pagex |> PageComplex__json |> wrapOk "pagex"
+                | None -> er Er.InvalideParameter
             | None -> er Er.InvalideParameter) |> bindx
         | _ -> Fail(Er.ApiNotExists,x)
     | _ -> Fail(Er.ApiNotExists,x)

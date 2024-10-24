@@ -34,7 +34,8 @@ import * as Common from '~/lib/store/common'
 import VarType from '~/comps/Common/VarType.vue'
 import { VARTYPE_empty } from '~/lib/shared/OrmMor'
 
-const props = defineProps(['compx'])
+const props = defineProps(['projectx','compx'])
+props.projectx as jcs.ProjectComplex
 props.compx as jcs.CompComplex
 
 const s = glib.vue.reactive({

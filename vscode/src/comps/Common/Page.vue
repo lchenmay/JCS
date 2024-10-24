@@ -7,7 +7,11 @@
     {{ props.pagex.page.p.Name }}
   </div>
   <div v-else>
-    Create New Page
+    Page Name:
+    <input v-model="props.pagex.page.p.Name" />
+    <button @click="Common.loader('/api/public/createPage', { name: props.pagex.page.p.Name, project: Number(props.projectx.project.id) },(rep:any) => { props.pagex.page = rep.page; props.projectx.pagexs[props.pagex.page.p.Name] = rep })">
+        Create New Page
+    </button>
   </div>
 </div>
     
@@ -47,8 +51,9 @@ import * as Common from '~/lib/store/common'
 import VarType from '~/comps/Common/VarType.vue'
 import { VARTYPE_empty } from '~/lib/shared/OrmMor'
 
-const props = defineProps(['pagex'])
+const props = defineProps(['pagex','projectx'])
 props.pagex as jcs.PageComplex
+props.projectx as jcs.ProjectComplex
 
 const s = glib.vue.reactive({
 })
