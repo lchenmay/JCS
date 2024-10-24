@@ -7,7 +7,16 @@
     {{ props.compx.comp.p.Name }}
   </div>
   <div v-else>
-    Create New Component
+    Component Name:
+    <input v-model="props.compx.comp.p.Name" />
+    <button @click="Common.loader('/api/public/createComp', { 
+      name: props.compx.comp.p.Name, 
+      project: Number(props.projectx.project.id) },(rep:any) => { 
+        let v = rep.compx as jcs.CompComplex
+        props.compx.comp = v.comp 
+        props.projectx.compxs[props.compx.comp.p.Name] = v })">
+      Create New Component
+    </button>
   </div>
 </div>
 

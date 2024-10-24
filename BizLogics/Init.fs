@@ -48,7 +48,7 @@ let init (runtime:Runtime) =
 
     (fun (i:PROJECT) -> runtime.data.projectxs[i.ID] <- i |> project__ProjectComplex) |> loader PROJECT_metadata
 
-    let pc = 
+    let projectx = 
 
         let self = "JCS"
         match runtime.data.projectxs.Values |> Array.tryFind(fun i -> i.project.p.Code = self) with
@@ -61,7 +61,7 @@ let init (runtime:Runtime) =
         runtime.data.projectxs.Values |> Array.find(fun i -> i.project.p.Code = self)
 
     (fun (i:HOSTCONFIG) -> runtime.data.projectxs[i.p.Project].hostconfigs[i.p.Hostname] <- i) |> loader HOSTCONFIG_metadata
-    checkLocalHostConfig pc |> ignore
+    checkLocalHostConfig projectx |> ignore
 
     (fun (i:TABLE) -> runtime.data.projectxs[i.p.Project].tablexs[i.p.Name] <- {
         fields = createModDictStr 4
@@ -86,34 +86,34 @@ let init (runtime:Runtime) =
         "/Common/Comp"
         "/Common/Page" |]
     |> Array.iter(fun name ->
-        match pc.compxs.Values |> Array.tryFind(fun i -> i.comp.p.Name = name) with
+        match projectx.compxs.Values |> Array.tryFind(fun i -> i.comp.p.Name = name) with
         | Some comp -> ()
         | None -> 
-            match createComp pc.project name with
-            | Some comp -> pc.compxs[comp.p.Name] <- comp |> comp__CompComplex
+            match createComp projectx name with
+            | Some comp -> projectx.compxs[comp.p.Name] <- comp |> comp__CompComplex
             | None -> halt runtime.output ("BizLogics.Init.createComp [" + name + "]") "")
 
     [|  "Public"
         "CodeRobot" |]
     |> Array.iter(fun name ->
-        match pc.templatexs.Values |> Array.tryFind(fun i -> i.p.Name = name) with
+        match projectx.templatexs.Values |> Array.tryFind(fun i -> i.p.Name = name) with
         | Some template -> ()
         | None -> 
-            match createTemplate pc.project name with
-            | Some template -> pc.templatexs[template.p.Name] <- template
+            match createTemplate projectx.project name with
+            | Some template -> projectx.templatexs[template.p.Name] <- template
             | None -> halt runtime.output ("BizLogics.Init.createTemplate [" + name + "]") "")
 
-    let template = pc.templatexs.Values |> Array.find(fun i -> i.p.Name = "CodeRobot")
+    let template = projectx.templatexs.Values |> Array.find(fun i -> i.p.Name = "CodeRobot")
 
     [|  "/Public/HomePage"
         "/CodeRobot/Projects"
         "/CodeRobot/Project" |]
     |> Array.iter(fun name ->
-        match pc.pagexs.Values |> Array.tryFind(fun i -> i.page.p.Name = name) with
+        match projectx.pagexs.Values |> Array.tryFind(fun i -> i.page.p.Name = name) with
         | Some page -> ()
         | None -> 
-            match createPage pc name with
-            | Some page -> pc.pagexs[page.p.Name] <- page |> page__CompComplex
+            match createPage projectx name with
+            | Some page -> projectx.pagexs[page.p.Name] <- page |> page__CompComplex
             | None -> halt runtime.output ("BizLogics.Init.createPage [" + name + "]") "")
 
 
@@ -141,7 +141,7 @@ let init (runtime:Runtime) =
             page.props[i.p.Name] <- i
         | _ -> ()) |> loader VARTYPE_metadata
 
-    pc
+    projectx
     |> projx__lines
     |> Array.iter runtime.output
 
@@ -158,33 +158,33 @@ let init (runtime:Runtime) =
 
         ("vt","VARTYPE","/Common/VarType") |]
     |> Array.iter(fun (propName,propType,comp) ->
-        let compx = pc.compxs[comp]
+        let compx = projectx.compxs[comp]
         match compx.props.Values |> Array.tryFind(fun i -> i.p.Name = propName) with
         | Some prop -> ()
         | None -> 
-            match createCompProp pc.project compx.comp propName propType with
+            match createCompProp projectx.project compx.comp propName propType with
             | Some vt -> compx.props[propName] <- vt
             | None -> halt runtime.output ("BizLogics.Init.createPageProp") "")
 
     // Comp States
     [|  ("expand","false","/Common/Project") |]
     |> Array.iter(fun (stateName,stateVal,comp) ->
-        let compx = pc.compxs[comp]
+        let compx = projectx.compxs[comp]
         match compx.states.Values |> Array.tryFind(fun i -> i.p.Name = stateName) with
         | Some state -> ()
         | None -> 
-            match createCompState pc.project compx.comp stateName stateVal with
+            match createCompState projectx.project compx.comp stateName stateVal with
             | Some vt -> compx.states[stateName] <- vt
             | None -> halt runtime.output ("BizLogics.Init.createCompState") "")
 
     // Page Props
     [|  ("projectx","ProjectComplex","/CodeRobot/Project") |]
     |> Array.iter(fun (propName,propType,page) ->
-        let pagex = pc.pagexs[page]
+        let pagex = projectx.pagexs[page]
         match pagex.props.Values |> Array.tryFind(fun i -> i.p.Name = propName) with
         | Some prop -> ()
         | None -> 
-            match createPageProp pc.project pagex.page propName propType with
+            match createPageProp projectx.project pagex.page propName propType with
             | Some vt -> pagex.props[propName] <- vt
             | None -> halt runtime.output ("BizLogics.Init.createPageProp") "")
 

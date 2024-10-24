@@ -57,10 +57,14 @@ let checkLocalHostConfig projectx =
             p.Project <- projectx.project.ID
             p.Hostname <- System.Environment.MachineName.ToUpper()) |> creator HOSTCONFIG_metadata
 
-let createComp project name = 
-    (fun (p:pCOMP) ->
-        p.Project <- project.ID
-        p.Name <- name) |> creator COMP_metadata
+let createComp projectx (name:string) = 
+    let name = name.Trim()
+    if name.Length > 0 && projectx.compxs.ContainsKey name = false then
+        (fun (p:pCOMP) ->
+            p.Project <- projectx.project.ID
+            p.Name <- name) |> creator COMP_metadata
+    else
+        None
 
 let createTemplate project name = 
     (fun (p:pTEMPLATE) ->

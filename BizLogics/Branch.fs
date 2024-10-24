@@ -54,6 +54,19 @@ let branching x =
                 runtime.data.projectxs[project.ID] <- projectx
                 projectx |> ProjectComplex__json |> wrapOk "projectx"
             | None -> er Er.InvalideParameter) |> bindx
+        | "createComp" -> (fun x ->
+            match 
+                tryFindNumByAtt "project" x.json
+                |> parse_int64
+                |> runtime.data.projectxs.TryGet with
+            | Some projectx ->
+                match tryFindStrByAtt "name" x.json |> createComp projectx with
+                | Some comp -> 
+                    let compx = comp |> comp__CompComplex
+                    projectx.compxs[comp.p.Name] <- compx
+                    compx |> CompComplex__json |> wrapOk "compx"
+                | None -> er Er.InvalideParameter
+            | None -> er Er.InvalideParameter) |> bindx
         | "createPage" -> (fun x ->
             match 
                 tryFindNumByAtt "project" x.json

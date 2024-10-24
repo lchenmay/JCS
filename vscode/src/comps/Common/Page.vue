@@ -9,8 +9,13 @@
   <div v-else>
     Page Name:
     <input v-model="props.pagex.page.p.Name" />
-    <button @click="Common.loader('/api/public/createPage', { name: props.pagex.page.p.Name, project: Number(props.projectx.project.id) },(rep:any) => { props.pagex.page = rep.page; props.projectx.pagexs[props.pagex.page.p.Name] = rep })">
-        Create New Page
+    <button @click="Common.loader('/api/public/createPage', { 
+      name: props.pagex.page.p.Name, 
+      project: Number(props.projectx.project.id) },(rep:any) => { 
+        let v = rep.pagex as jcs.PageComplex
+        props.pagex.page = v.page 
+        props.projectx.pagexs[props.pagex.page.p.Name] = v })">
+      Create New Page
     </button>
   </div>
 </div>

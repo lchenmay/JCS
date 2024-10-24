@@ -40,9 +40,9 @@
   v-for="[k,v] in (Object.entries(props.projectx.tablexs) as [string,jcs.TableComplex][])" />
 
 <h1>Components</h1>
-<Comp :compx="glib.Mor.jcs.CompComplex_empty()" />
+<Comp :compx="glib.Mor.jcs.CompComplex_empty()" :projectx="props.projectx" />
 <Comp 
-  :compx="v"
+  :compx="v" :projectx="props.projectx"
   v-for="[k,v] in (Object.entries(props.projectx.compxs) as [string,jcs.CompComplex][])" />
 
 <h1>Pages</h1>
