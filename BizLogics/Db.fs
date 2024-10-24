@@ -53,9 +53,14 @@ let checkLocalHostConfig projectx =
         |> Array.tryFind(fun i -> i.p.Hostname.ToUpper() = System.Environment.MachineName.ToUpper()) with
     | Some v -> Some v
     | None -> 
-        (fun (p:pHOSTCONFIG) ->
-            p.Project <- projectx.project.ID
-            p.Hostname <- System.Environment.MachineName.ToUpper()) |> creator HOSTCONFIG_metadata
+        match 
+            (fun (p:pHOSTCONFIG) ->
+                p.Project <- projectx.project.ID
+                p.Hostname <- System.Environment.MachineName.ToUpper()) |> creator HOSTCONFIG_metadata with
+            | Some v -> 
+                projectx.hostconfigs[v.p.Hostname] <- v
+                Some v
+            | None -> None
 
 let createComp projectx (name:string) = 
     let name = name.Trim()

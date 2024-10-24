@@ -29,9 +29,10 @@
 <div v-else>
 
 <h1>Host Configurations</h1>
-<div v-for="[k,v] in (Object.entries(props.projectx.hostconfigs) as [string,jcs.HOSTCONFIG][])">
-    {{ v.p.Hostname }}
-</div>
+<HostConfig :hostconfig="glib.Mor.jcs.HOSTCONFIG_empty()" :projectx="props.projectx" />
+<HostConfig 
+  :hostconfig="v" :projectx="props.projectx"
+  v-for="[k,v] in (Object.entries(props.projectx.hostconfigs) as [string,jcs.HOSTCONFIG][])" />
 
 <h1>Tables</h1>
 <Table :tablex="glib.Mor.jcs.TableComplex_empty()" />
@@ -65,6 +66,7 @@ import * as Common from '~/lib/store/common'
 import Table from '~/comps/Common/Table.vue'
 import Comp from '~/comps/Common/Comp.vue'
 import Page from '~/comps/Common/Page.vue'
+import HostConfig from '~/comps/Common/HostConfig.vue'
 
 const props = defineProps(['projectx'])
 props.projectx as jcs.ProjectComplex

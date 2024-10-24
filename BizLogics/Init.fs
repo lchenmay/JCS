@@ -47,6 +47,10 @@ let init (runtime:Runtime) =
     let loader metadata = loadAll runtime.output conn metadata
 
     (fun (i:PROJECT) -> runtime.data.projectxs[i.ID] <- i |> project__ProjectComplex) |> loader PROJECT_metadata
+    (fun (i:HOSTCONFIG) -> runtime.data.projectxs[i.p.Project].hostconfigs[i.p.Hostname] <- i) |> loader HOSTCONFIG_metadata
+    runtime.data.projectxs.Values
+    |> Array.map checkLocalHostConfig
+    |> ignore
 
     let projectx = 
 
@@ -59,9 +63,6 @@ let init (runtime:Runtime) =
             | None -> halt runtime.output ("BizLogics.Init.createComp [" + self + "]") ""
 
         runtime.data.projectxs.Values |> Array.find(fun i -> i.project.p.Code = self)
-
-    (fun (i:HOSTCONFIG) -> runtime.data.projectxs[i.p.Project].hostconfigs[i.p.Hostname] <- i) |> loader HOSTCONFIG_metadata
-    checkLocalHostConfig projectx |> ignore
 
     (fun (i:TABLE) -> runtime.data.projectxs[i.p.Project].tablexs[i.p.Name] <- {
         fields = createModDictStr 4
@@ -78,6 +79,7 @@ let init (runtime:Runtime) =
     (fun (i:API) -> runtime.data.projectxs[i.p.Project].apixs[i.p.Name] <- i |> api__ApiComplex) |> loader API_metadata
 
     [|  "/Common/Project"
+        "/Common/HostConfig"
         "/Common/Table"
         "/Common/Field"
         "/Common/Api"
@@ -147,6 +149,10 @@ let init (runtime:Runtime) =
 
     // Comp Props
     [|  ("projectx","ProjectComplex","/Common/Project")
+
+        ("projectx","ProjectComplex","/Common/HostConfig")
+        ("hostconfig","HOSTCONFIG","/Common/HostConfig")
+
         ("tablex","TableComplex","/Common/Table")
         ("field","FIELD","/Common/Field")
 
