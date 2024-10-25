@@ -42,8 +42,6 @@ let init (runtime:Runtime) =
 
     Shared.OrmMor.init()
 
-    runtime.data.projectxs.Reset 1
-
     let loader metadata = loadAll runtime.output conn metadata
 
     (fun (i:PROJECT) -> runtime.data.projectxs[i.ID] <- i |> project__ProjectComplex) |> loader PROJECT_metadata
