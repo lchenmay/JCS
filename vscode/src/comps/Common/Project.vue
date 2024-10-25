@@ -28,6 +28,13 @@
 
 <div v-else>
 
+<div>
+  Project Code: {{ props.projectx.project.p.Code }}
+</div>
+<div>
+  Session User Type: {{ props.projectx.project.p.TypeSessionUser }}
+</div>
+
 <h1>Host Configurations</h1>
 <HostConfig :hostconfig="glib.Mor.jcs.HOSTCONFIG_empty()" :projectx="props.projectx" />
 <HostConfig 

@@ -79,6 +79,7 @@ p:pHOSTCONFIG
 export type pPROJECT = {
     Code: string
     Caption: string
+    TypeSessionUser: string
 }
 
 export type PROJECT = {

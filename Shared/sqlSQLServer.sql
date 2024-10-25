@@ -570,6 +570,7 @@ BEGIN
         ,[Sort] BIGINT NOT NULL,
         [Code] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS
         ,[Caption] NVARCHAR(256) COLLATE Chinese_PRC_CI_AS
+        ,[TypeSessionUser] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS
 , CONSTRAINT [PK_Ts_Project] PRIMARY KEY CLUSTERED ([ID] ASC)) ON [PRIMARY]
 END
 
@@ -577,7 +578,7 @@ END
 -- Dropping obsolete fields -----------
 DECLARE @name_Ts_Project NVARCHAR(64)
 DECLARE cursor_Ts_Project CURSOR FOR 
-    SELECT name FROM SYSCOLUMNS WHERE id=object_id('Ts_Project') AND (name NOT IN ('ID','Createdat','Updatedat','Sort','Code','Caption'))
+    SELECT name FROM SYSCOLUMNS WHERE id=object_id('Ts_Project') AND (name NOT IN ('ID','Createdat','Updatedat','Sort','Code','Caption','TypeSessionUser'))
 
 OPEN cursor_Ts_Project
 FETCH NEXT FROM cursor_Ts_Project INTO @name_Ts_Project
@@ -650,6 +651,33 @@ IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ts_Projec
 IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ts_ProjectCaption')
     BEGIN
     ALTER TABLE Ts_Project DROP  CONSTRAINT [UniqueNonclustered_Ts_ProjectCaption]
+    END
+
+-- [Ts_Project.TypeSessionUser] -------------
+
+
+-- [Ts_Project.TypeSessionUser] -------------
+
+IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ts_Project') AND name='TypeSessionUser')
+    BEGIN
+     ALTER TABLE Ts_Project ALTER COLUMN [TypeSessionUser] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS
+    END
+ELSE
+    BEGIN
+    DECLARE @sql_add_Ts_Project_TypeSessionUser NVARCHAR(MAX);
+    SET @sql_add_Ts_Project_TypeSessionUser = 'ALTER TABLE Ts_Project ADD [TypeSessionUser] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS'
+    EXEC sp_executesql @sql_add_Ts_Project_TypeSessionUser
+    END
+
+
+IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ts_ProjectTypeSessionUser')
+    BEGIN
+    ALTER TABLE Ts_Project DROP  CONSTRAINT [Constraint_Ts_ProjectTypeSessionUser]
+    END
+
+IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ts_ProjectTypeSessionUser')
+    BEGIN
+    ALTER TABLE Ts_Project DROP  CONSTRAINT [UniqueNonclustered_Ts_ProjectTypeSessionUser]
     END
 -- [Ts_Table] ----------------------
 

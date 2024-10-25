@@ -181,6 +181,8 @@ export const pPROJECT__bin = (bb:BytesBuilder) => (p:jcs.pPROJECT) => {
     marshall.str__bin (bb) (p.Code)
     
     marshall.str__bin (bb) (p.Caption)
+    
+    marshall.str__bin (bb) (p.TypeSessionUser)
 }
 
 export const PROJECT__bin = (bb:BytesBuilder) => (v:jcs.PROJECT) => {
@@ -197,6 +199,7 @@ export const bin__pPROJECT = (bi:BinIndexed):jcs.pPROJECT => {
     let p = pPROJECT_empty()
     p.Code = marshall.bin__str (bi)
     p.Caption = marshall.bin__str (bi)
+    p.TypeSessionUser = marshall.bin__str (bi)
 
     return p
 }
@@ -544,7 +547,8 @@ export const HOSTCONFIG_empty = (): jcs.HOSTCONFIG => {
 export const pPROJECT_empty = (): jcs.pPROJECT => {
     return {
         Code: "",
-        Caption: "" }
+        Caption: "",
+        TypeSessionUser: "" }
 }
 
 export const PROJECT_empty = (): jcs.PROJECT => {

@@ -305,7 +305,8 @@ let HOSTCONFIG_table = "Ts_HostConfig"
 
 type pPROJECT = {
 mutable Code: Chars
-mutable Caption: Chars}
+mutable Caption: Chars
+mutable TypeSessionUser: Chars}
 
 
 type PROJECT = Rcd<pPROJECT>
@@ -313,33 +314,37 @@ type PROJECT = Rcd<pPROJECT>
 let PROJECT_fieldorders() =
     match rdbms with
     | Rdbms.SqlServer ->
-        "[ID],[Createdat],[Updatedat],[Sort],[Code],[Caption]"
+        "[ID],[Createdat],[Updatedat],[Sort],[Code],[Caption],[TypeSessionUser]"
     | Rdbms.PostgreSql ->
-        $""" "id","createdat","updatedat","sort", "code","caption" """
+        $""" "id","createdat","updatedat","sort", "code","caption","typesessionuser" """
 
 let pPROJECT_fieldordersArray = [|
     "Code"
-    "Caption" |]
+    "Caption"
+    "TypeSessionUser" |]
 
 let PROJECT_sql_update() =
     match rdbms with
-    | Rdbms.SqlServer -> "[Code]=@Code,[Caption]=@Caption"
-    | Rdbms.PostgreSql -> "code=@code,caption=@caption"
+    | Rdbms.SqlServer -> "[Code]=@Code,[Caption]=@Caption,[TypeSessionUser]=@TypeSessionUser"
+    | Rdbms.PostgreSql -> "code=@code,caption=@caption,typesessionuser=@typesessionuser"
 
 let pPROJECT_fields() =
     match rdbms with
     | Rdbms.SqlServer ->
         [|
             Chars("Code", 64)
-            Chars("Caption", 256) |]
+            Chars("Caption", 256)
+            Chars("TypeSessionUser", 64) |]
     | Rdbms.PostgreSql ->
         [|
             Chars("code", 64)
-            Chars("caption", 256) |]
+            Chars("caption", 256)
+            Chars("typesessionuser", 64) |]
 
 let pPROJECT_empty(): pPROJECT = {
     Code = ""
-    Caption = "" }
+    Caption = ""
+    TypeSessionUser = "" }
 
 let PROJECT_id = ref 234345L
 let PROJECT_count = ref 0

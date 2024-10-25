@@ -14,6 +14,7 @@
     <ProjectReference Include="..\..\Common\Util\Util.fsproj" />
     <ProjectReference Include="..\BizLogics\BizLogics.fsproj" />
     <ProjectReference Include="..\Shared\Shared.fsproj" />
+    <ProjectReference Include="..\TypeSys\TypeSys.fsproj" />
   </ItemGroup>
 
 </Project>

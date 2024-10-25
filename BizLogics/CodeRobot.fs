@@ -41,7 +41,7 @@ mutable imports: string[]
 mutable states: string[]
 mutable onMounted: string[] }
 
-let buildVueFile() = 
+let buildVueFile projectx = 
     {   template =     
             [|  "<template>"
                 "</template>" |]
@@ -54,6 +54,7 @@ let buildVueFile() =
         states =    
             [|  "const s = glib.vue.reactive({"
                 "query: useRoute().query,"
+                "user: runtime.user," 
                 "data: runtime.data"
                 "})" |]
                 
@@ -89,8 +90,8 @@ let VueFile__src vueFile projectx (props: ModDictStr<VARTYPE>) =
 
     res.ToArray()
     
-let src__VueFile (lines:string[]) = 
-    let res = buildVueFile()
+let src__VueFile projectx (lines:string[]) = 
+    let res = buildVueFile projectx
 
     let template = tryTake lines ("<template>","</template>") true
     if template.Length > 0 then
@@ -125,9 +126,9 @@ let buildComps projectx (hostconfig:HOSTCONFIG) =
         let vueFile = 
             if File.Exists f then
                 File.ReadAllLines f
-                |> src__VueFile
+                |> src__VueFile projectx
             else
-                buildVueFile()
+                buildVueFile projectx
 
         compx.states.Values
         |> Array.iter(fun state ->
@@ -159,9 +160,9 @@ let buildPages projectx (hostconfig:HOSTCONFIG) =
         let vueFile = 
             if File.Exists f then
                 File.ReadAllLines f
-                |> src__VueFile
+                |> src__VueFile projectx
             else
-                buildVueFile()
+                buildVueFile projectx
 
         File.WriteAllLines(f,VueFile__src vueFile projectx pagex.props)
 

@@ -303,7 +303,8 @@ BEGIN
         ,updatedat BIGINT NOT NULL
         ,sort BIGINT NOT NULL
         ,"code" VARCHAR(64)
-        ,"caption" VARCHAR(256));
+        ,"caption" VARCHAR(256)
+        ,"typesessionuser" VARCHAR(64));
 
    END IF;
 END $$;
@@ -334,6 +335,20 @@ BEGIN
 
     IF not condition THEN
         ALTER TABLE ts_project ADD "caption" varchar(256);
+    END IF;
+END $$;
+
+-- [Ts_Project.TypeSessionUser] -------------
+
+
+DO $$
+DECLARE
+    condition boolean;
+BEGIN
+    condition := (SELECT EXISTS(SELECT column_name FROM information_schema.columns WHERE table_name='ts_project' AND column_name='typesessionuser'));
+
+    IF not condition THEN
+        ALTER TABLE ts_project ADD "typesessionuser" varchar(64);
     END IF;
 END $$;
 -- [Ts_Table] ----------------------

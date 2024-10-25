@@ -30,6 +30,8 @@ open UtilWebServer.Server.Service
 [<EntryPoint>]
 let main argv =
 
+    TypeSys.Program.run()
+
     init runtime
 
     runtime.echo <- echo

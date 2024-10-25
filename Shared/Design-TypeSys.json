@@ -13,6 +13,11 @@
         "enum": "Chars",
         "length": 256,
         "name": "Caption"
+      },
+      {
+        "enum": "Chars",
+        "length": 64,
+        "name": "TypeSessionUser"
       }
     ]
   },

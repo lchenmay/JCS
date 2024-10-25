@@ -535,6 +535,10 @@ let pPROJECT__bin (bb:BytesBuilder) (p:pPROJECT) =
     let binCaption = p.Caption |> Encoding.UTF8.GetBytes
     binCaption.Length |> BitConverter.GetBytes |> bb.append
     binCaption |> bb.append
+    
+    let binTypeSessionUser = p.TypeSessionUser |> Encoding.UTF8.GetBytes
+    binTypeSessionUser.Length |> BitConverter.GetBytes |> bb.append
+    binTypeSessionUser |> bb.append
 
 let PROJECT__bin (bb:BytesBuilder) (v:PROJECT) =
     v.ID |> BitConverter.GetBytes |> bb.append
@@ -558,6 +562,11 @@ let bin__pPROJECT (bi:BinIndexed):pPROJECT =
     index.Value <- index.Value + 4
     p.Caption <- Encoding.UTF8.GetString(bin,index.Value,count_Caption)
     index.Value <- index.Value + count_Caption
+    
+    let count_TypeSessionUser = BitConverter.ToInt32(bin,index.Value)
+    index.Value <- index.Value + 4
+    p.TypeSessionUser <- Encoding.UTF8.GetString(bin,index.Value,count_TypeSessionUser)
+    index.Value <- index.Value + count_TypeSessionUser
     
     p
 
@@ -585,7 +594,8 @@ let pPROJECT__json (p:pPROJECT) =
 
     [|
         ("Code",p.Code |> Json.Str)
-        ("Caption",p.Caption |> Json.Str) |]
+        ("Caption",p.Caption |> Json.Str)
+        ("TypeSessionUser",p.TypeSessionUser |> Json.Str) |]
     |> Json.Braket
 
 let PROJECT__json (v:PROJECT) =
@@ -615,6 +625,8 @@ let json__pPROJECTo (json:Json):pPROJECT option =
     
     p.Caption <- checkfieldz fields "Caption" 256
     
+    p.TypeSessionUser <- checkfieldz fields "TypeSessionUser" 64
+    
     p |> Some
     
 
@@ -639,6 +651,8 @@ let json__PROJECTo (json:Json):PROJECT option =
         p.Code <- checkfieldz fields "Code" 64
         
         p.Caption <- checkfieldz fields "Caption" 256
+        
+        p.TypeSessionUser <- checkfieldz fields "TypeSessionUser" 64
         
         {
             ID = ID
@@ -1770,6 +1784,7 @@ let db__pPROJECT(line:Object[]): pPROJECT =
 
     p.Code <- string(line.[4]).TrimEnd()
     p.Caption <- string(line.[5]).TrimEnd()
+    p.TypeSessionUser <- string(line.[6]).TrimEnd()
 
     p
 
@@ -1778,11 +1793,13 @@ let pPROJECT__sps (p:pPROJECT) =
     | Rdbms.SqlServer ->
         [|
             ("Code", p.Code) |> kvp__sqlparam
-            ("Caption", p.Caption) |> kvp__sqlparam |]
+            ("Caption", p.Caption) |> kvp__sqlparam
+            ("TypeSessionUser", p.TypeSessionUser) |> kvp__sqlparam |]
     | Rdbms.PostgreSql ->
         [|
             ("code", p.Code) |> kvp__sqlparam
-            ("caption", p.Caption) |> kvp__sqlparam |]
+            ("caption", p.Caption) |> kvp__sqlparam
+            ("typesessionuser", p.TypeSessionUser) |> kvp__sqlparam |]
 
 let db__PROJECT = db__Rcd db__pPROJECT
 
@@ -1792,7 +1809,8 @@ let PROJECT_wrapper item: PROJECT =
 
 let pPROJECT_clone (p:pPROJECT): pPROJECT = {
     Code = p.Code
-    Caption = p.Caption }
+    Caption = p.Caption
+    TypeSessionUser = p.TypeSessionUser }
 
 let PROJECT_update_transaction output (updater,suc,fail) (rcd:PROJECT) =
     let rollback_p = rcd.p |> pPROJECT_clone
@@ -1853,7 +1871,8 @@ let PROJECTTxSqlServer =
     ,[Updatedat] BIGINT NOT NULL
     ,[Sort] BIGINT NOT NULL,
     ,[Code]
-    ,[Caption])
+    ,[Caption]
+    ,[TypeSessionUser])
     END
     """
 
