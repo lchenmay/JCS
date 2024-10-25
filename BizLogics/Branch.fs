@@ -80,6 +80,25 @@ let branching x =
                     pagex |> PageComplex__json |> wrapOk "pagex"
                 | None -> er Er.InvalideParameter
             | None -> er Er.InvalideParameter) |> bindx
+        | "createVarType" -> (fun x ->
+            let bindTypeo = tryFindNumByAtt "bindType" x.json |> parse_int32 |> int__vartypeBindTypeEnum
+            let projectxo = tryFindNumByAtt "project" x.json |> parse_int64|> runtime.data.projectxs.TryGet
+            let bind = tryFindStrByAtt "bind" x.json
+            let n = tryFindStrByAtt "n" x.json
+            let t = tryFindStrByAtt "type" x.json
+            match (bindTypeo,projectxo) with
+            | (Some bindType), (Some projectx) ->
+                let ps = n,t,bind
+                match 
+                    match bindType with
+                    | vartypeBindTypeEnum.CompProps -> createCompProp projectx ps
+                    | vartypeBindTypeEnum.CompState -> createCompState projectx ps
+                    | vartypeBindTypeEnum.PageProps -> createPageProp projectx ps
+                    | vartypeBindTypeEnum.PageState -> createPageState projectx ps
+                    | _ -> None with
+                | Some vt -> vt |> VARTYPE__json |> wrapOk "vt"
+                | None -> er Er.InvalideParameter
+            | _ -> er Er.InvalideParameter) |> bindx
         | _ -> Fail(Er.ApiNotExists,x)
     | _ -> Fail(Er.ApiNotExists,x)
 

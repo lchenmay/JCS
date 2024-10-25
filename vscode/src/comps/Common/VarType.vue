@@ -14,7 +14,10 @@
 import { glib } from '~/lib/glib'
 import * as Common from '~/lib/store/common'
 
-const props = defineProps(['vt'])
+const props = defineProps(['projectx','bindType','bind','vt'])
+props.projectx as jcs.ProjectComplex
+props.bindType as number
+props.bind as string
 props.vt as jcs.VARTYPE
 
 const s = glib.vue.reactive({

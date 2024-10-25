@@ -128,8 +128,8 @@ let run() =
     let mutable target = 0
 
     //target <- 5 // CTC Develop
-    //target <- 6 // JCS
-    target <- 10 // Game
+    target <- 6 // JCS
+    //target <- 10 // Game
     //let target = 11 // GNexts
     //target <- 15 // J
 
@@ -244,7 +244,6 @@ let run() =
             JsDir = @"C:\Dev\JCS\BizShared" }
     |> CodeRobot.go output
 
-    BizLogics.CodeRobot.run()
 
 run()
 

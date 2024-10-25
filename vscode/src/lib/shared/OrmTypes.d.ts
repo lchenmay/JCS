@@ -2,6 +2,221 @@ declare global {
 
 namespace jcs {
 
+// [Ca_Address] (ADDRESS)
+
+const addressAddressTypeEnum_Default = 0 // 默认
+const addressAddressTypeEnum_Biz = 1 // 机构
+const addressAddressTypeEnum_EndUser = 2 // 用户
+
+export type pADDRESS = {
+    Caption: string
+    Bind: number
+    AddressType: number
+    Line1: string
+    Line2: string
+    State: string
+    County: string
+    Town: string
+    Contact: string
+    Tel: string
+    Email: string
+    Zip: string
+    City: number
+    Country: number
+    Remarks: string
+}
+
+export type ADDRESS = {
+id:number
+createdat:Date
+updatedat:Date
+sort:number
+p:pADDRESS
+}
+
+// [Ca_Biz] (BIZ)
+
+export type pBIZ = {
+    Code: string
+    Caption: string
+    Parent: number
+    BasicAcct: number
+    DescTxt: string
+    Website: string
+    Icon: string
+    City: number
+    Country: number
+    Lang: number
+    IsSocialPlatform: boolean
+    IsCmsSource: boolean
+    IsPayGateway: boolean
+}
+
+export type BIZ = {
+id:number
+createdat:Date
+updatedat:Date
+sort:number
+p:pBIZ
+}
+
+// [Ca_Cat] (CAT)
+
+const catCatStateEnum_Normal = 0 // 正常
+const catCatStateEnum_Hidden = 1 // 隐藏
+const catCatStateEnum_Obsolete = 2 // 过时
+
+export type pCAT = {
+    Caption: string
+    Lang: number
+    Zh: number
+    Parent: number
+    CatState: number
+}
+
+export type CAT = {
+id:number
+createdat:Date
+updatedat:Date
+sort:number
+p:pCAT
+}
+
+// [Ca_City] (CITY)
+
+export type pCITY = {
+    Fullname: string
+    MetropolitanCode3IATA: string
+    NameEn: string
+    Country: number
+    Place: number
+    Icon: string
+    Tel: string
+}
+
+export type CITY = {
+id:number
+createdat:Date
+updatedat:Date
+sort:number
+p:pCITY
+}
+
+// [Ca_Country] (CRY)
+
+export type pCRY = {
+    Code2: string
+    Caption: string
+    Fullname: string
+    Icon: string
+    Tel: string
+    Cur: number
+    Capital: number
+    Place: number
+    Lang: number
+}
+
+export type CRY = {
+id:number
+createdat:Date
+updatedat:Date
+sort:number
+p:pCRY
+}
+
+// [Ca_EndUser] (EU)
+
+const euGenderEnum_Unknown = 0 // 未知
+const euGenderEnum_Male = 1 // 男
+const euGenderEnum_Female = 2 // 女
+
+const euStatusEnum_Normal = 0 // 正常
+const euStatusEnum_Frozen = 1 // 冻结
+const euStatusEnum_Terminated = 2 // 注销
+
+const euAdminEnum_None = 0 // 无
+const euAdminEnum_Admin = 1 // 管理员
+
+const euBizPartnerEnum_None = 0 // None
+const euBizPartnerEnum_Partner = 1 // 
+
+const euVerifyEnum_Normal = 0 // 常规
+const euVerifyEnum_Verified = 1 // 认证
+
+export type pEU = {
+    Caption: string
+    Username: string
+    SocialAuthBiz: number
+    SocialAuthId: string
+    SocialAuthAvatar: string
+    Email: string
+    Tel: string
+    Gender: number
+    Status: number
+    Admin: number
+    BizPartner: number
+    Privilege: number
+    Verify: number
+    Pwd: string
+    Online: boolean
+    Icon: string
+    Background: string
+    BasicAcct: number
+    Citizen: number
+    Refer: string
+    Referer: number
+    Url: string
+    About: string
+}
+
+export type EU = {
+id:number
+createdat:Date
+updatedat:Date
+sort:number
+p:pEU
+}
+
+// [Ca_SpecialItem] (CSI)
+
+const csiTypeEnum_Normal = 0 // 常规
+const csiTypeEnum_ToplinesGlobalNews = 1 // 全站新闻置顶
+const csiTypeEnum_ToplinesGlobalPerson = 2 // 全站人物置顶
+const csiTypeEnum_ToplinesGlobalEvent = 3 // 全站事件置顶
+
+export type pCSI = {
+    Type: number
+    Lang: number
+    Bind: number
+}
+
+export type CSI = {
+id:number
+createdat:Date
+updatedat:Date
+sort:number
+p:pCSI
+}
+
+// [Ca_WebCredential] (CWC)
+
+export type pCWC = {
+    Caption: string
+    ExternalId: number
+    Icon: string
+    EU: number
+    Biz: number
+    Json: string
+}
+
+export type CWC = {
+id:number
+createdat:Date
+updatedat:Date
+sort:number
+p:pCWC
+}
+
 // [Ts_Api] (API)
 
 export type pAPI = {

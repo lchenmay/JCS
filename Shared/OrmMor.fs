@@ -29,6 +29,1776 @@ open Util.Bin
 open Shared.OrmTypes
 open Shared.Types
 
+// [ADDRESS] Structure
+
+
+let pADDRESS__bin (bb:BytesBuilder) (p:pADDRESS) =
+
+    
+    let binCaption = p.Caption |> Encoding.UTF8.GetBytes
+    binCaption.Length |> BitConverter.GetBytes |> bb.append
+    binCaption |> bb.append
+    
+    p.Bind |> BitConverter.GetBytes |> bb.append
+    
+    p.AddressType |> EnumToValue |> BitConverter.GetBytes |> bb.append
+    
+    let binLine1 = p.Line1 |> Encoding.UTF8.GetBytes
+    binLine1.Length |> BitConverter.GetBytes |> bb.append
+    binLine1 |> bb.append
+    
+    let binLine2 = p.Line2 |> Encoding.UTF8.GetBytes
+    binLine2.Length |> BitConverter.GetBytes |> bb.append
+    binLine2 |> bb.append
+    
+    let binState = p.State |> Encoding.UTF8.GetBytes
+    binState.Length |> BitConverter.GetBytes |> bb.append
+    binState |> bb.append
+    
+    let binCounty = p.County |> Encoding.UTF8.GetBytes
+    binCounty.Length |> BitConverter.GetBytes |> bb.append
+    binCounty |> bb.append
+    
+    let binTown = p.Town |> Encoding.UTF8.GetBytes
+    binTown.Length |> BitConverter.GetBytes |> bb.append
+    binTown |> bb.append
+    
+    let binContact = p.Contact |> Encoding.UTF8.GetBytes
+    binContact.Length |> BitConverter.GetBytes |> bb.append
+    binContact |> bb.append
+    
+    let binTel = p.Tel |> Encoding.UTF8.GetBytes
+    binTel.Length |> BitConverter.GetBytes |> bb.append
+    binTel |> bb.append
+    
+    let binEmail = p.Email |> Encoding.UTF8.GetBytes
+    binEmail.Length |> BitConverter.GetBytes |> bb.append
+    binEmail |> bb.append
+    
+    let binZip = p.Zip |> Encoding.UTF8.GetBytes
+    binZip.Length |> BitConverter.GetBytes |> bb.append
+    binZip |> bb.append
+    
+    p.City |> BitConverter.GetBytes |> bb.append
+    
+    p.Country |> BitConverter.GetBytes |> bb.append
+    
+    let binRemarks = p.Remarks |> Encoding.UTF8.GetBytes
+    binRemarks.Length |> BitConverter.GetBytes |> bb.append
+    binRemarks |> bb.append
+
+let ADDRESS__bin (bb:BytesBuilder) (v:ADDRESS) =
+    v.ID |> BitConverter.GetBytes |> bb.append
+    v.Sort |> BitConverter.GetBytes |> bb.append
+    DateTime__bin bb v.Createdat
+    DateTime__bin bb v.Updatedat
+    
+    pADDRESS__bin bb v.p
+
+let bin__pADDRESS (bi:BinIndexed):pADDRESS =
+    let bin,index = bi
+
+    let p = pADDRESS_empty()
+    
+    let count_Caption = BitConverter.ToInt32(bin,index.Value)
+    index.Value <- index.Value + 4
+    p.Caption <- Encoding.UTF8.GetString(bin,index.Value,count_Caption)
+    index.Value <- index.Value + count_Caption
+    
+    p.Bind <- BitConverter.ToInt64(bin,index.Value)
+    index.Value <- index.Value + 8
+    
+    p.AddressType <- BitConverter.ToInt32(bin,index.Value) |> EnumOfValue
+    index.Value <- index.Value + 4
+    
+    let count_Line1 = BitConverter.ToInt32(bin,index.Value)
+    index.Value <- index.Value + 4
+    p.Line1 <- Encoding.UTF8.GetString(bin,index.Value,count_Line1)
+    index.Value <- index.Value + count_Line1
+    
+    let count_Line2 = BitConverter.ToInt32(bin,index.Value)
+    index.Value <- index.Value + 4
+    p.Line2 <- Encoding.UTF8.GetString(bin,index.Value,count_Line2)
+    index.Value <- index.Value + count_Line2
+    
+    let count_State = BitConverter.ToInt32(bin,index.Value)
+    index.Value <- index.Value + 4
+    p.State <- Encoding.UTF8.GetString(bin,index.Value,count_State)
+    index.Value <- index.Value + count_State
+    
+    let count_County = BitConverter.ToInt32(bin,index.Value)
+    index.Value <- index.Value + 4
+    p.County <- Encoding.UTF8.GetString(bin,index.Value,count_County)
+    index.Value <- index.Value + count_County
+    
+    let count_Town = BitConverter.ToInt32(bin,index.Value)
+    index.Value <- index.Value + 4
+    p.Town <- Encoding.UTF8.GetString(bin,index.Value,count_Town)
+    index.Value <- index.Value + count_Town
+    
+    let count_Contact = BitConverter.ToInt32(bin,index.Value)
+    index.Value <- index.Value + 4
+    p.Contact <- Encoding.UTF8.GetString(bin,index.Value,count_Contact)
+    index.Value <- index.Value + count_Contact
+    
+    let count_Tel = BitConverter.ToInt32(bin,index.Value)
+    index.Value <- index.Value + 4
+    p.Tel <- Encoding.UTF8.GetString(bin,index.Value,count_Tel)
+    index.Value <- index.Value + count_Tel
+    
+    let count_Email = BitConverter.ToInt32(bin,index.Value)
+    index.Value <- index.Value + 4
+    p.Email <- Encoding.UTF8.GetString(bin,index.Value,count_Email)
+    index.Value <- index.Value + count_Email
+    
+    let count_Zip = BitConverter.ToInt32(bin,index.Value)
+    index.Value <- index.Value + 4
+    p.Zip <- Encoding.UTF8.GetString(bin,index.Value,count_Zip)
+    index.Value <- index.Value + count_Zip
+    
+    p.City <- BitConverter.ToInt64(bin,index.Value)
+    index.Value <- index.Value + 8
+    
+    p.Country <- BitConverter.ToInt64(bin,index.Value)
+    index.Value <- index.Value + 8
+    
+    let count_Remarks = BitConverter.ToInt32(bin,index.Value)
+    index.Value <- index.Value + 4
+    p.Remarks <- Encoding.UTF8.GetString(bin,index.Value,count_Remarks)
+    index.Value <- index.Value + count_Remarks
+    
+    p
+
+let bin__ADDRESS (bi:BinIndexed):ADDRESS =
+    let bin,index = bi
+
+    let ID = BitConverter.ToInt64(bin,index.Value)
+    index.Value <- index.Value + 8
+    
+    let Sort = BitConverter.ToInt64(bin,index.Value)
+    index.Value <- index.Value + 8
+    
+    let Createdat = bin__DateTime bi
+    
+    let Updatedat = bin__DateTime bi
+    
+    {
+        ID = ID
+        Sort = Sort
+        Createdat = Createdat
+        Updatedat = Updatedat
+        p = bin__pADDRESS bi }
+
+let pADDRESS__json (p:pADDRESS) =
+
+    [|
+        ("Caption",p.Caption |> Json.Str)
+        ("Bind",p.Bind.ToString() |> Json.Num)
+        ("AddressType",(p.AddressType |> EnumToValue).ToString() |> Json.Num)
+        ("Line1",p.Line1 |> Json.Str)
+        ("Line2",p.Line2 |> Json.Str)
+        ("State",p.State |> Json.Str)
+        ("County",p.County |> Json.Str)
+        ("Town",p.Town |> Json.Str)
+        ("Contact",p.Contact |> Json.Str)
+        ("Tel",p.Tel |> Json.Str)
+        ("Email",p.Email |> Json.Str)
+        ("Zip",p.Zip |> Json.Str)
+        ("City",p.City.ToString() |> Json.Num)
+        ("Country",p.Country.ToString() |> Json.Num)
+        ("Remarks",p.Remarks |> Json.Str) |]
+    |> Json.Braket
+
+let ADDRESS__json (v:ADDRESS) =
+
+    let p = v.p
+    
+    [|  ("id",v.ID.ToString() |> Json.Num)
+        ("sort",v.Sort.ToString() |> Json.Num)
+        ("createdat",(v.Createdat |> Util.Time.wintime__unixtime).ToString() |> Json.Num)
+        ("updatedat",(v.Updatedat |> Util.Time.wintime__unixtime).ToString() |> Json.Num)
+        ("p",pADDRESS__json v.p) |]
+    |> Json.Braket
+
+let ADDRESS__jsonTbw (w:TextBlockWriter) (v:ADDRESS) =
+    json__str w (ADDRESS__json v)
+
+let ADDRESS__jsonStr (v:ADDRESS) =
+    (ADDRESS__json v) |> json__strFinal
+
+
+let json__pADDRESSo (json:Json):pADDRESS option =
+    let fields = json |> json__items
+
+    let p = pADDRESS_empty()
+    
+    p.Caption <- checkfieldz fields "Caption" 256
+    
+    p.Bind <- checkfield fields "Bind" |> parse_int64
+    
+    p.AddressType <- checkfield fields "AddressType" |> parse_int32 |> EnumOfValue
+    
+    p.Line1 <- checkfieldz fields "Line1" 300
+    
+    p.Line2 <- checkfieldz fields "Line2" 300
+    
+    p.State <- checkfieldz fields "State" 16
+    
+    p.County <- checkfieldz fields "County" 16
+    
+    p.Town <- checkfieldz fields "Town" 16
+    
+    p.Contact <- checkfieldz fields "Contact" 64
+    
+    p.Tel <- checkfieldz fields "Tel" 20
+    
+    p.Email <- checkfieldz fields "Email" 256
+    
+    p.Zip <- checkfieldz fields "Zip" 16
+    
+    p.City <- checkfield fields "City" |> parse_int64
+    
+    p.Country <- checkfield fields "Country" |> parse_int64
+    
+    p.Remarks <- checkfield fields "Remarks"
+    
+    p |> Some
+    
+
+let json__ADDRESSo (json:Json):ADDRESS option =
+    let fields = json |> json__items
+
+    let ID = checkfield fields "id" |> parse_int64
+    let Sort = checkfield fields "sort" |> parse_int64
+    let Createdat = checkfield fields "createdat" |> parse_int64 |> DateTime.FromBinary
+    let Updatedat = checkfield fields "updatedat" |> parse_int64 |> DateTime.FromBinary
+    
+    let o  =
+        match
+            json
+            |> tryFindByAtt "p" with
+        | Some (s,v) -> json__pADDRESSo v
+        | None -> None
+    
+    match o with
+    | Some p ->
+        
+        p.Caption <- checkfieldz fields "Caption" 256
+        
+        p.Bind <- checkfield fields "Bind" |> parse_int64
+        
+        p.AddressType <- checkfield fields "AddressType" |> parse_int32 |> EnumOfValue
+        
+        p.Line1 <- checkfieldz fields "Line1" 300
+        
+        p.Line2 <- checkfieldz fields "Line2" 300
+        
+        p.State <- checkfieldz fields "State" 16
+        
+        p.County <- checkfieldz fields "County" 16
+        
+        p.Town <- checkfieldz fields "Town" 16
+        
+        p.Contact <- checkfieldz fields "Contact" 64
+        
+        p.Tel <- checkfieldz fields "Tel" 20
+        
+        p.Email <- checkfieldz fields "Email" 256
+        
+        p.Zip <- checkfieldz fields "Zip" 16
+        
+        p.City <- checkfield fields "City" |> parse_int64
+        
+        p.Country <- checkfield fields "Country" |> parse_int64
+        
+        p.Remarks <- checkfield fields "Remarks"
+        
+        {
+            ID = ID
+            Sort = Sort
+            Createdat = Createdat
+            Updatedat = Updatedat
+            p = p } |> Some
+        
+    | None -> None
+
+// [BIZ] Structure
+
+
+let pBIZ__bin (bb:BytesBuilder) (p:pBIZ) =
+
+    
+    let binCode = p.Code |> Encoding.UTF8.GetBytes
+    binCode.Length |> BitConverter.GetBytes |> bb.append
+    binCode |> bb.append
+    
+    let binCaption = p.Caption |> Encoding.UTF8.GetBytes
+    binCaption.Length |> BitConverter.GetBytes |> bb.append
+    binCaption |> bb.append
+    
+    p.Parent |> BitConverter.GetBytes |> bb.append
+    
+    p.BasicAcct |> BitConverter.GetBytes |> bb.append
+    
+    let binDescTxt = p.DescTxt |> Encoding.UTF8.GetBytes
+    binDescTxt.Length |> BitConverter.GetBytes |> bb.append
+    binDescTxt |> bb.append
+    
+    let binWebsite = p.Website |> Encoding.UTF8.GetBytes
+    binWebsite.Length |> BitConverter.GetBytes |> bb.append
+    binWebsite |> bb.append
+    
+    let binIcon = p.Icon |> Encoding.UTF8.GetBytes
+    binIcon.Length |> BitConverter.GetBytes |> bb.append
+    binIcon |> bb.append
+    
+    p.City |> BitConverter.GetBytes |> bb.append
+    
+    p.Country |> BitConverter.GetBytes |> bb.append
+    
+    p.Lang |> BitConverter.GetBytes |> bb.append
+    
+    p.IsSocialPlatform |> BitConverter.GetBytes |> bb.append
+    
+    p.IsCmsSource |> BitConverter.GetBytes |> bb.append
+    
+    p.IsPayGateway |> BitConverter.GetBytes |> bb.append
+
+let BIZ__bin (bb:BytesBuilder) (v:BIZ) =
+    v.ID |> BitConverter.GetBytes |> bb.append
+    v.Sort |> BitConverter.GetBytes |> bb.append
+    DateTime__bin bb v.Createdat
+    DateTime__bin bb v.Updatedat
+    
+    pBIZ__bin bb v.p
+
+let bin__pBIZ (bi:BinIndexed):pBIZ =
+    let bin,index = bi
+
+    let p = pBIZ_empty()
+    
+    let count_Code = BitConverter.ToInt32(bin,index.Value)
+    index.Value <- index.Value + 4
+    p.Code <- Encoding.UTF8.GetString(bin,index.Value,count_Code)
+    index.Value <- index.Value + count_Code
+    
+    let count_Caption = BitConverter.ToInt32(bin,index.Value)
+    index.Value <- index.Value + 4
+    p.Caption <- Encoding.UTF8.GetString(bin,index.Value,count_Caption)
+    index.Value <- index.Value + count_Caption
+    
+    p.Parent <- BitConverter.ToInt64(bin,index.Value)
+    index.Value <- index.Value + 8
+    
+    p.BasicAcct <- BitConverter.ToInt64(bin,index.Value)
+    index.Value <- index.Value + 8
+    
+    let count_DescTxt = BitConverter.ToInt32(bin,index.Value)
+    index.Value <- index.Value + 4
+    p.DescTxt <- Encoding.UTF8.GetString(bin,index.Value,count_DescTxt)
+    index.Value <- index.Value + count_DescTxt
+    
+    let count_Website = BitConverter.ToInt32(bin,index.Value)
+    index.Value <- index.Value + 4
+    p.Website <- Encoding.UTF8.GetString(bin,index.Value,count_Website)
+    index.Value <- index.Value + count_Website
+    
+    let count_Icon = BitConverter.ToInt32(bin,index.Value)
+    index.Value <- index.Value + 4
+    p.Icon <- Encoding.UTF8.GetString(bin,index.Value,count_Icon)
+    index.Value <- index.Value + count_Icon
+    
+    p.City <- BitConverter.ToInt64(bin,index.Value)
+    index.Value <- index.Value + 8
+    
+    p.Country <- BitConverter.ToInt64(bin,index.Value)
+    index.Value <- index.Value + 8
+    
+    p.Lang <- BitConverter.ToInt64(bin,index.Value)
+    index.Value <- index.Value + 8
+    
+    p.IsSocialPlatform <- BitConverter.ToBoolean(bin,index.Value)
+    index.Value <- index.Value + 1
+    
+    p.IsCmsSource <- BitConverter.ToBoolean(bin,index.Value)
+    index.Value <- index.Value + 1
+    
+    p.IsPayGateway <- BitConverter.ToBoolean(bin,index.Value)
+    index.Value <- index.Value + 1
+    
+    p
+
+let bin__BIZ (bi:BinIndexed):BIZ =
+    let bin,index = bi
+
+    let ID = BitConverter.ToInt64(bin,index.Value)
+    index.Value <- index.Value + 8
+    
+    let Sort = BitConverter.ToInt64(bin,index.Value)
+    index.Value <- index.Value + 8
+    
+    let Createdat = bin__DateTime bi
+    
+    let Updatedat = bin__DateTime bi
+    
+    {
+        ID = ID
+        Sort = Sort
+        Createdat = Createdat
+        Updatedat = Updatedat
+        p = bin__pBIZ bi }
+
+let pBIZ__json (p:pBIZ) =
+
+    [|
+        ("Code",p.Code |> Json.Str)
+        ("Caption",p.Caption |> Json.Str)
+        ("Parent",p.Parent.ToString() |> Json.Num)
+        ("BasicAcct",p.BasicAcct.ToString() |> Json.Num)
+        ("DescTxt",p.DescTxt |> Json.Str)
+        ("Website",p.Website |> Json.Str)
+        ("Icon",p.Icon |> Json.Str)
+        ("City",p.City.ToString() |> Json.Num)
+        ("Country",p.Country.ToString() |> Json.Num)
+        ("Lang",p.Lang.ToString() |> Json.Num)
+        ("IsSocialPlatform",if p.IsSocialPlatform then Json.True else Json.False)
+        ("IsCmsSource",if p.IsCmsSource then Json.True else Json.False)
+        ("IsPayGateway",if p.IsPayGateway then Json.True else Json.False) |]
+    |> Json.Braket
+
+let BIZ__json (v:BIZ) =
+
+    let p = v.p
+    
+    [|  ("id",v.ID.ToString() |> Json.Num)
+        ("sort",v.Sort.ToString() |> Json.Num)
+        ("createdat",(v.Createdat |> Util.Time.wintime__unixtime).ToString() |> Json.Num)
+        ("updatedat",(v.Updatedat |> Util.Time.wintime__unixtime).ToString() |> Json.Num)
+        ("p",pBIZ__json v.p) |]
+    |> Json.Braket
+
+let BIZ__jsonTbw (w:TextBlockWriter) (v:BIZ) =
+    json__str w (BIZ__json v)
+
+let BIZ__jsonStr (v:BIZ) =
+    (BIZ__json v) |> json__strFinal
+
+
+let json__pBIZo (json:Json):pBIZ option =
+    let fields = json |> json__items
+
+    let p = pBIZ_empty()
+    
+    p.Code <- checkfieldz fields "Code" 64
+    
+    p.Caption <- checkfieldz fields "Caption" 256
+    
+    p.Parent <- checkfield fields "Parent" |> parse_int64
+    
+    p.BasicAcct <- checkfield fields "BasicAcct" |> parse_int64
+    
+    p.DescTxt <- checkfield fields "DescTxt"
+    
+    p.Website <- checkfieldz fields "Website" 256
+    
+    p.Icon <- checkfieldz fields "Icon" 256
+    
+    p.City <- checkfield fields "City" |> parse_int64
+    
+    p.Country <- checkfield fields "Country" |> parse_int64
+    
+    p.Lang <- checkfield fields "Lang" |> parse_int64
+    
+    p.IsSocialPlatform <- checkfield fields "IsSocialPlatform" = "true"
+    
+    p.IsCmsSource <- checkfield fields "IsCmsSource" = "true"
+    
+    p.IsPayGateway <- checkfield fields "IsPayGateway" = "true"
+    
+    p |> Some
+    
+
+let json__BIZo (json:Json):BIZ option =
+    let fields = json |> json__items
+
+    let ID = checkfield fields "id" |> parse_int64
+    let Sort = checkfield fields "sort" |> parse_int64
+    let Createdat = checkfield fields "createdat" |> parse_int64 |> DateTime.FromBinary
+    let Updatedat = checkfield fields "updatedat" |> parse_int64 |> DateTime.FromBinary
+    
+    let o  =
+        match
+            json
+            |> tryFindByAtt "p" with
+        | Some (s,v) -> json__pBIZo v
+        | None -> None
+    
+    match o with
+    | Some p ->
+        
+        p.Code <- checkfieldz fields "Code" 64
+        
+        p.Caption <- checkfieldz fields "Caption" 256
+        
+        p.Parent <- checkfield fields "Parent" |> parse_int64
+        
+        p.BasicAcct <- checkfield fields "BasicAcct" |> parse_int64
+        
+        p.DescTxt <- checkfield fields "DescTxt"
+        
+        p.Website <- checkfieldz fields "Website" 256
+        
+        p.Icon <- checkfieldz fields "Icon" 256
+        
+        p.City <- checkfield fields "City" |> parse_int64
+        
+        p.Country <- checkfield fields "Country" |> parse_int64
+        
+        p.Lang <- checkfield fields "Lang" |> parse_int64
+        
+        p.IsSocialPlatform <- checkfield fields "IsSocialPlatform" = "true"
+        
+        p.IsCmsSource <- checkfield fields "IsCmsSource" = "true"
+        
+        p.IsPayGateway <- checkfield fields "IsPayGateway" = "true"
+        
+        {
+            ID = ID
+            Sort = Sort
+            Createdat = Createdat
+            Updatedat = Updatedat
+            p = p } |> Some
+        
+    | None -> None
+
+// [CAT] Structure
+
+
+let pCAT__bin (bb:BytesBuilder) (p:pCAT) =
+
+    
+    let binCaption = p.Caption |> Encoding.UTF8.GetBytes
+    binCaption.Length |> BitConverter.GetBytes |> bb.append
+    binCaption |> bb.append
+    
+    p.Lang |> BitConverter.GetBytes |> bb.append
+    
+    p.Zh |> BitConverter.GetBytes |> bb.append
+    
+    p.Parent |> BitConverter.GetBytes |> bb.append
+    
+    p.CatState |> EnumToValue |> BitConverter.GetBytes |> bb.append
+
+let CAT__bin (bb:BytesBuilder) (v:CAT) =
+    v.ID |> BitConverter.GetBytes |> bb.append
+    v.Sort |> BitConverter.GetBytes |> bb.append
+    DateTime__bin bb v.Createdat
+    DateTime__bin bb v.Updatedat
+    
+    pCAT__bin bb v.p
+
+let bin__pCAT (bi:BinIndexed):pCAT =
+    let bin,index = bi
+
+    let p = pCAT_empty()
+    
+    let count_Caption = BitConverter.ToInt32(bin,index.Value)
+    index.Value <- index.Value + 4
+    p.Caption <- Encoding.UTF8.GetString(bin,index.Value,count_Caption)
+    index.Value <- index.Value + count_Caption
+    
+    p.Lang <- BitConverter.ToInt64(bin,index.Value)
+    index.Value <- index.Value + 8
+    
+    p.Zh <- BitConverter.ToInt64(bin,index.Value)
+    index.Value <- index.Value + 8
+    
+    p.Parent <- BitConverter.ToInt64(bin,index.Value)
+    index.Value <- index.Value + 8
+    
+    p.CatState <- BitConverter.ToInt32(bin,index.Value) |> EnumOfValue
+    index.Value <- index.Value + 4
+    
+    p
+
+let bin__CAT (bi:BinIndexed):CAT =
+    let bin,index = bi
+
+    let ID = BitConverter.ToInt64(bin,index.Value)
+    index.Value <- index.Value + 8
+    
+    let Sort = BitConverter.ToInt64(bin,index.Value)
+    index.Value <- index.Value + 8
+    
+    let Createdat = bin__DateTime bi
+    
+    let Updatedat = bin__DateTime bi
+    
+    {
+        ID = ID
+        Sort = Sort
+        Createdat = Createdat
+        Updatedat = Updatedat
+        p = bin__pCAT bi }
+
+let pCAT__json (p:pCAT) =
+
+    [|
+        ("Caption",p.Caption |> Json.Str)
+        ("Lang",p.Lang.ToString() |> Json.Num)
+        ("Zh",p.Zh.ToString() |> Json.Num)
+        ("Parent",p.Parent.ToString() |> Json.Num)
+        ("CatState",(p.CatState |> EnumToValue).ToString() |> Json.Num) |]
+    |> Json.Braket
+
+let CAT__json (v:CAT) =
+
+    let p = v.p
+    
+    [|  ("id",v.ID.ToString() |> Json.Num)
+        ("sort",v.Sort.ToString() |> Json.Num)
+        ("createdat",(v.Createdat |> Util.Time.wintime__unixtime).ToString() |> Json.Num)
+        ("updatedat",(v.Updatedat |> Util.Time.wintime__unixtime).ToString() |> Json.Num)
+        ("p",pCAT__json v.p) |]
+    |> Json.Braket
+
+let CAT__jsonTbw (w:TextBlockWriter) (v:CAT) =
+    json__str w (CAT__json v)
+
+let CAT__jsonStr (v:CAT) =
+    (CAT__json v) |> json__strFinal
+
+
+let json__pCATo (json:Json):pCAT option =
+    let fields = json |> json__items
+
+    let p = pCAT_empty()
+    
+    p.Caption <- checkfieldz fields "Caption" 64
+    
+    p.Lang <- checkfield fields "Lang" |> parse_int64
+    
+    p.Zh <- checkfield fields "Zh" |> parse_int64
+    
+    p.Parent <- checkfield fields "Parent" |> parse_int64
+    
+    p.CatState <- checkfield fields "CatState" |> parse_int32 |> EnumOfValue
+    
+    p |> Some
+    
+
+let json__CATo (json:Json):CAT option =
+    let fields = json |> json__items
+
+    let ID = checkfield fields "id" |> parse_int64
+    let Sort = checkfield fields "sort" |> parse_int64
+    let Createdat = checkfield fields "createdat" |> parse_int64 |> DateTime.FromBinary
+    let Updatedat = checkfield fields "updatedat" |> parse_int64 |> DateTime.FromBinary
+    
+    let o  =
+        match
+            json
+            |> tryFindByAtt "p" with
+        | Some (s,v) -> json__pCATo v
+        | None -> None
+    
+    match o with
+    | Some p ->
+        
+        p.Caption <- checkfieldz fields "Caption" 64
+        
+        p.Lang <- checkfield fields "Lang" |> parse_int64
+        
+        p.Zh <- checkfield fields "Zh" |> parse_int64
+        
+        p.Parent <- checkfield fields "Parent" |> parse_int64
+        
+        p.CatState <- checkfield fields "CatState" |> parse_int32 |> EnumOfValue
+        
+        {
+            ID = ID
+            Sort = Sort
+            Createdat = Createdat
+            Updatedat = Updatedat
+            p = p } |> Some
+        
+    | None -> None
+
+// [CITY] Structure
+
+
+let pCITY__bin (bb:BytesBuilder) (p:pCITY) =
+
+    
+    let binFullname = p.Fullname |> Encoding.UTF8.GetBytes
+    binFullname.Length |> BitConverter.GetBytes |> bb.append
+    binFullname |> bb.append
+    
+    let binMetropolitanCode3IATA = p.MetropolitanCode3IATA |> Encoding.UTF8.GetBytes
+    binMetropolitanCode3IATA.Length |> BitConverter.GetBytes |> bb.append
+    binMetropolitanCode3IATA |> bb.append
+    
+    let binNameEn = p.NameEn |> Encoding.UTF8.GetBytes
+    binNameEn.Length |> BitConverter.GetBytes |> bb.append
+    binNameEn |> bb.append
+    
+    p.Country |> BitConverter.GetBytes |> bb.append
+    
+    p.Place |> BitConverter.GetBytes |> bb.append
+    
+    let binIcon = p.Icon |> Encoding.UTF8.GetBytes
+    binIcon.Length |> BitConverter.GetBytes |> bb.append
+    binIcon |> bb.append
+    
+    let binTel = p.Tel |> Encoding.UTF8.GetBytes
+    binTel.Length |> BitConverter.GetBytes |> bb.append
+    binTel |> bb.append
+
+let CITY__bin (bb:BytesBuilder) (v:CITY) =
+    v.ID |> BitConverter.GetBytes |> bb.append
+    v.Sort |> BitConverter.GetBytes |> bb.append
+    DateTime__bin bb v.Createdat
+    DateTime__bin bb v.Updatedat
+    
+    pCITY__bin bb v.p
+
+let bin__pCITY (bi:BinIndexed):pCITY =
+    let bin,index = bi
+
+    let p = pCITY_empty()
+    
+    let count_Fullname = BitConverter.ToInt32(bin,index.Value)
+    index.Value <- index.Value + 4
+    p.Fullname <- Encoding.UTF8.GetString(bin,index.Value,count_Fullname)
+    index.Value <- index.Value + count_Fullname
+    
+    let count_MetropolitanCode3IATA = BitConverter.ToInt32(bin,index.Value)
+    index.Value <- index.Value + 4
+    p.MetropolitanCode3IATA <- Encoding.UTF8.GetString(bin,index.Value,count_MetropolitanCode3IATA)
+    index.Value <- index.Value + count_MetropolitanCode3IATA
+    
+    let count_NameEn = BitConverter.ToInt32(bin,index.Value)
+    index.Value <- index.Value + 4
+    p.NameEn <- Encoding.UTF8.GetString(bin,index.Value,count_NameEn)
+    index.Value <- index.Value + count_NameEn
+    
+    p.Country <- BitConverter.ToInt64(bin,index.Value)
+    index.Value <- index.Value + 8
+    
+    p.Place <- BitConverter.ToInt64(bin,index.Value)
+    index.Value <- index.Value + 8
+    
+    let count_Icon = BitConverter.ToInt32(bin,index.Value)
+    index.Value <- index.Value + 4
+    p.Icon <- Encoding.UTF8.GetString(bin,index.Value,count_Icon)
+    index.Value <- index.Value + count_Icon
+    
+    let count_Tel = BitConverter.ToInt32(bin,index.Value)
+    index.Value <- index.Value + 4
+    p.Tel <- Encoding.UTF8.GetString(bin,index.Value,count_Tel)
+    index.Value <- index.Value + count_Tel
+    
+    p
+
+let bin__CITY (bi:BinIndexed):CITY =
+    let bin,index = bi
+
+    let ID = BitConverter.ToInt64(bin,index.Value)
+    index.Value <- index.Value + 8
+    
+    let Sort = BitConverter.ToInt64(bin,index.Value)
+    index.Value <- index.Value + 8
+    
+    let Createdat = bin__DateTime bi
+    
+    let Updatedat = bin__DateTime bi
+    
+    {
+        ID = ID
+        Sort = Sort
+        Createdat = Createdat
+        Updatedat = Updatedat
+        p = bin__pCITY bi }
+
+let pCITY__json (p:pCITY) =
+
+    [|
+        ("Fullname",p.Fullname |> Json.Str)
+        ("MetropolitanCode3IATA",p.MetropolitanCode3IATA |> Json.Str)
+        ("NameEn",p.NameEn |> Json.Str)
+        ("Country",p.Country.ToString() |> Json.Num)
+        ("Place",p.Place.ToString() |> Json.Num)
+        ("Icon",p.Icon |> Json.Str)
+        ("Tel",p.Tel |> Json.Str) |]
+    |> Json.Braket
+
+let CITY__json (v:CITY) =
+
+    let p = v.p
+    
+    [|  ("id",v.ID.ToString() |> Json.Num)
+        ("sort",v.Sort.ToString() |> Json.Num)
+        ("createdat",(v.Createdat |> Util.Time.wintime__unixtime).ToString() |> Json.Num)
+        ("updatedat",(v.Updatedat |> Util.Time.wintime__unixtime).ToString() |> Json.Num)
+        ("p",pCITY__json v.p) |]
+    |> Json.Braket
+
+let CITY__jsonTbw (w:TextBlockWriter) (v:CITY) =
+    json__str w (CITY__json v)
+
+let CITY__jsonStr (v:CITY) =
+    (CITY__json v) |> json__strFinal
+
+
+let json__pCITYo (json:Json):pCITY option =
+    let fields = json |> json__items
+
+    let p = pCITY_empty()
+    
+    p.Fullname <- checkfieldz fields "Fullname" 64
+    
+    p.MetropolitanCode3IATA <- checkfieldz fields "MetropolitanCode3IATA" 3
+    
+    p.NameEn <- checkfieldz fields "NameEn" 64
+    
+    p.Country <- checkfield fields "Country" |> parse_int64
+    
+    p.Place <- checkfield fields "Place" |> parse_int64
+    
+    p.Icon <- checkfieldz fields "Icon" 256
+    
+    p.Tel <- checkfieldz fields "Tel" 4
+    
+    p |> Some
+    
+
+let json__CITYo (json:Json):CITY option =
+    let fields = json |> json__items
+
+    let ID = checkfield fields "id" |> parse_int64
+    let Sort = checkfield fields "sort" |> parse_int64
+    let Createdat = checkfield fields "createdat" |> parse_int64 |> DateTime.FromBinary
+    let Updatedat = checkfield fields "updatedat" |> parse_int64 |> DateTime.FromBinary
+    
+    let o  =
+        match
+            json
+            |> tryFindByAtt "p" with
+        | Some (s,v) -> json__pCITYo v
+        | None -> None
+    
+    match o with
+    | Some p ->
+        
+        p.Fullname <- checkfieldz fields "Fullname" 64
+        
+        p.MetropolitanCode3IATA <- checkfieldz fields "MetropolitanCode3IATA" 3
+        
+        p.NameEn <- checkfieldz fields "NameEn" 64
+        
+        p.Country <- checkfield fields "Country" |> parse_int64
+        
+        p.Place <- checkfield fields "Place" |> parse_int64
+        
+        p.Icon <- checkfieldz fields "Icon" 256
+        
+        p.Tel <- checkfieldz fields "Tel" 4
+        
+        {
+            ID = ID
+            Sort = Sort
+            Createdat = Createdat
+            Updatedat = Updatedat
+            p = p } |> Some
+        
+    | None -> None
+
+// [CRY] Structure
+
+
+let pCRY__bin (bb:BytesBuilder) (p:pCRY) =
+
+    
+    let binCode2 = p.Code2 |> Encoding.UTF8.GetBytes
+    binCode2.Length |> BitConverter.GetBytes |> bb.append
+    binCode2 |> bb.append
+    
+    let binCaption = p.Caption |> Encoding.UTF8.GetBytes
+    binCaption.Length |> BitConverter.GetBytes |> bb.append
+    binCaption |> bb.append
+    
+    let binFullname = p.Fullname |> Encoding.UTF8.GetBytes
+    binFullname.Length |> BitConverter.GetBytes |> bb.append
+    binFullname |> bb.append
+    
+    let binIcon = p.Icon |> Encoding.UTF8.GetBytes
+    binIcon.Length |> BitConverter.GetBytes |> bb.append
+    binIcon |> bb.append
+    
+    let binTel = p.Tel |> Encoding.UTF8.GetBytes
+    binTel.Length |> BitConverter.GetBytes |> bb.append
+    binTel |> bb.append
+    
+    p.Cur |> BitConverter.GetBytes |> bb.append
+    
+    p.Capital |> BitConverter.GetBytes |> bb.append
+    
+    p.Place |> BitConverter.GetBytes |> bb.append
+    
+    p.Lang |> BitConverter.GetBytes |> bb.append
+
+let CRY__bin (bb:BytesBuilder) (v:CRY) =
+    v.ID |> BitConverter.GetBytes |> bb.append
+    v.Sort |> BitConverter.GetBytes |> bb.append
+    DateTime__bin bb v.Createdat
+    DateTime__bin bb v.Updatedat
+    
+    pCRY__bin bb v.p
+
+let bin__pCRY (bi:BinIndexed):pCRY =
+    let bin,index = bi
+
+    let p = pCRY_empty()
+    
+    let count_Code2 = BitConverter.ToInt32(bin,index.Value)
+    index.Value <- index.Value + 4
+    p.Code2 <- Encoding.UTF8.GetString(bin,index.Value,count_Code2)
+    index.Value <- index.Value + count_Code2
+    
+    let count_Caption = BitConverter.ToInt32(bin,index.Value)
+    index.Value <- index.Value + 4
+    p.Caption <- Encoding.UTF8.GetString(bin,index.Value,count_Caption)
+    index.Value <- index.Value + count_Caption
+    
+    let count_Fullname = BitConverter.ToInt32(bin,index.Value)
+    index.Value <- index.Value + 4
+    p.Fullname <- Encoding.UTF8.GetString(bin,index.Value,count_Fullname)
+    index.Value <- index.Value + count_Fullname
+    
+    let count_Icon = BitConverter.ToInt32(bin,index.Value)
+    index.Value <- index.Value + 4
+    p.Icon <- Encoding.UTF8.GetString(bin,index.Value,count_Icon)
+    index.Value <- index.Value + count_Icon
+    
+    let count_Tel = BitConverter.ToInt32(bin,index.Value)
+    index.Value <- index.Value + 4
+    p.Tel <- Encoding.UTF8.GetString(bin,index.Value,count_Tel)
+    index.Value <- index.Value + count_Tel
+    
+    p.Cur <- BitConverter.ToInt64(bin,index.Value)
+    index.Value <- index.Value + 8
+    
+    p.Capital <- BitConverter.ToInt64(bin,index.Value)
+    index.Value <- index.Value + 8
+    
+    p.Place <- BitConverter.ToInt64(bin,index.Value)
+    index.Value <- index.Value + 8
+    
+    p.Lang <- BitConverter.ToInt64(bin,index.Value)
+    index.Value <- index.Value + 8
+    
+    p
+
+let bin__CRY (bi:BinIndexed):CRY =
+    let bin,index = bi
+
+    let ID = BitConverter.ToInt64(bin,index.Value)
+    index.Value <- index.Value + 8
+    
+    let Sort = BitConverter.ToInt64(bin,index.Value)
+    index.Value <- index.Value + 8
+    
+    let Createdat = bin__DateTime bi
+    
+    let Updatedat = bin__DateTime bi
+    
+    {
+        ID = ID
+        Sort = Sort
+        Createdat = Createdat
+        Updatedat = Updatedat
+        p = bin__pCRY bi }
+
+let pCRY__json (p:pCRY) =
+
+    [|
+        ("Code2",p.Code2 |> Json.Str)
+        ("Caption",p.Caption |> Json.Str)
+        ("Fullname",p.Fullname |> Json.Str)
+        ("Icon",p.Icon |> Json.Str)
+        ("Tel",p.Tel |> Json.Str)
+        ("Cur",p.Cur.ToString() |> Json.Num)
+        ("Capital",p.Capital.ToString() |> Json.Num)
+        ("Place",p.Place.ToString() |> Json.Num)
+        ("Lang",p.Lang.ToString() |> Json.Num) |]
+    |> Json.Braket
+
+let CRY__json (v:CRY) =
+
+    let p = v.p
+    
+    [|  ("id",v.ID.ToString() |> Json.Num)
+        ("sort",v.Sort.ToString() |> Json.Num)
+        ("createdat",(v.Createdat |> Util.Time.wintime__unixtime).ToString() |> Json.Num)
+        ("updatedat",(v.Updatedat |> Util.Time.wintime__unixtime).ToString() |> Json.Num)
+        ("p",pCRY__json v.p) |]
+    |> Json.Braket
+
+let CRY__jsonTbw (w:TextBlockWriter) (v:CRY) =
+    json__str w (CRY__json v)
+
+let CRY__jsonStr (v:CRY) =
+    (CRY__json v) |> json__strFinal
+
+
+let json__pCRYo (json:Json):pCRY option =
+    let fields = json |> json__items
+
+    let p = pCRY_empty()
+    
+    p.Code2 <- checkfieldz fields "Code2" 2
+    
+    p.Caption <- checkfieldz fields "Caption" 64
+    
+    p.Fullname <- checkfieldz fields "Fullname" 256
+    
+    p.Icon <- checkfieldz fields "Icon" 256
+    
+    p.Tel <- checkfieldz fields "Tel" 4
+    
+    p.Cur <- checkfield fields "Cur" |> parse_int64
+    
+    p.Capital <- checkfield fields "Capital" |> parse_int64
+    
+    p.Place <- checkfield fields "Place" |> parse_int64
+    
+    p.Lang <- checkfield fields "Lang" |> parse_int64
+    
+    p |> Some
+    
+
+let json__CRYo (json:Json):CRY option =
+    let fields = json |> json__items
+
+    let ID = checkfield fields "id" |> parse_int64
+    let Sort = checkfield fields "sort" |> parse_int64
+    let Createdat = checkfield fields "createdat" |> parse_int64 |> DateTime.FromBinary
+    let Updatedat = checkfield fields "updatedat" |> parse_int64 |> DateTime.FromBinary
+    
+    let o  =
+        match
+            json
+            |> tryFindByAtt "p" with
+        | Some (s,v) -> json__pCRYo v
+        | None -> None
+    
+    match o with
+    | Some p ->
+        
+        p.Code2 <- checkfieldz fields "Code2" 2
+        
+        p.Caption <- checkfieldz fields "Caption" 64
+        
+        p.Fullname <- checkfieldz fields "Fullname" 256
+        
+        p.Icon <- checkfieldz fields "Icon" 256
+        
+        p.Tel <- checkfieldz fields "Tel" 4
+        
+        p.Cur <- checkfield fields "Cur" |> parse_int64
+        
+        p.Capital <- checkfield fields "Capital" |> parse_int64
+        
+        p.Place <- checkfield fields "Place" |> parse_int64
+        
+        p.Lang <- checkfield fields "Lang" |> parse_int64
+        
+        {
+            ID = ID
+            Sort = Sort
+            Createdat = Createdat
+            Updatedat = Updatedat
+            p = p } |> Some
+        
+    | None -> None
+
+// [EU] Structure
+
+
+let pEU__bin (bb:BytesBuilder) (p:pEU) =
+
+    
+    let binCaption = p.Caption |> Encoding.UTF8.GetBytes
+    binCaption.Length |> BitConverter.GetBytes |> bb.append
+    binCaption |> bb.append
+    
+    let binUsername = p.Username |> Encoding.UTF8.GetBytes
+    binUsername.Length |> BitConverter.GetBytes |> bb.append
+    binUsername |> bb.append
+    
+    p.SocialAuthBiz |> BitConverter.GetBytes |> bb.append
+    
+    let binSocialAuthId = p.SocialAuthId |> Encoding.UTF8.GetBytes
+    binSocialAuthId.Length |> BitConverter.GetBytes |> bb.append
+    binSocialAuthId |> bb.append
+    
+    let binSocialAuthAvatar = p.SocialAuthAvatar |> Encoding.UTF8.GetBytes
+    binSocialAuthAvatar.Length |> BitConverter.GetBytes |> bb.append
+    binSocialAuthAvatar |> bb.append
+    
+    let binEmail = p.Email |> Encoding.UTF8.GetBytes
+    binEmail.Length |> BitConverter.GetBytes |> bb.append
+    binEmail |> bb.append
+    
+    let binTel = p.Tel |> Encoding.UTF8.GetBytes
+    binTel.Length |> BitConverter.GetBytes |> bb.append
+    binTel |> bb.append
+    
+    p.Gender |> EnumToValue |> BitConverter.GetBytes |> bb.append
+    
+    p.Status |> EnumToValue |> BitConverter.GetBytes |> bb.append
+    
+    p.Admin |> EnumToValue |> BitConverter.GetBytes |> bb.append
+    
+    p.BizPartner |> EnumToValue |> BitConverter.GetBytes |> bb.append
+    
+    p.Privilege |> BitConverter.GetBytes |> bb.append
+    
+    p.Verify |> EnumToValue |> BitConverter.GetBytes |> bb.append
+    
+    let binPwd = p.Pwd |> Encoding.UTF8.GetBytes
+    binPwd.Length |> BitConverter.GetBytes |> bb.append
+    binPwd |> bb.append
+    
+    p.Online |> BitConverter.GetBytes |> bb.append
+    
+    let binIcon = p.Icon |> Encoding.UTF8.GetBytes
+    binIcon.Length |> BitConverter.GetBytes |> bb.append
+    binIcon |> bb.append
+    
+    let binBackground = p.Background |> Encoding.UTF8.GetBytes
+    binBackground.Length |> BitConverter.GetBytes |> bb.append
+    binBackground |> bb.append
+    
+    p.BasicAcct |> BitConverter.GetBytes |> bb.append
+    
+    p.Citizen |> BitConverter.GetBytes |> bb.append
+    
+    let binRefer = p.Refer |> Encoding.UTF8.GetBytes
+    binRefer.Length |> BitConverter.GetBytes |> bb.append
+    binRefer |> bb.append
+    
+    p.Referer |> BitConverter.GetBytes |> bb.append
+    
+    let binUrl = p.Url |> Encoding.UTF8.GetBytes
+    binUrl.Length |> BitConverter.GetBytes |> bb.append
+    binUrl |> bb.append
+    
+    let binAbout = p.About |> Encoding.UTF8.GetBytes
+    binAbout.Length |> BitConverter.GetBytes |> bb.append
+    binAbout |> bb.append
+
+let EU__bin (bb:BytesBuilder) (v:EU) =
+    v.ID |> BitConverter.GetBytes |> bb.append
+    v.Sort |> BitConverter.GetBytes |> bb.append
+    DateTime__bin bb v.Createdat
+    DateTime__bin bb v.Updatedat
+    
+    pEU__bin bb v.p
+
+let bin__pEU (bi:BinIndexed):pEU =
+    let bin,index = bi
+
+    let p = pEU_empty()
+    
+    let count_Caption = BitConverter.ToInt32(bin,index.Value)
+    index.Value <- index.Value + 4
+    p.Caption <- Encoding.UTF8.GetString(bin,index.Value,count_Caption)
+    index.Value <- index.Value + count_Caption
+    
+    let count_Username = BitConverter.ToInt32(bin,index.Value)
+    index.Value <- index.Value + 4
+    p.Username <- Encoding.UTF8.GetString(bin,index.Value,count_Username)
+    index.Value <- index.Value + count_Username
+    
+    p.SocialAuthBiz <- BitConverter.ToInt64(bin,index.Value)
+    index.Value <- index.Value + 8
+    
+    let count_SocialAuthId = BitConverter.ToInt32(bin,index.Value)
+    index.Value <- index.Value + 4
+    p.SocialAuthId <- Encoding.UTF8.GetString(bin,index.Value,count_SocialAuthId)
+    index.Value <- index.Value + count_SocialAuthId
+    
+    let count_SocialAuthAvatar = BitConverter.ToInt32(bin,index.Value)
+    index.Value <- index.Value + 4
+    p.SocialAuthAvatar <- Encoding.UTF8.GetString(bin,index.Value,count_SocialAuthAvatar)
+    index.Value <- index.Value + count_SocialAuthAvatar
+    
+    let count_Email = BitConverter.ToInt32(bin,index.Value)
+    index.Value <- index.Value + 4
+    p.Email <- Encoding.UTF8.GetString(bin,index.Value,count_Email)
+    index.Value <- index.Value + count_Email
+    
+    let count_Tel = BitConverter.ToInt32(bin,index.Value)
+    index.Value <- index.Value + 4
+    p.Tel <- Encoding.UTF8.GetString(bin,index.Value,count_Tel)
+    index.Value <- index.Value + count_Tel
+    
+    p.Gender <- BitConverter.ToInt32(bin,index.Value) |> EnumOfValue
+    index.Value <- index.Value + 4
+    
+    p.Status <- BitConverter.ToInt32(bin,index.Value) |> EnumOfValue
+    index.Value <- index.Value + 4
+    
+    p.Admin <- BitConverter.ToInt32(bin,index.Value) |> EnumOfValue
+    index.Value <- index.Value + 4
+    
+    p.BizPartner <- BitConverter.ToInt32(bin,index.Value) |> EnumOfValue
+    index.Value <- index.Value + 4
+    
+    p.Privilege <- BitConverter.ToInt64(bin,index.Value)
+    index.Value <- index.Value + 8
+    
+    p.Verify <- BitConverter.ToInt32(bin,index.Value) |> EnumOfValue
+    index.Value <- index.Value + 4
+    
+    let count_Pwd = BitConverter.ToInt32(bin,index.Value)
+    index.Value <- index.Value + 4
+    p.Pwd <- Encoding.UTF8.GetString(bin,index.Value,count_Pwd)
+    index.Value <- index.Value + count_Pwd
+    
+    p.Online <- BitConverter.ToBoolean(bin,index.Value)
+    index.Value <- index.Value + 1
+    
+    let count_Icon = BitConverter.ToInt32(bin,index.Value)
+    index.Value <- index.Value + 4
+    p.Icon <- Encoding.UTF8.GetString(bin,index.Value,count_Icon)
+    index.Value <- index.Value + count_Icon
+    
+    let count_Background = BitConverter.ToInt32(bin,index.Value)
+    index.Value <- index.Value + 4
+    p.Background <- Encoding.UTF8.GetString(bin,index.Value,count_Background)
+    index.Value <- index.Value + count_Background
+    
+    p.BasicAcct <- BitConverter.ToInt64(bin,index.Value)
+    index.Value <- index.Value + 8
+    
+    p.Citizen <- BitConverter.ToInt64(bin,index.Value)
+    index.Value <- index.Value + 8
+    
+    let count_Refer = BitConverter.ToInt32(bin,index.Value)
+    index.Value <- index.Value + 4
+    p.Refer <- Encoding.UTF8.GetString(bin,index.Value,count_Refer)
+    index.Value <- index.Value + count_Refer
+    
+    p.Referer <- BitConverter.ToInt64(bin,index.Value)
+    index.Value <- index.Value + 8
+    
+    let count_Url = BitConverter.ToInt32(bin,index.Value)
+    index.Value <- index.Value + 4
+    p.Url <- Encoding.UTF8.GetString(bin,index.Value,count_Url)
+    index.Value <- index.Value + count_Url
+    
+    let count_About = BitConverter.ToInt32(bin,index.Value)
+    index.Value <- index.Value + 4
+    p.About <- Encoding.UTF8.GetString(bin,index.Value,count_About)
+    index.Value <- index.Value + count_About
+    
+    p
+
+let bin__EU (bi:BinIndexed):EU =
+    let bin,index = bi
+
+    let ID = BitConverter.ToInt64(bin,index.Value)
+    index.Value <- index.Value + 8
+    
+    let Sort = BitConverter.ToInt64(bin,index.Value)
+    index.Value <- index.Value + 8
+    
+    let Createdat = bin__DateTime bi
+    
+    let Updatedat = bin__DateTime bi
+    
+    {
+        ID = ID
+        Sort = Sort
+        Createdat = Createdat
+        Updatedat = Updatedat
+        p = bin__pEU bi }
+
+let pEU__json (p:pEU) =
+
+    [|
+        ("Caption",p.Caption |> Json.Str)
+        ("Username",p.Username |> Json.Str)
+        ("SocialAuthBiz",p.SocialAuthBiz.ToString() |> Json.Num)
+        ("SocialAuthId",p.SocialAuthId |> Json.Str)
+        ("SocialAuthAvatar",p.SocialAuthAvatar |> Json.Str)
+        ("Email",p.Email |> Json.Str)
+        ("Tel",p.Tel |> Json.Str)
+        ("Gender",(p.Gender |> EnumToValue).ToString() |> Json.Num)
+        ("Status",(p.Status |> EnumToValue).ToString() |> Json.Num)
+        ("Admin",(p.Admin |> EnumToValue).ToString() |> Json.Num)
+        ("BizPartner",(p.BizPartner |> EnumToValue).ToString() |> Json.Num)
+        ("Privilege",p.Privilege.ToString() |> Json.Num)
+        ("Verify",(p.Verify |> EnumToValue).ToString() |> Json.Num)
+        ("Pwd",p.Pwd |> Json.Str)
+        ("Online",if p.Online then Json.True else Json.False)
+        ("Icon",p.Icon |> Json.Str)
+        ("Background",p.Background |> Json.Str)
+        ("BasicAcct",p.BasicAcct.ToString() |> Json.Num)
+        ("Citizen",p.Citizen.ToString() |> Json.Num)
+        ("Refer",p.Refer |> Json.Str)
+        ("Referer",p.Referer.ToString() |> Json.Num)
+        ("Url",p.Url |> Json.Str)
+        ("About",p.About |> Json.Str) |]
+    |> Json.Braket
+
+let EU__json (v:EU) =
+
+    let p = v.p
+    
+    [|  ("id",v.ID.ToString() |> Json.Num)
+        ("sort",v.Sort.ToString() |> Json.Num)
+        ("createdat",(v.Createdat |> Util.Time.wintime__unixtime).ToString() |> Json.Num)
+        ("updatedat",(v.Updatedat |> Util.Time.wintime__unixtime).ToString() |> Json.Num)
+        ("p",pEU__json v.p) |]
+    |> Json.Braket
+
+let EU__jsonTbw (w:TextBlockWriter) (v:EU) =
+    json__str w (EU__json v)
+
+let EU__jsonStr (v:EU) =
+    (EU__json v) |> json__strFinal
+
+
+let json__pEUo (json:Json):pEU option =
+    let fields = json |> json__items
+
+    let p = pEU_empty()
+    
+    p.Caption <- checkfieldz fields "Caption" 64
+    
+    p.Username <- checkfieldz fields "Username" 64
+    
+    p.SocialAuthBiz <- checkfield fields "SocialAuthBiz" |> parse_int64
+    
+    p.SocialAuthId <- checkfield fields "SocialAuthId"
+    
+    p.SocialAuthAvatar <- checkfield fields "SocialAuthAvatar"
+    
+    p.Email <- checkfieldz fields "Email" 256
+    
+    p.Tel <- checkfieldz fields "Tel" 32
+    
+    p.Gender <- checkfield fields "Gender" |> parse_int32 |> EnumOfValue
+    
+    p.Status <- checkfield fields "Status" |> parse_int32 |> EnumOfValue
+    
+    p.Admin <- checkfield fields "Admin" |> parse_int32 |> EnumOfValue
+    
+    p.BizPartner <- checkfield fields "BizPartner" |> parse_int32 |> EnumOfValue
+    
+    p.Privilege <- checkfield fields "Privilege" |> parse_int64
+    
+    p.Verify <- checkfield fields "Verify" |> parse_int32 |> EnumOfValue
+    
+    p.Pwd <- checkfieldz fields "Pwd" 16
+    
+    p.Online <- checkfield fields "Online" = "true"
+    
+    p.Icon <- checkfieldz fields "Icon" 256
+    
+    p.Background <- checkfieldz fields "Background" 256
+    
+    p.BasicAcct <- checkfield fields "BasicAcct" |> parse_int64
+    
+    p.Citizen <- checkfield fields "Citizen" |> parse_int64
+    
+    p.Refer <- checkfieldz fields "Refer" 9
+    
+    p.Referer <- checkfield fields "Referer" |> parse_int64
+    
+    p.Url <- checkfield fields "Url"
+    
+    p.About <- checkfield fields "About"
+    
+    p |> Some
+    
+
+let json__EUo (json:Json):EU option =
+    let fields = json |> json__items
+
+    let ID = checkfield fields "id" |> parse_int64
+    let Sort = checkfield fields "sort" |> parse_int64
+    let Createdat = checkfield fields "createdat" |> parse_int64 |> DateTime.FromBinary
+    let Updatedat = checkfield fields "updatedat" |> parse_int64 |> DateTime.FromBinary
+    
+    let o  =
+        match
+            json
+            |> tryFindByAtt "p" with
+        | Some (s,v) -> json__pEUo v
+        | None -> None
+    
+    match o with
+    | Some p ->
+        
+        p.Caption <- checkfieldz fields "Caption" 64
+        
+        p.Username <- checkfieldz fields "Username" 64
+        
+        p.SocialAuthBiz <- checkfield fields "SocialAuthBiz" |> parse_int64
+        
+        p.SocialAuthId <- checkfield fields "SocialAuthId"
+        
+        p.SocialAuthAvatar <- checkfield fields "SocialAuthAvatar"
+        
+        p.Email <- checkfieldz fields "Email" 256
+        
+        p.Tel <- checkfieldz fields "Tel" 32
+        
+        p.Gender <- checkfield fields "Gender" |> parse_int32 |> EnumOfValue
+        
+        p.Status <- checkfield fields "Status" |> parse_int32 |> EnumOfValue
+        
+        p.Admin <- checkfield fields "Admin" |> parse_int32 |> EnumOfValue
+        
+        p.BizPartner <- checkfield fields "BizPartner" |> parse_int32 |> EnumOfValue
+        
+        p.Privilege <- checkfield fields "Privilege" |> parse_int64
+        
+        p.Verify <- checkfield fields "Verify" |> parse_int32 |> EnumOfValue
+        
+        p.Pwd <- checkfieldz fields "Pwd" 16
+        
+        p.Online <- checkfield fields "Online" = "true"
+        
+        p.Icon <- checkfieldz fields "Icon" 256
+        
+        p.Background <- checkfieldz fields "Background" 256
+        
+        p.BasicAcct <- checkfield fields "BasicAcct" |> parse_int64
+        
+        p.Citizen <- checkfield fields "Citizen" |> parse_int64
+        
+        p.Refer <- checkfieldz fields "Refer" 9
+        
+        p.Referer <- checkfield fields "Referer" |> parse_int64
+        
+        p.Url <- checkfield fields "Url"
+        
+        p.About <- checkfield fields "About"
+        
+        {
+            ID = ID
+            Sort = Sort
+            Createdat = Createdat
+            Updatedat = Updatedat
+            p = p } |> Some
+        
+    | None -> None
+
+// [CSI] Structure
+
+
+let pCSI__bin (bb:BytesBuilder) (p:pCSI) =
+
+    
+    p.Type |> EnumToValue |> BitConverter.GetBytes |> bb.append
+    
+    p.Lang |> BitConverter.GetBytes |> bb.append
+    
+    p.Bind |> BitConverter.GetBytes |> bb.append
+
+let CSI__bin (bb:BytesBuilder) (v:CSI) =
+    v.ID |> BitConverter.GetBytes |> bb.append
+    v.Sort |> BitConverter.GetBytes |> bb.append
+    DateTime__bin bb v.Createdat
+    DateTime__bin bb v.Updatedat
+    
+    pCSI__bin bb v.p
+
+let bin__pCSI (bi:BinIndexed):pCSI =
+    let bin,index = bi
+
+    let p = pCSI_empty()
+    
+    p.Type <- BitConverter.ToInt32(bin,index.Value) |> EnumOfValue
+    index.Value <- index.Value + 4
+    
+    p.Lang <- BitConverter.ToInt64(bin,index.Value)
+    index.Value <- index.Value + 8
+    
+    p.Bind <- BitConverter.ToInt64(bin,index.Value)
+    index.Value <- index.Value + 8
+    
+    p
+
+let bin__CSI (bi:BinIndexed):CSI =
+    let bin,index = bi
+
+    let ID = BitConverter.ToInt64(bin,index.Value)
+    index.Value <- index.Value + 8
+    
+    let Sort = BitConverter.ToInt64(bin,index.Value)
+    index.Value <- index.Value + 8
+    
+    let Createdat = bin__DateTime bi
+    
+    let Updatedat = bin__DateTime bi
+    
+    {
+        ID = ID
+        Sort = Sort
+        Createdat = Createdat
+        Updatedat = Updatedat
+        p = bin__pCSI bi }
+
+let pCSI__json (p:pCSI) =
+
+    [|
+        ("Type",(p.Type |> EnumToValue).ToString() |> Json.Num)
+        ("Lang",p.Lang.ToString() |> Json.Num)
+        ("Bind",p.Bind.ToString() |> Json.Num) |]
+    |> Json.Braket
+
+let CSI__json (v:CSI) =
+
+    let p = v.p
+    
+    [|  ("id",v.ID.ToString() |> Json.Num)
+        ("sort",v.Sort.ToString() |> Json.Num)
+        ("createdat",(v.Createdat |> Util.Time.wintime__unixtime).ToString() |> Json.Num)
+        ("updatedat",(v.Updatedat |> Util.Time.wintime__unixtime).ToString() |> Json.Num)
+        ("p",pCSI__json v.p) |]
+    |> Json.Braket
+
+let CSI__jsonTbw (w:TextBlockWriter) (v:CSI) =
+    json__str w (CSI__json v)
+
+let CSI__jsonStr (v:CSI) =
+    (CSI__json v) |> json__strFinal
+
+
+let json__pCSIo (json:Json):pCSI option =
+    let fields = json |> json__items
+
+    let p = pCSI_empty()
+    
+    p.Type <- checkfield fields "Type" |> parse_int32 |> EnumOfValue
+    
+    p.Lang <- checkfield fields "Lang" |> parse_int64
+    
+    p.Bind <- checkfield fields "Bind" |> parse_int64
+    
+    p |> Some
+    
+
+let json__CSIo (json:Json):CSI option =
+    let fields = json |> json__items
+
+    let ID = checkfield fields "id" |> parse_int64
+    let Sort = checkfield fields "sort" |> parse_int64
+    let Createdat = checkfield fields "createdat" |> parse_int64 |> DateTime.FromBinary
+    let Updatedat = checkfield fields "updatedat" |> parse_int64 |> DateTime.FromBinary
+    
+    let o  =
+        match
+            json
+            |> tryFindByAtt "p" with
+        | Some (s,v) -> json__pCSIo v
+        | None -> None
+    
+    match o with
+    | Some p ->
+        
+        p.Type <- checkfield fields "Type" |> parse_int32 |> EnumOfValue
+        
+        p.Lang <- checkfield fields "Lang" |> parse_int64
+        
+        p.Bind <- checkfield fields "Bind" |> parse_int64
+        
+        {
+            ID = ID
+            Sort = Sort
+            Createdat = Createdat
+            Updatedat = Updatedat
+            p = p } |> Some
+        
+    | None -> None
+
+// [CWC] Structure
+
+
+let pCWC__bin (bb:BytesBuilder) (p:pCWC) =
+
+    
+    let binCaption = p.Caption |> Encoding.UTF8.GetBytes
+    binCaption.Length |> BitConverter.GetBytes |> bb.append
+    binCaption |> bb.append
+    
+    p.ExternalId |> BitConverter.GetBytes |> bb.append
+    
+    let binIcon = p.Icon |> Encoding.UTF8.GetBytes
+    binIcon.Length |> BitConverter.GetBytes |> bb.append
+    binIcon |> bb.append
+    
+    p.EU |> BitConverter.GetBytes |> bb.append
+    
+    p.Biz |> BitConverter.GetBytes |> bb.append
+    
+    let binJson = p.Json |> Encoding.UTF8.GetBytes
+    binJson.Length |> BitConverter.GetBytes |> bb.append
+    binJson |> bb.append
+
+let CWC__bin (bb:BytesBuilder) (v:CWC) =
+    v.ID |> BitConverter.GetBytes |> bb.append
+    v.Sort |> BitConverter.GetBytes |> bb.append
+    DateTime__bin bb v.Createdat
+    DateTime__bin bb v.Updatedat
+    
+    pCWC__bin bb v.p
+
+let bin__pCWC (bi:BinIndexed):pCWC =
+    let bin,index = bi
+
+    let p = pCWC_empty()
+    
+    let count_Caption = BitConverter.ToInt32(bin,index.Value)
+    index.Value <- index.Value + 4
+    p.Caption <- Encoding.UTF8.GetString(bin,index.Value,count_Caption)
+    index.Value <- index.Value + count_Caption
+    
+    p.ExternalId <- BitConverter.ToInt64(bin,index.Value)
+    index.Value <- index.Value + 8
+    
+    let count_Icon = BitConverter.ToInt32(bin,index.Value)
+    index.Value <- index.Value + 4
+    p.Icon <- Encoding.UTF8.GetString(bin,index.Value,count_Icon)
+    index.Value <- index.Value + count_Icon
+    
+    p.EU <- BitConverter.ToInt64(bin,index.Value)
+    index.Value <- index.Value + 8
+    
+    p.Biz <- BitConverter.ToInt64(bin,index.Value)
+    index.Value <- index.Value + 8
+    
+    let count_Json = BitConverter.ToInt32(bin,index.Value)
+    index.Value <- index.Value + 4
+    p.Json <- Encoding.UTF8.GetString(bin,index.Value,count_Json)
+    index.Value <- index.Value + count_Json
+    
+    p
+
+let bin__CWC (bi:BinIndexed):CWC =
+    let bin,index = bi
+
+    let ID = BitConverter.ToInt64(bin,index.Value)
+    index.Value <- index.Value + 8
+    
+    let Sort = BitConverter.ToInt64(bin,index.Value)
+    index.Value <- index.Value + 8
+    
+    let Createdat = bin__DateTime bi
+    
+    let Updatedat = bin__DateTime bi
+    
+    {
+        ID = ID
+        Sort = Sort
+        Createdat = Createdat
+        Updatedat = Updatedat
+        p = bin__pCWC bi }
+
+let pCWC__json (p:pCWC) =
+
+    [|
+        ("Caption",p.Caption |> Json.Str)
+        ("ExternalId",p.ExternalId.ToString() |> Json.Num)
+        ("Icon",p.Icon |> Json.Str)
+        ("EU",p.EU.ToString() |> Json.Num)
+        ("Biz",p.Biz.ToString() |> Json.Num)
+        ("Json",p.Json |> Json.Str) |]
+    |> Json.Braket
+
+let CWC__json (v:CWC) =
+
+    let p = v.p
+    
+    [|  ("id",v.ID.ToString() |> Json.Num)
+        ("sort",v.Sort.ToString() |> Json.Num)
+        ("createdat",(v.Createdat |> Util.Time.wintime__unixtime).ToString() |> Json.Num)
+        ("updatedat",(v.Updatedat |> Util.Time.wintime__unixtime).ToString() |> Json.Num)
+        ("p",pCWC__json v.p) |]
+    |> Json.Braket
+
+let CWC__jsonTbw (w:TextBlockWriter) (v:CWC) =
+    json__str w (CWC__json v)
+
+let CWC__jsonStr (v:CWC) =
+    (CWC__json v) |> json__strFinal
+
+
+let json__pCWCo (json:Json):pCWC option =
+    let fields = json |> json__items
+
+    let p = pCWC_empty()
+    
+    p.Caption <- checkfieldz fields "Caption" 64
+    
+    p.ExternalId <- checkfield fields "ExternalId" |> parse_int64
+    
+    p.Icon <- checkfieldz fields "Icon" 256
+    
+    p.EU <- checkfield fields "EU" |> parse_int64
+    
+    p.Biz <- checkfield fields "Biz" |> parse_int64
+    
+    p.Json <- checkfield fields "Json"
+    
+    p |> Some
+    
+
+let json__CWCo (json:Json):CWC option =
+    let fields = json |> json__items
+
+    let ID = checkfield fields "id" |> parse_int64
+    let Sort = checkfield fields "sort" |> parse_int64
+    let Createdat = checkfield fields "createdat" |> parse_int64 |> DateTime.FromBinary
+    let Updatedat = checkfield fields "updatedat" |> parse_int64 |> DateTime.FromBinary
+    
+    let o  =
+        match
+            json
+            |> tryFindByAtt "p" with
+        | Some (s,v) -> json__pCWCo v
+        | None -> None
+    
+    match o with
+    | Some p ->
+        
+        p.Caption <- checkfieldz fields "Caption" 64
+        
+        p.ExternalId <- checkfield fields "ExternalId" |> parse_int64
+        
+        p.Icon <- checkfieldz fields "Icon" 256
+        
+        p.EU <- checkfield fields "EU" |> parse_int64
+        
+        p.Biz <- checkfield fields "Biz" |> parse_int64
+        
+        p.Json <- checkfield fields "Json"
+        
+        {
+            ID = ID
+            Sort = Sort
+            Createdat = Createdat
+            Updatedat = Updatedat
+            p = p } |> Some
+        
+    | None -> None
+
 // [API] Structure
 
 
@@ -1450,6 +3220,1075 @@ let json__VARTYPEo (json:Json):VARTYPE option =
 
 let mutable conn = ""
 
+let db__pADDRESS(line:Object[]): pADDRESS =
+    let p = pADDRESS_empty()
+
+    p.Caption <- string(line.[4]).TrimEnd()
+    p.Bind <- if Convert.IsDBNull(line.[5]) then 0L else line.[5] :?> int64
+    p.AddressType <- EnumOfValue(if Convert.IsDBNull(line.[6]) then 0 else line.[6] :?> int)
+    p.Line1 <- string(line.[7]).TrimEnd()
+    p.Line2 <- string(line.[8]).TrimEnd()
+    p.State <- string(line.[9]).TrimEnd()
+    p.County <- string(line.[10]).TrimEnd()
+    p.Town <- string(line.[11]).TrimEnd()
+    p.Contact <- string(line.[12]).TrimEnd()
+    p.Tel <- string(line.[13]).TrimEnd()
+    p.Email <- string(line.[14]).TrimEnd()
+    p.Zip <- string(line.[15]).TrimEnd()
+    p.City <- if Convert.IsDBNull(line.[16]) then 0L else line.[16] :?> int64
+    p.Country <- if Convert.IsDBNull(line.[17]) then 0L else line.[17] :?> int64
+    p.Remarks <- string(line.[18]).TrimEnd()
+
+    p
+
+let pADDRESS__sps (p:pADDRESS) =
+    match rdbms with
+    | Rdbms.SqlServer ->
+        [|
+            ("Caption", p.Caption) |> kvp__sqlparam
+            ("Bind", p.Bind) |> kvp__sqlparam
+            ("AddressType", p.AddressType) |> kvp__sqlparam
+            ("Line1", p.Line1) |> kvp__sqlparam
+            ("Line2", p.Line2) |> kvp__sqlparam
+            ("State", p.State) |> kvp__sqlparam
+            ("County", p.County) |> kvp__sqlparam
+            ("Town", p.Town) |> kvp__sqlparam
+            ("Contact", p.Contact) |> kvp__sqlparam
+            ("Tel", p.Tel) |> kvp__sqlparam
+            ("Email", p.Email) |> kvp__sqlparam
+            ("Zip", p.Zip) |> kvp__sqlparam
+            ("City", p.City) |> kvp__sqlparam
+            ("Country", p.Country) |> kvp__sqlparam
+            ("Remarks", p.Remarks) |> kvp__sqlparam |]
+    | Rdbms.PostgreSql ->
+        [|
+            ("caption", p.Caption) |> kvp__sqlparam
+            ("bind", p.Bind) |> kvp__sqlparam
+            ("addresstype", p.AddressType) |> kvp__sqlparam
+            ("line1", p.Line1) |> kvp__sqlparam
+            ("line2", p.Line2) |> kvp__sqlparam
+            ("state", p.State) |> kvp__sqlparam
+            ("county", p.County) |> kvp__sqlparam
+            ("town", p.Town) |> kvp__sqlparam
+            ("contact", p.Contact) |> kvp__sqlparam
+            ("tel", p.Tel) |> kvp__sqlparam
+            ("email", p.Email) |> kvp__sqlparam
+            ("zip", p.Zip) |> kvp__sqlparam
+            ("city", p.City) |> kvp__sqlparam
+            ("country", p.Country) |> kvp__sqlparam
+            ("remarks", p.Remarks) |> kvp__sqlparam |]
+
+let db__ADDRESS = db__Rcd db__pADDRESS
+
+let ADDRESS_wrapper item: ADDRESS =
+    let (i,c,u,s),p = item
+    { ID = i; Createdat = c; Updatedat = u; Sort = s; p = p }
+
+let pADDRESS_clone (p:pADDRESS): pADDRESS = {
+    Caption = p.Caption
+    Bind = p.Bind
+    AddressType = p.AddressType
+    Line1 = p.Line1
+    Line2 = p.Line2
+    State = p.State
+    County = p.County
+    Town = p.Town
+    Contact = p.Contact
+    Tel = p.Tel
+    Email = p.Email
+    Zip = p.Zip
+    City = p.City
+    Country = p.Country
+    Remarks = p.Remarks }
+
+let ADDRESS_update_transaction output (updater,suc,fail) (rcd:ADDRESS) =
+    let rollback_p = rcd.p |> pADDRESS_clone
+    let rollback_updatedat = rcd.Updatedat
+    updater rcd.p
+    let ctime,res =
+        (rcd.ID,rcd.p,rollback_p,rollback_updatedat)
+        |> update (conn,output,ADDRESS_table,ADDRESS_sql_update(),pADDRESS__sps,suc,fail)
+    match res with
+    | Suc ctx ->
+        rcd.Updatedat <- ctime
+        suc(ctime,ctx)
+    | Fail(eso,ctx) ->
+        rcd.p <- rollback_p
+        rcd.Updatedat <- rollback_updatedat
+        fail eso
+
+let ADDRESS_update output (rcd:ADDRESS) =
+    rcd
+    |> ADDRESS_update_transaction output ((fun p -> ()),(fun (ctime,ctx) -> ()),(fun dte -> ()))
+
+let ADDRESS_create_incremental_transaction output (suc,fail) p =
+    let cid = Interlocked.Increment ADDRESS_id
+    let ctime = DateTime.UtcNow
+    match create (conn,output,ADDRESS_table,pADDRESS__sps) (cid,ctime,p) with
+    | Suc ctx -> ((cid,ctime,ctime,cid),p) |> ADDRESS_wrapper |> suc
+    | Fail(eso,ctx) -> fail(eso,ctx)
+
+let ADDRESS_create output p =
+    ADDRESS_create_incremental_transaction output ((fun rcd -> ()),(fun (eso,ctx) -> ())) p
+    
+
+let id__ADDRESSo id: ADDRESS option = id__rcd(conn,ADDRESS_fieldorders(),ADDRESS_table,db__ADDRESS) id
+
+let ADDRESS_metadata = {
+    fieldorders = ADDRESS_fieldorders
+    db__rcd = db__ADDRESS 
+    wrapper = ADDRESS_wrapper
+    sps = pADDRESS__sps
+    id = ADDRESS_id
+    id__rcdo = id__ADDRESSo
+    clone = pADDRESS_clone
+    empty__p = pADDRESS_empty
+    rcd__bin = ADDRESS__bin
+    bin__rcd = bin__ADDRESS
+    sql_update = ADDRESS_sql_update
+    rcd_update = ADDRESS_update
+    table = ADDRESS_table
+    shorthand = "address" }
+
+let ADDRESSTxSqlServer =
+    """
+    IF NOT EXISTS(SELECT * FROM sysobjects WHERE [name]='Ca_Address' AND xtype='U')
+    BEGIN
+
+        CREATE TABLE Ca_Address ([ID] BIGINT NOT NULL
+    ,[Createdat] BIGINT NOT NULL
+    ,[Updatedat] BIGINT NOT NULL
+    ,[Sort] BIGINT NOT NULL,
+    ,[Caption]
+    ,[Bind]
+    ,[AddressType]
+    ,[Line1]
+    ,[Line2]
+    ,[State]
+    ,[County]
+    ,[Town]
+    ,[Contact]
+    ,[Tel]
+    ,[Email]
+    ,[Zip]
+    ,[City]
+    ,[Country]
+    ,[Remarks])
+    END
+    """
+
+
+let db__pBIZ(line:Object[]): pBIZ =
+    let p = pBIZ_empty()
+
+    p.Code <- string(line.[4]).TrimEnd()
+    p.Caption <- string(line.[5]).TrimEnd()
+    p.Parent <- if Convert.IsDBNull(line.[6]) then 0L else line.[6] :?> int64
+    p.BasicAcct <- if Convert.IsDBNull(line.[7]) then 0L else line.[7] :?> int64
+    p.DescTxt <- string(line.[8]).TrimEnd()
+    p.Website <- string(line.[9]).TrimEnd()
+    p.Icon <- string(line.[10]).TrimEnd()
+    p.City <- if Convert.IsDBNull(line.[11]) then 0L else line.[11] :?> int64
+    p.Country <- if Convert.IsDBNull(line.[12]) then 0L else line.[12] :?> int64
+    p.Lang <- if Convert.IsDBNull(line.[13]) then 0L else line.[13] :?> int64
+    p.IsSocialPlatform <- if Convert.IsDBNull(line.[14]) then false else line.[14] :?> bool
+    p.IsCmsSource <- if Convert.IsDBNull(line.[15]) then false else line.[15] :?> bool
+    p.IsPayGateway <- if Convert.IsDBNull(line.[16]) then false else line.[16] :?> bool
+
+    p
+
+let pBIZ__sps (p:pBIZ) =
+    match rdbms with
+    | Rdbms.SqlServer ->
+        [|
+            ("Code", p.Code) |> kvp__sqlparam
+            ("Caption", p.Caption) |> kvp__sqlparam
+            ("Parent", p.Parent) |> kvp__sqlparam
+            ("BasicAcct", p.BasicAcct) |> kvp__sqlparam
+            ("DescTxt", p.DescTxt) |> kvp__sqlparam
+            ("Website", p.Website) |> kvp__sqlparam
+            ("Icon", p.Icon) |> kvp__sqlparam
+            ("City", p.City) |> kvp__sqlparam
+            ("Country", p.Country) |> kvp__sqlparam
+            ("Lang", p.Lang) |> kvp__sqlparam
+            ("IsSocialPlatform", p.IsSocialPlatform) |> kvp__sqlparam
+            ("IsCmsSource", p.IsCmsSource) |> kvp__sqlparam
+            ("IsPayGateway", p.IsPayGateway) |> kvp__sqlparam |]
+    | Rdbms.PostgreSql ->
+        [|
+            ("code", p.Code) |> kvp__sqlparam
+            ("caption", p.Caption) |> kvp__sqlparam
+            ("parent", p.Parent) |> kvp__sqlparam
+            ("basicacct", p.BasicAcct) |> kvp__sqlparam
+            ("desctxt", p.DescTxt) |> kvp__sqlparam
+            ("website", p.Website) |> kvp__sqlparam
+            ("icon", p.Icon) |> kvp__sqlparam
+            ("city", p.City) |> kvp__sqlparam
+            ("country", p.Country) |> kvp__sqlparam
+            ("lang", p.Lang) |> kvp__sqlparam
+            ("issocialplatform", p.IsSocialPlatform) |> kvp__sqlparam
+            ("iscmssource", p.IsCmsSource) |> kvp__sqlparam
+            ("ispaygateway", p.IsPayGateway) |> kvp__sqlparam |]
+
+let db__BIZ = db__Rcd db__pBIZ
+
+let BIZ_wrapper item: BIZ =
+    let (i,c,u,s),p = item
+    { ID = i; Createdat = c; Updatedat = u; Sort = s; p = p }
+
+let pBIZ_clone (p:pBIZ): pBIZ = {
+    Code = p.Code
+    Caption = p.Caption
+    Parent = p.Parent
+    BasicAcct = p.BasicAcct
+    DescTxt = p.DescTxt
+    Website = p.Website
+    Icon = p.Icon
+    City = p.City
+    Country = p.Country
+    Lang = p.Lang
+    IsSocialPlatform = p.IsSocialPlatform
+    IsCmsSource = p.IsCmsSource
+    IsPayGateway = p.IsPayGateway }
+
+let BIZ_update_transaction output (updater,suc,fail) (rcd:BIZ) =
+    let rollback_p = rcd.p |> pBIZ_clone
+    let rollback_updatedat = rcd.Updatedat
+    updater rcd.p
+    let ctime,res =
+        (rcd.ID,rcd.p,rollback_p,rollback_updatedat)
+        |> update (conn,output,BIZ_table,BIZ_sql_update(),pBIZ__sps,suc,fail)
+    match res with
+    | Suc ctx ->
+        rcd.Updatedat <- ctime
+        suc(ctime,ctx)
+    | Fail(eso,ctx) ->
+        rcd.p <- rollback_p
+        rcd.Updatedat <- rollback_updatedat
+        fail eso
+
+let BIZ_update output (rcd:BIZ) =
+    rcd
+    |> BIZ_update_transaction output ((fun p -> ()),(fun (ctime,ctx) -> ()),(fun dte -> ()))
+
+let BIZ_create_incremental_transaction output (suc,fail) p =
+    let cid = Interlocked.Increment BIZ_id
+    let ctime = DateTime.UtcNow
+    match create (conn,output,BIZ_table,pBIZ__sps) (cid,ctime,p) with
+    | Suc ctx -> ((cid,ctime,ctime,cid),p) |> BIZ_wrapper |> suc
+    | Fail(eso,ctx) -> fail(eso,ctx)
+
+let BIZ_create output p =
+    BIZ_create_incremental_transaction output ((fun rcd -> ()),(fun (eso,ctx) -> ())) p
+    
+
+let id__BIZo id: BIZ option = id__rcd(conn,BIZ_fieldorders(),BIZ_table,db__BIZ) id
+
+let BIZ_metadata = {
+    fieldorders = BIZ_fieldorders
+    db__rcd = db__BIZ 
+    wrapper = BIZ_wrapper
+    sps = pBIZ__sps
+    id = BIZ_id
+    id__rcdo = id__BIZo
+    clone = pBIZ_clone
+    empty__p = pBIZ_empty
+    rcd__bin = BIZ__bin
+    bin__rcd = bin__BIZ
+    sql_update = BIZ_sql_update
+    rcd_update = BIZ_update
+    table = BIZ_table
+    shorthand = "biz" }
+
+let BIZTxSqlServer =
+    """
+    IF NOT EXISTS(SELECT * FROM sysobjects WHERE [name]='Ca_Biz' AND xtype='U')
+    BEGIN
+
+        CREATE TABLE Ca_Biz ([ID] BIGINT NOT NULL
+    ,[Createdat] BIGINT NOT NULL
+    ,[Updatedat] BIGINT NOT NULL
+    ,[Sort] BIGINT NOT NULL,
+    ,[Code]
+    ,[Caption]
+    ,[Parent]
+    ,[BasicAcct]
+    ,[DescTxt]
+    ,[Website]
+    ,[Icon]
+    ,[City]
+    ,[Country]
+    ,[Lang]
+    ,[IsSocialPlatform]
+    ,[IsCmsSource]
+    ,[IsPayGateway])
+    END
+    """
+
+
+let db__pCAT(line:Object[]): pCAT =
+    let p = pCAT_empty()
+
+    p.Caption <- string(line.[4]).TrimEnd()
+    p.Lang <- if Convert.IsDBNull(line.[5]) then 0L else line.[5] :?> int64
+    p.Zh <- if Convert.IsDBNull(line.[6]) then 0L else line.[6] :?> int64
+    p.Parent <- if Convert.IsDBNull(line.[7]) then 0L else line.[7] :?> int64
+    p.CatState <- EnumOfValue(if Convert.IsDBNull(line.[8]) then 0 else line.[8] :?> int)
+
+    p
+
+let pCAT__sps (p:pCAT) =
+    match rdbms with
+    | Rdbms.SqlServer ->
+        [|
+            ("Caption", p.Caption) |> kvp__sqlparam
+            ("Lang", p.Lang) |> kvp__sqlparam
+            ("Zh", p.Zh) |> kvp__sqlparam
+            ("Parent", p.Parent) |> kvp__sqlparam
+            ("CatState", p.CatState) |> kvp__sqlparam |]
+    | Rdbms.PostgreSql ->
+        [|
+            ("caption", p.Caption) |> kvp__sqlparam
+            ("lang", p.Lang) |> kvp__sqlparam
+            ("zh", p.Zh) |> kvp__sqlparam
+            ("parent", p.Parent) |> kvp__sqlparam
+            ("catstate", p.CatState) |> kvp__sqlparam |]
+
+let db__CAT = db__Rcd db__pCAT
+
+let CAT_wrapper item: CAT =
+    let (i,c,u,s),p = item
+    { ID = i; Createdat = c; Updatedat = u; Sort = s; p = p }
+
+let pCAT_clone (p:pCAT): pCAT = {
+    Caption = p.Caption
+    Lang = p.Lang
+    Zh = p.Zh
+    Parent = p.Parent
+    CatState = p.CatState }
+
+let CAT_update_transaction output (updater,suc,fail) (rcd:CAT) =
+    let rollback_p = rcd.p |> pCAT_clone
+    let rollback_updatedat = rcd.Updatedat
+    updater rcd.p
+    let ctime,res =
+        (rcd.ID,rcd.p,rollback_p,rollback_updatedat)
+        |> update (conn,output,CAT_table,CAT_sql_update(),pCAT__sps,suc,fail)
+    match res with
+    | Suc ctx ->
+        rcd.Updatedat <- ctime
+        suc(ctime,ctx)
+    | Fail(eso,ctx) ->
+        rcd.p <- rollback_p
+        rcd.Updatedat <- rollback_updatedat
+        fail eso
+
+let CAT_update output (rcd:CAT) =
+    rcd
+    |> CAT_update_transaction output ((fun p -> ()),(fun (ctime,ctx) -> ()),(fun dte -> ()))
+
+let CAT_create_incremental_transaction output (suc,fail) p =
+    let cid = Interlocked.Increment CAT_id
+    let ctime = DateTime.UtcNow
+    match create (conn,output,CAT_table,pCAT__sps) (cid,ctime,p) with
+    | Suc ctx -> ((cid,ctime,ctime,cid),p) |> CAT_wrapper |> suc
+    | Fail(eso,ctx) -> fail(eso,ctx)
+
+let CAT_create output p =
+    CAT_create_incremental_transaction output ((fun rcd -> ()),(fun (eso,ctx) -> ())) p
+    
+
+let id__CATo id: CAT option = id__rcd(conn,CAT_fieldorders(),CAT_table,db__CAT) id
+
+let CAT_metadata = {
+    fieldorders = CAT_fieldorders
+    db__rcd = db__CAT 
+    wrapper = CAT_wrapper
+    sps = pCAT__sps
+    id = CAT_id
+    id__rcdo = id__CATo
+    clone = pCAT_clone
+    empty__p = pCAT_empty
+    rcd__bin = CAT__bin
+    bin__rcd = bin__CAT
+    sql_update = CAT_sql_update
+    rcd_update = CAT_update
+    table = CAT_table
+    shorthand = "cat" }
+
+let CATTxSqlServer =
+    """
+    IF NOT EXISTS(SELECT * FROM sysobjects WHERE [name]='Ca_Cat' AND xtype='U')
+    BEGIN
+
+        CREATE TABLE Ca_Cat ([ID] BIGINT NOT NULL
+    ,[Createdat] BIGINT NOT NULL
+    ,[Updatedat] BIGINT NOT NULL
+    ,[Sort] BIGINT NOT NULL,
+    ,[Caption]
+    ,[Lang]
+    ,[Zh]
+    ,[Parent]
+    ,[CatState])
+    END
+    """
+
+
+let db__pCITY(line:Object[]): pCITY =
+    let p = pCITY_empty()
+
+    p.Fullname <- string(line.[4]).TrimEnd()
+    p.MetropolitanCode3IATA <- string(line.[5]).TrimEnd()
+    p.NameEn <- string(line.[6]).TrimEnd()
+    p.Country <- if Convert.IsDBNull(line.[7]) then 0L else line.[7] :?> int64
+    p.Place <- if Convert.IsDBNull(line.[8]) then 0L else line.[8] :?> int64
+    p.Icon <- string(line.[9]).TrimEnd()
+    p.Tel <- string(line.[10]).TrimEnd()
+
+    p
+
+let pCITY__sps (p:pCITY) =
+    match rdbms with
+    | Rdbms.SqlServer ->
+        [|
+            ("Fullname", p.Fullname) |> kvp__sqlparam
+            ("MetropolitanCode3IATA", p.MetropolitanCode3IATA) |> kvp__sqlparam
+            ("NameEn", p.NameEn) |> kvp__sqlparam
+            ("Country", p.Country) |> kvp__sqlparam
+            ("Place", p.Place) |> kvp__sqlparam
+            ("Icon", p.Icon) |> kvp__sqlparam
+            ("Tel", p.Tel) |> kvp__sqlparam |]
+    | Rdbms.PostgreSql ->
+        [|
+            ("fullname", p.Fullname) |> kvp__sqlparam
+            ("metropolitancode3iata", p.MetropolitanCode3IATA) |> kvp__sqlparam
+            ("nameen", p.NameEn) |> kvp__sqlparam
+            ("country", p.Country) |> kvp__sqlparam
+            ("place", p.Place) |> kvp__sqlparam
+            ("icon", p.Icon) |> kvp__sqlparam
+            ("tel", p.Tel) |> kvp__sqlparam |]
+
+let db__CITY = db__Rcd db__pCITY
+
+let CITY_wrapper item: CITY =
+    let (i,c,u,s),p = item
+    { ID = i; Createdat = c; Updatedat = u; Sort = s; p = p }
+
+let pCITY_clone (p:pCITY): pCITY = {
+    Fullname = p.Fullname
+    MetropolitanCode3IATA = p.MetropolitanCode3IATA
+    NameEn = p.NameEn
+    Country = p.Country
+    Place = p.Place
+    Icon = p.Icon
+    Tel = p.Tel }
+
+let CITY_update_transaction output (updater,suc,fail) (rcd:CITY) =
+    let rollback_p = rcd.p |> pCITY_clone
+    let rollback_updatedat = rcd.Updatedat
+    updater rcd.p
+    let ctime,res =
+        (rcd.ID,rcd.p,rollback_p,rollback_updatedat)
+        |> update (conn,output,CITY_table,CITY_sql_update(),pCITY__sps,suc,fail)
+    match res with
+    | Suc ctx ->
+        rcd.Updatedat <- ctime
+        suc(ctime,ctx)
+    | Fail(eso,ctx) ->
+        rcd.p <- rollback_p
+        rcd.Updatedat <- rollback_updatedat
+        fail eso
+
+let CITY_update output (rcd:CITY) =
+    rcd
+    |> CITY_update_transaction output ((fun p -> ()),(fun (ctime,ctx) -> ()),(fun dte -> ()))
+
+let CITY_create_incremental_transaction output (suc,fail) p =
+    let cid = Interlocked.Increment CITY_id
+    let ctime = DateTime.UtcNow
+    match create (conn,output,CITY_table,pCITY__sps) (cid,ctime,p) with
+    | Suc ctx -> ((cid,ctime,ctime,cid),p) |> CITY_wrapper |> suc
+    | Fail(eso,ctx) -> fail(eso,ctx)
+
+let CITY_create output p =
+    CITY_create_incremental_transaction output ((fun rcd -> ()),(fun (eso,ctx) -> ())) p
+    
+
+let id__CITYo id: CITY option = id__rcd(conn,CITY_fieldorders(),CITY_table,db__CITY) id
+
+let CITY_metadata = {
+    fieldorders = CITY_fieldorders
+    db__rcd = db__CITY 
+    wrapper = CITY_wrapper
+    sps = pCITY__sps
+    id = CITY_id
+    id__rcdo = id__CITYo
+    clone = pCITY_clone
+    empty__p = pCITY_empty
+    rcd__bin = CITY__bin
+    bin__rcd = bin__CITY
+    sql_update = CITY_sql_update
+    rcd_update = CITY_update
+    table = CITY_table
+    shorthand = "city" }
+
+let CITYTxSqlServer =
+    """
+    IF NOT EXISTS(SELECT * FROM sysobjects WHERE [name]='Ca_City' AND xtype='U')
+    BEGIN
+
+        CREATE TABLE Ca_City ([ID] BIGINT NOT NULL
+    ,[Createdat] BIGINT NOT NULL
+    ,[Updatedat] BIGINT NOT NULL
+    ,[Sort] BIGINT NOT NULL,
+    ,[Fullname]
+    ,[MetropolitanCode3IATA]
+    ,[NameEn]
+    ,[Country]
+    ,[Place]
+    ,[Icon]
+    ,[Tel])
+    END
+    """
+
+
+let db__pCRY(line:Object[]): pCRY =
+    let p = pCRY_empty()
+
+    p.Code2 <- string(line.[4]).TrimEnd()
+    p.Caption <- string(line.[5]).TrimEnd()
+    p.Fullname <- string(line.[6]).TrimEnd()
+    p.Icon <- string(line.[7]).TrimEnd()
+    p.Tel <- string(line.[8]).TrimEnd()
+    p.Cur <- if Convert.IsDBNull(line.[9]) then 0L else line.[9] :?> int64
+    p.Capital <- if Convert.IsDBNull(line.[10]) then 0L else line.[10] :?> int64
+    p.Place <- if Convert.IsDBNull(line.[11]) then 0L else line.[11] :?> int64
+    p.Lang <- if Convert.IsDBNull(line.[12]) then 0L else line.[12] :?> int64
+
+    p
+
+let pCRY__sps (p:pCRY) =
+    match rdbms with
+    | Rdbms.SqlServer ->
+        [|
+            ("Code2", p.Code2) |> kvp__sqlparam
+            ("Caption", p.Caption) |> kvp__sqlparam
+            ("Fullname", p.Fullname) |> kvp__sqlparam
+            ("Icon", p.Icon) |> kvp__sqlparam
+            ("Tel", p.Tel) |> kvp__sqlparam
+            ("Cur", p.Cur) |> kvp__sqlparam
+            ("Capital", p.Capital) |> kvp__sqlparam
+            ("Place", p.Place) |> kvp__sqlparam
+            ("Lang", p.Lang) |> kvp__sqlparam |]
+    | Rdbms.PostgreSql ->
+        [|
+            ("code2", p.Code2) |> kvp__sqlparam
+            ("caption", p.Caption) |> kvp__sqlparam
+            ("fullname", p.Fullname) |> kvp__sqlparam
+            ("icon", p.Icon) |> kvp__sqlparam
+            ("tel", p.Tel) |> kvp__sqlparam
+            ("cur", p.Cur) |> kvp__sqlparam
+            ("capital", p.Capital) |> kvp__sqlparam
+            ("place", p.Place) |> kvp__sqlparam
+            ("lang", p.Lang) |> kvp__sqlparam |]
+
+let db__CRY = db__Rcd db__pCRY
+
+let CRY_wrapper item: CRY =
+    let (i,c,u,s),p = item
+    { ID = i; Createdat = c; Updatedat = u; Sort = s; p = p }
+
+let pCRY_clone (p:pCRY): pCRY = {
+    Code2 = p.Code2
+    Caption = p.Caption
+    Fullname = p.Fullname
+    Icon = p.Icon
+    Tel = p.Tel
+    Cur = p.Cur
+    Capital = p.Capital
+    Place = p.Place
+    Lang = p.Lang }
+
+let CRY_update_transaction output (updater,suc,fail) (rcd:CRY) =
+    let rollback_p = rcd.p |> pCRY_clone
+    let rollback_updatedat = rcd.Updatedat
+    updater rcd.p
+    let ctime,res =
+        (rcd.ID,rcd.p,rollback_p,rollback_updatedat)
+        |> update (conn,output,CRY_table,CRY_sql_update(),pCRY__sps,suc,fail)
+    match res with
+    | Suc ctx ->
+        rcd.Updatedat <- ctime
+        suc(ctime,ctx)
+    | Fail(eso,ctx) ->
+        rcd.p <- rollback_p
+        rcd.Updatedat <- rollback_updatedat
+        fail eso
+
+let CRY_update output (rcd:CRY) =
+    rcd
+    |> CRY_update_transaction output ((fun p -> ()),(fun (ctime,ctx) -> ()),(fun dte -> ()))
+
+let CRY_create_incremental_transaction output (suc,fail) p =
+    let cid = Interlocked.Increment CRY_id
+    let ctime = DateTime.UtcNow
+    match create (conn,output,CRY_table,pCRY__sps) (cid,ctime,p) with
+    | Suc ctx -> ((cid,ctime,ctime,cid),p) |> CRY_wrapper |> suc
+    | Fail(eso,ctx) -> fail(eso,ctx)
+
+let CRY_create output p =
+    CRY_create_incremental_transaction output ((fun rcd -> ()),(fun (eso,ctx) -> ())) p
+    
+
+let id__CRYo id: CRY option = id__rcd(conn,CRY_fieldorders(),CRY_table,db__CRY) id
+
+let CRY_metadata = {
+    fieldorders = CRY_fieldorders
+    db__rcd = db__CRY 
+    wrapper = CRY_wrapper
+    sps = pCRY__sps
+    id = CRY_id
+    id__rcdo = id__CRYo
+    clone = pCRY_clone
+    empty__p = pCRY_empty
+    rcd__bin = CRY__bin
+    bin__rcd = bin__CRY
+    sql_update = CRY_sql_update
+    rcd_update = CRY_update
+    table = CRY_table
+    shorthand = "cry" }
+
+let CRYTxSqlServer =
+    """
+    IF NOT EXISTS(SELECT * FROM sysobjects WHERE [name]='Ca_Country' AND xtype='U')
+    BEGIN
+
+        CREATE TABLE Ca_Country ([ID] BIGINT NOT NULL
+    ,[Createdat] BIGINT NOT NULL
+    ,[Updatedat] BIGINT NOT NULL
+    ,[Sort] BIGINT NOT NULL,
+    ,[Code2]
+    ,[Caption]
+    ,[Fullname]
+    ,[Icon]
+    ,[Tel]
+    ,[Cur]
+    ,[Capital]
+    ,[Place]
+    ,[Lang])
+    END
+    """
+
+
+let db__pEU(line:Object[]): pEU =
+    let p = pEU_empty()
+
+    p.Caption <- string(line.[4]).TrimEnd()
+    p.Username <- string(line.[5]).TrimEnd()
+    p.SocialAuthBiz <- if Convert.IsDBNull(line.[6]) then 0L else line.[6] :?> int64
+    p.SocialAuthId <- string(line.[7]).TrimEnd()
+    p.SocialAuthAvatar <- string(line.[8]).TrimEnd()
+    p.Email <- string(line.[9]).TrimEnd()
+    p.Tel <- string(line.[10]).TrimEnd()
+    p.Gender <- EnumOfValue(if Convert.IsDBNull(line.[11]) then 0 else line.[11] :?> int)
+    p.Status <- EnumOfValue(if Convert.IsDBNull(line.[12]) then 0 else line.[12] :?> int)
+    p.Admin <- EnumOfValue(if Convert.IsDBNull(line.[13]) then 0 else line.[13] :?> int)
+    p.BizPartner <- EnumOfValue(if Convert.IsDBNull(line.[14]) then 0 else line.[14] :?> int)
+    p.Privilege <- if Convert.IsDBNull(line.[15]) then 0L else line.[15] :?> int64
+    p.Verify <- EnumOfValue(if Convert.IsDBNull(line.[16]) then 0 else line.[16] :?> int)
+    p.Pwd <- string(line.[17]).TrimEnd()
+    p.Online <- if Convert.IsDBNull(line.[18]) then false else line.[18] :?> bool
+    p.Icon <- string(line.[19]).TrimEnd()
+    p.Background <- string(line.[20]).TrimEnd()
+    p.BasicAcct <- if Convert.IsDBNull(line.[21]) then 0L else line.[21] :?> int64
+    p.Citizen <- if Convert.IsDBNull(line.[22]) then 0L else line.[22] :?> int64
+    p.Refer <- string(line.[23]).TrimEnd()
+    p.Referer <- if Convert.IsDBNull(line.[24]) then 0L else line.[24] :?> int64
+    p.Url <- string(line.[25]).TrimEnd()
+    p.About <- string(line.[26]).TrimEnd()
+
+    p
+
+let pEU__sps (p:pEU) =
+    match rdbms with
+    | Rdbms.SqlServer ->
+        [|
+            ("Caption", p.Caption) |> kvp__sqlparam
+            ("Username", p.Username) |> kvp__sqlparam
+            ("SocialAuthBiz", p.SocialAuthBiz) |> kvp__sqlparam
+            ("SocialAuthId", p.SocialAuthId) |> kvp__sqlparam
+            ("SocialAuthAvatar", p.SocialAuthAvatar) |> kvp__sqlparam
+            ("Email", p.Email) |> kvp__sqlparam
+            ("Tel", p.Tel) |> kvp__sqlparam
+            ("Gender", p.Gender) |> kvp__sqlparam
+            ("Status", p.Status) |> kvp__sqlparam
+            ("Admin", p.Admin) |> kvp__sqlparam
+            ("BizPartner", p.BizPartner) |> kvp__sqlparam
+            ("Privilege", p.Privilege) |> kvp__sqlparam
+            ("Verify", p.Verify) |> kvp__sqlparam
+            ("Pwd", p.Pwd) |> kvp__sqlparam
+            ("Online", p.Online) |> kvp__sqlparam
+            ("Icon", p.Icon) |> kvp__sqlparam
+            ("Background", p.Background) |> kvp__sqlparam
+            ("BasicAcct", p.BasicAcct) |> kvp__sqlparam
+            ("Citizen", p.Citizen) |> kvp__sqlparam
+            ("Refer", p.Refer) |> kvp__sqlparam
+            ("Referer", p.Referer) |> kvp__sqlparam
+            ("Url", p.Url) |> kvp__sqlparam
+            ("About", p.About) |> kvp__sqlparam |]
+    | Rdbms.PostgreSql ->
+        [|
+            ("caption", p.Caption) |> kvp__sqlparam
+            ("username", p.Username) |> kvp__sqlparam
+            ("socialauthbiz", p.SocialAuthBiz) |> kvp__sqlparam
+            ("socialauthid", p.SocialAuthId) |> kvp__sqlparam
+            ("socialauthavatar", p.SocialAuthAvatar) |> kvp__sqlparam
+            ("email", p.Email) |> kvp__sqlparam
+            ("tel", p.Tel) |> kvp__sqlparam
+            ("gender", p.Gender) |> kvp__sqlparam
+            ("status", p.Status) |> kvp__sqlparam
+            ("admin", p.Admin) |> kvp__sqlparam
+            ("bizpartner", p.BizPartner) |> kvp__sqlparam
+            ("privilege", p.Privilege) |> kvp__sqlparam
+            ("verify", p.Verify) |> kvp__sqlparam
+            ("pwd", p.Pwd) |> kvp__sqlparam
+            ("online", p.Online) |> kvp__sqlparam
+            ("icon", p.Icon) |> kvp__sqlparam
+            ("background", p.Background) |> kvp__sqlparam
+            ("basicacct", p.BasicAcct) |> kvp__sqlparam
+            ("citizen", p.Citizen) |> kvp__sqlparam
+            ("refer", p.Refer) |> kvp__sqlparam
+            ("referer", p.Referer) |> kvp__sqlparam
+            ("url", p.Url) |> kvp__sqlparam
+            ("about", p.About) |> kvp__sqlparam |]
+
+let db__EU = db__Rcd db__pEU
+
+let EU_wrapper item: EU =
+    let (i,c,u,s),p = item
+    { ID = i; Createdat = c; Updatedat = u; Sort = s; p = p }
+
+let pEU_clone (p:pEU): pEU = {
+    Caption = p.Caption
+    Username = p.Username
+    SocialAuthBiz = p.SocialAuthBiz
+    SocialAuthId = p.SocialAuthId
+    SocialAuthAvatar = p.SocialAuthAvatar
+    Email = p.Email
+    Tel = p.Tel
+    Gender = p.Gender
+    Status = p.Status
+    Admin = p.Admin
+    BizPartner = p.BizPartner
+    Privilege = p.Privilege
+    Verify = p.Verify
+    Pwd = p.Pwd
+    Online = p.Online
+    Icon = p.Icon
+    Background = p.Background
+    BasicAcct = p.BasicAcct
+    Citizen = p.Citizen
+    Refer = p.Refer
+    Referer = p.Referer
+    Url = p.Url
+    About = p.About }
+
+let EU_update_transaction output (updater,suc,fail) (rcd:EU) =
+    let rollback_p = rcd.p |> pEU_clone
+    let rollback_updatedat = rcd.Updatedat
+    updater rcd.p
+    let ctime,res =
+        (rcd.ID,rcd.p,rollback_p,rollback_updatedat)
+        |> update (conn,output,EU_table,EU_sql_update(),pEU__sps,suc,fail)
+    match res with
+    | Suc ctx ->
+        rcd.Updatedat <- ctime
+        suc(ctime,ctx)
+    | Fail(eso,ctx) ->
+        rcd.p <- rollback_p
+        rcd.Updatedat <- rollback_updatedat
+        fail eso
+
+let EU_update output (rcd:EU) =
+    rcd
+    |> EU_update_transaction output ((fun p -> ()),(fun (ctime,ctx) -> ()),(fun dte -> ()))
+
+let EU_create_incremental_transaction output (suc,fail) p =
+    let cid = Interlocked.Increment EU_id
+    let ctime = DateTime.UtcNow
+    match create (conn,output,EU_table,pEU__sps) (cid,ctime,p) with
+    | Suc ctx -> ((cid,ctime,ctime,cid),p) |> EU_wrapper |> suc
+    | Fail(eso,ctx) -> fail(eso,ctx)
+
+let EU_create output p =
+    EU_create_incremental_transaction output ((fun rcd -> ()),(fun (eso,ctx) -> ())) p
+    
+
+let id__EUo id: EU option = id__rcd(conn,EU_fieldorders(),EU_table,db__EU) id
+
+let EU_metadata = {
+    fieldorders = EU_fieldorders
+    db__rcd = db__EU 
+    wrapper = EU_wrapper
+    sps = pEU__sps
+    id = EU_id
+    id__rcdo = id__EUo
+    clone = pEU_clone
+    empty__p = pEU_empty
+    rcd__bin = EU__bin
+    bin__rcd = bin__EU
+    sql_update = EU_sql_update
+    rcd_update = EU_update
+    table = EU_table
+    shorthand = "eu" }
+
+let EUTxSqlServer =
+    """
+    IF NOT EXISTS(SELECT * FROM sysobjects WHERE [name]='Ca_EndUser' AND xtype='U')
+    BEGIN
+
+        CREATE TABLE Ca_EndUser ([ID] BIGINT NOT NULL
+    ,[Createdat] BIGINT NOT NULL
+    ,[Updatedat] BIGINT NOT NULL
+    ,[Sort] BIGINT NOT NULL,
+    ,[Caption]
+    ,[Username]
+    ,[SocialAuthBiz]
+    ,[SocialAuthId]
+    ,[SocialAuthAvatar]
+    ,[Email]
+    ,[Tel]
+    ,[Gender]
+    ,[Status]
+    ,[Admin]
+    ,[BizPartner]
+    ,[Privilege]
+    ,[Verify]
+    ,[Pwd]
+    ,[Online]
+    ,[Icon]
+    ,[Background]
+    ,[BasicAcct]
+    ,[Citizen]
+    ,[Refer]
+    ,[Referer]
+    ,[Url]
+    ,[About])
+    END
+    """
+
+
+let db__pCSI(line:Object[]): pCSI =
+    let p = pCSI_empty()
+
+    p.Type <- EnumOfValue(if Convert.IsDBNull(line.[4]) then 0 else line.[4] :?> int)
+    p.Lang <- if Convert.IsDBNull(line.[5]) then 0L else line.[5] :?> int64
+    p.Bind <- if Convert.IsDBNull(line.[6]) then 0L else line.[6] :?> int64
+
+    p
+
+let pCSI__sps (p:pCSI) =
+    match rdbms with
+    | Rdbms.SqlServer ->
+        [|
+            ("Type", p.Type) |> kvp__sqlparam
+            ("Lang", p.Lang) |> kvp__sqlparam
+            ("Bind", p.Bind) |> kvp__sqlparam |]
+    | Rdbms.PostgreSql ->
+        [|
+            ("type", p.Type) |> kvp__sqlparam
+            ("lang", p.Lang) |> kvp__sqlparam
+            ("bind", p.Bind) |> kvp__sqlparam |]
+
+let db__CSI = db__Rcd db__pCSI
+
+let CSI_wrapper item: CSI =
+    let (i,c,u,s),p = item
+    { ID = i; Createdat = c; Updatedat = u; Sort = s; p = p }
+
+let pCSI_clone (p:pCSI): pCSI = {
+    Type = p.Type
+    Lang = p.Lang
+    Bind = p.Bind }
+
+let CSI_update_transaction output (updater,suc,fail) (rcd:CSI) =
+    let rollback_p = rcd.p |> pCSI_clone
+    let rollback_updatedat = rcd.Updatedat
+    updater rcd.p
+    let ctime,res =
+        (rcd.ID,rcd.p,rollback_p,rollback_updatedat)
+        |> update (conn,output,CSI_table,CSI_sql_update(),pCSI__sps,suc,fail)
+    match res with
+    | Suc ctx ->
+        rcd.Updatedat <- ctime
+        suc(ctime,ctx)
+    | Fail(eso,ctx) ->
+        rcd.p <- rollback_p
+        rcd.Updatedat <- rollback_updatedat
+        fail eso
+
+let CSI_update output (rcd:CSI) =
+    rcd
+    |> CSI_update_transaction output ((fun p -> ()),(fun (ctime,ctx) -> ()),(fun dte -> ()))
+
+let CSI_create_incremental_transaction output (suc,fail) p =
+    let cid = Interlocked.Increment CSI_id
+    let ctime = DateTime.UtcNow
+    match create (conn,output,CSI_table,pCSI__sps) (cid,ctime,p) with
+    | Suc ctx -> ((cid,ctime,ctime,cid),p) |> CSI_wrapper |> suc
+    | Fail(eso,ctx) -> fail(eso,ctx)
+
+let CSI_create output p =
+    CSI_create_incremental_transaction output ((fun rcd -> ()),(fun (eso,ctx) -> ())) p
+    
+
+let id__CSIo id: CSI option = id__rcd(conn,CSI_fieldorders(),CSI_table,db__CSI) id
+
+let CSI_metadata = {
+    fieldorders = CSI_fieldorders
+    db__rcd = db__CSI 
+    wrapper = CSI_wrapper
+    sps = pCSI__sps
+    id = CSI_id
+    id__rcdo = id__CSIo
+    clone = pCSI_clone
+    empty__p = pCSI_empty
+    rcd__bin = CSI__bin
+    bin__rcd = bin__CSI
+    sql_update = CSI_sql_update
+    rcd_update = CSI_update
+    table = CSI_table
+    shorthand = "csi" }
+
+let CSITxSqlServer =
+    """
+    IF NOT EXISTS(SELECT * FROM sysobjects WHERE [name]='Ca_SpecialItem' AND xtype='U')
+    BEGIN
+
+        CREATE TABLE Ca_SpecialItem ([ID] BIGINT NOT NULL
+    ,[Createdat] BIGINT NOT NULL
+    ,[Updatedat] BIGINT NOT NULL
+    ,[Sort] BIGINT NOT NULL,
+    ,[Type]
+    ,[Lang]
+    ,[Bind])
+    END
+    """
+
+
+let db__pCWC(line:Object[]): pCWC =
+    let p = pCWC_empty()
+
+    p.Caption <- string(line.[4]).TrimEnd()
+    p.ExternalId <- if Convert.IsDBNull(line.[5]) then 0L else line.[5] :?> int64
+    p.Icon <- string(line.[6]).TrimEnd()
+    p.EU <- if Convert.IsDBNull(line.[7]) then 0L else line.[7] :?> int64
+    p.Biz <- if Convert.IsDBNull(line.[8]) then 0L else line.[8] :?> int64
+    p.Json <- string(line.[9]).TrimEnd()
+
+    p
+
+let pCWC__sps (p:pCWC) =
+    match rdbms with
+    | Rdbms.SqlServer ->
+        [|
+            ("Caption", p.Caption) |> kvp__sqlparam
+            ("ExternalId", p.ExternalId) |> kvp__sqlparam
+            ("Icon", p.Icon) |> kvp__sqlparam
+            ("EU", p.EU) |> kvp__sqlparam
+            ("Biz", p.Biz) |> kvp__sqlparam
+            ("Json", p.Json) |> kvp__sqlparam |]
+    | Rdbms.PostgreSql ->
+        [|
+            ("caption", p.Caption) |> kvp__sqlparam
+            ("externalid", p.ExternalId) |> kvp__sqlparam
+            ("icon", p.Icon) |> kvp__sqlparam
+            ("eu", p.EU) |> kvp__sqlparam
+            ("biz", p.Biz) |> kvp__sqlparam
+            ("json", p.Json) |> kvp__sqlparam |]
+
+let db__CWC = db__Rcd db__pCWC
+
+let CWC_wrapper item: CWC =
+    let (i,c,u,s),p = item
+    { ID = i; Createdat = c; Updatedat = u; Sort = s; p = p }
+
+let pCWC_clone (p:pCWC): pCWC = {
+    Caption = p.Caption
+    ExternalId = p.ExternalId
+    Icon = p.Icon
+    EU = p.EU
+    Biz = p.Biz
+    Json = p.Json }
+
+let CWC_update_transaction output (updater,suc,fail) (rcd:CWC) =
+    let rollback_p = rcd.p |> pCWC_clone
+    let rollback_updatedat = rcd.Updatedat
+    updater rcd.p
+    let ctime,res =
+        (rcd.ID,rcd.p,rollback_p,rollback_updatedat)
+        |> update (conn,output,CWC_table,CWC_sql_update(),pCWC__sps,suc,fail)
+    match res with
+    | Suc ctx ->
+        rcd.Updatedat <- ctime
+        suc(ctime,ctx)
+    | Fail(eso,ctx) ->
+        rcd.p <- rollback_p
+        rcd.Updatedat <- rollback_updatedat
+        fail eso
+
+let CWC_update output (rcd:CWC) =
+    rcd
+    |> CWC_update_transaction output ((fun p -> ()),(fun (ctime,ctx) -> ()),(fun dte -> ()))
+
+let CWC_create_incremental_transaction output (suc,fail) p =
+    let cid = Interlocked.Increment CWC_id
+    let ctime = DateTime.UtcNow
+    match create (conn,output,CWC_table,pCWC__sps) (cid,ctime,p) with
+    | Suc ctx -> ((cid,ctime,ctime,cid),p) |> CWC_wrapper |> suc
+    | Fail(eso,ctx) -> fail(eso,ctx)
+
+let CWC_create output p =
+    CWC_create_incremental_transaction output ((fun rcd -> ()),(fun (eso,ctx) -> ())) p
+    
+
+let id__CWCo id: CWC option = id__rcd(conn,CWC_fieldorders(),CWC_table,db__CWC) id
+
+let CWC_metadata = {
+    fieldorders = CWC_fieldorders
+    db__rcd = db__CWC 
+    wrapper = CWC_wrapper
+    sps = pCWC__sps
+    id = CWC_id
+    id__rcdo = id__CWCo
+    clone = pCWC_clone
+    empty__p = pCWC_empty
+    rcd__bin = CWC__bin
+    bin__rcd = bin__CWC
+    sql_update = CWC_sql_update
+    rcd_update = CWC_update
+    table = CWC_table
+    shorthand = "cwc" }
+
+let CWCTxSqlServer =
+    """
+    IF NOT EXISTS(SELECT * FROM sysobjects WHERE [name]='Ca_WebCredential' AND xtype='U')
+    BEGIN
+
+        CREATE TABLE Ca_WebCredential ([ID] BIGINT NOT NULL
+    ,[Createdat] BIGINT NOT NULL
+    ,[Updatedat] BIGINT NOT NULL
+    ,[Sort] BIGINT NOT NULL,
+    ,[Caption]
+    ,[ExternalId]
+    ,[Icon]
+    ,[EU]
+    ,[Biz]
+    ,[Json])
+    END
+    """
+
+
 let db__pAPI(line:Object[]): pAPI =
     let p = pAPI_empty()
 
@@ -2408,17 +5247,33 @@ let VARTYPETxSqlServer =
 
 
 type MetadataEnum = 
-| API = 0
-| FIELD = 1
-| HOSTCONFIG = 2
-| PROJECT = 3
-| TABLE = 4
-| COMP = 5
-| PAGE = 6
-| TEMPLATE = 7
-| VARTYPE = 8
+| ADDRESS = 0
+| BIZ = 1
+| CAT = 2
+| CITY = 3
+| CRY = 4
+| EU = 5
+| CSI = 6
+| CWC = 7
+| API = 8
+| FIELD = 9
+| HOSTCONFIG = 10
+| PROJECT = 11
+| TABLE = 12
+| COMP = 13
+| PAGE = 14
+| TEMPLATE = 15
+| VARTYPE = 16
 
 let tablenames = [|
+    ADDRESS_metadata.table
+    BIZ_metadata.table
+    CAT_metadata.table
+    CITY_metadata.table
+    CRY_metadata.table
+    EU_metadata.table
+    CSI_metadata.table
+    CWC_metadata.table
     API_metadata.table
     FIELD_metadata.table
     HOSTCONFIG_metadata.table
@@ -2430,6 +5285,158 @@ let tablenames = [|
     VARTYPE_metadata.table |]
 
 let init() =
+
+    let sqlMaxCa_Address, sqlCountCa_Address =
+        match rdbms with
+        | Rdbms.SqlServer -> "SELECT MAX(ID) FROM [Ca_Address]", "SELECT COUNT(ID) FROM [Ca_Address]"
+        | Rdbms.PostgreSql -> "SELECT MAX(id) FROM ca_address", "SELECT COUNT(id) FROM ca_address"
+    match singlevalue_query conn (str__sql sqlMaxCa_Address) with
+    | Some v ->
+        let max = v :?> int64
+        if max > ADDRESS_id.Value then
+            ADDRESS_id.Value <- max
+    | None -> ()
+
+    match singlevalue_query conn (str__sql sqlCountCa_Address) with
+    | Some v ->
+        ADDRESS_count.Value <-
+            match rdbms with
+            | Rdbms.SqlServer -> v :?> int32
+            | Rdbms.PostgreSql -> v :?> int64 |> int32
+    | None -> ()
+
+    let sqlMaxCa_Biz, sqlCountCa_Biz =
+        match rdbms with
+        | Rdbms.SqlServer -> "SELECT MAX(ID) FROM [Ca_Biz]", "SELECT COUNT(ID) FROM [Ca_Biz]"
+        | Rdbms.PostgreSql -> "SELECT MAX(id) FROM ca_biz", "SELECT COUNT(id) FROM ca_biz"
+    match singlevalue_query conn (str__sql sqlMaxCa_Biz) with
+    | Some v ->
+        let max = v :?> int64
+        if max > BIZ_id.Value then
+            BIZ_id.Value <- max
+    | None -> ()
+
+    match singlevalue_query conn (str__sql sqlCountCa_Biz) with
+    | Some v ->
+        BIZ_count.Value <-
+            match rdbms with
+            | Rdbms.SqlServer -> v :?> int32
+            | Rdbms.PostgreSql -> v :?> int64 |> int32
+    | None -> ()
+
+    let sqlMaxCa_Cat, sqlCountCa_Cat =
+        match rdbms with
+        | Rdbms.SqlServer -> "SELECT MAX(ID) FROM [Ca_Cat]", "SELECT COUNT(ID) FROM [Ca_Cat]"
+        | Rdbms.PostgreSql -> "SELECT MAX(id) FROM ca_cat", "SELECT COUNT(id) FROM ca_cat"
+    match singlevalue_query conn (str__sql sqlMaxCa_Cat) with
+    | Some v ->
+        let max = v :?> int64
+        if max > CAT_id.Value then
+            CAT_id.Value <- max
+    | None -> ()
+
+    match singlevalue_query conn (str__sql sqlCountCa_Cat) with
+    | Some v ->
+        CAT_count.Value <-
+            match rdbms with
+            | Rdbms.SqlServer -> v :?> int32
+            | Rdbms.PostgreSql -> v :?> int64 |> int32
+    | None -> ()
+
+    let sqlMaxCa_City, sqlCountCa_City =
+        match rdbms with
+        | Rdbms.SqlServer -> "SELECT MAX(ID) FROM [Ca_City]", "SELECT COUNT(ID) FROM [Ca_City]"
+        | Rdbms.PostgreSql -> "SELECT MAX(id) FROM ca_city", "SELECT COUNT(id) FROM ca_city"
+    match singlevalue_query conn (str__sql sqlMaxCa_City) with
+    | Some v ->
+        let max = v :?> int64
+        if max > CITY_id.Value then
+            CITY_id.Value <- max
+    | None -> ()
+
+    match singlevalue_query conn (str__sql sqlCountCa_City) with
+    | Some v ->
+        CITY_count.Value <-
+            match rdbms with
+            | Rdbms.SqlServer -> v :?> int32
+            | Rdbms.PostgreSql -> v :?> int64 |> int32
+    | None -> ()
+
+    let sqlMaxCa_Country, sqlCountCa_Country =
+        match rdbms with
+        | Rdbms.SqlServer -> "SELECT MAX(ID) FROM [Ca_Country]", "SELECT COUNT(ID) FROM [Ca_Country]"
+        | Rdbms.PostgreSql -> "SELECT MAX(id) FROM ca_country", "SELECT COUNT(id) FROM ca_country"
+    match singlevalue_query conn (str__sql sqlMaxCa_Country) with
+    | Some v ->
+        let max = v :?> int64
+        if max > CRY_id.Value then
+            CRY_id.Value <- max
+    | None -> ()
+
+    match singlevalue_query conn (str__sql sqlCountCa_Country) with
+    | Some v ->
+        CRY_count.Value <-
+            match rdbms with
+            | Rdbms.SqlServer -> v :?> int32
+            | Rdbms.PostgreSql -> v :?> int64 |> int32
+    | None -> ()
+
+    let sqlMaxCa_EndUser, sqlCountCa_EndUser =
+        match rdbms with
+        | Rdbms.SqlServer -> "SELECT MAX(ID) FROM [Ca_EndUser]", "SELECT COUNT(ID) FROM [Ca_EndUser]"
+        | Rdbms.PostgreSql -> "SELECT MAX(id) FROM ca_enduser", "SELECT COUNT(id) FROM ca_enduser"
+    match singlevalue_query conn (str__sql sqlMaxCa_EndUser) with
+    | Some v ->
+        let max = v :?> int64
+        if max > EU_id.Value then
+            EU_id.Value <- max
+    | None -> ()
+
+    match singlevalue_query conn (str__sql sqlCountCa_EndUser) with
+    | Some v ->
+        EU_count.Value <-
+            match rdbms with
+            | Rdbms.SqlServer -> v :?> int32
+            | Rdbms.PostgreSql -> v :?> int64 |> int32
+    | None -> ()
+
+    let sqlMaxCa_SpecialItem, sqlCountCa_SpecialItem =
+        match rdbms with
+        | Rdbms.SqlServer -> "SELECT MAX(ID) FROM [Ca_SpecialItem]", "SELECT COUNT(ID) FROM [Ca_SpecialItem]"
+        | Rdbms.PostgreSql -> "SELECT MAX(id) FROM ca_specialitem", "SELECT COUNT(id) FROM ca_specialitem"
+    match singlevalue_query conn (str__sql sqlMaxCa_SpecialItem) with
+    | Some v ->
+        let max = v :?> int64
+        if max > CSI_id.Value then
+            CSI_id.Value <- max
+    | None -> ()
+
+    match singlevalue_query conn (str__sql sqlCountCa_SpecialItem) with
+    | Some v ->
+        CSI_count.Value <-
+            match rdbms with
+            | Rdbms.SqlServer -> v :?> int32
+            | Rdbms.PostgreSql -> v :?> int64 |> int32
+    | None -> ()
+
+    let sqlMaxCa_WebCredential, sqlCountCa_WebCredential =
+        match rdbms with
+        | Rdbms.SqlServer -> "SELECT MAX(ID) FROM [Ca_WebCredential]", "SELECT COUNT(ID) FROM [Ca_WebCredential]"
+        | Rdbms.PostgreSql -> "SELECT MAX(id) FROM ca_webcredential", "SELECT COUNT(id) FROM ca_webcredential"
+    match singlevalue_query conn (str__sql sqlMaxCa_WebCredential) with
+    | Some v ->
+        let max = v :?> int64
+        if max > CWC_id.Value then
+            CWC_id.Value <- max
+    | None -> ()
+
+    match singlevalue_query conn (str__sql sqlCountCa_WebCredential) with
+    | Some v ->
+        CWC_count.Value <-
+            match rdbms with
+            | Rdbms.SqlServer -> v :?> int32
+            | Rdbms.PostgreSql -> v :?> int64 |> int32
+    | None -> ()
 
     let sqlMaxTs_Api, sqlCountTs_Api =
         match rdbms with

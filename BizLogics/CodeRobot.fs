@@ -78,7 +78,13 @@ let VueFile__src vueFile projectx (props: ModDictStr<VARTYPE>) =
         "const props = defineProps([" + names + "])" |> res.Add
         vs
         |> Array.iter(fun i -> 
-            "props." + i.p.Name + " as " + projectx.project.p.Code.ToLower() + "." + i.p.Type
+            let typeAnnotation = 
+                match i.p.Type with
+                | "number"
+                | "bool"
+                | "string" -> i.p.Type
+                | _ -> projectx.project.p.Code.ToLower() + "." + i.p.Type
+            "props." + i.p.Name + " as " + typeAnnotation
             |> res.Add)
     "" |> res.Add
 
@@ -175,12 +181,7 @@ let changeFile path changer =
             |> changer
         File.WriteAllText(path,txt)
 
-let run() =
-
-    BizLogics.Init.init runtime
-
-    //let projectx = runtime.data.projectxs[234346L] // JCS
-    let projectx = runtime.data.projectxs[234347L] // Game
+let runProject projectx = 
 
     let hostconfig = 
         projectx.hostconfigs.Values
@@ -201,4 +202,14 @@ let run() =
         src.Replace("runtime.user = glib.Mor.[]","runtime.user = glib.Mor." + ns + "." + projectx.project.p.TypeSessionUser + "_empty()"))
     |> changeFile(hostconfig.p.DirVsCodeWeb + "/src/main.ts")
 
-    ()
+
+let run() =
+
+    BizLogics.Init.init runtime
+
+    [|  234346L // JCS
+        234347L // Game
+        234348L |] // J
+    |> Array.map(fun id -> runtime.data.projectxs[id])
+    |> Array.iter runProject
+

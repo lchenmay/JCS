@@ -76,26 +76,67 @@ let createTemplate project name =
         p.Project <- project.ID
         p.Name <- name) |> creator TEMPLATE_metadata
 
-let createCompProp project comp name t = 
+let createVarType bindType bind project name t = 
     (fun (p:pVARTYPE) ->
         p.Project <- project.ID
-        p.BindType <- vartypeBindTypeEnum.CompProps
-        p.Bind <- comp.ID
+        p.BindType <- bindType
+        p.Bind <- bind
         p.Name <- name
         p.Type <- t) |> creator VARTYPE_metadata
 
-let createCompState project comp name v = 
-    (fun (p:pVARTYPE) ->
-        p.Project <- project.ID
-        p.BindType <- vartypeBindTypeEnum.CompState
-        p.Bind <- comp.ID
-        p.Name <- name
-        p.Val <- v) |> creator VARTYPE_metadata
+let createCompProp projectx (name,t,bind) =
+    let compx = projectx.compxs[bind]
+    match compx.props.Values |> Array.tryFind(fun i -> i.p.Name = name) with
+    | Some prop -> Some prop
+    | None -> 
+        match 
+            createVarType 
+                vartypeBindTypeEnum.CompProps compx.comp.ID projectx.project
+                name t with
+        | Some vt -> 
+            compx.props[name] <- vt
+            Some vt
+        | None -> None
 
-let createPageProp project page name t = 
-    (fun (p:pVARTYPE) ->
-        p.Project <- project.ID
-        p.BindType <- vartypeBindTypeEnum.PageProps
-        p.Bind <- page.ID
-        p.Name <- name
-        p.Type <- t) |> creator VARTYPE_metadata
+let createCompState projectx (name,t,bind) =
+    let compx = projectx.compxs[bind]
+    match compx.states.Values |> Array.tryFind(fun i -> i.p.Name = name) with
+    | Some prop -> Some prop
+    | None -> 
+        match 
+            createVarType 
+                vartypeBindTypeEnum.CompState compx.comp.ID projectx.project
+                name t with
+        | Some vt -> 
+            compx.states[name] <- vt
+            Some vt
+        | None -> None
+
+let createPageProp projectx (name,t,bind) =
+    let pagex = projectx.pagexs[bind]
+    match pagex.props.Values |> Array.tryFind(fun i -> i.p.Name = name) with
+    | Some prop -> Some prop
+    | None -> 
+        match 
+            createVarType 
+                vartypeBindTypeEnum.PageProps pagex.page.ID projectx.project
+                name t with
+        | Some vt -> 
+            pagex.props[name] <- vt
+            Some vt
+        | None -> None
+
+let createPageState projectx (name,t,bind) =
+    let pagex = projectx.pagexs[bind]
+    match pagex.states.Values |> Array.tryFind(fun i -> i.p.Name = name) with
+    | Some prop -> Some prop
+    | None -> 
+        match 
+            createVarType 
+                vartypeBindTypeEnum.CompState pagex.page.ID projectx.project
+                name t with
+        | Some vt -> 
+            pagex.states[name] <- vt
+            Some vt
+        | None -> None
+

@@ -32,12 +32,12 @@ open Shared.OrmMor
 
 let EuComplex_empty(): EuComplex =
     {
-        eu = 0L
+        eu = { ID = 0L; Sort = 0L; Createdat = DateTime.MinValue; Updatedat = DateTime.MinValue; p = pEU_empty() }
     }
 
 let EuComplex__bin (bb:BytesBuilder) (v:EuComplex) =
 
-    int64__bin bb v.eu
+    EU__bin bb v.eu
 
 let bin__EuComplex (bi:BinIndexed):EuComplex =
     let bin,index = bi
@@ -45,12 +45,12 @@ let bin__EuComplex (bi:BinIndexed):EuComplex =
     {
         eu = 
             bi
-            |> bin__int64
+            |> bin__EU
     }
 
 let EuComplex__json (v:EuComplex) =
 
-    [|  ("eu",int64__json v.eu)
+    [|  ("eu",EU__json v.eu)
          |]
     |> Json.Braket
 
@@ -72,7 +72,7 @@ let json__EuComplexo (json:Json):EuComplex option =
             passOptions <- false
             None
         | Some v -> 
-            match v |> json__int64o with
+            match v |> json__EUo with
             | Some res -> Some res
             | None ->
                 passOptions <- false

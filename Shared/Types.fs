@@ -14,7 +14,7 @@ open Shared.OrmTypes
 //[TypeManaged]{
 
 type EuComplex = {
-eu: int64 }
+eu: EU }
 
 type TableComplex = {
 fields: ModDictStr<FIELD>

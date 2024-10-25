@@ -4,6 +4,569 @@ import * as binCommon from '~/lib/util/bin'
 const marshall = {...binCommon }
 
 
+// [ADDRESS] Structure
+
+
+export const pADDRESS__bin = (bb:BytesBuilder) => (p:jcs.pADDRESS) => {
+
+    
+    marshall.str__bin (bb) (p.Caption)
+    
+    marshall.int64__bin (bb) (p.Bind)
+    
+    marshall.int32__bin (bb) (p.AddressType)
+    
+    marshall.str__bin (bb) (p.Line1)
+    
+    marshall.str__bin (bb) (p.Line2)
+    
+    marshall.str__bin (bb) (p.State)
+    
+    marshall.str__bin (bb) (p.County)
+    
+    marshall.str__bin (bb) (p.Town)
+    
+    marshall.str__bin (bb) (p.Contact)
+    
+    marshall.str__bin (bb) (p.Tel)
+    
+    marshall.str__bin (bb) (p.Email)
+    
+    marshall.str__bin (bb) (p.Zip)
+    
+    marshall.int64__bin (bb) (p.City)
+    
+    marshall.int64__bin (bb) (p.Country)
+    
+    marshall.str__bin (bb) (p.Remarks)
+}
+
+export const ADDRESS__bin = (bb:BytesBuilder) => (v:jcs.ADDRESS) => {
+    marshall.int64__bin (bb) (v.id)
+    marshall.int64__bin (bb) (v.sort)
+    marshall.DateTime__bin (bb) (v.createdat)
+    marshall.DateTime__bin (bb) (v.updatedat)
+
+    pADDRESS__bin (bb) (v.p)
+}
+
+export const bin__pADDRESS = (bi:BinIndexed):jcs.pADDRESS => {
+
+    let p = pADDRESS_empty()
+    p.Caption = marshall.bin__str (bi)
+    p.Bind = marshall.bin__int64 (bi)
+    p.AddressType = marshall.bin__int32 (bi)
+    p.Line1 = marshall.bin__str (bi)
+    p.Line2 = marshall.bin__str (bi)
+    p.State = marshall.bin__str (bi)
+    p.County = marshall.bin__str (bi)
+    p.Town = marshall.bin__str (bi)
+    p.Contact = marshall.bin__str (bi)
+    p.Tel = marshall.bin__str (bi)
+    p.Email = marshall.bin__str (bi)
+    p.Zip = marshall.bin__str (bi)
+    p.City = marshall.bin__int64 (bi)
+    p.Country = marshall.bin__int64 (bi)
+    p.Remarks = marshall.bin__str (bi)
+
+    return p
+}
+
+
+export const bin__ADDRESS = (bi:BinIndexed):jcs.ADDRESS => {
+
+    let ID = marshall.bin__int64 (bi)
+    let Sort = marshall.bin__int64 (bi)
+    let Createdat = marshall.bin__DateTime (bi)
+    let Updatedat = marshall.bin__DateTime (bi)
+    
+    return {
+        id: ID,
+        sort: Sort,
+        createdat: Createdat,
+        updatedat: Updatedat,
+        p:  bin__pADDRESS (bi)
+    }
+}
+
+// [BIZ] Structure
+
+
+export const pBIZ__bin = (bb:BytesBuilder) => (p:jcs.pBIZ) => {
+
+    
+    marshall.str__bin (bb) (p.Code)
+    
+    marshall.str__bin (bb) (p.Caption)
+    
+    marshall.int64__bin (bb) (p.Parent)
+    
+    marshall.int64__bin (bb) (p.BasicAcct)
+    
+    marshall.str__bin (bb) (p.DescTxt)
+    
+    marshall.str__bin (bb) (p.Website)
+    
+    marshall.str__bin (bb) (p.Icon)
+    
+    marshall.int64__bin (bb) (p.City)
+    
+    marshall.int64__bin (bb) (p.Country)
+    
+    marshall.int64__bin (bb) (p.Lang)
+    
+    marshall.bool__bin (bb) (p.IsSocialPlatform)
+    
+    marshall.bool__bin (bb) (p.IsCmsSource)
+    
+    marshall.bool__bin (bb) (p.IsPayGateway)
+}
+
+export const BIZ__bin = (bb:BytesBuilder) => (v:jcs.BIZ) => {
+    marshall.int64__bin (bb) (v.id)
+    marshall.int64__bin (bb) (v.sort)
+    marshall.DateTime__bin (bb) (v.createdat)
+    marshall.DateTime__bin (bb) (v.updatedat)
+
+    pBIZ__bin (bb) (v.p)
+}
+
+export const bin__pBIZ = (bi:BinIndexed):jcs.pBIZ => {
+
+    let p = pBIZ_empty()
+    p.Code = marshall.bin__str (bi)
+    p.Caption = marshall.bin__str (bi)
+    p.Parent = marshall.bin__int64 (bi)
+    p.BasicAcct = marshall.bin__int64 (bi)
+    p.DescTxt = marshall.bin__str (bi)
+    p.Website = marshall.bin__str (bi)
+    p.Icon = marshall.bin__str (bi)
+    p.City = marshall.bin__int64 (bi)
+    p.Country = marshall.bin__int64 (bi)
+    p.Lang = marshall.bin__int64 (bi)
+    p.IsSocialPlatform = marshall.bin__bool (bi)
+    p.IsCmsSource = marshall.bin__bool (bi)
+    p.IsPayGateway = marshall.bin__bool (bi)
+
+    return p
+}
+
+
+export const bin__BIZ = (bi:BinIndexed):jcs.BIZ => {
+
+    let ID = marshall.bin__int64 (bi)
+    let Sort = marshall.bin__int64 (bi)
+    let Createdat = marshall.bin__DateTime (bi)
+    let Updatedat = marshall.bin__DateTime (bi)
+    
+    return {
+        id: ID,
+        sort: Sort,
+        createdat: Createdat,
+        updatedat: Updatedat,
+        p:  bin__pBIZ (bi)
+    }
+}
+
+// [CAT] Structure
+
+
+export const pCAT__bin = (bb:BytesBuilder) => (p:jcs.pCAT) => {
+
+    
+    marshall.str__bin (bb) (p.Caption)
+    
+    marshall.int64__bin (bb) (p.Lang)
+    
+    marshall.int64__bin (bb) (p.Zh)
+    
+    marshall.int64__bin (bb) (p.Parent)
+    
+    marshall.int32__bin (bb) (p.CatState)
+}
+
+export const CAT__bin = (bb:BytesBuilder) => (v:jcs.CAT) => {
+    marshall.int64__bin (bb) (v.id)
+    marshall.int64__bin (bb) (v.sort)
+    marshall.DateTime__bin (bb) (v.createdat)
+    marshall.DateTime__bin (bb) (v.updatedat)
+
+    pCAT__bin (bb) (v.p)
+}
+
+export const bin__pCAT = (bi:BinIndexed):jcs.pCAT => {
+
+    let p = pCAT_empty()
+    p.Caption = marshall.bin__str (bi)
+    p.Lang = marshall.bin__int64 (bi)
+    p.Zh = marshall.bin__int64 (bi)
+    p.Parent = marshall.bin__int64 (bi)
+    p.CatState = marshall.bin__int32 (bi)
+
+    return p
+}
+
+
+export const bin__CAT = (bi:BinIndexed):jcs.CAT => {
+
+    let ID = marshall.bin__int64 (bi)
+    let Sort = marshall.bin__int64 (bi)
+    let Createdat = marshall.bin__DateTime (bi)
+    let Updatedat = marshall.bin__DateTime (bi)
+    
+    return {
+        id: ID,
+        sort: Sort,
+        createdat: Createdat,
+        updatedat: Updatedat,
+        p:  bin__pCAT (bi)
+    }
+}
+
+// [CITY] Structure
+
+
+export const pCITY__bin = (bb:BytesBuilder) => (p:jcs.pCITY) => {
+
+    
+    marshall.str__bin (bb) (p.Fullname)
+    
+    marshall.str__bin (bb) (p.MetropolitanCode3IATA)
+    
+    marshall.str__bin (bb) (p.NameEn)
+    
+    marshall.int64__bin (bb) (p.Country)
+    
+    marshall.int64__bin (bb) (p.Place)
+    
+    marshall.str__bin (bb) (p.Icon)
+    
+    marshall.str__bin (bb) (p.Tel)
+}
+
+export const CITY__bin = (bb:BytesBuilder) => (v:jcs.CITY) => {
+    marshall.int64__bin (bb) (v.id)
+    marshall.int64__bin (bb) (v.sort)
+    marshall.DateTime__bin (bb) (v.createdat)
+    marshall.DateTime__bin (bb) (v.updatedat)
+
+    pCITY__bin (bb) (v.p)
+}
+
+export const bin__pCITY = (bi:BinIndexed):jcs.pCITY => {
+
+    let p = pCITY_empty()
+    p.Fullname = marshall.bin__str (bi)
+    p.MetropolitanCode3IATA = marshall.bin__str (bi)
+    p.NameEn = marshall.bin__str (bi)
+    p.Country = marshall.bin__int64 (bi)
+    p.Place = marshall.bin__int64 (bi)
+    p.Icon = marshall.bin__str (bi)
+    p.Tel = marshall.bin__str (bi)
+
+    return p
+}
+
+
+export const bin__CITY = (bi:BinIndexed):jcs.CITY => {
+
+    let ID = marshall.bin__int64 (bi)
+    let Sort = marshall.bin__int64 (bi)
+    let Createdat = marshall.bin__DateTime (bi)
+    let Updatedat = marshall.bin__DateTime (bi)
+    
+    return {
+        id: ID,
+        sort: Sort,
+        createdat: Createdat,
+        updatedat: Updatedat,
+        p:  bin__pCITY (bi)
+    }
+}
+
+// [CRY] Structure
+
+
+export const pCRY__bin = (bb:BytesBuilder) => (p:jcs.pCRY) => {
+
+    
+    marshall.str__bin (bb) (p.Code2)
+    
+    marshall.str__bin (bb) (p.Caption)
+    
+    marshall.str__bin (bb) (p.Fullname)
+    
+    marshall.str__bin (bb) (p.Icon)
+    
+    marshall.str__bin (bb) (p.Tel)
+    
+    marshall.int64__bin (bb) (p.Cur)
+    
+    marshall.int64__bin (bb) (p.Capital)
+    
+    marshall.int64__bin (bb) (p.Place)
+    
+    marshall.int64__bin (bb) (p.Lang)
+}
+
+export const CRY__bin = (bb:BytesBuilder) => (v:jcs.CRY) => {
+    marshall.int64__bin (bb) (v.id)
+    marshall.int64__bin (bb) (v.sort)
+    marshall.DateTime__bin (bb) (v.createdat)
+    marshall.DateTime__bin (bb) (v.updatedat)
+
+    pCRY__bin (bb) (v.p)
+}
+
+export const bin__pCRY = (bi:BinIndexed):jcs.pCRY => {
+
+    let p = pCRY_empty()
+    p.Code2 = marshall.bin__str (bi)
+    p.Caption = marshall.bin__str (bi)
+    p.Fullname = marshall.bin__str (bi)
+    p.Icon = marshall.bin__str (bi)
+    p.Tel = marshall.bin__str (bi)
+    p.Cur = marshall.bin__int64 (bi)
+    p.Capital = marshall.bin__int64 (bi)
+    p.Place = marshall.bin__int64 (bi)
+    p.Lang = marshall.bin__int64 (bi)
+
+    return p
+}
+
+
+export const bin__CRY = (bi:BinIndexed):jcs.CRY => {
+
+    let ID = marshall.bin__int64 (bi)
+    let Sort = marshall.bin__int64 (bi)
+    let Createdat = marshall.bin__DateTime (bi)
+    let Updatedat = marshall.bin__DateTime (bi)
+    
+    return {
+        id: ID,
+        sort: Sort,
+        createdat: Createdat,
+        updatedat: Updatedat,
+        p:  bin__pCRY (bi)
+    }
+}
+
+// [EU] Structure
+
+
+export const pEU__bin = (bb:BytesBuilder) => (p:jcs.pEU) => {
+
+    
+    marshall.str__bin (bb) (p.Caption)
+    
+    marshall.str__bin (bb) (p.Username)
+    
+    marshall.int64__bin (bb) (p.SocialAuthBiz)
+    
+    marshall.str__bin (bb) (p.SocialAuthId)
+    
+    marshall.str__bin (bb) (p.SocialAuthAvatar)
+    
+    marshall.str__bin (bb) (p.Email)
+    
+    marshall.str__bin (bb) (p.Tel)
+    
+    marshall.int32__bin (bb) (p.Gender)
+    
+    marshall.int32__bin (bb) (p.Status)
+    
+    marshall.int32__bin (bb) (p.Admin)
+    
+    marshall.int32__bin (bb) (p.BizPartner)
+    
+    marshall.int64__bin (bb) (p.Privilege)
+    
+    marshall.int32__bin (bb) (p.Verify)
+    
+    marshall.str__bin (bb) (p.Pwd)
+    
+    marshall.bool__bin (bb) (p.Online)
+    
+    marshall.str__bin (bb) (p.Icon)
+    
+    marshall.str__bin (bb) (p.Background)
+    
+    marshall.int64__bin (bb) (p.BasicAcct)
+    
+    marshall.int64__bin (bb) (p.Citizen)
+    
+    marshall.str__bin (bb) (p.Refer)
+    
+    marshall.int64__bin (bb) (p.Referer)
+    
+    marshall.str__bin (bb) (p.Url)
+    
+    marshall.str__bin (bb) (p.About)
+}
+
+export const EU__bin = (bb:BytesBuilder) => (v:jcs.EU) => {
+    marshall.int64__bin (bb) (v.id)
+    marshall.int64__bin (bb) (v.sort)
+    marshall.DateTime__bin (bb) (v.createdat)
+    marshall.DateTime__bin (bb) (v.updatedat)
+
+    pEU__bin (bb) (v.p)
+}
+
+export const bin__pEU = (bi:BinIndexed):jcs.pEU => {
+
+    let p = pEU_empty()
+    p.Caption = marshall.bin__str (bi)
+    p.Username = marshall.bin__str (bi)
+    p.SocialAuthBiz = marshall.bin__int64 (bi)
+    p.SocialAuthId = marshall.bin__str (bi)
+    p.SocialAuthAvatar = marshall.bin__str (bi)
+    p.Email = marshall.bin__str (bi)
+    p.Tel = marshall.bin__str (bi)
+    p.Gender = marshall.bin__int32 (bi)
+    p.Status = marshall.bin__int32 (bi)
+    p.Admin = marshall.bin__int32 (bi)
+    p.BizPartner = marshall.bin__int32 (bi)
+    p.Privilege = marshall.bin__int64 (bi)
+    p.Verify = marshall.bin__int32 (bi)
+    p.Pwd = marshall.bin__str (bi)
+    p.Online = marshall.bin__bool (bi)
+    p.Icon = marshall.bin__str (bi)
+    p.Background = marshall.bin__str (bi)
+    p.BasicAcct = marshall.bin__int64 (bi)
+    p.Citizen = marshall.bin__int64 (bi)
+    p.Refer = marshall.bin__str (bi)
+    p.Referer = marshall.bin__int64 (bi)
+    p.Url = marshall.bin__str (bi)
+    p.About = marshall.bin__str (bi)
+
+    return p
+}
+
+
+export const bin__EU = (bi:BinIndexed):jcs.EU => {
+
+    let ID = marshall.bin__int64 (bi)
+    let Sort = marshall.bin__int64 (bi)
+    let Createdat = marshall.bin__DateTime (bi)
+    let Updatedat = marshall.bin__DateTime (bi)
+    
+    return {
+        id: ID,
+        sort: Sort,
+        createdat: Createdat,
+        updatedat: Updatedat,
+        p:  bin__pEU (bi)
+    }
+}
+
+// [CSI] Structure
+
+
+export const pCSI__bin = (bb:BytesBuilder) => (p:jcs.pCSI) => {
+
+    
+    marshall.int32__bin (bb) (p.Type)
+    
+    marshall.int64__bin (bb) (p.Lang)
+    
+    marshall.int64__bin (bb) (p.Bind)
+}
+
+export const CSI__bin = (bb:BytesBuilder) => (v:jcs.CSI) => {
+    marshall.int64__bin (bb) (v.id)
+    marshall.int64__bin (bb) (v.sort)
+    marshall.DateTime__bin (bb) (v.createdat)
+    marshall.DateTime__bin (bb) (v.updatedat)
+
+    pCSI__bin (bb) (v.p)
+}
+
+export const bin__pCSI = (bi:BinIndexed):jcs.pCSI => {
+
+    let p = pCSI_empty()
+    p.Type = marshall.bin__int32 (bi)
+    p.Lang = marshall.bin__int64 (bi)
+    p.Bind = marshall.bin__int64 (bi)
+
+    return p
+}
+
+
+export const bin__CSI = (bi:BinIndexed):jcs.CSI => {
+
+    let ID = marshall.bin__int64 (bi)
+    let Sort = marshall.bin__int64 (bi)
+    let Createdat = marshall.bin__DateTime (bi)
+    let Updatedat = marshall.bin__DateTime (bi)
+    
+    return {
+        id: ID,
+        sort: Sort,
+        createdat: Createdat,
+        updatedat: Updatedat,
+        p:  bin__pCSI (bi)
+    }
+}
+
+// [CWC] Structure
+
+
+export const pCWC__bin = (bb:BytesBuilder) => (p:jcs.pCWC) => {
+
+    
+    marshall.str__bin (bb) (p.Caption)
+    
+    marshall.int64__bin (bb) (p.ExternalId)
+    
+    marshall.str__bin (bb) (p.Icon)
+    
+    marshall.int64__bin (bb) (p.EU)
+    
+    marshall.int64__bin (bb) (p.Biz)
+    
+    marshall.str__bin (bb) (p.Json)
+}
+
+export const CWC__bin = (bb:BytesBuilder) => (v:jcs.CWC) => {
+    marshall.int64__bin (bb) (v.id)
+    marshall.int64__bin (bb) (v.sort)
+    marshall.DateTime__bin (bb) (v.createdat)
+    marshall.DateTime__bin (bb) (v.updatedat)
+
+    pCWC__bin (bb) (v.p)
+}
+
+export const bin__pCWC = (bi:BinIndexed):jcs.pCWC => {
+
+    let p = pCWC_empty()
+    p.Caption = marshall.bin__str (bi)
+    p.ExternalId = marshall.bin__int64 (bi)
+    p.Icon = marshall.bin__str (bi)
+    p.EU = marshall.bin__int64 (bi)
+    p.Biz = marshall.bin__int64 (bi)
+    p.Json = marshall.bin__str (bi)
+
+    return p
+}
+
+
+export const bin__CWC = (bi:BinIndexed):jcs.CWC => {
+
+    let ID = marshall.bin__int64 (bi)
+    let Sort = marshall.bin__int64 (bi)
+    let Createdat = marshall.bin__DateTime (bi)
+    let Updatedat = marshall.bin__DateTime (bi)
+    
+    return {
+        id: ID,
+        sort: Sort,
+        createdat: Createdat,
+        updatedat: Updatedat,
+        p:  bin__pCWC (bi)
+    }
+}
+
 // [API] Structure
 
 
@@ -489,6 +1052,191 @@ export const bin__VARTYPE = (bi:BinIndexed):jcs.VARTYPE => {
         p:  bin__pVARTYPE (bi)
     }
 }
+export const pADDRESS_empty = (): jcs.pADDRESS => {
+    return {
+        Caption: "",
+        Bind: 0,
+        AddressType: 0,
+        Line1: "",
+        Line2: "",
+        State: "",
+        County: "",
+        Town: "",
+        Contact: "",
+        Tel: "",
+        Email: "",
+        Zip: "",
+        City: 0,
+        Country: 0,
+        Remarks: "" }
+}
+
+export const ADDRESS_empty = (): jcs.ADDRESS => {
+    return {
+        id: 0,
+        createdat: new Date(),
+        updatedat: new Date(),
+        sort: 0,
+        p: pADDRESS_empty() }
+}
+
+export const pBIZ_empty = (): jcs.pBIZ => {
+    return {
+        Code: "",
+        Caption: "",
+        Parent: 0,
+        BasicAcct: 0,
+        DescTxt: "",
+        Website: "",
+        Icon: "",
+        City: 0,
+        Country: 0,
+        Lang: 0,
+        IsSocialPlatform: true,
+        IsCmsSource: true,
+        IsPayGateway: true }
+}
+
+export const BIZ_empty = (): jcs.BIZ => {
+    return {
+        id: 0,
+        createdat: new Date(),
+        updatedat: new Date(),
+        sort: 0,
+        p: pBIZ_empty() }
+}
+
+export const pCAT_empty = (): jcs.pCAT => {
+    return {
+        Caption: "",
+        Lang: 0,
+        Zh: 0,
+        Parent: 0,
+        CatState: 0 }
+}
+
+export const CAT_empty = (): jcs.CAT => {
+    return {
+        id: 0,
+        createdat: new Date(),
+        updatedat: new Date(),
+        sort: 0,
+        p: pCAT_empty() }
+}
+
+export const pCITY_empty = (): jcs.pCITY => {
+    return {
+        Fullname: "",
+        MetropolitanCode3IATA: "",
+        NameEn: "",
+        Country: 0,
+        Place: 0,
+        Icon: "",
+        Tel: "" }
+}
+
+export const CITY_empty = (): jcs.CITY => {
+    return {
+        id: 0,
+        createdat: new Date(),
+        updatedat: new Date(),
+        sort: 0,
+        p: pCITY_empty() }
+}
+
+export const pCRY_empty = (): jcs.pCRY => {
+    return {
+        Code2: "",
+        Caption: "",
+        Fullname: "",
+        Icon: "",
+        Tel: "",
+        Cur: 0,
+        Capital: 0,
+        Place: 0,
+        Lang: 0 }
+}
+
+export const CRY_empty = (): jcs.CRY => {
+    return {
+        id: 0,
+        createdat: new Date(),
+        updatedat: new Date(),
+        sort: 0,
+        p: pCRY_empty() }
+}
+
+export const pEU_empty = (): jcs.pEU => {
+    return {
+        Caption: "",
+        Username: "",
+        SocialAuthBiz: 0,
+        SocialAuthId: "",
+        SocialAuthAvatar: "",
+        Email: "",
+        Tel: "",
+        Gender: 0,
+        Status: 0,
+        Admin: 0,
+        BizPartner: 0,
+        Privilege: 0,
+        Verify: 0,
+        Pwd: "",
+        Online: true,
+        Icon: "",
+        Background: "",
+        BasicAcct: 0,
+        Citizen: 0,
+        Refer: "",
+        Referer: 0,
+        Url: "",
+        About: "" }
+}
+
+export const EU_empty = (): jcs.EU => {
+    return {
+        id: 0,
+        createdat: new Date(),
+        updatedat: new Date(),
+        sort: 0,
+        p: pEU_empty() }
+}
+
+export const pCSI_empty = (): jcs.pCSI => {
+    return {
+        Type: 0,
+        Lang: 0,
+        Bind: 0 }
+}
+
+export const CSI_empty = (): jcs.CSI => {
+    return {
+        id: 0,
+        createdat: new Date(),
+        updatedat: new Date(),
+        sort: 0,
+        p: pCSI_empty() }
+}
+
+export const pCWC_empty = (): jcs.pCWC => {
+    return {
+        Caption: "",
+        ExternalId: 0,
+        Icon: "",
+        EU: 0,
+        Biz: 0,
+        Json: "" }
+}
+
+export const CWC_empty = (): jcs.CWC => {
+    return {
+        id: 0,
+        createdat: new Date(),
+        updatedat: new Date(),
+        sort: 0,
+        p: pCWC_empty() }
+}
+
 export const pAPI_empty = (): jcs.pAPI => {
     return {
         Name: "",
