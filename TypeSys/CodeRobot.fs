@@ -391,7 +391,9 @@ let buildTableEnums robot (t:Table) (name,lines:(string * string)[]) =
         [| 0 .. lines.Length - 1 |]
         |> Array.iter(fun i -> 
             let a,b = lines[i]
-            "const " + enumName + "_" + a + " = " + i.ToString() + " // " + b |> w.newline)
+            "export const " + enumName + "_" + a + " = " + i.ToString() + " // " + b |> w.newline)
+
+        w.newlineBlank()
 
         //"const enum " + enumName + " {" |> w.newline
         //[| 0 .. lines.Length - 1 |]
@@ -421,7 +423,7 @@ let buildTableEnums robot (t:Table) (name,lines:(string * string)[]) =
     //    |> Array.iter (w.newlineIndent 1)
     //    "default: return 0 }" |> w.newlineIndent 1
     //    "}" |> w.newline
-        ()) otTypeScript.w
+        ()) omTypeScript.w //otTypeScript.w
 
     addMulti "" [| ot; otTypeScript |]
 

@@ -4,9 +4,6 @@ namespace jcs {
 
 // [Ca_Address] (ADDRESS)
 
-const addressAddressTypeEnum_Default = 0 // 默认
-const addressAddressTypeEnum_Biz = 1 // 机构
-const addressAddressTypeEnum_EndUser = 2 // 用户
 
 export type pADDRESS = {
     Caption: string
@@ -62,9 +59,6 @@ p:pBIZ
 
 // [Ca_Cat] (CAT)
 
-const catCatStateEnum_Normal = 0 // 正常
-const catCatStateEnum_Hidden = 1 // 隐藏
-const catCatStateEnum_Obsolete = 2 // 过时
 
 export type pCAT = {
     Caption: string
@@ -126,22 +120,10 @@ p:pCRY
 
 // [Ca_EndUser] (EU)
 
-const euGenderEnum_Unknown = 0 // 未知
-const euGenderEnum_Male = 1 // 男
-const euGenderEnum_Female = 2 // 女
 
-const euStatusEnum_Normal = 0 // 正常
-const euStatusEnum_Frozen = 1 // 冻结
-const euStatusEnum_Terminated = 2 // 注销
 
-const euAdminEnum_None = 0 // 无
-const euAdminEnum_Admin = 1 // 管理员
 
-const euBizPartnerEnum_None = 0 // None
-const euBizPartnerEnum_Partner = 1 // 
 
-const euVerifyEnum_Normal = 0 // 常规
-const euVerifyEnum_Verified = 1 // 认证
 
 export type pEU = {
     Caption: string
@@ -179,10 +161,6 @@ p:pEU
 
 // [Ca_SpecialItem] (CSI)
 
-const csiTypeEnum_Normal = 0 // 常规
-const csiTypeEnum_ToplinesGlobalNews = 1 // 全站新闻置顶
-const csiTypeEnum_ToplinesGlobalPerson = 2 // 全站人物置顶
-const csiTypeEnum_ToplinesGlobalEvent = 3 // 全站事件置顶
 
 export type pCSI = {
     Type: number
@@ -234,19 +212,6 @@ p:pAPI
 
 // [Ts_Field] (FIELD)
 
-const fieldFieldTypeEnum_Undefined = 0 // Undefined
-const fieldFieldTypeEnum_FK = 1 // FK
-const fieldFieldTypeEnum_Caption = 2 // Caption
-const fieldFieldTypeEnum_Chars = 3 // Chars
-const fieldFieldTypeEnum_Link = 4 // Link
-const fieldFieldTypeEnum_Text = 5 // Text
-const fieldFieldTypeEnum_Bin = 6 // Bin
-const fieldFieldTypeEnum_Integer = 7 // Integer
-const fieldFieldTypeEnum_Float = 8 // Float
-const fieldFieldTypeEnum_Boolean = 9 // Boolean
-const fieldFieldTypeEnum_SelectLines = 10 // Select Lines
-const fieldFieldTypeEnum_Timestamp = 11 // Time Stamp
-const fieldFieldTypeEnum_TimeSeries = 12 // Time Series
 
 export type pFIELD = {
     Name: string
@@ -268,8 +233,6 @@ p:pFIELD
 
 // [Ts_HostConfig] (HOSTCONFIG)
 
-const hostconfigDatabaseEnum_SQLSERVER = 0 // SQL Server
-const hostconfigDatabaseEnum_PostgreSQL = 1 // PostgreSQL
 
 export type pHOSTCONFIG = {
     Hostname: string
@@ -376,12 +339,6 @@ p:pTEMPLATE
 
 // [Ts_VarType] (VARTYPE)
 
-const vartypeBindTypeEnum_ApiRequest = 0 // API Request
-const vartypeBindTypeEnum_ApiResponse = 1 // API Response
-const vartypeBindTypeEnum_CompState = 2 // Component State
-const vartypeBindTypeEnum_CompProps = 3 // Component Propos
-const vartypeBindTypeEnum_PageState = 4 // Page State
-const vartypeBindTypeEnum_PageProps = 5 // Page Propos
 
 export type pVARTYPE = {
     Name: string

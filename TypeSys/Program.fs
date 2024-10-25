@@ -9,10 +9,10 @@ open Util.Db
 
 open Loadcfg
 
-let run() = 
+Console.OutputEncoding <- System.Text.Encoding.Unicode
+let output (s:string) = Console.WriteLine s
 
-    Console.OutputEncoding <- System.Text.Encoding.Unicode
-    let output (s:string) = Console.WriteLine s
+let target__config target = 
 
     @"C:\Dev\JCS\BizShared\Types.fs"
     |> TypeSys.FSharp.go output
@@ -125,13 +125,6 @@ let run() =
     //    target <- chooseProject cfgData target
     //    cfgData[target] |> CodeRobot.go output
 
-    let mutable target = 0
-
-    //target <- 5 // CTC Develop
-    target <- 6 // JCS
-    //target <- 10 // Game
-    //let target = 11 // GNexts
-    //target <- 15 // J
 
     match target with
     | 7 ->
@@ -242,8 +235,20 @@ let run() =
             conn = ""
             mainDir = @"C:\Dev\JCS\BizShared"
             JsDir = @"C:\Dev\JCS\BizShared" }
-    |> CodeRobot.go output
 
+let run () = 
+
+    //target <- 5 // CTC Develop
+    //target <- 6 // JCS
+    //target <- 10 // Game
+    //let target = 11 // GNexts
+    //target <- 15 // J
+
+
+    [|  6 // JCS
+        10 |] //Game
+    |> Array.map target__config
+    |> Array.iter(CodeRobot.go output)
 
 run()
 

@@ -1052,6 +1052,10 @@ export const bin__VARTYPE = (bi:BinIndexed):jcs.VARTYPE => {
         p:  bin__pVARTYPE (bi)
     }
 }
+export const addressAddressTypeEnum_Default = 0 // 默认
+export const addressAddressTypeEnum_Biz = 1 // 机构
+export const addressAddressTypeEnum_EndUser = 2 // 用户
+
 export const pADDRESS_empty = (): jcs.pADDRESS => {
     return {
         Caption: "",
@@ -1105,6 +1109,10 @@ export const BIZ_empty = (): jcs.BIZ => {
         sort: 0,
         p: pBIZ_empty() }
 }
+
+export const catCatStateEnum_Normal = 0 // 正常
+export const catCatStateEnum_Hidden = 1 // 隐藏
+export const catCatStateEnum_Obsolete = 2 // 过时
 
 export const pCAT_empty = (): jcs.pCAT => {
     return {
@@ -1166,6 +1174,23 @@ export const CRY_empty = (): jcs.CRY => {
         p: pCRY_empty() }
 }
 
+export const euGenderEnum_Unknown = 0 // 未知
+export const euGenderEnum_Male = 1 // 男
+export const euGenderEnum_Female = 2 // 女
+
+export const euStatusEnum_Normal = 0 // 正常
+export const euStatusEnum_Frozen = 1 // 冻结
+export const euStatusEnum_Terminated = 2 // 注销
+
+export const euAdminEnum_None = 0 // 无
+export const euAdminEnum_Admin = 1 // 管理员
+
+export const euBizPartnerEnum_None = 0 // None
+export const euBizPartnerEnum_Partner = 1 // 
+
+export const euVerifyEnum_Normal = 0 // 常规
+export const euVerifyEnum_Verified = 1 // 认证
+
 export const pEU_empty = (): jcs.pEU => {
     return {
         Caption: "",
@@ -1201,6 +1226,11 @@ export const EU_empty = (): jcs.EU => {
         sort: 0,
         p: pEU_empty() }
 }
+
+export const csiTypeEnum_Normal = 0 // 常规
+export const csiTypeEnum_ToplinesGlobalNews = 1 // 全站新闻置顶
+export const csiTypeEnum_ToplinesGlobalPerson = 2 // 全站人物置顶
+export const csiTypeEnum_ToplinesGlobalEvent = 3 // 全站事件置顶
 
 export const pCSI_empty = (): jcs.pCSI => {
     return {
@@ -1252,6 +1282,20 @@ export const API_empty = (): jcs.API => {
         p: pAPI_empty() }
 }
 
+export const fieldFieldTypeEnum_Undefined = 0 // Undefined
+export const fieldFieldTypeEnum_FK = 1 // FK
+export const fieldFieldTypeEnum_Caption = 2 // Caption
+export const fieldFieldTypeEnum_Chars = 3 // Chars
+export const fieldFieldTypeEnum_Link = 4 // Link
+export const fieldFieldTypeEnum_Text = 5 // Text
+export const fieldFieldTypeEnum_Bin = 6 // Bin
+export const fieldFieldTypeEnum_Integer = 7 // Integer
+export const fieldFieldTypeEnum_Float = 8 // Float
+export const fieldFieldTypeEnum_Boolean = 9 // Boolean
+export const fieldFieldTypeEnum_SelectLines = 10 // Select Lines
+export const fieldFieldTypeEnum_Timestamp = 11 // Time Stamp
+export const fieldFieldTypeEnum_TimeSeries = 12 // Time Series
+
 export const pFIELD_empty = (): jcs.pFIELD => {
     return {
         Name: "",
@@ -1271,6 +1315,9 @@ export const FIELD_empty = (): jcs.FIELD => {
         sort: 0,
         p: pFIELD_empty() }
 }
+
+export const hostconfigDatabaseEnum_SQLSERVER = 0 // SQL Server
+export const hostconfigDatabaseEnum_PostgreSQL = 1 // PostgreSQL
 
 export const pHOSTCONFIG_empty = (): jcs.pHOSTCONFIG => {
     return {
@@ -1376,6 +1423,13 @@ export const TEMPLATE_empty = (): jcs.TEMPLATE => {
         sort: 0,
         p: pTEMPLATE_empty() }
 }
+
+export const vartypeBindTypeEnum_ApiRequest = 0 // API Request
+export const vartypeBindTypeEnum_ApiResponse = 1 // API Response
+export const vartypeBindTypeEnum_CompState = 2 // Component State
+export const vartypeBindTypeEnum_CompProps = 3 // Component Propos
+export const vartypeBindTypeEnum_PageState = 4 // Page State
+export const vartypeBindTypeEnum_PageProps = 5 // Page Propos
 
 export const pVARTYPE_empty = (): jcs.pVARTYPE => {
     return {

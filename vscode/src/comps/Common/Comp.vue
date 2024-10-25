@@ -21,9 +21,12 @@
 </div>
 
 <div>Props</div>
-<VarType :vt="VARTYPE_empty()" />
 <VarType 
-  :vt="v"
+  :vt="VARTYPE_empty()" :projectx="props.projectx" 
+  :bind="props.compx.comp.p.Name" :bindType="glib.Mor.jcs.vartypeBindTypeEnum_CompProps"/>
+<VarType 
+  :vt="v" :projectx="props.projectx" 
+  :bind="props.compx.comp.p.Name" :bindType="glib.Mor.jcs.vartypeBindTypeEnum_CompProps"
   v-for="[k,v] in (Object.entries(props.compx.props) as [string,jcs.VARTYPE][])" />
 
 <div>States</div>

@@ -82,9 +82,9 @@ let branching x =
             | None -> er Er.InvalideParameter) |> bindx
         | "createVarType" -> (fun x ->
             let bindTypeo = tryFindNumByAtt "bindType" x.json |> parse_int32 |> int__vartypeBindTypeEnum
-            let projectxo = tryFindNumByAtt "project" x.json |> parse_int64|> runtime.data.projectxs.TryGet
+            let projectxo = tryFindNumByAtt "project" x.json |> parse_int64 |> runtime.data.projectxs.TryGet
             let bind = tryFindStrByAtt "bind" x.json
-            let n = tryFindStrByAtt "n" x.json
+            let n = tryFindStrByAtt "name" x.json
             let t = tryFindStrByAtt "type" x.json
             match (bindTypeo,projectxo) with
             | (Some bindType), (Some projectx) ->
