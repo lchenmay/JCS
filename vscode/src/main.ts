@@ -6,7 +6,7 @@ globalThis.host = glib.vue.reactive(glib.host.initHost())
 globalThis.runtime = glib.vue.reactive(glib.runtime.prepRuntime())
 runtime.host = host
 
-//runtime.user.eu = glib.Mor.jcs.EU_empty()
+runtime.user = glib.Mor.[]
 
 glib.runtime.createGlobalWatcher()
 

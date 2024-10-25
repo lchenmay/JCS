@@ -11,8 +11,6 @@ open Loadcfg
 
 let run() = 
 
-    BizLogics.CodeRobot.run()
-
     Console.OutputEncoding <- System.Text.Encoding.Unicode
     let output (s:string) = Console.WriteLine s
 
@@ -245,6 +243,8 @@ let run() =
             mainDir = @"C:\Dev\JCS\BizShared"
             JsDir = @"C:\Dev\JCS\BizShared" }
     |> CodeRobot.go output
+
+    BizLogics.CodeRobot.run()
 
 run()
 

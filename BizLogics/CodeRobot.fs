@@ -168,6 +168,13 @@ let buildPages projectx (hostconfig:HOSTCONFIG) =
 
         ())
 
+let changeFile path changer = 
+    if File.Exists path then
+        let txt = 
+            File.ReadAllText path
+            |> changer
+        File.WriteAllText(path,txt)
+
 let run() =
 
     BizLogics.Init.init runtime
@@ -181,5 +188,17 @@ let run() =
 
     buildComps projectx hostconfig
     buildPages projectx hostconfig
+
+    (fun (src:string) -> 
+        let ns = projectx.project.p.Code.ToLower()
+        let mutable res = src.Replace("user: [].[]","user: " + ns + "." + projectx.project.p.TypeSessionUser)
+        res <- res.Replace("data: [].RuntimeData","data: " + ns + ".RuntimeData")
+        res)
+    |> changeFile(hostconfig.p.DirVsCodeWeb + "/src/types/main.d.ts")
+
+    (fun (src:string) -> 
+        let ns = projectx.project.p.Code.ToLower()
+        src.Replace("runtime.user = glib.Mor.[]","runtime.user = glib.Mor." + ns + "." + projectx.project.p.TypeSessionUser + "_empty()"))
+    |> changeFile(hostconfig.p.DirVsCodeWeb + "/src/main.ts")
 
     ()
