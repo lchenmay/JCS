@@ -184,7 +184,7 @@ BEGIN
         ,"database" INT
         ,"databasename" VARCHAR(64)
         ,"databaseconn" VARCHAR(64)
-        ,"dirvsshared" VARCHAR(64)
+        ,"dirvs" VARCHAR(64)
         ,"dirvscodeweb" VARCHAR(64)
         ,"project" BIGINT);
 
@@ -248,17 +248,17 @@ BEGIN
     END IF;
 END $$;
 
--- [Ts_HostConfig.DirVsShared] -------------
+-- [Ts_HostConfig.DirVs] -------------
 
 
 DO $$
 DECLARE
     condition boolean;
 BEGIN
-    condition := (SELECT EXISTS(SELECT column_name FROM information_schema.columns WHERE table_name='ts_hostconfig' AND column_name='dirvsshared'));
+    condition := (SELECT EXISTS(SELECT column_name FROM information_schema.columns WHERE table_name='ts_hostconfig' AND column_name='dirvs'));
 
     IF not condition THEN
-        ALTER TABLE ts_hostconfig ADD "dirvsshared" varchar(64);
+        ALTER TABLE ts_hostconfig ADD "dirvs" varchar(64);
     END IF;
 END $$;
 

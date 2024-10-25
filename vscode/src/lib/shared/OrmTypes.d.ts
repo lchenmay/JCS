@@ -61,7 +61,7 @@ export type pHOSTCONFIG = {
     Database: number
     DatabaseName: string
     DatabaseConn: string
-    DirVsShared: string
+    DirVs: string
     DirVsCodeWeb: string
     Project: number
 }

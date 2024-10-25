@@ -1,5 +1,11 @@
 <template>
 
+<div v-if="props.hostconfig.id == 0" class="card">
+    Create New Host Configuration
+</div>
+
+<div class="card" v-else>
+
 <div>
   Host Name <input v-model="props.hostconfig.p.Hostname" />
 </div>
@@ -24,6 +30,7 @@
   Dir VsCode Web <input v-model="props.hostconfig.p.DirVsCodeWeb" />
 </div>
 
+</div>
 
 </template>
 

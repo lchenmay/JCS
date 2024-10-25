@@ -35,11 +35,6 @@ open Shared.CustomMor
 open BizLogics.Common
 open BizLogics.Branch
 
-let conn = "server=127.0.0.1; user=sa; database=JCS"
-let mainDir = @"C:\Dev\JCS\Shared"
-let JsDir = @"C:\Dev\JCS\vscode\src\lib\shared"
-    
-
 type VueFile = {
 mutable template: string[]
 mutable imports: string[]
@@ -176,13 +171,14 @@ let run() =
 
     BizLogics.Init.init runtime
 
-    let pc = runtime.data.projectxs[234346L]
+    //let projectx = runtime.data.projectxs[234346L] // JCS
+    let projectx = runtime.data.projectxs[234347L] // Game
 
     let hostconfig = 
-        pc.hostconfigs.Values
+        projectx.hostconfigs.Values
         |> Array.find(fun i -> i.p.Hostname.ToUpper() = System.Environment.MachineName.ToUpper())
 
-    buildComps pc hostconfig
-    buildPages pc hostconfig
+    buildComps projectx hostconfig
+    buildPages projectx hostconfig
 
     ()

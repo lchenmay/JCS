@@ -44,7 +44,7 @@
       {
         "enum": "Chars",
         "length": 64,
-        "name": "DirVsShared"
+        "name": "DirVs"
       },
       {
         "enum": "Chars",

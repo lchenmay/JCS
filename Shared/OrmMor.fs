@@ -353,9 +353,9 @@ let pHOSTCONFIG__bin (bb:BytesBuilder) (p:pHOSTCONFIG) =
     binDatabaseConn.Length |> BitConverter.GetBytes |> bb.append
     binDatabaseConn |> bb.append
     
-    let binDirVsShared = p.DirVsShared |> Encoding.UTF8.GetBytes
-    binDirVsShared.Length |> BitConverter.GetBytes |> bb.append
-    binDirVsShared |> bb.append
+    let binDirVs = p.DirVs |> Encoding.UTF8.GetBytes
+    binDirVs.Length |> BitConverter.GetBytes |> bb.append
+    binDirVs |> bb.append
     
     let binDirVsCodeWeb = p.DirVsCodeWeb |> Encoding.UTF8.GetBytes
     binDirVsCodeWeb.Length |> BitConverter.GetBytes |> bb.append
@@ -394,10 +394,10 @@ let bin__pHOSTCONFIG (bi:BinIndexed):pHOSTCONFIG =
     p.DatabaseConn <- Encoding.UTF8.GetString(bin,index.Value,count_DatabaseConn)
     index.Value <- index.Value + count_DatabaseConn
     
-    let count_DirVsShared = BitConverter.ToInt32(bin,index.Value)
+    let count_DirVs = BitConverter.ToInt32(bin,index.Value)
     index.Value <- index.Value + 4
-    p.DirVsShared <- Encoding.UTF8.GetString(bin,index.Value,count_DirVsShared)
-    index.Value <- index.Value + count_DirVsShared
+    p.DirVs <- Encoding.UTF8.GetString(bin,index.Value,count_DirVs)
+    index.Value <- index.Value + count_DirVs
     
     let count_DirVsCodeWeb = BitConverter.ToInt32(bin,index.Value)
     index.Value <- index.Value + 4
@@ -436,7 +436,7 @@ let pHOSTCONFIG__json (p:pHOSTCONFIG) =
         ("Database",(p.Database |> EnumToValue).ToString() |> Json.Num)
         ("DatabaseName",p.DatabaseName |> Json.Str)
         ("DatabaseConn",p.DatabaseConn |> Json.Str)
-        ("DirVsShared",p.DirVsShared |> Json.Str)
+        ("DirVs",p.DirVs |> Json.Str)
         ("DirVsCodeWeb",p.DirVsCodeWeb |> Json.Str)
         ("Project",p.Project.ToString() |> Json.Num) |]
     |> Json.Braket
@@ -472,7 +472,7 @@ let json__pHOSTCONFIGo (json:Json):pHOSTCONFIG option =
     
     p.DatabaseConn <- checkfieldz fields "DatabaseConn" 64
     
-    p.DirVsShared <- checkfieldz fields "DirVsShared" 64
+    p.DirVs <- checkfieldz fields "DirVs" 64
     
     p.DirVsCodeWeb <- checkfieldz fields "DirVsCodeWeb" 64
     
@@ -507,7 +507,7 @@ let json__HOSTCONFIGo (json:Json):HOSTCONFIG option =
         
         p.DatabaseConn <- checkfieldz fields "DatabaseConn" 64
         
-        p.DirVsShared <- checkfieldz fields "DirVsShared" 64
+        p.DirVs <- checkfieldz fields "DirVs" 64
         
         p.DirVsCodeWeb <- checkfieldz fields "DirVsCodeWeb" 64
         
@@ -1654,7 +1654,7 @@ let db__pHOSTCONFIG(line:Object[]): pHOSTCONFIG =
     p.Database <- EnumOfValue(if Convert.IsDBNull(line.[5]) then 0 else line.[5] :?> int)
     p.DatabaseName <- string(line.[6]).TrimEnd()
     p.DatabaseConn <- string(line.[7]).TrimEnd()
-    p.DirVsShared <- string(line.[8]).TrimEnd()
+    p.DirVs <- string(line.[8]).TrimEnd()
     p.DirVsCodeWeb <- string(line.[9]).TrimEnd()
     p.Project <- if Convert.IsDBNull(line.[10]) then 0L else line.[10] :?> int64
 
@@ -1668,7 +1668,7 @@ let pHOSTCONFIG__sps (p:pHOSTCONFIG) =
             ("Database", p.Database) |> kvp__sqlparam
             ("DatabaseName", p.DatabaseName) |> kvp__sqlparam
             ("DatabaseConn", p.DatabaseConn) |> kvp__sqlparam
-            ("DirVsShared", p.DirVsShared) |> kvp__sqlparam
+            ("DirVs", p.DirVs) |> kvp__sqlparam
             ("DirVsCodeWeb", p.DirVsCodeWeb) |> kvp__sqlparam
             ("Project", p.Project) |> kvp__sqlparam |]
     | Rdbms.PostgreSql ->
@@ -1677,7 +1677,7 @@ let pHOSTCONFIG__sps (p:pHOSTCONFIG) =
             ("database", p.Database) |> kvp__sqlparam
             ("databasename", p.DatabaseName) |> kvp__sqlparam
             ("databaseconn", p.DatabaseConn) |> kvp__sqlparam
-            ("dirvsshared", p.DirVsShared) |> kvp__sqlparam
+            ("dirvs", p.DirVs) |> kvp__sqlparam
             ("dirvscodeweb", p.DirVsCodeWeb) |> kvp__sqlparam
             ("project", p.Project) |> kvp__sqlparam |]
 
@@ -1692,7 +1692,7 @@ let pHOSTCONFIG_clone (p:pHOSTCONFIG): pHOSTCONFIG = {
     Database = p.Database
     DatabaseName = p.DatabaseName
     DatabaseConn = p.DatabaseConn
-    DirVsShared = p.DirVsShared
+    DirVs = p.DirVs
     DirVsCodeWeb = p.DirVsCodeWeb
     Project = p.Project }
 
@@ -1758,7 +1758,7 @@ let HOSTCONFIGTxSqlServer =
     ,[Database]
     ,[DatabaseName]
     ,[DatabaseConn]
-    ,[DirVsShared]
+    ,[DirVs]
     ,[DirVsCodeWeb]
     ,[Project])
     END

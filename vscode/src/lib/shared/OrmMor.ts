@@ -125,7 +125,7 @@ export const pHOSTCONFIG__bin = (bb:BytesBuilder) => (p:jcs.pHOSTCONFIG) => {
     
     marshall.str__bin (bb) (p.DatabaseConn)
     
-    marshall.str__bin (bb) (p.DirVsShared)
+    marshall.str__bin (bb) (p.DirVs)
     
     marshall.str__bin (bb) (p.DirVsCodeWeb)
     
@@ -148,7 +148,7 @@ export const bin__pHOSTCONFIG = (bi:BinIndexed):jcs.pHOSTCONFIG => {
     p.Database = marshall.bin__int32 (bi)
     p.DatabaseName = marshall.bin__str (bi)
     p.DatabaseConn = marshall.bin__str (bi)
-    p.DirVsShared = marshall.bin__str (bi)
+    p.DirVs = marshall.bin__str (bi)
     p.DirVsCodeWeb = marshall.bin__str (bi)
     p.Project = marshall.bin__int64 (bi)
 
@@ -527,7 +527,7 @@ export const pHOSTCONFIG_empty = (): jcs.pHOSTCONFIG => {
         Database: 0,
         DatabaseName: "",
         DatabaseConn: "",
-        DirVsShared: "",
+        DirVs: "",
         DirVsCodeWeb: "",
         Project: 0 }
 }
