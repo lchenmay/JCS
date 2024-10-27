@@ -8,6 +8,7 @@ open System.Threading
 open Util.Cat
 open Util.Text
 open Util.Bin
+open Util.CollectionModDict
 open Util.Perf
 open Util.Json
 open Util.Http
