@@ -5,7 +5,7 @@ namespace jcs {
 
 // [EuComplex]
 export type EuComplex = {
-eu:number
+eu:EU
 }
 
 // [TableComplex]

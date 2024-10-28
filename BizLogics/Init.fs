@@ -42,8 +42,6 @@ let init (runtime:Runtime) =
 
     Shared.OrmMor.init()
 
-    runtime.data.projectxs.Reset 1
-
     let loader metadata = loadAll runtime.output conn metadata
 
     (fun (i:PROJECT) -> runtime.data.projectxs[i.ID] <- i |> project__ProjectComplex) |> loader PROJECT_metadata
@@ -162,36 +160,18 @@ let init (runtime:Runtime) =
         ("projectx","ProjectComplex","/Common/Page")
         ("pagex","PageComplex","/Common/Page")
 
+        ("projectx","ProjectComplex","/Common/VarType")
+        ("bindType","number","/Common/VarType")
+        ("bind","string","/Common/VarType")
         ("vt","VARTYPE","/Common/VarType") |]
-    |> Array.iter(fun (propName,propType,comp) ->
-        let compx = projectx.compxs[comp]
-        match compx.props.Values |> Array.tryFind(fun i -> i.p.Name = propName) with
-        | Some prop -> ()
-        | None -> 
-            match createCompProp projectx.project compx.comp propName propType with
-            | Some vt -> compx.props[propName] <- vt
-            | None -> halt runtime.output ("BizLogics.Init.createPageProp") "")
+    |> Array.map(createCompProp projectx) |> ignore
 
     // Comp States
     [|  ("expand","false","/Common/Project") |]
-    |> Array.iter(fun (stateName,stateVal,comp) ->
-        let compx = projectx.compxs[comp]
-        match compx.states.Values |> Array.tryFind(fun i -> i.p.Name = stateName) with
-        | Some state -> ()
-        | None -> 
-            match createCompState projectx.project compx.comp stateName stateVal with
-            | Some vt -> compx.states[stateName] <- vt
-            | None -> halt runtime.output ("BizLogics.Init.createCompState") "")
+    |> Array.map(createCompState projectx) |> ignore
 
     // Page Props
     [|  ("projectx","ProjectComplex","/CodeRobot/Project") |]
-    |> Array.iter(fun (propName,propType,page) ->
-        let pagex = projectx.pagexs[page]
-        match pagex.props.Values |> Array.tryFind(fun i -> i.p.Name = propName) with
-        | Some prop -> ()
-        | None -> 
-            match createPageProp projectx.project pagex.page propName propType with
-            | Some vt -> pagex.props[propName] <- vt
-            | None -> halt runtime.output ("BizLogics.Init.createPageProp") "")
+    |> Array.map(createPageProp projectx) |> ignore
 
 

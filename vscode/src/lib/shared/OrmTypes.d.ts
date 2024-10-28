@@ -2,6 +2,199 @@ declare global {
 
 namespace jcs {
 
+// [Ca_Address] (ADDRESS)
+
+
+export type pADDRESS = {
+    Caption: string
+    Bind: number
+    AddressType: number
+    Line1: string
+    Line2: string
+    State: string
+    County: string
+    Town: string
+    Contact: string
+    Tel: string
+    Email: string
+    Zip: string
+    City: number
+    Country: number
+    Remarks: string
+}
+
+export type ADDRESS = {
+id:number
+createdat:Date
+updatedat:Date
+sort:number
+p:pADDRESS
+}
+
+// [Ca_Biz] (BIZ)
+
+export type pBIZ = {
+    Code: string
+    Caption: string
+    Parent: number
+    BasicAcct: number
+    DescTxt: string
+    Website: string
+    Icon: string
+    City: number
+    Country: number
+    Lang: number
+    IsSocialPlatform: boolean
+    IsCmsSource: boolean
+    IsPayGateway: boolean
+}
+
+export type BIZ = {
+id:number
+createdat:Date
+updatedat:Date
+sort:number
+p:pBIZ
+}
+
+// [Ca_Cat] (CAT)
+
+
+export type pCAT = {
+    Caption: string
+    Lang: number
+    Zh: number
+    Parent: number
+    CatState: number
+}
+
+export type CAT = {
+id:number
+createdat:Date
+updatedat:Date
+sort:number
+p:pCAT
+}
+
+// [Ca_City] (CITY)
+
+export type pCITY = {
+    Fullname: string
+    MetropolitanCode3IATA: string
+    NameEn: string
+    Country: number
+    Place: number
+    Icon: string
+    Tel: string
+}
+
+export type CITY = {
+id:number
+createdat:Date
+updatedat:Date
+sort:number
+p:pCITY
+}
+
+// [Ca_Country] (CRY)
+
+export type pCRY = {
+    Code2: string
+    Caption: string
+    Fullname: string
+    Icon: string
+    Tel: string
+    Cur: number
+    Capital: number
+    Place: number
+    Lang: number
+}
+
+export type CRY = {
+id:number
+createdat:Date
+updatedat:Date
+sort:number
+p:pCRY
+}
+
+// [Ca_EndUser] (EU)
+
+
+
+
+
+
+export type pEU = {
+    Caption: string
+    Username: string
+    SocialAuthBiz: number
+    SocialAuthId: string
+    SocialAuthAvatar: string
+    Email: string
+    Tel: string
+    Gender: number
+    Status: number
+    Admin: number
+    BizPartner: number
+    Privilege: number
+    Verify: number
+    Pwd: string
+    Online: boolean
+    Icon: string
+    Background: string
+    BasicAcct: number
+    Citizen: number
+    Refer: string
+    Referer: number
+    Url: string
+    About: string
+}
+
+export type EU = {
+id:number
+createdat:Date
+updatedat:Date
+sort:number
+p:pEU
+}
+
+// [Ca_SpecialItem] (CSI)
+
+
+export type pCSI = {
+    Type: number
+    Lang: number
+    Bind: number
+}
+
+export type CSI = {
+id:number
+createdat:Date
+updatedat:Date
+sort:number
+p:pCSI
+}
+
+// [Ca_WebCredential] (CWC)
+
+export type pCWC = {
+    Caption: string
+    ExternalId: number
+    Icon: string
+    EU: number
+    Biz: number
+    Json: string
+}
+
+export type CWC = {
+id:number
+createdat:Date
+updatedat:Date
+sort:number
+p:pCWC
+}
+
 // [Ts_Api] (API)
 
 export type pAPI = {
@@ -19,19 +212,6 @@ p:pAPI
 
 // [Ts_Field] (FIELD)
 
-const fieldFieldTypeEnum_Undefined = 0 // Undefined
-const fieldFieldTypeEnum_FK = 1 // FK
-const fieldFieldTypeEnum_Caption = 2 // Caption
-const fieldFieldTypeEnum_Chars = 3 // Chars
-const fieldFieldTypeEnum_Link = 4 // Link
-const fieldFieldTypeEnum_Text = 5 // Text
-const fieldFieldTypeEnum_Bin = 6 // Bin
-const fieldFieldTypeEnum_Integer = 7 // Integer
-const fieldFieldTypeEnum_Float = 8 // Float
-const fieldFieldTypeEnum_Boolean = 9 // Boolean
-const fieldFieldTypeEnum_SelectLines = 10 // Select Lines
-const fieldFieldTypeEnum_Timestamp = 11 // Time Stamp
-const fieldFieldTypeEnum_TimeSeries = 12 // Time Series
 
 export type pFIELD = {
     Name: string
@@ -53,8 +233,6 @@ p:pFIELD
 
 // [Ts_HostConfig] (HOSTCONFIG)
 
-const hostconfigDatabaseEnum_SQLSERVER = 0 // SQL Server
-const hostconfigDatabaseEnum_PostgreSQL = 1 // PostgreSQL
 
 export type pHOSTCONFIG = {
     Hostname: string
@@ -161,12 +339,6 @@ p:pTEMPLATE
 
 // [Ts_VarType] (VARTYPE)
 
-const vartypeBindTypeEnum_ApiRequest = 0 // API Request
-const vartypeBindTypeEnum_ApiResponse = 1 // API Response
-const vartypeBindTypeEnum_CompState = 2 // Component State
-const vartypeBindTypeEnum_CompProps = 3 // Component Propos
-const vartypeBindTypeEnum_PageState = 4 // Page State
-const vartypeBindTypeEnum_PageProps = 5 // Page Propos
 
 export type pVARTYPE = {
     Name: string

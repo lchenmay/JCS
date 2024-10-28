@@ -44,10 +44,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "types", "types", "{B6CD5C54
 		vscode\src\types\main.d.ts = vscode\src\types\main.d.ts
 	EndProjectSection
 EndProject
-Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Shared", "Shared\Shared.fsproj", "{D33A2D56-63F8-49EC-9698-D2A93FDACCC7}"
-EndProject
-Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "BizLogics", "BizLogics\BizLogics.fsproj", "{4ACDC70D-33CE-4345-8E3B-C8FCF553F367}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -62,14 +58,6 @@ Global
 		{D84F6A26-A6C9-456D-BAD0-39E89CA887B2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D84F6A26-A6C9-456D-BAD0-39E89CA887B2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D84F6A26-A6C9-456D-BAD0-39E89CA887B2}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D33A2D56-63F8-49EC-9698-D2A93FDACCC7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D33A2D56-63F8-49EC-9698-D2A93FDACCC7}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D33A2D56-63F8-49EC-9698-D2A93FDACCC7}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D33A2D56-63F8-49EC-9698-D2A93FDACCC7}.Release|Any CPU.Build.0 = Release|Any CPU
-		{4ACDC70D-33CE-4345-8E3B-C8FCF553F367}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4ACDC70D-33CE-4345-8E3B-C8FCF553F367}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4ACDC70D-33CE-4345-8E3B-C8FCF553F367}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{4ACDC70D-33CE-4345-8E3B-C8FCF553F367}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

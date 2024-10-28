@@ -29,19 +29,19 @@ export const enum ErEnum {
 
 export const EuComplex_empty = (): jcs.EuComplex => { 
     return {
-        eu: 0,
+        eu: { id: 0, sort: 0, createdat: new Date(), updatedat: new Date(), p: marshall.pEU_empty() },
     } as jcs.EuComplex
 }
 
 export const EuComplex__bin = (bb:BytesBuilder) => (v:any) => {
 
-    marshall.int64__bin (bb) (v.eu)
+    marshall.EU__bin (bb) (v.eu)
 }
 
 export const bin__EuComplex = (bi:BinIndexed):jcs.EuComplex => {
 
     return {
-        eu: marshall.bin__int64 (bi),
+        eu: marshall.bin__EU (bi),
     }
 }
 

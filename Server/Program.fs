@@ -31,6 +31,7 @@ open UtilWebServer.Server.Service
 let main argv =
 
     TypeSys.Program.run()
+    BizLogics.CodeRobot.run()
 
     init runtime
 
