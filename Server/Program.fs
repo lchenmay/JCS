@@ -71,7 +71,8 @@ let main argv =
             | _ -> Some empty
         | None -> Some empty
     
-    startEngine runtime
+    //startEngine runtime
+    startWebSocket runtime
 
     Util.Runtime.halt output "" ""
 
