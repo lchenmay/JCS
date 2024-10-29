@@ -737,6 +737,7 @@ let buildTable robot (t:Table) =
 
     "type p" + t.typeName + " = {" |> ot.w.newline
     "export type p" + t.typeName + " = {" |> otTypeScript.w.newline
+    "[key:string]: any" |> otTypeScript.w.newline
 
     let fieldNames = t |> table__fieldKeys
     let fields = fieldNames |> Array.map(fun i -> t.fields[i])
