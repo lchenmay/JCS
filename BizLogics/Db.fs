@@ -9,6 +9,7 @@ open System.Collections.Concurrent
 open Util.Text
 open Util.Perf
 open Util.Crypto
+open Util.CollectionModDict
 open Util.Db
 open Util.DbTx
 open Util.Orm
@@ -22,6 +23,7 @@ open Shared.OrmTypes
 open Shared.Types
 open Shared.OrmMor
 open Shared.CustomMor
+open Shared.Project
 
 open BizLogics.Common
 
@@ -30,6 +32,11 @@ let creator metadata populate =
     populate p
     p__createRcd p metadata metadata.table conn
 
+let tryCU localizor creator updator ps = 
+    match localizor ps with
+    | Some v -> updator v ps
+    | None -> creator ps
+
 let createProject (code:string) = 
     let code = code.Trim()
     if code.Length > 0 then
@@ -37,6 +44,30 @@ let createProject (code:string) =
             p.Code <- code) |> creator PROJECT_metadata
     else
         None
+
+let code__ProjectComplexo ps =
+    runtime.data.projectxs.Values
+    |> Array.tryFind(fun i -> i.project.p.Code = fst ps)
+
+let createProjectComplex ps = 
+    match createProject (fst ps) with
+    | Some project -> 
+        let projectx = project__ProjectComplex project
+        runtime.data.projectxs[project.ID] <- projectx
+        Some projectx
+    | None -> None
+
+let updateProjectComplex projectx ps = 
+    if 
+        projectx.project
+        |> updateRcd "" conn PROJECT_metadata (fun p -> 
+            p.Caption <- snd ps) then
+        Some projectx
+    else
+        None
+
+let tryProjectCU (code:string) = 
+    tryCU code__ProjectComplexo createProjectComplex updateProjectComplex
 
 let createPage projectx (name:string) = 
     let name = name.Trim()
