@@ -771,15 +771,15 @@ let rec json__tImpl (w:TextBlockWriter) indent t =
             "| Some p ->" |]
         |> Array.iter (w.newlineIndent (indent + 1))
 
-        table
-        |> table__sortedFields
-        |> Array.sortBy(fun i ->
-            let sort,fname,def,json = i
-            sort)
-        |> Array.map fdef__jsont
-        |> Array.map(fun i -> i.ToArray())
-        |> Array.concat
-        |> Array.iter (w.newlineIndent (indent + 2))
+        //table
+        //|> table__sortedFields
+        //|> Array.sortBy(fun i ->
+        //    let sort,fname,def,json = i
+        //    sort)
+        //|> Array.map fdef__jsont
+        //|> Array.map(fun i -> i.ToArray())
+        //|> Array.concat
+        //|> Array.iter (w.newlineIndent (indent + 2))
 
         [|  ""
             "{"
