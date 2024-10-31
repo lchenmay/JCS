@@ -283,36 +283,6 @@ let json__ADDRESSo (json:Json):ADDRESS option =
     match o with
     | Some p ->
         
-        p.Caption <- checkfieldz fields "Caption" 256
-        
-        p.Bind <- checkfield fields "Bind" |> parse_int64
-        
-        p.AddressType <- checkfield fields "AddressType" |> parse_int32 |> EnumOfValue
-        
-        p.Line1 <- checkfieldz fields "Line1" 300
-        
-        p.Line2 <- checkfieldz fields "Line2" 300
-        
-        p.State <- checkfieldz fields "State" 16
-        
-        p.County <- checkfieldz fields "County" 16
-        
-        p.Town <- checkfieldz fields "Town" 16
-        
-        p.Contact <- checkfieldz fields "Contact" 64
-        
-        p.Tel <- checkfieldz fields "Tel" 20
-        
-        p.Email <- checkfieldz fields "Email" 256
-        
-        p.Zip <- checkfieldz fields "Zip" 16
-        
-        p.City <- checkfield fields "City" |> parse_int64
-        
-        p.Country <- checkfield fields "Country" |> parse_int64
-        
-        p.Remarks <- checkfield fields "Remarks"
-        
         {
             ID = ID
             Sort = Sort
@@ -536,32 +506,6 @@ let json__BIZo (json:Json):BIZ option =
     match o with
     | Some p ->
         
-        p.Code <- checkfieldz fields "Code" 64
-        
-        p.Caption <- checkfieldz fields "Caption" 256
-        
-        p.Parent <- checkfield fields "Parent" |> parse_int64
-        
-        p.BasicAcct <- checkfield fields "BasicAcct" |> parse_int64
-        
-        p.DescTxt <- checkfield fields "DescTxt"
-        
-        p.Website <- checkfieldz fields "Website" 256
-        
-        p.Icon <- checkfieldz fields "Icon" 256
-        
-        p.City <- checkfield fields "City" |> parse_int64
-        
-        p.Country <- checkfield fields "Country" |> parse_int64
-        
-        p.Lang <- checkfield fields "Lang" |> parse_int64
-        
-        p.IsSocialPlatform <- checkfield fields "IsSocialPlatform" = "true"
-        
-        p.IsCmsSource <- checkfield fields "IsCmsSource" = "true"
-        
-        p.IsPayGateway <- checkfield fields "IsPayGateway" = "true"
-        
         {
             ID = ID
             Sort = Sort
@@ -704,16 +648,6 @@ let json__CATo (json:Json):CAT option =
     
     match o with
     | Some p ->
-        
-        p.Caption <- checkfieldz fields "Caption" 64
-        
-        p.Lang <- checkfield fields "Lang" |> parse_int64
-        
-        p.Zh <- checkfield fields "Zh" |> parse_int64
-        
-        p.Parent <- checkfield fields "Parent" |> parse_int64
-        
-        p.CatState <- checkfield fields "CatState" |> parse_int32 |> EnumOfValue
         
         {
             ID = ID
@@ -889,20 +823,6 @@ let json__CITYo (json:Json):CITY option =
     
     match o with
     | Some p ->
-        
-        p.Fullname <- checkfieldz fields "Fullname" 64
-        
-        p.MetropolitanCode3IATA <- checkfieldz fields "MetropolitanCode3IATA" 3
-        
-        p.NameEn <- checkfieldz fields "NameEn" 64
-        
-        p.Country <- checkfield fields "Country" |> parse_int64
-        
-        p.Place <- checkfield fields "Place" |> parse_int64
-        
-        p.Icon <- checkfieldz fields "Icon" 256
-        
-        p.Tel <- checkfieldz fields "Tel" 4
         
         {
             ID = ID
@@ -1094,24 +1014,6 @@ let json__CRYo (json:Json):CRY option =
     
     match o with
     | Some p ->
-        
-        p.Code2 <- checkfieldz fields "Code2" 2
-        
-        p.Caption <- checkfieldz fields "Caption" 64
-        
-        p.Fullname <- checkfieldz fields "Fullname" 256
-        
-        p.Icon <- checkfieldz fields "Icon" 256
-        
-        p.Tel <- checkfieldz fields "Tel" 4
-        
-        p.Cur <- checkfield fields "Cur" |> parse_int64
-        
-        p.Capital <- checkfield fields "Capital" |> parse_int64
-        
-        p.Place <- checkfield fields "Place" |> parse_int64
-        
-        p.Lang <- checkfield fields "Lang" |> parse_int64
         
         {
             ID = ID
@@ -1444,52 +1346,6 @@ let json__EUo (json:Json):EU option =
     match o with
     | Some p ->
         
-        p.Caption <- checkfieldz fields "Caption" 64
-        
-        p.Username <- checkfieldz fields "Username" 64
-        
-        p.SocialAuthBiz <- checkfield fields "SocialAuthBiz" |> parse_int64
-        
-        p.SocialAuthId <- checkfield fields "SocialAuthId"
-        
-        p.SocialAuthAvatar <- checkfield fields "SocialAuthAvatar"
-        
-        p.Email <- checkfieldz fields "Email" 256
-        
-        p.Tel <- checkfieldz fields "Tel" 32
-        
-        p.Gender <- checkfield fields "Gender" |> parse_int32 |> EnumOfValue
-        
-        p.Status <- checkfield fields "Status" |> parse_int32 |> EnumOfValue
-        
-        p.Admin <- checkfield fields "Admin" |> parse_int32 |> EnumOfValue
-        
-        p.BizPartner <- checkfield fields "BizPartner" |> parse_int32 |> EnumOfValue
-        
-        p.Privilege <- checkfield fields "Privilege" |> parse_int64
-        
-        p.Verify <- checkfield fields "Verify" |> parse_int32 |> EnumOfValue
-        
-        p.Pwd <- checkfieldz fields "Pwd" 16
-        
-        p.Online <- checkfield fields "Online" = "true"
-        
-        p.Icon <- checkfieldz fields "Icon" 256
-        
-        p.Background <- checkfieldz fields "Background" 256
-        
-        p.BasicAcct <- checkfield fields "BasicAcct" |> parse_int64
-        
-        p.Citizen <- checkfield fields "Citizen" |> parse_int64
-        
-        p.Refer <- checkfieldz fields "Refer" 9
-        
-        p.Referer <- checkfield fields "Referer" |> parse_int64
-        
-        p.Url <- checkfield fields "Url"
-        
-        p.About <- checkfield fields "About"
-        
         {
             ID = ID
             Sort = Sort
@@ -1612,12 +1468,6 @@ let json__CSIo (json:Json):CSI option =
     
     match o with
     | Some p ->
-        
-        p.Type <- checkfield fields "Type" |> parse_int32 |> EnumOfValue
-        
-        p.Lang <- checkfield fields "Lang" |> parse_int64
-        
-        p.Bind <- checkfield fields "Bind" |> parse_int64
         
         {
             ID = ID
@@ -1778,18 +1628,6 @@ let json__CWCo (json:Json):CWC option =
     match o with
     | Some p ->
         
-        p.Caption <- checkfieldz fields "Caption" 64
-        
-        p.ExternalId <- checkfield fields "ExternalId" |> parse_int64
-        
-        p.Icon <- checkfieldz fields "Icon" 256
-        
-        p.EU <- checkfield fields "EU" |> parse_int64
-        
-        p.Biz <- checkfield fields "Biz" |> parse_int64
-        
-        p.Json <- checkfield fields "Json"
-        
         {
             ID = ID
             Sort = Sort
@@ -1908,10 +1746,6 @@ let json__APIo (json:Json):API option =
     
     match o with
     | Some p ->
-        
-        p.Name <- checkfieldz fields "Name" 64
-        
-        p.Project <- checkfield fields "Project" |> parse_int64
         
         {
             ID = ID
@@ -2079,20 +1913,6 @@ let json__FIELDo (json:Json):FIELD option =
     
     match o with
     | Some p ->
-        
-        p.Name <- checkfieldz fields "Name" 64
-        
-        p.Desc <- checkfield fields "Desc"
-        
-        p.FieldType <- checkfield fields "FieldType" |> parse_int32 |> EnumOfValue
-        
-        p.Length <- checkfield fields "Length" |> parse_int64
-        
-        p.SelectLines <- checkfield fields "SelectLines"
-        
-        p.Project <- checkfield fields "Project" |> parse_int64
-        
-        p.Table <- checkfield fields "Table" |> parse_int64
         
         {
             ID = ID
@@ -2269,20 +2089,6 @@ let json__HOSTCONFIGo (json:Json):HOSTCONFIG option =
     match o with
     | Some p ->
         
-        p.Hostname <- checkfieldz fields "Hostname" 64
-        
-        p.Database <- checkfield fields "Database" |> parse_int32 |> EnumOfValue
-        
-        p.DatabaseName <- checkfieldz fields "DatabaseName" 64
-        
-        p.DatabaseConn <- checkfieldz fields "DatabaseConn" 64
-        
-        p.DirVs <- checkfieldz fields "DirVs" 64
-        
-        p.DirVsCodeWeb <- checkfieldz fields "DirVsCodeWeb" 64
-        
-        p.Project <- checkfield fields "Project" |> parse_int64
-        
         {
             ID = ID
             Sort = Sort
@@ -2418,12 +2224,6 @@ let json__PROJECTo (json:Json):PROJECT option =
     match o with
     | Some p ->
         
-        p.Code <- checkfieldz fields "Code" 64
-        
-        p.Caption <- checkfieldz fields "Caption" 256
-        
-        p.TypeSessionUser <- checkfieldz fields "TypeSessionUser" 64
-        
         {
             ID = ID
             Sort = Sort
@@ -2555,12 +2355,6 @@ let json__TABLEo (json:Json):TABLE option =
     match o with
     | Some p ->
         
-        p.Name <- checkfieldz fields "Name" 64
-        
-        p.Desc <- checkfield fields "Desc"
-        
-        p.Project <- checkfield fields "Project" |> parse_int64
-        
         {
             ID = ID
             Sort = Sort
@@ -2691,12 +2485,6 @@ let json__COMPo (json:Json):COMP option =
     
     match o with
     | Some p ->
-        
-        p.Name <- checkfieldz fields "Name" 64
-        
-        p.Caption <- checkfieldz fields "Caption" 256
-        
-        p.Project <- checkfield fields "Project" |> parse_int64
         
         {
             ID = ID
@@ -2885,22 +2673,6 @@ let json__PAGEo (json:Json):PAGE option =
     match o with
     | Some p ->
         
-        p.Name <- checkfieldz fields "Name" 64
-        
-        p.Caption <- checkfieldz fields "Caption" 256
-        
-        p.Route <- checkfield fields "Route"
-        
-        p.OgTitle <- checkfield fields "OgTitle"
-        
-        p.OgDesc <- checkfield fields "OgDesc"
-        
-        p.OgImage <- checkfield fields "OgImage"
-        
-        p.Template <- checkfield fields "Template" |> parse_int64
-        
-        p.Project <- checkfield fields "Project" |> parse_int64
-        
         {
             ID = ID
             Sort = Sort
@@ -3031,12 +2803,6 @@ let json__TEMPLATEo (json:Json):TEMPLATE option =
     
     match o with
     | Some p ->
-        
-        p.Name <- checkfieldz fields "Name" 64
-        
-        p.Caption <- checkfieldz fields "Caption" 256
-        
-        p.Project <- checkfield fields "Project" |> parse_int64
         
         {
             ID = ID
@@ -3196,18 +2962,6 @@ let json__VARTYPEo (json:Json):VARTYPE option =
     
     match o with
     | Some p ->
-        
-        p.Name <- checkfieldz fields "Name" 64
-        
-        p.Type <- checkfieldz fields "Type" 64
-        
-        p.Val <- checkfield fields "Val"
-        
-        p.BindType <- checkfield fields "BindType" |> parse_int32 |> EnumOfValue
-        
-        p.Bind <- checkfield fields "Bind" |> parse_int64
-        
-        p.Project <- checkfield fields "Project" |> parse_int64
         
         {
             ID = ID

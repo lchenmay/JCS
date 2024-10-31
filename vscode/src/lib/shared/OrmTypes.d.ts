@@ -6,6 +6,7 @@ namespace jcs {
 
 
 export type pADDRESS = {
+[key:string]: any
     Caption: string
     Bind: number
     AddressType: number
@@ -34,6 +35,7 @@ p:pADDRESS
 // [Ca_Biz] (BIZ)
 
 export type pBIZ = {
+[key:string]: any
     Code: string
     Caption: string
     Parent: number
@@ -61,6 +63,7 @@ p:pBIZ
 
 
 export type pCAT = {
+[key:string]: any
     Caption: string
     Lang: number
     Zh: number
@@ -79,6 +82,7 @@ p:pCAT
 // [Ca_City] (CITY)
 
 export type pCITY = {
+[key:string]: any
     Fullname: string
     MetropolitanCode3IATA: string
     NameEn: string
@@ -99,6 +103,7 @@ p:pCITY
 // [Ca_Country] (CRY)
 
 export type pCRY = {
+[key:string]: any
     Code2: string
     Caption: string
     Fullname: string
@@ -126,6 +131,7 @@ p:pCRY
 
 
 export type pEU = {
+[key:string]: any
     Caption: string
     Username: string
     SocialAuthBiz: number
@@ -163,6 +169,7 @@ p:pEU
 
 
 export type pCSI = {
+[key:string]: any
     Type: number
     Lang: number
     Bind: number
@@ -179,6 +186,7 @@ p:pCSI
 // [Ca_WebCredential] (CWC)
 
 export type pCWC = {
+[key:string]: any
     Caption: string
     ExternalId: number
     Icon: string
@@ -198,6 +206,7 @@ p:pCWC
 // [Ts_Api] (API)
 
 export type pAPI = {
+[key:string]: any
     Name: string
     Project: number
 }
@@ -214,6 +223,7 @@ p:pAPI
 
 
 export type pFIELD = {
+[key:string]: any
     Name: string
     Desc: string
     FieldType: number
@@ -235,6 +245,7 @@ p:pFIELD
 
 
 export type pHOSTCONFIG = {
+[key:string]: any
     Hostname: string
     Database: number
     DatabaseName: string
@@ -255,6 +266,7 @@ p:pHOSTCONFIG
 // [Ts_Project] (PROJECT)
 
 export type pPROJECT = {
+[key:string]: any
     Code: string
     Caption: string
     TypeSessionUser: string
@@ -271,6 +283,7 @@ p:pPROJECT
 // [Ts_Table] (TABLE)
 
 export type pTABLE = {
+[key:string]: any
     Name: string
     Desc: string
     Project: number
@@ -287,6 +300,7 @@ p:pTABLE
 // [Ts_UiComponent] (COMP)
 
 export type pCOMP = {
+[key:string]: any
     Name: string
     Caption: string
     Project: number
@@ -303,6 +317,7 @@ p:pCOMP
 // [Ts_UiPage] (PAGE)
 
 export type pPAGE = {
+[key:string]: any
     Name: string
     Caption: string
     Route: string
@@ -324,6 +339,7 @@ p:pPAGE
 // [Ts_UiTemplate] (TEMPLATE)
 
 export type pTEMPLATE = {
+[key:string]: any
     Name: string
     Caption: string
     Project: number
@@ -341,6 +357,7 @@ p:pTEMPLATE
 
 
 export type pVARTYPE = {
+[key:string]: any
     Name: string
     Type: string
     Val: string

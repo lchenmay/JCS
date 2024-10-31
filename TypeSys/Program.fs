@@ -161,7 +161,7 @@ let target__config target =
             JsDir = @"C:\Dev\J\vscode\src\lib\shared" }
     | 10 ->
         {   ns = "Shared"
-            rdbms = Rdbms.PostgreSql
+            rdbms = Rdbms.SqlServer
             dbName = "Game"
             donmainName = ""
             conn = 

@@ -72,6 +72,7 @@ let table__fieldnames tname = "SELECT [name] FROM SYSCOLUMNS WHERE id=object_id(
 let table__fieldnamesCount tname = "SELECT COUNT(*) FROM SYSCOLUMNS WHERE id=object_id('" + tname + "')"
 
 let tableCheckExistOrCreateSQLServer (w:TextBlockWriter) table tname = 
+
     [|  ""
         "IF NOT EXISTS(SELECT * FROM sysobjects WHERE [name]='" + tname + "' AND xtype='U')" + crlf
         "BEGIN" + crlf
