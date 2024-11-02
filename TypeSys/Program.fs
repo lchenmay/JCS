@@ -246,6 +246,7 @@ let run () =
 
 
     [|  6 // JCS
+        7 // J-7
         10 |] //Game
     |> Array.map target__config
     |> Array.iter(CodeRobot.go output)

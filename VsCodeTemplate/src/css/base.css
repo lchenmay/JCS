@@ -1,0 +1,38 @@
+
+button {
+  @apply transition duration-500 ease-in-out p-1;
+  @apply rounded-lg flex cursor-pointer justify-center items-center flex-shrink-0;
+  @apply bg-blue-500 hover:bg-orange-500 dark:hover:bg-orange-700 active:bg-red-700;
+  @apply disabled:bg-gray-600 disabled:cursor-not-allowed;
+  @apply text-white;
+  @apply m-2 p-2 min-w-[100px]
+}
+
+input,textarea,option,select {
+  @apply border border-gray-500 rounded-lg px-2;
+  @apply bg-white dark:bg-gray-950 text-black dark:text-white;
+  @apply font-normal;
+  @apply m-2
+}
+input:disabled {
+  @apply bg-red-300;
+}
+input:placeholder {
+  @apply text-gray-700 dark:text-gray-300;
+}
+
+h1{
+  @apply flex w-[75%] bg-blue-700 m-2 p-2 text-white text-2xl font-bold
+}
+
+.caption-full-width{
+  @apply flex w-[99%] bg-blue-700 m-2 p-2 text-white text-2xl font-bold
+}
+
+.card{
+  @apply m-[20px] p-[20px] shadow-2xl rounded-lg
+}
+
+.card-caption{
+  @apply m-2 text-blue-700 text-xl font-bold
+}

@@ -1083,7 +1083,7 @@ let go output config =
 
     let pathsrc = 
         let di = new DirectoryInfo(Directory.GetCurrentDirectory())
-        Path.Combine(di.Parent.Parent.Parent.Parent.FullName,"vscode")
+        Path.Combine(di.Parent.Parent.Parent.Parent.FullName,"VsCodeTemplate")
     let pathdst = 
         let di = new DirectoryInfo(config.JsDir)
         Path.Combine(di.Parent.Parent.Parent.Parent.FullName,"vscode")
