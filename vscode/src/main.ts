@@ -17,5 +17,5 @@ glib.notify.init()
 //if (beforeApp) {beforeApp()}
 const app = glib.vue.createApp(App)
 app.use(runtime.router).mount('#app')
-glib.route.router.push('/index')
+glib.route.router.push('/')
 
