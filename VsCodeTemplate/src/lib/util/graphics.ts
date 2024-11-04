@@ -165,10 +165,17 @@ export const chart__cellLayout =
   return chart__layout(chart)(xs,ys)(grids)
 }
 
-export const Cells2x2 = () => {
-  return [
-    xy__Vct2(0,0),
-    xy__Vct2(1,0),
-    xy__Vct2(0,1),
-    xy__Vct2(1,1)] 
+export const RowCol__Cells = (row:number,col:number) => {
+
+  let res = new Array<Vct2>()    
+
+  for(let i = 0; i < row; i ++){
+    for(let j = 0; j < col; j ++){
+      res.push(xy__Vct2(j,i))
+    }
+  }
+
+  return res
 }
+
+  
