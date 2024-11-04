@@ -426,6 +426,7 @@ and t__emptyCall w indent t =
         | "string" -> "\"\""
         | "float" -> "0.0"
         | "int" -> "0"
+        | "int32" -> "0"
         | "int64" -> "0L"
         | "bool" -> "true"
         | "DateTime" -> "DateTime.MinValue"

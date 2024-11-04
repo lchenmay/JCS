@@ -18,6 +18,10 @@ export const Vct2_yOffset = (v:Vct2) => (y:number) => {
     } as Vct2
 }
 
+export const xy__Vct2 = (x:number,y:number) => {
+  return { x:x, y: y } as Vct2
+}
+
 export type Coord = {
     pinf: number,
     psup: number,
@@ -86,6 +90,14 @@ export type GridLayoutCell = {
     rowspan: number
 }
 
+export const wh__Chart = (w:number,h:number) => {
+  return {
+    l: 0,
+    t: 0,
+    w: w,
+    h: h } as Chart
+}
+
 export const colrowSpan__gridLayoutCell = 
     (col:number,row:number,colspan:number,rowspan:number):GridLayoutCell => {
     return {
@@ -140,4 +152,23 @@ export const chart__layout =
     }
 
     return res
+}
+
+export const chart__cellLayout =
+  (chart:Chart) =>
+  (xs: number[], ys: number[]) => 
+  (cells:Vct2[]) => {
+
+  let grids = 
+    cells.map((i) => colrow__gridLayoutCell(i.x,i.y))
+
+  return chart__layout(chart)(xs,ys)(grids)
+}
+
+export const Cells2x2 = () => {
+  return [
+    xy__Vct2(0,0),
+    xy__Vct2(1,0),
+    xy__Vct2(0,1),
+    xy__Vct2(1,1)] 
 }

@@ -209,7 +209,8 @@ let run() =
 
     [|  234346L // JCS
         234347L // Game
-        234348L |] // J
+        234348L // J
+        234349L |] // J7
     |> Array.map(fun id -> runtime.data.projectxs[id])
     |> Array.iter runProject
 
