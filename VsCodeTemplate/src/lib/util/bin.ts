@@ -352,6 +352,8 @@ export type Stat = {
 
     max: number,
 
+    histogram: number[],
+
     count: number
 }
 
@@ -385,6 +387,7 @@ export const Stat_empty = (): Stat => {
         md: 0.0,
         min: 0.0,
         max: 0.0,
+        histogram: [],
         count: 0,
     } as Stat
 }
@@ -401,6 +404,7 @@ export const Stat__bin = (bb: BytesBuilder) => (v: any) => {
     float__bin(bb)(v.md)
     float__bin(bb)(v.min)
     float__bin(bb)(v.max)
+    array__bin(int32__bin)(bb)
     int32__bin(bb)(v.count)
 }
 
@@ -417,6 +421,7 @@ export const bin__Stat = (bi: BinIndexed): Stat => {
         md: bin__float(bi),
         min: bin__float(bi),
         max: bin__float(bi),
+        histogram: bin__array(bin__int32)(bi),
         count: bin__int32(bi),
     }
 }

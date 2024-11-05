@@ -25,11 +25,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "lib", "lib", "{02E9F791-761
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "util", "util", "{ECAAF89E-1EA9-4DC5-B55A-7EFE2566EE3B}"
 	ProjectSection(SolutionItems) = preProject
-		vscode\src\lib\util\bin.ts = vscode\src\lib\util\bin.ts
-		vscode\src\lib\util\graphics.ts = vscode\src\lib\util\graphics.ts
-		vscode\src\lib\util\graphicsH5.ts = vscode\src\lib\util\graphicsH5.ts
-		vscode\src\lib\util\graphicsPixi.ts = vscode\src\lib\util\graphicsPixi.ts
-		vscode\src\lib\util\ws.ts = vscode\src\lib\util\ws.ts
+		VsCodeTemplate\src\lib\util\bin.ts = VsCodeTemplate\src\lib\util\bin.ts
+		VsCodeTemplate\src\lib\util\graphics.ts = VsCodeTemplate\src\lib\util\graphics.ts
+		VsCodeTemplate\src\lib\util\graphicsH5.ts = VsCodeTemplate\src\lib\util\graphicsH5.ts
+		VsCodeTemplate\src\lib\util\graphicsPixi.ts = VsCodeTemplate\src\lib\util\graphicsPixi.ts
+		VsCodeTemplate\src\lib\util\ws.ts = VsCodeTemplate\src\lib\util\ws.ts
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "store", "store", "{975C13D2-66F9-44FE-9392-F4DFD324CD92}"

@@ -30,12 +30,18 @@ export type Coord = {
 }
 
 export const checkPRange = 
-    (coord:Coord) =>
-    (p:number) => {
+  (coord:Coord) =>
+  (p:number) => {
     if(coord.pinf > p)
         coord.pinf = p
     if(coord.psup < p)
         coord.psup = p
+}
+
+export const checkmultiPRange =
+  (coord:Coord) =>
+  (ps:number[]) => {
+  ps.forEach(checkPRange(coord))
 }
 
 export const strechPRange = 
