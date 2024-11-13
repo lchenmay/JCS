@@ -84,6 +84,11 @@ let json__EuComplexo (json:Json):EuComplex option =
     else
         None
 
+let EuComplex_clone src =
+    let bb = new BytesBuilder()
+    EuComplex__bin bb src
+    bin__EuComplex (bb.bytes(),ref 0)
+
 // [TableComplex] Structure
 
 let TableComplex_empty(): TableComplex =
@@ -159,6 +164,11 @@ let json__TableComplexo (json:Json):TableComplex option =
             table = tableo.Value } |> Some
     else
         None
+
+let TableComplex_clone src =
+    let bb = new BytesBuilder()
+    TableComplex__bin bb src
+    bin__TableComplex (bb.bytes(),ref 0)
 
 // [CompComplex] Structure
 
@@ -256,6 +266,11 @@ let json__CompComplexo (json:Json):CompComplex option =
     else
         None
 
+let CompComplex_clone src =
+    let bb = new BytesBuilder()
+    CompComplex__bin bb src
+    bin__CompComplex (bb.bytes(),ref 0)
+
 // [PageComplex] Structure
 
 let PageComplex_empty(): PageComplex =
@@ -352,6 +367,11 @@ let json__PageComplexo (json:Json):PageComplex option =
     else
         None
 
+let PageComplex_clone src =
+    let bb = new BytesBuilder()
+    PageComplex__bin bb src
+    bin__PageComplex (bb.bytes(),ref 0)
+
 // [ApiComplex] Structure
 
 let ApiComplex_empty(): ApiComplex =
@@ -447,6 +467,11 @@ let json__ApiComplexo (json:Json):ApiComplex option =
             api = apio.Value } |> Some
     else
         None
+
+let ApiComplex_clone src =
+    let bb = new BytesBuilder()
+    ApiComplex__bin bb src
+    bin__ApiComplex (bb.bytes(),ref 0)
 
 // [ProjectComplex] Structure
 
@@ -624,6 +649,11 @@ let json__ProjectComplexo (json:Json):ProjectComplex option =
     else
         None
 
+let ProjectComplex_clone src =
+    let bb = new BytesBuilder()
+    ProjectComplex__bin bb src
+    bin__ProjectComplex (bb.bytes(),ref 0)
+
 // [Fact] Structure
 
 let Fact_empty(): Fact =Fact.Undefined
@@ -669,6 +699,11 @@ let json__Facto (json:Json):Fact option =
             | _ -> None
         | None -> None
     | None -> None
+
+let Fact_clone src =
+    let bb = new BytesBuilder()
+    Fact__bin bb src
+    bin__Fact (bb.bytes(),ref 0)
 
 // [RuntimeData] Structure
 
@@ -746,6 +781,11 @@ let json__RuntimeDatao (json:Json):RuntimeData option =
             projectxs = projectxso.Value } |> Some
     else
         None
+
+let RuntimeData_clone src =
+    let bb = new BytesBuilder()
+    RuntimeData__bin bb src
+    bin__RuntimeData (bb.bytes(),ref 0)
 
 // [Msg] Structure
 
@@ -850,6 +890,11 @@ let json__Msgo (json:Json):Msg option =
         | None -> None
     | None -> None
 
+let Msg_clone src =
+    let bb = new BytesBuilder()
+    Msg__bin bb src
+    bin__Msg (bb.bytes(),ref 0)
+
 // [Er] Structure
 
 let Er_empty(): Er =Er.ApiNotExists
@@ -919,3 +964,8 @@ let json__Ero (json:Json):Er option =
             | _ -> None
         | None -> None
     | None -> None
+
+let Er_clone src =
+    let bb = new BytesBuilder()
+    Er__bin bb src
+    bin__Er (bb.bytes(),ref 0)

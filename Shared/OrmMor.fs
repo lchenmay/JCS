@@ -292,6 +292,11 @@ let json__ADDRESSo (json:Json):ADDRESS option =
         
     | None -> None
 
+let ADDRESS_clone src =
+    let bb = new BytesBuilder()
+    ADDRESS__bin bb src
+    bin__ADDRESS (bb.bytes(),ref 0)
+
 // [BIZ] Structure
 
 
@@ -515,6 +520,11 @@ let json__BIZo (json:Json):BIZ option =
         
     | None -> None
 
+let BIZ_clone src =
+    let bb = new BytesBuilder()
+    BIZ__bin bb src
+    bin__BIZ (bb.bytes(),ref 0)
+
 // [CAT] Structure
 
 
@@ -657,6 +667,11 @@ let json__CATo (json:Json):CAT option =
             p = p } |> Some
         
     | None -> None
+
+let CAT_clone src =
+    let bb = new BytesBuilder()
+    CAT__bin bb src
+    bin__CAT (bb.bytes(),ref 0)
 
 // [CITY] Structure
 
@@ -832,6 +847,11 @@ let json__CITYo (json:Json):CITY option =
             p = p } |> Some
         
     | None -> None
+
+let CITY_clone src =
+    let bb = new BytesBuilder()
+    CITY__bin bb src
+    bin__CITY (bb.bytes(),ref 0)
 
 // [CRY] Structure
 
@@ -1023,6 +1043,11 @@ let json__CRYo (json:Json):CRY option =
             p = p } |> Some
         
     | None -> None
+
+let CRY_clone src =
+    let bb = new BytesBuilder()
+    CRY__bin bb src
+    bin__CRY (bb.bytes(),ref 0)
 
 // [EU] Structure
 
@@ -1355,6 +1380,11 @@ let json__EUo (json:Json):EU option =
         
     | None -> None
 
+let EU_clone src =
+    let bb = new BytesBuilder()
+    EU__bin bb src
+    bin__EU (bb.bytes(),ref 0)
+
 // [CSI] Structure
 
 
@@ -1477,6 +1507,11 @@ let json__CSIo (json:Json):CSI option =
             p = p } |> Some
         
     | None -> None
+
+let CSI_clone src =
+    let bb = new BytesBuilder()
+    CSI__bin bb src
+    bin__CSI (bb.bytes(),ref 0)
 
 // [CWC] Structure
 
@@ -1637,6 +1672,11 @@ let json__CWCo (json:Json):CWC option =
         
     | None -> None
 
+let CWC_clone src =
+    let bb = new BytesBuilder()
+    CWC__bin bb src
+    bin__CWC (bb.bytes(),ref 0)
+
 // [API] Structure
 
 
@@ -1755,6 +1795,11 @@ let json__APIo (json:Json):API option =
             p = p } |> Some
         
     | None -> None
+
+let API_clone src =
+    let bb = new BytesBuilder()
+    API__bin bb src
+    bin__API (bb.bytes(),ref 0)
 
 // [FIELD] Structure
 
@@ -1922,6 +1967,11 @@ let json__FIELDo (json:Json):FIELD option =
             p = p } |> Some
         
     | None -> None
+
+let FIELD_clone src =
+    let bb = new BytesBuilder()
+    FIELD__bin bb src
+    bin__FIELD (bb.bytes(),ref 0)
 
 // [HOSTCONFIG] Structure
 
@@ -2098,6 +2148,11 @@ let json__HOSTCONFIGo (json:Json):HOSTCONFIG option =
         
     | None -> None
 
+let HOSTCONFIG_clone src =
+    let bb = new BytesBuilder()
+    HOSTCONFIG__bin bb src
+    bin__HOSTCONFIG (bb.bytes(),ref 0)
+
 // [PROJECT] Structure
 
 
@@ -2233,6 +2288,11 @@ let json__PROJECTo (json:Json):PROJECT option =
         
     | None -> None
 
+let PROJECT_clone src =
+    let bb = new BytesBuilder()
+    PROJECT__bin bb src
+    bin__PROJECT (bb.bytes(),ref 0)
+
 // [TABLE] Structure
 
 
@@ -2364,6 +2424,11 @@ let json__TABLEo (json:Json):TABLE option =
         
     | None -> None
 
+let TABLE_clone src =
+    let bb = new BytesBuilder()
+    TABLE__bin bb src
+    bin__TABLE (bb.bytes(),ref 0)
+
 // [COMP] Structure
 
 
@@ -2494,6 +2559,11 @@ let json__COMPo (json:Json):COMP option =
             p = p } |> Some
         
     | None -> None
+
+let COMP_clone src =
+    let bb = new BytesBuilder()
+    COMP__bin bb src
+    bin__COMP (bb.bytes(),ref 0)
 
 // [PAGE] Structure
 
@@ -2682,6 +2752,11 @@ let json__PAGEo (json:Json):PAGE option =
         
     | None -> None
 
+let PAGE_clone src =
+    let bb = new BytesBuilder()
+    PAGE__bin bb src
+    bin__PAGE (bb.bytes(),ref 0)
+
 // [TEMPLATE] Structure
 
 
@@ -2812,6 +2887,11 @@ let json__TEMPLATEo (json:Json):TEMPLATE option =
             p = p } |> Some
         
     | None -> None
+
+let TEMPLATE_clone src =
+    let bb = new BytesBuilder()
+    TEMPLATE__bin bb src
+    bin__TEMPLATE (bb.bytes(),ref 0)
 
 // [VARTYPE] Structure
 
@@ -2971,6 +3051,11 @@ let json__VARTYPEo (json:Json):VARTYPE option =
             p = p } |> Some
         
     | None -> None
+
+let VARTYPE_clone src =
+    let bb = new BytesBuilder()
+    VARTYPE__bin bb src
+    bin__VARTYPE (bb.bytes(),ref 0)
 
 let mutable conn = ""
 

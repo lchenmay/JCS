@@ -44,7 +44,7 @@ export const drawLine =
 export const drawPath = 
     (g:CanvasRenderingContext2D) => 
     (color:string) => 
-    (points:Array<any>) => {
+    (points:Graphics.Vct2[]) => {
 
   if(points.length > 1){
     g.strokeStyle = color

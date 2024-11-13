@@ -1,3 +1,4 @@
+import { l } from "vite/dist/node/types.d-aGj9QkWt"
 
 export type Vct2 = {
     x: number,
@@ -49,8 +50,10 @@ export const strechPRange =
     (rate:number) => {
     let inf = coord.pinf
     let sup = coord.psup
-    coord.pinf = inf - rate * (sup - inf)
-    coord.psup = sup + rate * (sup - inf)
+    let middle = (inf + sup)/2
+    let semirange = (sup - inf)/2
+    coord.pinf = middle - rate * semirange
+    coord.psup = middle + rate * semirange
 }
 
 export const p__d = 
@@ -64,7 +67,7 @@ export const pp__dd =
     (px:number,py:number) => {
     return {
         x: p__d(coordx)(px),
-        y: p__d(coordy)(py)
+        y: p__d(coordy)(py) as number
     }
 }
 
@@ -79,7 +82,7 @@ export const pxy__dxy =
     return {
         x: p__d(coordxy.x)(v.x),
         y: p__d(coordxy.y)(v.y)
-    }
+    } as Vct2
 }
 
 export type Chart = {
@@ -87,6 +90,21 @@ export type Chart = {
     t: number,
     w: number,
     h: number
+}
+
+export const Chart__CoordXY = 
+  (chart:Chart) => {
+
+  return {
+    x: {
+        dinf: chart.l,
+        dsup: chart.l + chart.w
+      },
+    y: {
+      dinf: chart.t + chart.h,
+      dsup: chart.t
+    }
+  } as CoordXY
 }
 
 export type GridLayoutCell = {
@@ -100,8 +118,8 @@ export const wh__Chart = (w:number,h:number) => {
   return {
     l: 0,
     t: 0,
-    w: w,
-    h: h } as Chart
+    w: Number(w),
+    h: Number(h) } as Chart
 }
 
 export const colrowSpan__gridLayoutCell = 

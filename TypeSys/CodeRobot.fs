@@ -911,6 +911,13 @@ let buildType ns src t =
         //CodeRobotIITs.json__tImpl tbw 0 t
     | _ -> ()
 
+    match src.lang with
+    | ProgrammingLang.FSharp -> 
+        CodeRobotIIFs.clone tbw 0 t
+    | ProgrammingLang.TypeScript -> 
+        ()
+    | _ -> ()
+
 let buildCustomTypes config tc src srcTypeScript (cTypes:Dictionary<string,Type>) = 
 
     [|  "declare global {"

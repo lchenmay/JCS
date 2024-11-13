@@ -895,3 +895,11 @@ and json__tCall (w:TextBlockWriter)indent t =
         ") (new Dictionary<string," + tt.name + ">()) json)" |> w.appendEnd
     | TypeEnum.Fun (kType,vType) -> ()
 
+let clone (w:TextBlockWriter) indent (t:Type) = 
+    [|  ""
+        "let " + t.name + "_clone src ="
+        tab + "let bb = new BytesBuilder()"
+        tab + t.name + "__bin bb src"
+        tab + "bin__" + t.name + " (bb.bytes(),ref 0)" |]
+    |> w.multiLine
+
