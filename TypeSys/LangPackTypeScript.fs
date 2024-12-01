@@ -20,7 +20,7 @@ let rec type__annotation tc t =
         | "bool" -> "boolean"
         | "DateTime" -> "Date"
         | _ -> t.name
-    | TypeEnum.Orm v -> t.name
+    | TypeEnum.OrmRcd v -> t.name
     | TypeEnum.Ary v -> "Array<" + v.name + ">" 
     | TypeEnum.List v -> "Array<" + v.name + ">" 
     | TypeEnum.ListImmutable v -> "Array<" + v.name + ">" 

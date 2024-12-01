@@ -67,7 +67,8 @@ type TypeEnum =
 | Product of Type[]
 | Sum of (string * Type option)[]
 | Enum of (string * int)[]
-| Orm of Table
+| OrmRcd of Table
+| Ormp of Table
 | Option of Type
 | Ary of Type
 | List of Type
@@ -94,17 +95,18 @@ type TypeEnumPlain =
 | Product = 2
 | Sum = 3
 | Enum = 4
-| Orm = 5
-| Option = 6
-| Ary = 7
-| List = 8
-| Dictionary = 9
-| SortedDictionary = 10
-| ConcurrentDictionary = 11
-| ModDictInt64 = 12
-| ModDictStr = 13
-| ListImmutable = 14
-| Fun = 15
+| OrmRcd = 5
+| Ormp = 6
+| Option = 7
+| Ary = 8
+| List = 9
+| Dictionary = 10
+| SortedDictionary = 11
+| ConcurrentDictionary = 12
+| ModDictInt64 = 13
+| ModDictStr = 14
+| ListImmutable = 15
+| Fun = 16
 
 let typeEnum__plain e = 
     match e with
@@ -113,7 +115,8 @@ let typeEnum__plain e =
     | TypeEnum.Product v -> TypeEnumPlain.Product
     | TypeEnum.Sum v -> TypeEnumPlain.Sum
     | TypeEnum.Enum v -> TypeEnumPlain.Enum
-    | TypeEnum.Orm v -> TypeEnumPlain.Orm
+    | TypeEnum.OrmRcd v -> TypeEnumPlain.OrmRcd
+    | TypeEnum.Ormp v -> TypeEnumPlain.Ormp
     | TypeEnum.Option v -> TypeEnumPlain.Option
     | TypeEnum.Ary v -> TypeEnumPlain.Ary
     | TypeEnum.List v -> TypeEnumPlain.List
@@ -155,7 +158,7 @@ let rec type__str output indent t =
             | None -> ())
             
     | TypeEnum.Enum v -> ()
-    | TypeEnum.Orm v -> ()
+    | TypeEnum.OrmRcd v -> ()
     | TypeEnum.Option v ->
         tabs[indent + 1] + "Option of:" |> output
         type__str output (indent + 1) v
@@ -209,7 +212,7 @@ with override this.ToString() =
 
 let matchOrm (t:Type) =
     match t.tEnum with
-    | TypeEnum.Orm t -> Some t 
+    | TypeEnum.OrmRcd t -> Some t 
     | _ -> None
 
 let tc__sorted tc = 

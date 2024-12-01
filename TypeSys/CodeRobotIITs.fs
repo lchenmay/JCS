@@ -69,7 +69,7 @@ let rec t__binImpl ns (w:TextBlockWriter) indent t =
             "///// let p" + t.name + "__bin (bb:BytesBuilder) (p:p" + t.name + ") =" |] 
         |> w.multiLine
         
-    | TypeEnum.Orm table ->
+    | TypeEnum.OrmRcd table ->
 
         [|  ""
             "export const p" + t.name + "__bin = (bb:BytesBuilder) => (p:" + ns + ".p" + t.name + ") => {"
@@ -140,7 +140,10 @@ and t__binCall w indent t =
         w.appendEnd  prefix
         t.name + "__bin" |> w.appendEnd
     | TypeEnum.Enum v -> ()
-    | TypeEnum.Orm table -> 
+    | TypeEnum.OrmRcd table -> 
+        w.appendEnd  prefix
+        t.name + "__bin" |> w.appendEnd
+    | TypeEnum.Ormp table -> 
         w.appendEnd  prefix
         t.name + "__bin" |> w.appendEnd
     | TypeEnum.Option tt -> 
@@ -252,7 +255,7 @@ let rec bin__tImpl ns (w:TextBlockWriter) indent t =
 
 
     | TypeEnum.Enum v -> ()
-    | TypeEnum.Orm table ->
+    | TypeEnum.OrmRcd table ->
 
         [|  ""
             "export const bin__p" + t.name + " = (bi:BinIndexed):" + ns + ".p" + t.name + " => {"
@@ -348,7 +351,10 @@ and bin__tCall w indent t =
         w.appendEnd prefix
         "bin__" + t.name |> w.appendEnd
     | TypeEnum.Enum v -> ()
-    | TypeEnum.Orm table -> 
+    | TypeEnum.OrmRcd table -> 
+        w.appendEnd prefix
+        "bin__" + t.name |> w.appendEnd
+    | TypeEnum.Ormp table -> 
         w.appendEnd prefix
         "bin__" + t.name |> w.appendEnd
     | TypeEnum.Option tt -> 
@@ -423,7 +429,7 @@ let rec t__emptyImpl ns (w:TextBlockWriter) indent t =
         "e:0, val:{}" |> w.newlineIndent (indent + 1)
 
     | TypeEnum.Enum v -> ()
-    | TypeEnum.Orm table ->
+    | TypeEnum.OrmRcd table ->
 
         [|  ""
             "export const bin__p" + t.name + " = (bi:BinIndexed):" + ns + ".p" + t.name + " => {"
@@ -529,8 +535,10 @@ and t__emptyCall (w:TextBlockWriter) indent t =
         w.appendEnd prefix
         t.name + "_empty()" |> w.appendEnd
     | TypeEnum.Enum v -> ()
-    | TypeEnum.Orm table -> 
+    | TypeEnum.OrmRcd table -> 
         "{ id: 0, sort: 0, createdat: new Date(), updatedat: new Date(), p: " + prefix + "p" + t.name.ToUpper() + "_empty() }" |> w.appendEnd
+    | TypeEnum.Ormp table -> 
+        "marshall." + t.name + "_empty()" |> w.appendEnd
     | TypeEnum.Option tt -> 
         "null" |> w.appendEnd
         //w.appendEnd prefix
@@ -592,7 +600,7 @@ let rec t__jsonImpl (w:TextBlockWriter) indent t =
         w.newlineBlank()
         "items.ToArray() |> Json.Braket" |> w.newlineIndent (indent + 1)
 
-    | TypeEnum.Orm table ->
+    | TypeEnum.OrmRcd table ->
     
         [|  ""; 
             "export const p" + t.name + "__json = (p:p" + t.name + ") => {"
@@ -772,7 +780,7 @@ let rec json__tImpl (w:TextBlockWriter) indent t =
         "| None -> None" |> w.newlineIndent (indent + 1)
 
     | TypeEnum.Enum v -> ()
-    | TypeEnum.Orm table ->
+    | TypeEnum.OrmRcd table ->
     
         [|  ""
             "let json__p" + t.name + "o (json:Json):p" + t.name + " option =" 
@@ -881,7 +889,7 @@ and json__tCall (w:TextBlockWriter)indent t =
 
     | TypeEnum.Sum items -> "json__" + t.name + "o" |> w.appendEnd
     | TypeEnum.Enum v -> ()
-    | TypeEnum.Orm table -> "json__" + t.name + "o" |> w.appendEnd
+    | TypeEnum.OrmRcd table -> "json__" + t.name + "o" |> w.appendEnd
     | TypeEnum.Option tt -> 
         "json__Optiono (" |> w.appendEnd
         json__tCall w (indent + 1) tt

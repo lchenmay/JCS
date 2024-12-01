@@ -72,7 +72,7 @@ let rec t__binImpl (w:TextBlockWriter) indent t =
             "///// let p" + t.name + "__bin (bb:BytesBuilder) (p:p" + t.name + ") =" |] 
         |> w.multiLine
         
-    | TypeEnum.Orm table ->
+    | TypeEnum.OrmRcd table ->
 
         [|  ""
             "let p" + t.name + "__bin (bb:BytesBuilder) (p:p" + t.name + ") ="
@@ -134,7 +134,8 @@ and t__binCall w indent t =
 
     | TypeEnum.Sum v -> t.name + "__bin" |> w.appendEnd
     | TypeEnum.Enum v -> ()
-    | TypeEnum.Orm table -> t.name + "__bin" |> w.appendEnd
+    | TypeEnum.OrmRcd table -> t.name + "__bin" |> w.appendEnd
+    | TypeEnum.Ormp table -> t.name + "__bin" |> w.appendEnd
     | TypeEnum.Option tt -> 
         "Option__bin (" |> w.appendEnd
         t__binCall w (indent + 1) tt
@@ -227,7 +228,7 @@ let rec bin__tImpl (w:TextBlockWriter) indent t =
 
 
     | TypeEnum.Enum v -> ()
-    | TypeEnum.Orm table ->
+    | TypeEnum.OrmRcd table ->
 
         [|  ""
             "let bin__p" + t.name + " (bi:BinIndexed):p" + t.name + " ="
@@ -315,7 +316,8 @@ and bin__tCall w indent t =
         ")" |> w.appendEnd
     | TypeEnum.Sum v -> "bin__" + t.name |> w.appendEnd
     | TypeEnum.Enum v -> ()
-    | TypeEnum.Orm table -> "bin__" + t.name |> w.appendEnd
+    | TypeEnum.OrmRcd table -> "bin__" + t.name |> w.appendEnd
+    | TypeEnum.Ormp table -> "bin__" + t.name |> w.appendEnd
     | TypeEnum.Option tt -> 
         "bin__Option (" |> w.appendEnd
         bin__tCall w (indent + 1) tt
@@ -405,7 +407,7 @@ and t__emptyImpl (w:TextBlockWriter) indent t =
         | None -> t.name + "." + n |> w.appendEnd
 
     | TypeEnum.Enum v -> ()
-    | TypeEnum.Orm table ->
+    | TypeEnum.OrmRcd table ->
         ()
 
     | TypeEnum.Option tt -> ()
@@ -451,8 +453,10 @@ and t__emptyCall w indent t =
         ")" |> w.appendEnd
     | TypeEnum.Sum v -> t.name + "_empty()" |> w.appendEnd
     | TypeEnum.Enum v -> ()
-    | TypeEnum.Orm table -> 
+    | TypeEnum.OrmRcd table -> 
         "{ ID = 0L; Sort = 0L; Createdat = DateTime.MinValue; Updatedat = DateTime.MinValue; p = p" + t.name.ToUpper() + "_empty() }" |> w.appendEnd
+    | TypeEnum.Ormp table -> 
+        t.name + "_empty()" |> w.appendEnd
     | TypeEnum.Option tt -> 
         "None" |> w.appendEnd
         //"bin__Option (" |> w.appendEnd
@@ -524,7 +528,7 @@ let rec t__jsonImpl (w:TextBlockWriter) indent t =
         w.newlineBlank()
         "items.ToArray() |> Json.Braket" |> w.newlineIndent (indent + 1)
 
-    | TypeEnum.Orm table ->
+    | TypeEnum.OrmRcd table ->
     
         [|  ""; 
             "let p" + t.name + "__json (p:p" + t.name + ") ="
@@ -724,7 +728,7 @@ let rec json__tImpl (w:TextBlockWriter) indent t =
         "| None -> None" |> w.newlineIndent (indent + 1)
 
     | TypeEnum.Enum v -> ()
-    | TypeEnum.Orm table ->
+    | TypeEnum.OrmRcd table ->
     
         [|  ""
             "let json__p" + t.name + "o (json:Json):p" + t.name + " option =" 
@@ -845,7 +849,8 @@ and json__tCall (w:TextBlockWriter)indent t =
 
     | TypeEnum.Sum items -> "json__" + t.name + "o" |> w.appendEnd
     | TypeEnum.Enum v -> ()
-    | TypeEnum.Orm table -> "json__" + t.name + "o" |> w.appendEnd
+    | TypeEnum.OrmRcd table -> "json__" + t.name + "o" |> w.appendEnd
+    | TypeEnum.Ormp table -> "json__" + t.name + "o" |> w.appendEnd
     | TypeEnum.Option tt -> 
         "json__Optiono (" |> w.appendEnd
         json__tCall w (indent + 1) tt

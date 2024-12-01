@@ -72,7 +72,15 @@ let buildTypeCat output
         let table = tables[n]
         {   name = table.typeName
             sort = 0
-            tEnum = Orm table
+            tEnum = OrmRcd table
+            custom =  false
+            src = [||] } 
+        |> appendType tc
+        |> ignore
+        
+        {   name = "p" + table.typeName
+            sort = 0
+            tEnum = Ormp table
             custom =  false
             src = [||] } 
         |> appendType tc
@@ -804,7 +812,7 @@ let buildType ns src t =
     tbw.newlineBlank()
 
     match t.tEnum with
-    | TypeEnum.Orm table -> ()
+    | TypeEnum.OrmRcd table -> ()
     | _ -> 
         match src.lang with
         | ProgrammingLang.FSharp -> 
@@ -814,7 +822,7 @@ let buildType ns src t =
         | _ -> ()
 
     match t.tEnum with
-    | TypeEnum.Orm table -> ()
+    | TypeEnum.OrmRcd table -> ()
     | _ ->
         [|  ""; 
             match src.lang with
@@ -836,7 +844,7 @@ let buildType ns src t =
     | _ -> ()
 
     match t.tEnum with
-    | TypeEnum.Orm table -> ()
+    | TypeEnum.OrmRcd table -> ()
     | _ ->
         match src.lang with
         | ProgrammingLang.FSharp -> 
@@ -861,7 +869,7 @@ let buildType ns src t =
     | _ -> ()
 
     match t.tEnum with
-    | TypeEnum.Orm table -> ()
+    | TypeEnum.OrmRcd table -> ()
     | _ ->
         match src.lang with
         | ProgrammingLang.FSharp -> 
@@ -892,7 +900,7 @@ let buildType ns src t =
     | _ -> ()
 
     match t.tEnum with
-    | TypeEnum.Orm table -> ()
+    | TypeEnum.OrmRcd table -> ()
     | _ ->
         match src.lang with
         | ProgrammingLang.FSharp -> 
@@ -1064,7 +1072,7 @@ let go output config =
     sorted
     |> Array.iter(fun t ->
         match t.tEnum |> typeEnum__plain with
-        | TypeEnumPlain.Orm -> 
+        | TypeEnumPlain.OrmRcd -> 
             buildType ns om t
             buildType ns omTypeScript t
         | TypeEnumPlain.Structure
