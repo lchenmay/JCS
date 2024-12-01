@@ -6,6 +6,7 @@ declare global {
     }
     namespace globalThis {
         var host: Host
+        var clientRuntime: j7.ClientRuntime
         var runtime: Runtime
         var panelrt: { showpanel: boolean }
     }
@@ -17,7 +18,7 @@ declare global {
         session: string
 
         user: jcs.EuComplex
-        data: jcs.RuntimeData
+        data: j7.ClientRuntime
     }
 
     export type WsCtx = {

@@ -1,7 +1,7 @@
 import { glib } from '~/lib/glib'
 import { initRuntime } from '~/lib/store/init'
 import { watch } from 'vue'
-import { RuntimeData_empty } from '../shared/CustomMor'
+import { ClientRuntime_empty } from '../shared/CustomMor'
 
 export const loadLS = (key: string, defaultv: string = '{}') => {
     const v = window.localStorage.getItem(key)
@@ -42,7 +42,7 @@ export const prepRuntime = (): Runtime => {
         session: loadLS("session", ''),
         user: {},
 
-        data: RuntimeData_empty()
+        data: ClientRuntime_empty()
     } as Runtime
 
     initRuntime(runtime)

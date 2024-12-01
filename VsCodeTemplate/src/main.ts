@@ -4,6 +4,7 @@ import { glib } from '~/lib/glib'
 import '~/main.css'
 
 globalThis.host = glib.vue.reactive(glib.host.initHost())
+globalThis.clientRuntime = glib.vue.reactive(ClientRuntime_empty())
 globalThis.runtime = glib.vue.reactive(glib.runtime.prepRuntime())
 runtime.host = host
 
