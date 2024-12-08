@@ -679,11 +679,11 @@ let rec json__tImpl (w:TextBlockWriter) indent t =
 
         "if passOptions then" |> w.newlineIndent (indent + 1) 
 
-        "{" |> w.newlineIndent (indent + 2)
+        "({" |> w.newlineIndent (indent + 2)
         items
         |> Array.iter(fun (name,tt) -> 
             name + " = " + name + "o.Value" |> w.newlineIndent (indent + 3))
-        " } |> Some" |> w.appendEnd
+        " }:" + t.name + ") |> Some" |> w.appendEnd
 
         "else" |> w.newlineIndent (indent + 1) 
         "None" |> w.newlineIndent (indent + 2) 

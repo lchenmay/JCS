@@ -79,8 +79,8 @@ let json__EuComplexo (json:Json):EuComplex option =
                 None
 
     if passOptions then
-        {
-            eu = euo.Value } |> Some
+        ({
+            eu = euo.Value }:EuComplex) |> Some
     else
         None
 
@@ -159,9 +159,9 @@ let json__TableComplexo (json:Json):TableComplex option =
                 None
 
     if passOptions then
-        {
+        ({
             fields = fieldso.Value
-            table = tableo.Value } |> Some
+            table = tableo.Value }:TableComplex) |> Some
     else
         None
 
@@ -259,10 +259,10 @@ let json__CompComplexo (json:Json):CompComplex option =
                 None
 
     if passOptions then
-        {
+        ({
             states = stateso.Value
             props = propso.Value
-            comp = compo.Value } |> Some
+            comp = compo.Value }:CompComplex) |> Some
     else
         None
 
@@ -360,10 +360,10 @@ let json__PageComplexo (json:Json):PageComplex option =
                 None
 
     if passOptions then
-        {
+        ({
             states = stateso.Value
             props = propso.Value
-            page = pageo.Value } |> Some
+            page = pageo.Value }:PageComplex) |> Some
     else
         None
 
@@ -461,10 +461,10 @@ let json__ApiComplexo (json:Json):ApiComplex option =
                 None
 
     if passOptions then
-        {
+        ({
             reqs = reqso.Value
             reps = repso.Value
-            api = apio.Value } |> Some
+            api = apio.Value }:ApiComplex) |> Some
     else
         None
 
@@ -638,14 +638,14 @@ let json__ProjectComplexo (json:Json):ProjectComplex option =
                 None
 
     if passOptions then
-        {
+        ({
             hostconfigs = hostconfigso.Value
             tablexs = tablexso.Value
             compxs = compxso.Value
             templatexs = templatexso.Value
             pagexs = pagexso.Value
             apixs = apixso.Value
-            project = projecto.Value } |> Some
+            project = projecto.Value }:ProjectComplex) |> Some
     else
         None
 
@@ -776,9 +776,9 @@ let json__RuntimeDatao (json:Json):RuntimeData option =
                 None
 
     if passOptions then
-        {
+        ({
             facts = factso.Value
-            projectxs = projectxso.Value } |> Some
+            projectxs = projectxso.Value }:RuntimeData) |> Some
     else
         None
 
