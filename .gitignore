@@ -27,3 +27,5 @@
 /BizLogics/obj
 /Server/bin/Debug/net8.0
 /Server/obj
+/portal/node_modules
+/portal/src/.vs
