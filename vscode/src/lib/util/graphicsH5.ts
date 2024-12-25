@@ -41,6 +41,18 @@ export const drawLine =
     g.stroke()
 }
 
+export const drawLineVct2 = 
+    (g:CanvasRenderingContext2D) => 
+    (color:string) => 
+    (v1:Graphics.Vct2,v2:Graphics.Vct2) => {
+
+    g.strokeStyle = color
+    g.beginPath()
+    g.moveTo(v1.x,v1.y)
+    g.lineTo(v2.x,v2.y)
+    g.stroke()
+}
+
 export const drawPath = 
     (g:CanvasRenderingContext2D) => 
     (color:string) => 

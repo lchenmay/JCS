@@ -50,7 +50,7 @@ let main argv =
             noscript = "" }
 
         ssrPageHome 
-        |> render (hash1,hash2) 
+        |> render (hash1,hash2) ""
         |> bin__StandardResponse "text/html") |> Some
     runtime.wsHandler <- fun json ->
         match

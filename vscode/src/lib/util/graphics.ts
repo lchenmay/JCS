@@ -64,7 +64,7 @@ export const p__d =
 
 export const pp__dd = 
     (coordx:Coord,coordy:Coord) => 
-    (px:number,py:number) => {
+    (px:number,py:number): Vct2 => {
     return {
         x: p__d(coordx)(px),
         y: p__d(coordy)(py) as number

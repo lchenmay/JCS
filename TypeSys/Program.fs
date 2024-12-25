@@ -159,6 +159,22 @@ let target__config target =
             conn = "server=127.0.0.1; user=sa; database=J"
             mainDir = @"C:\Dev\J\Shared"
             JsDir = @"C:\Dev\J\vscode\src\lib\shared" }
+    | 16 ->
+        {   ns = "Shared"
+            rdbms = Rdbms.SqlServer
+            dbName = "Studio"
+            donmainName = ""
+            conn = "server=127.0.0.1; user=sa; database=Studio"
+            mainDir = @"C:\Dev\J\Shared"
+            JsDir = @"C:\Dev\Studio\vscode\src\lib\shared" }
+    | 17 ->
+        {   ns = "Shared"
+            rdbms = Rdbms.SqlServer
+            dbName = "J"
+            donmainName = ""
+            conn = "server=127.0.0.1; user=sa; database=J"
+            mainDir = @"C:\Dev\J\Shared"
+            JsDir = @"C:\Dev\J\vscode\src\lib\shared" }
     | 10 ->
         {   ns = "Shared"
             rdbms = Rdbms.SqlServer
@@ -247,6 +263,8 @@ let run () =
 
     [|  6 // JCS
         7 // J-7
+        16 // studio
+        17 // J
         10 |] //Game
     |> Array.map target__config
     |> Array.iter(CodeRobot.go output)
