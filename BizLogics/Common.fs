@@ -46,7 +46,6 @@ let runtime =
         zmq = false
         port = 5045
         conn = ""
-        defaultHtml = "index.html"
         url = ""
 
         updateDatabase = true
@@ -71,7 +70,8 @@ let runtime =
             |> String.Concat
         DiscordRedirect = ""
 
-        fsDir = @"C:\Dev\JCS\vscode\dist" }
+        fsDir = @"C:\Dev\JCS\vscode\dist"
+        vueDeployDir = @"C:\Dev\JCS\vscode\dist" }
 
     match hostEnum with
     | HostEnum.Dev -> 

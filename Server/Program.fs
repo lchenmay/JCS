@@ -39,7 +39,7 @@ let main argv =
     runtime.h404o <- (fun _ ->  
 
         let hash1,hash2 = 
-            runtime.host.fsDir + "\\" + runtime.host.defaultHtml
+            runtime.host.fsDir + "\\index.html"
             |> vueIndexFile__hashes
 
         let ssrPageHome = {

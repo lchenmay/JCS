@@ -38,7 +38,7 @@ export const glib = {
   runtime: runtime,
 
   Mor: {
-    jcs: { ...cm, ...om }
+    []: { ...cm, ...om }
   },
 
   post: fetchs.post,

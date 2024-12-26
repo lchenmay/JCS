@@ -9,7 +9,7 @@ globalThis.clientRuntime = glib.vue.reactive(ClientRuntime_empty())
 globalThis.runtime = glib.vue.reactive(glib.runtime.prepRuntime())
 runtime.host = host
 
-//runtime.user = glib.Mor.[]
+runtime.user = glib.Mor.[]
 
 glib.runtime.createGlobalWatcher()
 

@@ -193,7 +193,7 @@ let runProject projectx =
     (fun (src:string) -> 
         let ns = projectx.project.p.Code.ToLower()
         let mutable res = src.Replace("user: [].[]","user: " + ns + "." + projectx.project.p.TypeSessionUser)
-        res <- res.Replace("data: [].RuntimeData","data: " + ns + ".RuntimeData")
+        res <- res.Replace("data: [].ClientRuntime","data: " + ns + ".ClientRuntime")
         res)
     |> changeFile(hostconfig.p.DirVsCodeWeb + "/src/types/main.d.ts")
 
@@ -201,6 +201,11 @@ let runProject projectx =
         let ns = projectx.project.p.Code.ToLower()
         src.Replace("runtime.user = glib.Mor.[]","runtime.user = glib.Mor." + ns + "." + projectx.project.p.TypeSessionUser + "_empty()"))
     |> changeFile(hostconfig.p.DirVsCodeWeb + "/src/main.ts")
+
+    (fun (src:string) -> 
+        let ns = projectx.project.p.Code.ToLower()
+        src.Replace("[]: { ...cm, ...om }",ns + ": { ...cm, ...om }"))
+    |> changeFile(hostconfig.p.DirVsCodeWeb + "/src/glib.ts")
 
 
 let run() =
@@ -210,6 +215,7 @@ let run() =
     [|  234346L // JCS
         234347L // Game
         234348L // J
+        234350L // Studio
         234349L |] // J7
     |> Array.map(fun id -> runtime.data.projectxs[id])
     |> Array.iter runProject

@@ -17,8 +17,8 @@ declare global {
         router: Router
         session: string
 
-        user: jcs.EuComplex
-        data: j7.ClientRuntime
+        user: [].[]
+        data: [].ClientRuntime
     }
 
     export type WsCtx = {
