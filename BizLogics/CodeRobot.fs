@@ -205,7 +205,7 @@ let runProject projectx =
     (fun (src:string) -> 
         let ns = projectx.project.p.Code.ToLower()
         src.Replace("[]: { ...cm, ...om }",ns + ": { ...cm, ...om }"))
-    |> changeFile(hostconfig.p.DirVsCodeWeb + "/src/glib.ts")
+    |> changeFile(hostconfig.p.DirVsCodeWeb + "/src/lib/glib.ts")
 
 
 let run() =
