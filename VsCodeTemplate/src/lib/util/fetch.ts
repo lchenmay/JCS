@@ -43,10 +43,20 @@ export const upload = (file:any,dst:string) => {
   formData.append("file", file)
 
   let url = checkUrl(dst)
-  axios.post(url, formData, { headers: { "Content-Type": "multipart/form-data" }})
-  .then((rep:any) => { console.log("File uploaded successfully", rep)})
-  .catch((er:any) => { console.error("Error uploading file", er)})
 
+  let reader = new FileReader()
+  reader.onloadend = async() => {
+    let buffer = reader.result
+    let rep = await fetch(url,{
+      method: 'POST',
+      headers:{
+        'Content-Type': 'application/octet-stream',
+        'Filename': encodeURIComponent(file.name)
+      },
+      body: reader.result })
+  }
+
+  reader.readAsArrayBuffer(file)
 }
 
 export const post = request("POST")
