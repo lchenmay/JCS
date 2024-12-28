@@ -1,7 +1,7 @@
 
 import axios from 'axios'
 
-const checkUrl = (url:string) => {
+export const checkUrl = (url:string) => {
   const getbase = () =>{
     if (runtime.host.api) 
       return runtime.host.api
@@ -37,7 +37,9 @@ const request = (method: "POST" | "GET") => async (url: string, data: Record<str
   return fetch(url, inits).then(res => { return res.json() }).catch(err => { console.error('Error:', err) })
 }
 
-export const upload = (file:any,dst:string) => {
+export const upload = 
+  (suc:Function,fail:Function) => 
+  (file:any,dst:string,desc:string) => {
 
   let formData = new FormData()
   formData.append("file", file)
@@ -51,9 +53,20 @@ export const upload = (file:any,dst:string) => {
       method: 'POST',
       headers:{
         'Content-Type': 'application/octet-stream',
-        'Filename': encodeURIComponent(file.name)
+        'Filename': encodeURIComponent(file.name),
+        'Desc': encodeURIComponent(desc)
       },
       body: reader.result })
+
+    if(rep.ok){
+      if(suc){
+        suc(rep)
+      }
+    }else{
+      if(fail){
+        fail(rep)
+      }
+    }
   }
 
   reader.readAsArrayBuffer(file)
