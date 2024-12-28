@@ -3062,21 +3062,21 @@ let mutable conn = ""
 let db__pADDRESS(line:Object[]): pADDRESS =
     let p = pADDRESS_empty()
 
-    p.Caption <- string(line.[4]).TrimEnd()
-    p.Bind <- if Convert.IsDBNull(line.[5]) then 0L else line.[5] :?> int64
-    p.AddressType <- EnumOfValue(if Convert.IsDBNull(line.[6]) then 0 else line.[6] :?> int)
-    p.Line1 <- string(line.[7]).TrimEnd()
-    p.Line2 <- string(line.[8]).TrimEnd()
-    p.State <- string(line.[9]).TrimEnd()
-    p.County <- string(line.[10]).TrimEnd()
-    p.Town <- string(line.[11]).TrimEnd()
-    p.Contact <- string(line.[12]).TrimEnd()
-    p.Tel <- string(line.[13]).TrimEnd()
-    p.Email <- string(line.[14]).TrimEnd()
-    p.Zip <- string(line.[15]).TrimEnd()
-    p.City <- if Convert.IsDBNull(line.[16]) then 0L else line.[16] :?> int64
-    p.Country <- if Convert.IsDBNull(line.[17]) then 0L else line.[17] :?> int64
-    p.Remarks <- string(line.[18]).TrimEnd()
+    p.Caption <- string(line[4]).TrimEnd()
+    p.Bind <- if Convert.IsDBNull(line[5]) then 0L else line[5] :?> int64
+    p.AddressType <- EnumOfValue(if Convert.IsDBNull(line[6]) then 0 else line[6] :?> int)
+    p.Line1 <- string(line[7]).TrimEnd()
+    p.Line2 <- string(line[8]).TrimEnd()
+    p.State <- string(line[9]).TrimEnd()
+    p.County <- string(line[10]).TrimEnd()
+    p.Town <- string(line[11]).TrimEnd()
+    p.Contact <- string(line[12]).TrimEnd()
+    p.Tel <- string(line[13]).TrimEnd()
+    p.Email <- string(line[14]).TrimEnd()
+    p.Zip <- string(line[15]).TrimEnd()
+    p.City <- if Convert.IsDBNull(line[16]) then 0L else line[16] :?> int64
+    p.Country <- if Convert.IsDBNull(line[17]) then 0L else line[17] :?> int64
+    p.Remarks <- string(line[18]).TrimEnd()
 
     p
 
@@ -3220,19 +3220,19 @@ let ADDRESSTxSqlServer =
 let db__pBIZ(line:Object[]): pBIZ =
     let p = pBIZ_empty()
 
-    p.Code <- string(line.[4]).TrimEnd()
-    p.Caption <- string(line.[5]).TrimEnd()
-    p.Parent <- if Convert.IsDBNull(line.[6]) then 0L else line.[6] :?> int64
-    p.BasicAcct <- if Convert.IsDBNull(line.[7]) then 0L else line.[7] :?> int64
-    p.DescTxt <- string(line.[8]).TrimEnd()
-    p.Website <- string(line.[9]).TrimEnd()
-    p.Icon <- string(line.[10]).TrimEnd()
-    p.City <- if Convert.IsDBNull(line.[11]) then 0L else line.[11] :?> int64
-    p.Country <- if Convert.IsDBNull(line.[12]) then 0L else line.[12] :?> int64
-    p.Lang <- if Convert.IsDBNull(line.[13]) then 0L else line.[13] :?> int64
-    p.IsSocialPlatform <- if Convert.IsDBNull(line.[14]) then false else line.[14] :?> bool
-    p.IsCmsSource <- if Convert.IsDBNull(line.[15]) then false else line.[15] :?> bool
-    p.IsPayGateway <- if Convert.IsDBNull(line.[16]) then false else line.[16] :?> bool
+    p.Code <- string(line[4]).TrimEnd()
+    p.Caption <- string(line[5]).TrimEnd()
+    p.Parent <- if Convert.IsDBNull(line[6]) then 0L else line[6] :?> int64
+    p.BasicAcct <- if Convert.IsDBNull(line[7]) then 0L else line[7] :?> int64
+    p.DescTxt <- string(line[8]).TrimEnd()
+    p.Website <- string(line[9]).TrimEnd()
+    p.Icon <- string(line[10]).TrimEnd()
+    p.City <- if Convert.IsDBNull(line[11]) then 0L else line[11] :?> int64
+    p.Country <- if Convert.IsDBNull(line[12]) then 0L else line[12] :?> int64
+    p.Lang <- if Convert.IsDBNull(line[13]) then 0L else line[13] :?> int64
+    p.IsSocialPlatform <- if Convert.IsDBNull(line[14]) then false else line[14] :?> bool
+    p.IsCmsSource <- if Convert.IsDBNull(line[15]) then false else line[15] :?> bool
+    p.IsPayGateway <- if Convert.IsDBNull(line[16]) then false else line[16] :?> bool
 
     p
 
@@ -3368,11 +3368,11 @@ let BIZTxSqlServer =
 let db__pCAT(line:Object[]): pCAT =
     let p = pCAT_empty()
 
-    p.Caption <- string(line.[4]).TrimEnd()
-    p.Lang <- if Convert.IsDBNull(line.[5]) then 0L else line.[5] :?> int64
-    p.Zh <- if Convert.IsDBNull(line.[6]) then 0L else line.[6] :?> int64
-    p.Parent <- if Convert.IsDBNull(line.[7]) then 0L else line.[7] :?> int64
-    p.CatState <- EnumOfValue(if Convert.IsDBNull(line.[8]) then 0 else line.[8] :?> int)
+    p.Caption <- string(line[4]).TrimEnd()
+    p.Lang <- if Convert.IsDBNull(line[5]) then 0L else line[5] :?> int64
+    p.Zh <- if Convert.IsDBNull(line[6]) then 0L else line[6] :?> int64
+    p.Parent <- if Convert.IsDBNull(line[7]) then 0L else line[7] :?> int64
+    p.CatState <- EnumOfValue(if Convert.IsDBNull(line[8]) then 0 else line[8] :?> int)
 
     p
 
@@ -3476,13 +3476,13 @@ let CATTxSqlServer =
 let db__pCITY(line:Object[]): pCITY =
     let p = pCITY_empty()
 
-    p.Fullname <- string(line.[4]).TrimEnd()
-    p.MetropolitanCode3IATA <- string(line.[5]).TrimEnd()
-    p.NameEn <- string(line.[6]).TrimEnd()
-    p.Country <- if Convert.IsDBNull(line.[7]) then 0L else line.[7] :?> int64
-    p.Place <- if Convert.IsDBNull(line.[8]) then 0L else line.[8] :?> int64
-    p.Icon <- string(line.[9]).TrimEnd()
-    p.Tel <- string(line.[10]).TrimEnd()
+    p.Fullname <- string(line[4]).TrimEnd()
+    p.MetropolitanCode3IATA <- string(line[5]).TrimEnd()
+    p.NameEn <- string(line[6]).TrimEnd()
+    p.Country <- if Convert.IsDBNull(line[7]) then 0L else line[7] :?> int64
+    p.Place <- if Convert.IsDBNull(line[8]) then 0L else line[8] :?> int64
+    p.Icon <- string(line[9]).TrimEnd()
+    p.Tel <- string(line[10]).TrimEnd()
 
     p
 
@@ -3594,15 +3594,15 @@ let CITYTxSqlServer =
 let db__pCRY(line:Object[]): pCRY =
     let p = pCRY_empty()
 
-    p.Code2 <- string(line.[4]).TrimEnd()
-    p.Caption <- string(line.[5]).TrimEnd()
-    p.Fullname <- string(line.[6]).TrimEnd()
-    p.Icon <- string(line.[7]).TrimEnd()
-    p.Tel <- string(line.[8]).TrimEnd()
-    p.Cur <- if Convert.IsDBNull(line.[9]) then 0L else line.[9] :?> int64
-    p.Capital <- if Convert.IsDBNull(line.[10]) then 0L else line.[10] :?> int64
-    p.Place <- if Convert.IsDBNull(line.[11]) then 0L else line.[11] :?> int64
-    p.Lang <- if Convert.IsDBNull(line.[12]) then 0L else line.[12] :?> int64
+    p.Code2 <- string(line[4]).TrimEnd()
+    p.Caption <- string(line[5]).TrimEnd()
+    p.Fullname <- string(line[6]).TrimEnd()
+    p.Icon <- string(line[7]).TrimEnd()
+    p.Tel <- string(line[8]).TrimEnd()
+    p.Cur <- if Convert.IsDBNull(line[9]) then 0L else line[9] :?> int64
+    p.Capital <- if Convert.IsDBNull(line[10]) then 0L else line[10] :?> int64
+    p.Place <- if Convert.IsDBNull(line[11]) then 0L else line[11] :?> int64
+    p.Lang <- if Convert.IsDBNull(line[12]) then 0L else line[12] :?> int64
 
     p
 
@@ -3722,29 +3722,29 @@ let CRYTxSqlServer =
 let db__pEU(line:Object[]): pEU =
     let p = pEU_empty()
 
-    p.Caption <- string(line.[4]).TrimEnd()
-    p.Username <- string(line.[5]).TrimEnd()
-    p.SocialAuthBiz <- if Convert.IsDBNull(line.[6]) then 0L else line.[6] :?> int64
-    p.SocialAuthId <- string(line.[7]).TrimEnd()
-    p.SocialAuthAvatar <- string(line.[8]).TrimEnd()
-    p.Email <- string(line.[9]).TrimEnd()
-    p.Tel <- string(line.[10]).TrimEnd()
-    p.Gender <- EnumOfValue(if Convert.IsDBNull(line.[11]) then 0 else line.[11] :?> int)
-    p.Status <- EnumOfValue(if Convert.IsDBNull(line.[12]) then 0 else line.[12] :?> int)
-    p.Admin <- EnumOfValue(if Convert.IsDBNull(line.[13]) then 0 else line.[13] :?> int)
-    p.BizPartner <- EnumOfValue(if Convert.IsDBNull(line.[14]) then 0 else line.[14] :?> int)
-    p.Privilege <- if Convert.IsDBNull(line.[15]) then 0L else line.[15] :?> int64
-    p.Verify <- EnumOfValue(if Convert.IsDBNull(line.[16]) then 0 else line.[16] :?> int)
-    p.Pwd <- string(line.[17]).TrimEnd()
-    p.Online <- if Convert.IsDBNull(line.[18]) then false else line.[18] :?> bool
-    p.Icon <- string(line.[19]).TrimEnd()
-    p.Background <- string(line.[20]).TrimEnd()
-    p.BasicAcct <- if Convert.IsDBNull(line.[21]) then 0L else line.[21] :?> int64
-    p.Citizen <- if Convert.IsDBNull(line.[22]) then 0L else line.[22] :?> int64
-    p.Refer <- string(line.[23]).TrimEnd()
-    p.Referer <- if Convert.IsDBNull(line.[24]) then 0L else line.[24] :?> int64
-    p.Url <- string(line.[25]).TrimEnd()
-    p.About <- string(line.[26]).TrimEnd()
+    p.Caption <- string(line[4]).TrimEnd()
+    p.Username <- string(line[5]).TrimEnd()
+    p.SocialAuthBiz <- if Convert.IsDBNull(line[6]) then 0L else line[6] :?> int64
+    p.SocialAuthId <- string(line[7]).TrimEnd()
+    p.SocialAuthAvatar <- string(line[8]).TrimEnd()
+    p.Email <- string(line[9]).TrimEnd()
+    p.Tel <- string(line[10]).TrimEnd()
+    p.Gender <- EnumOfValue(if Convert.IsDBNull(line[11]) then 0 else line[11] :?> int)
+    p.Status <- EnumOfValue(if Convert.IsDBNull(line[12]) then 0 else line[12] :?> int)
+    p.Admin <- EnumOfValue(if Convert.IsDBNull(line[13]) then 0 else line[13] :?> int)
+    p.BizPartner <- EnumOfValue(if Convert.IsDBNull(line[14]) then 0 else line[14] :?> int)
+    p.Privilege <- if Convert.IsDBNull(line[15]) then 0L else line[15] :?> int64
+    p.Verify <- EnumOfValue(if Convert.IsDBNull(line[16]) then 0 else line[16] :?> int)
+    p.Pwd <- string(line[17]).TrimEnd()
+    p.Online <- if Convert.IsDBNull(line[18]) then false else line[18] :?> bool
+    p.Icon <- string(line[19]).TrimEnd()
+    p.Background <- string(line[20]).TrimEnd()
+    p.BasicAcct <- if Convert.IsDBNull(line[21]) then 0L else line[21] :?> int64
+    p.Citizen <- if Convert.IsDBNull(line[22]) then 0L else line[22] :?> int64
+    p.Refer <- string(line[23]).TrimEnd()
+    p.Referer <- if Convert.IsDBNull(line[24]) then 0L else line[24] :?> int64
+    p.Url <- string(line[25]).TrimEnd()
+    p.About <- string(line[26]).TrimEnd()
 
     p
 
@@ -3920,9 +3920,9 @@ let EUTxSqlServer =
 let db__pCSI(line:Object[]): pCSI =
     let p = pCSI_empty()
 
-    p.Type <- EnumOfValue(if Convert.IsDBNull(line.[4]) then 0 else line.[4] :?> int)
-    p.Lang <- if Convert.IsDBNull(line.[5]) then 0L else line.[5] :?> int64
-    p.Bind <- if Convert.IsDBNull(line.[6]) then 0L else line.[6] :?> int64
+    p.Type <- EnumOfValue(if Convert.IsDBNull(line[4]) then 0 else line[4] :?> int)
+    p.Lang <- if Convert.IsDBNull(line[5]) then 0L else line[5] :?> int64
+    p.Bind <- if Convert.IsDBNull(line[6]) then 0L else line[6] :?> int64
 
     p
 
@@ -4018,12 +4018,12 @@ let CSITxSqlServer =
 let db__pCWC(line:Object[]): pCWC =
     let p = pCWC_empty()
 
-    p.Caption <- string(line.[4]).TrimEnd()
-    p.ExternalId <- if Convert.IsDBNull(line.[5]) then 0L else line.[5] :?> int64
-    p.Icon <- string(line.[6]).TrimEnd()
-    p.EU <- if Convert.IsDBNull(line.[7]) then 0L else line.[7] :?> int64
-    p.Biz <- if Convert.IsDBNull(line.[8]) then 0L else line.[8] :?> int64
-    p.Json <- string(line.[9]).TrimEnd()
+    p.Caption <- string(line[4]).TrimEnd()
+    p.ExternalId <- if Convert.IsDBNull(line[5]) then 0L else line[5] :?> int64
+    p.Icon <- string(line[6]).TrimEnd()
+    p.EU <- if Convert.IsDBNull(line[7]) then 0L else line[7] :?> int64
+    p.Biz <- if Convert.IsDBNull(line[8]) then 0L else line[8] :?> int64
+    p.Json <- string(line[9]).TrimEnd()
 
     p
 
@@ -4131,8 +4131,8 @@ let CWCTxSqlServer =
 let db__pAPI(line:Object[]): pAPI =
     let p = pAPI_empty()
 
-    p.Name <- string(line.[4]).TrimEnd()
-    p.Project <- if Convert.IsDBNull(line.[5]) then 0L else line.[5] :?> int64
+    p.Name <- string(line[4]).TrimEnd()
+    p.Project <- if Convert.IsDBNull(line[5]) then 0L else line[5] :?> int64
 
     p
 
@@ -4224,13 +4224,13 @@ let APITxSqlServer =
 let db__pFIELD(line:Object[]): pFIELD =
     let p = pFIELD_empty()
 
-    p.Name <- string(line.[4]).TrimEnd()
-    p.Desc <- string(line.[5]).TrimEnd()
-    p.FieldType <- EnumOfValue(if Convert.IsDBNull(line.[6]) then 0 else line.[6] :?> int)
-    p.Length <- if Convert.IsDBNull(line.[7]) then 0L else line.[7] :?> int64
-    p.SelectLines <- string(line.[8]).TrimEnd()
-    p.Project <- if Convert.IsDBNull(line.[9]) then 0L else line.[9] :?> int64
-    p.Table <- if Convert.IsDBNull(line.[10]) then 0L else line.[10] :?> int64
+    p.Name <- string(line[4]).TrimEnd()
+    p.Desc <- string(line[5]).TrimEnd()
+    p.FieldType <- EnumOfValue(if Convert.IsDBNull(line[6]) then 0 else line[6] :?> int)
+    p.Length <- if Convert.IsDBNull(line[7]) then 0L else line[7] :?> int64
+    p.SelectLines <- string(line[8]).TrimEnd()
+    p.Project <- if Convert.IsDBNull(line[9]) then 0L else line[9] :?> int64
+    p.Table <- if Convert.IsDBNull(line[10]) then 0L else line[10] :?> int64
 
     p
 
@@ -4342,13 +4342,13 @@ let FIELDTxSqlServer =
 let db__pHOSTCONFIG(line:Object[]): pHOSTCONFIG =
     let p = pHOSTCONFIG_empty()
 
-    p.Hostname <- string(line.[4]).TrimEnd()
-    p.Database <- EnumOfValue(if Convert.IsDBNull(line.[5]) then 0 else line.[5] :?> int)
-    p.DatabaseName <- string(line.[6]).TrimEnd()
-    p.DatabaseConn <- string(line.[7]).TrimEnd()
-    p.DirVs <- string(line.[8]).TrimEnd()
-    p.DirVsCodeWeb <- string(line.[9]).TrimEnd()
-    p.Project <- if Convert.IsDBNull(line.[10]) then 0L else line.[10] :?> int64
+    p.Hostname <- string(line[4]).TrimEnd()
+    p.Database <- EnumOfValue(if Convert.IsDBNull(line[5]) then 0 else line[5] :?> int)
+    p.DatabaseName <- string(line[6]).TrimEnd()
+    p.DatabaseConn <- string(line[7]).TrimEnd()
+    p.DirVs <- string(line[8]).TrimEnd()
+    p.DirVsCodeWeb <- string(line[9]).TrimEnd()
+    p.Project <- if Convert.IsDBNull(line[10]) then 0L else line[10] :?> int64
 
     p
 
@@ -4460,9 +4460,9 @@ let HOSTCONFIGTxSqlServer =
 let db__pPROJECT(line:Object[]): pPROJECT =
     let p = pPROJECT_empty()
 
-    p.Code <- string(line.[4]).TrimEnd()
-    p.Caption <- string(line.[5]).TrimEnd()
-    p.TypeSessionUser <- string(line.[6]).TrimEnd()
+    p.Code <- string(line[4]).TrimEnd()
+    p.Caption <- string(line[5]).TrimEnd()
+    p.TypeSessionUser <- string(line[6]).TrimEnd()
 
     p
 
@@ -4558,9 +4558,9 @@ let PROJECTTxSqlServer =
 let db__pTABLE(line:Object[]): pTABLE =
     let p = pTABLE_empty()
 
-    p.Name <- string(line.[4]).TrimEnd()
-    p.Desc <- string(line.[5]).TrimEnd()
-    p.Project <- if Convert.IsDBNull(line.[6]) then 0L else line.[6] :?> int64
+    p.Name <- string(line[4]).TrimEnd()
+    p.Desc <- string(line[5]).TrimEnd()
+    p.Project <- if Convert.IsDBNull(line[6]) then 0L else line[6] :?> int64
 
     p
 
@@ -4656,9 +4656,9 @@ let TABLETxSqlServer =
 let db__pCOMP(line:Object[]): pCOMP =
     let p = pCOMP_empty()
 
-    p.Name <- string(line.[4]).TrimEnd()
-    p.Caption <- string(line.[5]).TrimEnd()
-    p.Project <- if Convert.IsDBNull(line.[6]) then 0L else line.[6] :?> int64
+    p.Name <- string(line[4]).TrimEnd()
+    p.Caption <- string(line[5]).TrimEnd()
+    p.Project <- if Convert.IsDBNull(line[6]) then 0L else line[6] :?> int64
 
     p
 
@@ -4754,14 +4754,14 @@ let COMPTxSqlServer =
 let db__pPAGE(line:Object[]): pPAGE =
     let p = pPAGE_empty()
 
-    p.Name <- string(line.[4]).TrimEnd()
-    p.Caption <- string(line.[5]).TrimEnd()
-    p.Route <- string(line.[6]).TrimEnd()
-    p.OgTitle <- string(line.[7]).TrimEnd()
-    p.OgDesc <- string(line.[8]).TrimEnd()
-    p.OgImage <- string(line.[9]).TrimEnd()
-    p.Template <- if Convert.IsDBNull(line.[10]) then 0L else line.[10] :?> int64
-    p.Project <- if Convert.IsDBNull(line.[11]) then 0L else line.[11] :?> int64
+    p.Name <- string(line[4]).TrimEnd()
+    p.Caption <- string(line[5]).TrimEnd()
+    p.Route <- string(line[6]).TrimEnd()
+    p.OgTitle <- string(line[7]).TrimEnd()
+    p.OgDesc <- string(line[8]).TrimEnd()
+    p.OgImage <- string(line[9]).TrimEnd()
+    p.Template <- if Convert.IsDBNull(line[10]) then 0L else line[10] :?> int64
+    p.Project <- if Convert.IsDBNull(line[11]) then 0L else line[11] :?> int64
 
     p
 
@@ -4877,9 +4877,9 @@ let PAGETxSqlServer =
 let db__pTEMPLATE(line:Object[]): pTEMPLATE =
     let p = pTEMPLATE_empty()
 
-    p.Name <- string(line.[4]).TrimEnd()
-    p.Caption <- string(line.[5]).TrimEnd()
-    p.Project <- if Convert.IsDBNull(line.[6]) then 0L else line.[6] :?> int64
+    p.Name <- string(line[4]).TrimEnd()
+    p.Caption <- string(line[5]).TrimEnd()
+    p.Project <- if Convert.IsDBNull(line[6]) then 0L else line[6] :?> int64
 
     p
 
@@ -4975,12 +4975,12 @@ let TEMPLATETxSqlServer =
 let db__pVARTYPE(line:Object[]): pVARTYPE =
     let p = pVARTYPE_empty()
 
-    p.Name <- string(line.[4]).TrimEnd()
-    p.Type <- string(line.[5]).TrimEnd()
-    p.Val <- string(line.[6]).TrimEnd()
-    p.BindType <- EnumOfValue(if Convert.IsDBNull(line.[7]) then 0 else line.[7] :?> int)
-    p.Bind <- if Convert.IsDBNull(line.[8]) then 0L else line.[8] :?> int64
-    p.Project <- if Convert.IsDBNull(line.[9]) then 0L else line.[9] :?> int64
+    p.Name <- string(line[4]).TrimEnd()
+    p.Type <- string(line[5]).TrimEnd()
+    p.Val <- string(line[6]).TrimEnd()
+    p.BindType <- EnumOfValue(if Convert.IsDBNull(line[7]) then 0 else line[7] :?> int)
+    p.Bind <- if Convert.IsDBNull(line[8]) then 0L else line[8] :?> int64
+    p.Project <- if Convert.IsDBNull(line[9]) then 0L else line[9] :?> int64
 
     p
 

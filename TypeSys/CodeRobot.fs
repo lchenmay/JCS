@@ -591,7 +591,7 @@ let buildTableMor om (t:Table) (fieldNames:string[],fields) =
         let sort,name,def,json = t.fields[fieldNames[i]]
         "p." + name + " <- " |> om.w.newlineIndent 1
 
-        let item = "line.[" + (i + 4).ToString() + "]"
+        let item = "line[" + (i + 4).ToString() + "]"
 
         match def with
         | FK v -> "if Convert.IsDBNull(" + item + ") then 0L else " + item + " :?> int64"
@@ -599,7 +599,7 @@ let buildTableMor om (t:Table) (fieldNames:string[],fields) =
         | Chars v -> "string(" + item + ").TrimEnd()"
         | Link v -> "string(" + item + ").TrimEnd()"
         | Text -> "string(" + item + ").TrimEnd()"
-        | Bin -> item + " :?> byte[]"
+        | Bin -> "if Convert.IsDBNull(" + item + ") then [| |] else " + item + " :?> byte[]"
         | Integer -> "if Convert.IsDBNull(" + item + ") then 0L else " + item + " :?> int64"
         | Float -> "if Convert.IsDBNull(" + item + ") then 0.0 else " + item + " :?> float"
         | Boolean -> "if Convert.IsDBNull(" + item + ") then false else " + item + " :?> bool"

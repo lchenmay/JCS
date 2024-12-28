@@ -170,8 +170,8 @@ let fdef__tbin table l field =
 
         let bytes() = 
             [|  ""
-                "p." + name + ".Length |> BitConverter.GetBytes |> bb.append"
-                "p." + name + " |> bb.append" |]
+                "marshall.int32__bin (bb) (p." + name + ".length)"
+                "bb.append(p." + name + ")" |]
             |> t__bin.AddRange
 
         let float() = 
@@ -294,7 +294,11 @@ let fdef__bint table l field =
             |> bin__t.AddRange
 
         let bytes() = 
-            [|  "p." + name + ".Length |> BitConverter.GetBytes |> bb.append" |]
+            [|  ""
+                "let length" + name + " = binCommon.bin__int32(bi)"
+                "p." + name + " = bi.bin.slice(bi.index,length" + name + ")"
+                "bi.index += length" + name + ""
+                "" |]
             |> bin__t.AddRange
 
         let float() = 
