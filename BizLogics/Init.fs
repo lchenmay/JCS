@@ -44,6 +44,46 @@ let init (runtime:Runtime) =
 
     let loader metadata = loadAll runtime.output conn metadata
 
+    (fun (i:EU) -> runtime.users[i.ID] <- {
+        eu = i })
+    |> loadAll runtime.output conn EU_metadata
+
+    let users = runtime.users.Values |> Seq.toArray
+    match users |> Array.tryFind(fun i -> i.eu.p.AuthType = euAuthTypeEnum.Admin) with
+    | Some rcd -> ()
+    | None -> 
+        match createEU "sa" euAuthTypeEnum.Admin with
+        | Some rcd -> runtime.users[rcd.ID] <- { eu = rcd }
+        | None -> halt runtime.output ("BizLogics.Init.createEU") ""
+
+    (fun (i:FILE) -> runtime.data.files[i.ID] <- i)
+    |> loadAll runtime.output conn FILE_metadata
+
+    let fbxs = 
+        let res = new List<FBindComplex>()
+        (fun (i:FBIND) -> res.Add {
+            file = runtime.data.files[i.p.File]
+            fbind = i })
+        |> loadAll runtime.output conn FBIND_metadata
+        res.ToArray()
+
+    let moments = 
+        let res = new List<MOMENT>()
+        (fun (i:MOMENT) -> res.Add i)
+        |> loadAll runtime.output conn MOMENT_metadata
+        res.ToArray()
+
+    moments
+    |> Array.iter(fun m -> 
+        runtime.data.mxs[m.ID] <- {
+            fbxs = 
+                fbxs
+                |> Array.filter(fun i -> i.fbind.p.Moment = m.ID)
+            m = m })
+
+    (fun (i:BOOK) -> runtime.data.books.Add i)
+    |> loadAll runtime.output conn BOOK_metadata
+
     (fun (i:PROJECT) -> runtime.data.projectxs[i.ID] <- i |> project__ProjectComplex) |> loader PROJECT_metadata
     (fun (i:HOSTCONFIG) -> runtime.data.projectxs[i.p.Project].hostconfigs[i.p.Hostname] <- i) |> loader HOSTCONFIG_metadata
     runtime.data.projectxs.Values

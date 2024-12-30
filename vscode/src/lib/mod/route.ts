@@ -1,53 +1,20 @@
-import * as runtime from '~/lib/store/runtime'
-import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
-import * as hosts from '~/lib/store/host'
-import originalRoutes from '~/generatedRoutes'
+import { createMemoryHistory, createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
 
-export const addTrailingSlash = () => {
-  const currentPath = window.location.pathname;
-  if (!currentPath.endsWith('/')) {
-    const newPath = currentPath + '/';
-    history.pushState(null, '', newPath);
-  }
-}
+import Index from '~/pages/JCS.vue'
+import Moments from '~/pages/Public/Moments.vue'
+import Moment from '~/pages/Public/Moment.vue'
 
+import Admin from '~/pages/Admin.vue'
 
-const updateRouteb = (originalRoutes: RouteRecordRaw[]) => (routeToUpdate: string): RouteRecordRaw[] => {
-  const regex = new RegExp(`^/${routeToUpdate}(\/|$)`);
-  const newRouteArray = originalRoutes.map((item: any) => ({ ...item }));
-  for (let i = 0; i < newRouteArray.length; i++) {
-    if (regex.test(newRouteArray[i].path)) {
-      newRouteArray[i].path = newRouteArray[i].path.replace(regex, '/');
-    }
-  }
-  return newRouteArray;
-}
+const routes = [
+  { path: '/', component: Index },
+  { path: '/moments', component: Moments },
+  { path: '/m/:id', component: Moment },
 
-const updateRoute = updateRouteb(originalRoutes)
-
-
-const initRoutes = (): RouteRecordRaw[] => {
-  switch (true) {
-    default:
-      return updateRoute('jcs')
-  }
-}
-
-const routes = initRoutes()
+  { path: '/admin', component: Admin }
+]
 
 export const router = createRouter({
-  history: createWebHistory('/'),
-  scrollBehavior: (to, from, savePosition) => {
-    if (savePosition) { return savePosition } else { return { top: 0 } }
-  },
+  history: createMemoryHistory(),
   routes
 })
-
-router.beforeEach(async (to: any, from: any, next) => {
-  next()
-})
-
-router.afterEach((to, from) => {
-  // console.log(to)
-})
-

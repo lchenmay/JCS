@@ -12,9 +12,9 @@ runtime.host = host
 runtime.session = "" + localStorage.getItem("runtime.session")
 let localUser = localStorage.getItem("runtime.user")
 if(localUser)
-  runtime.user = JSON.parse(localUser) as [].[]
+  runtime.user = JSON.parse(localUser) as jcs.EuComplex
 else
-  runtime.user = glib.Mor.jcs.EuComplex_empty()_empty()
+  runtime.user = glib.Mor.jcs.EuComplex_empty()
 glib.runtime.createGlobalWatcher()
 
 

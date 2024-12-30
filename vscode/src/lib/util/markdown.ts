@@ -232,12 +232,12 @@ const compile_md = (p: string[]) => {
           html += `<table>${temp}</table>`
           break
         }
-        // case '$$':
-        //   i++
-        //   while (i < len && !re6.test(p[i])) {
-        //     temp += escape_html(p[i])
-        //     i++
-        //   }
+        case '$$':
+           i++
+           while (i < len && !re6.test(p[i])) {
+             temp += escape_html(p[i])
+             i++
+        }
 
         //   html += `<p>${katex.renderToString(temp, { throwOnError: false })}</p>`
         //   break
@@ -263,6 +263,55 @@ const compile_md = (p: string[]) => {
 }
 
 export const markdown__html = (str: string) => {
+
+  let res = ""
+
+  let lines = str.split(/\r?\n/)
+  for (let i = 0, len = lines.length; i < len; i++) {
+    let line = lines[i]
+    let html = ""
+
+    line.matchAll(/\$.+?\$/g).forEach((item) => {
+        let s = item + ""
+        let tex = encodeURI(s.substring(1,s.length - 1))
+        let img = "<img src='http://latex.codecogs.com/gif.latex?" + tex +"'>"
+        line = line.replace(s,img)        
+    })
+    
+    line.matchAll(/\!\[.+?\]\(.+?\)/g).forEach((item) => {
+      let s = item + ""
+      let txt = s.match(/\[.+?\]/) + ""
+      if(txt.length >= 2)
+        txt = txt.substring(1,txt.length - 1)
+      let src = s.match(/\(.+?\)/) + ""
+      if(src.length >= 2)
+        src = src.substring(1,src.length - 1)
+      let img = "<br><img src='" + src + "' alt='" + txt + "'><br>"
+      line = line.replace(s,img)        
+    })
+
+    line.matchAll(/\[.+?\]\(.+?\)/g).forEach((item) => {
+      let s = item + ""
+      let txt = s.match(/\[.+?\]/) + ""
+      if(txt.length >= 2)
+        txt = txt.substring(1,txt.length - 1)
+      let src = s.match(/\(.+?\)/) + ""
+      if(src.length >= 2)
+        src = src.substring(1,src.length - 1)
+      let a = "<a href='" + src + "' target='_blank'>" + txt + "</a>"
+      line = line.replace(s,a)        
+    })
+
+
+    html = "<div>" + line + "</div>"
+
+    res += html
+  }
+
+  return res
+}
+
+export const markdown__html_ = (str: string) => {
   if (!str) str=""
   try {
     const p: any[] = str.split(/\r?\n/)

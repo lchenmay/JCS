@@ -274,10 +274,10 @@ export const markdown__html = (str: string) => {
     line.matchAll(/\$.+?\$/g).forEach((item) => {
         let s = item + ""
         let tex = encodeURI(s.substring(1,s.length - 1))
-        let img = "<img src='http://latex.codecogs.com/gif.latex?" + tex +"'>"
+        let img = "<img class='img-inline' src='http://latex.codecogs.com/gif.latex?" + tex +"'>"
         line = line.replace(s,img)        
     })
-    
+
     line.matchAll(/\!\[.+?\]\(.+?\)/g).forEach((item) => {
       let s = item + ""
       let txt = s.match(/\[.+?\]/) + ""
@@ -286,7 +286,7 @@ export const markdown__html = (str: string) => {
       let src = s.match(/\(.+?\)/) + ""
       if(src.length >= 2)
         src = src.substring(1,src.length - 1)
-      let img = "<img src='" + src + "' alt='" + txt + "'>"
+      let img = "<br><img src='" + src + "' alt='" + txt + "'><br>"
       line = line.replace(s,img)        
     })
 
@@ -301,9 +301,26 @@ export const markdown__html = (str: string) => {
       let a = "<a href='" + src + "' target='_blank'>" + txt + "</a>"
       line = line.replace(s,a)        
     })
-
-
-    html = "<p>" + line + "</p>"
+        
+    line.matchAll(/\*\*.*?\*\*/g).forEach((item) => {
+      let s = item + ""
+      let txt = s.substring(2,s.length - 2)
+      let b = "<b>" + txt +"</b>"
+      line = line.replace(s,b)        
+    })
+  
+    if(line.startsWith("##### "))
+      html = "<div class='caption-5'>" + line.substring(6,line.length) + "</div>"
+    else if(line.startsWith("#### "))
+      html = "<div class='caption-4'>" + line.substring(5,line.length) + "</div>"
+    else if(line.startsWith("### "))
+      html = "<div class='caption-3'>" + line.substring(4,line.length) + "</div>"
+    else if(line.startsWith("## "))
+        html = "<div class='caption-2'>" + line.substring(3,line.length) + "</div>"
+    else if(line.startsWith("# "))
+      html = "<div class='caption-1'>" + line.substring(2,line.length) + "</div>"
+    else
+      html = "<div>" + line + "</div>"
 
     res += html
   }

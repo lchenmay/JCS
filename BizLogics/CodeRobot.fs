@@ -190,8 +190,9 @@ let runProject projectx =
     buildComps projectx hostconfig
     buildPages projectx hostconfig
 
+    let ns = projectx.project.p.Code.ToLower()
+
     (fun (src:string) -> 
-        let ns = projectx.project.p.Code.ToLower()
         let mutable res = src
         res <- res.Replace("var clientRuntime: [].ClientRuntime","var clientRuntime: " + ns + ".ClientRuntime")
         res <- res.Replace("user: [].[]","user: " + ns + "." + projectx.project.p.TypeSessionUser)
@@ -200,7 +201,6 @@ let runProject projectx =
     |> changeFile(hostconfig.p.DirVsCodeWeb + "/src/types/main.d.ts")
 
     (fun (src:string) -> 
-        let ns = projectx.project.p.Code.ToLower()
         let mutable res = src
         res <- res.Replace("JSON.parse(localUser) as [].[]","JSON.parse(localUser) as " + ns + "." + projectx.project.p.TypeSessionUser)
         res <- res.Replace("runtime.user = glib.Mor.[]_empty()","runtime.user = glib.Mor." + ns + "." + projectx.project.p.TypeSessionUser + "_empty()")
@@ -208,7 +208,6 @@ let runProject projectx =
     |> changeFile(hostconfig.p.DirVsCodeWeb + "/src/main.ts")
 
     (fun (src:string) -> 
-        let ns = projectx.project.p.Code.ToLower()
         src.Replace("[]: { ...cm, ...om }",ns + ": { ...cm, ...om }"))
     |> changeFile(hostconfig.p.DirVsCodeWeb + "/src/lib/glib.ts")
     
@@ -218,9 +217,9 @@ let run() =
     BizLogics.Init.init runtime
 
     [|  
+        234346L // JCS
         234351L // FA
         234352L // JA
-        234346L // JCS
         234347L // Game
         234348L // J
         234350L // Studio

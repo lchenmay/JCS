@@ -3,6 +3,18 @@ import { RouteRecordRaw } from 'vue-router';
 
   const routes: Array<RouteRecordRaw> = [
     {
+      path: '//Admin',
+      component: ()=>import ( "/src/layouts/jcs.vue" ),
+      meta: {"layout":"jcs"},
+      children: [{
+        path: "",
+        name: '-Admin',
+        component:()=> import("~/pages//Admin.vue"),
+        meta: {"layout":"jcs"},
+        props: true
+      }]
+    },
+    {
       path: '/CodeRobot/Project',
       component: ()=>import ( "/src/layouts/jcs.vue" ),
       meta: {"layout":"jcs"},
@@ -147,6 +159,18 @@ import { RouteRecordRaw } from 'vue-router';
       }]
     },
     {
+      path: '//JCS',
+      component: ()=>import ( "/src/layouts/jcs.vue" ),
+      meta: {"layout":"jcs"},
+      children: [{
+        path: "",
+        name: '-JCS',
+        component:()=> import("~/pages//JCS.vue"),
+        meta: {"layout":"jcs"},
+        props: true
+      }]
+    },
+    {
       path: '/Public/HomePage',
       component: ()=>import ( "/src/layouts/jcs.vue" ),
       meta: {"layout":"jcs"},
@@ -154,6 +178,30 @@ import { RouteRecordRaw } from 'vue-router';
         path: "",
         name: 'Public-HomePage',
         component:()=> import("~/pages/Public/HomePage.vue"),
+        meta: {"layout":"jcs"},
+        props: true
+      }]
+    },
+    {
+      path: '/Public/Moment',
+      component: ()=>import ( "/src/layouts/jcs.vue" ),
+      meta: {"layout":"jcs"},
+      children: [{
+        path: "",
+        name: 'Public-Moment',
+        component:()=> import("~/pages/Public/Moment.vue"),
+        meta: {"layout":"jcs"},
+        props: true
+      }]
+    },
+    {
+      path: '/Public/Moments',
+      component: ()=>import ( "/src/layouts/jcs.vue" ),
+      meta: {"layout":"jcs"},
+      children: [{
+        path: "",
+        name: 'Public-Moments',
+        component:()=> import("~/pages/Public/Moments.vue"),
         meta: {"layout":"jcs"},
         props: true
       }]
