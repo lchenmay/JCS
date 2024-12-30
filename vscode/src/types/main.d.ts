@@ -6,7 +6,7 @@ declare global {
     }
     namespace globalThis {
         var host: Host
-        var clientRuntime: j7.ClientRuntime
+        var clientRuntime: jcs.ClientRuntime
         var runtime: Runtime
         var panelrt: { showpanel: boolean }
     }

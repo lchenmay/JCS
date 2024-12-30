@@ -192,13 +192,16 @@ let runProject projectx =
 
     (fun (src:string) -> 
         let ns = projectx.project.p.Code.ToLower()
-        let mutable res = src.Replace("user: [].[]","user: " + ns + "." + projectx.project.p.TypeSessionUser)
+        let mutable res = src
+        res <- res.Replace("var clientRuntime: [].ClientRuntime","var clientRuntime: " + ns + ".ClientRuntime")
+        res <- res.Replace("user: [].[]","user: " + ns + "." + projectx.project.p.TypeSessionUser)
         res <- res.Replace("data: [].ClientRuntime","data: " + ns + ".ClientRuntime")
         res)
     |> changeFile(hostconfig.p.DirVsCodeWeb + "/src/types/main.d.ts")
 
     (fun (src:string) -> 
         let ns = projectx.project.p.Code.ToLower()
+        let mutable s = src
         src.Replace("runtime.user = glib.Mor.[]","runtime.user = glib.Mor." + ns + "." + projectx.project.p.TypeSessionUser + "_empty()"))
     |> changeFile(hostconfig.p.DirVsCodeWeb + "/src/main.ts")
 
@@ -206,13 +209,16 @@ let runProject projectx =
         let ns = projectx.project.p.Code.ToLower()
         src.Replace("[]: { ...cm, ...om }",ns + ": { ...cm, ...om }"))
     |> changeFile(hostconfig.p.DirVsCodeWeb + "/src/lib/glib.ts")
-
+    
 
 let run() =
 
     BizLogics.Init.init runtime
 
-    [|  234346L // JCS
+    [|  
+        234351L // FA
+        234352L // JA
+        234346L // JCS
         234347L // Game
         234348L // J
         234350L // Studio
