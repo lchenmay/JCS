@@ -9,8 +9,12 @@ globalThis.clientRuntime = glib.vue.reactive(ClientRuntime_empty())
 globalThis.runtime = glib.vue.reactive(glib.runtime.prepRuntime())
 runtime.host = host
 
-runtime.user = glib.Mor.jcs.EuComplex_empty()
-
+runtime.session = "" + localStorage.getItem("runtime.session")
+let localUser = localStorage.getItem("runtime.user")
+if(localUser)
+  runtime.user = JSON.parse(localUser) as [].[]
+else
+  runtime.user = glib.Mor.jcs.EuComplex_empty()_empty()
 glib.runtime.createGlobalWatcher()
 
 

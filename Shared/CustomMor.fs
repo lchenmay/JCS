@@ -89,6 +89,167 @@ let EuComplex_clone src =
     EuComplex__bin bb src
     bin__EuComplex (bb.bytes(),ref 0)
 
+// [FBindComplex] Structure
+
+let FBindComplex_empty(): FBindComplex =
+    {
+        file = { ID = 0L; Sort = 0L; Createdat = DateTime.MinValue; Updatedat = DateTime.MinValue; p = pFILE_empty() }
+        fbind = { ID = 0L; Sort = 0L; Createdat = DateTime.MinValue; Updatedat = DateTime.MinValue; p = pFBIND_empty() }
+    }
+
+let FBindComplex__bin (bb:BytesBuilder) (v:FBindComplex) =
+
+    FILE__bin bb v.file
+    FBIND__bin bb v.fbind
+
+let bin__FBindComplex (bi:BinIndexed):FBindComplex =
+    let bin,index = bi
+
+    {
+        file = 
+            bi
+            |> bin__FILE
+        fbind = 
+            bi
+            |> bin__FBIND
+    }
+
+let FBindComplex__json (v:FBindComplex) =
+
+    [|  ("file",FILE__json v.file)
+        ("fbind",FBIND__json v.fbind)
+         |]
+    |> Json.Braket
+
+let FBindComplex__jsonTbw (w:TextBlockWriter) (v:FBindComplex) =
+    json__str w (FBindComplex__json v)
+
+let FBindComplex__jsonStr (v:FBindComplex) =
+    (FBindComplex__json v) |> json__strFinal
+
+
+let json__FBindComplexo (json:Json):FBindComplex option =
+    let fields = json |> json__items
+
+    let mutable passOptions = true
+
+    let fileo =
+        match json__tryFindByName json "file" with
+        | None ->
+            passOptions <- false
+            None
+        | Some v -> 
+            match v |> json__FILEo with
+            | Some res -> Some res
+            | None ->
+                passOptions <- false
+                None
+
+    let fbindo =
+        match json__tryFindByName json "fbind" with
+        | None ->
+            passOptions <- false
+            None
+        | Some v -> 
+            match v |> json__FBINDo with
+            | Some res -> Some res
+            | None ->
+                passOptions <- false
+                None
+
+    if passOptions then
+        ({
+            file = fileo.Value
+            fbind = fbindo.Value }:FBindComplex) |> Some
+    else
+        None
+
+let FBindComplex_clone src =
+    let bb = new BytesBuilder()
+    FBindComplex__bin bb src
+    bin__FBindComplex (bb.bytes(),ref 0)
+
+// [MomentComplex] Structure
+
+let MomentComplex_empty(): MomentComplex =
+    {
+        fbxs = [| |]
+        m = { ID = 0L; Sort = 0L; Createdat = DateTime.MinValue; Updatedat = DateTime.MinValue; p = pMOMENT_empty() }
+    }
+
+let MomentComplex__bin (bb:BytesBuilder) (v:MomentComplex) =
+
+    
+    array__bin (FBindComplex__bin) bb v.fbxs
+    MOMENT__bin bb v.m
+
+let bin__MomentComplex (bi:BinIndexed):MomentComplex =
+    let bin,index = bi
+
+    {
+        fbxs = 
+            bi
+            |> bin__array (bin__FBindComplex)
+        m = 
+            bi
+            |> bin__MOMENT
+    }
+
+let MomentComplex__json (v:MomentComplex) =
+
+    [|  ("fbxs",array__json (FBindComplex__json) v.fbxs)
+        ("m",MOMENT__json v.m)
+         |]
+    |> Json.Braket
+
+let MomentComplex__jsonTbw (w:TextBlockWriter) (v:MomentComplex) =
+    json__str w (MomentComplex__json v)
+
+let MomentComplex__jsonStr (v:MomentComplex) =
+    (MomentComplex__json v) |> json__strFinal
+
+
+let json__MomentComplexo (json:Json):MomentComplex option =
+    let fields = json |> json__items
+
+    let mutable passOptions = true
+
+    let fbxso =
+        match json__tryFindByName json "fbxs" with
+        | None ->
+            passOptions <- false
+            None
+        | Some v -> 
+            match v |> json__arrayo (json__FBindComplexo) with
+            | Some res -> Some res
+            | None ->
+                passOptions <- false
+                None
+
+    let mo =
+        match json__tryFindByName json "m" with
+        | None ->
+            passOptions <- false
+            None
+        | Some v -> 
+            match v |> json__MOMENTo with
+            | Some res -> Some res
+            | None ->
+                passOptions <- false
+                None
+
+    if passOptions then
+        ({
+            fbxs = fbxso.Value
+            m = mo.Value }:MomentComplex) |> Some
+    else
+        None
+
+let MomentComplex_clone src =
+    let bb = new BytesBuilder()
+    MomentComplex__bin bb src
+    bin__MomentComplex (bb.bytes(),ref 0)
+
 // [TableComplex] Structure
 
 let TableComplex_empty(): TableComplex =
@@ -711,6 +872,9 @@ let RuntimeData_empty(): RuntimeData =
     {
         facts = []
         projectxs = ModDict_empty()
+        files = ModDict_empty()
+        mxs = ModDict_empty()
+        books = new List<BOOK>()
     }
 
 let RuntimeData__bin (bb:BytesBuilder) (v:RuntimeData) =
@@ -719,6 +883,12 @@ let RuntimeData__bin (bb:BytesBuilder) (v:RuntimeData) =
     ListImmutable__bin (Fact__bin) bb v.facts
     
     ModDictInt64__bin (ProjectComplex__bin) bb v.projectxs
+    
+    ModDictInt64__bin (FILE__bin) bb v.files
+    
+    ModDictInt64__bin (MomentComplex__bin) bb v.mxs
+    
+    List__bin (BOOK__bin) bb v.books
 
 let bin__RuntimeData (bi:BinIndexed):RuntimeData =
     let bin,index = bi
@@ -730,12 +900,24 @@ let bin__RuntimeData (bi:BinIndexed):RuntimeData =
         projectxs = 
             bi
             |> bin__ModDictInt64(bin__ProjectComplex)
+        files = 
+            bi
+            |> bin__ModDictInt64(bin__FILE)
+        mxs = 
+            bi
+            |> bin__ModDictInt64(bin__MomentComplex)
+        books = 
+            bi
+            |> bin__List (bin__BOOK)
     }
 
 let RuntimeData__json (v:RuntimeData) =
 
     [|  ("facts",ListImmutable__json (Fact__json) v.facts)
         ("projectxs",ModDictInt64__json (ProjectComplex__json) v.projectxs)
+        ("files",ModDictInt64__json (FILE__json) v.files)
+        ("mxs",ModDictInt64__json (MomentComplex__json) v.mxs)
+        ("books",List__json (BOOK__json) v.books)
          |]
     |> Json.Braket
 
@@ -775,10 +957,49 @@ let json__RuntimeDatao (json:Json):RuntimeData option =
                 passOptions <- false
                 None
 
+    let fileso =
+        match json__tryFindByName json "files" with
+        | None ->
+            passOptions <- false
+            None
+        | Some v -> 
+            match v |> (fun json ->json__ModDictInt64o (json__FILEo) (new Dictionary<int64,FILE>()) json) with
+            | Some res -> Some res
+            | None ->
+                passOptions <- false
+                None
+
+    let mxso =
+        match json__tryFindByName json "mxs" with
+        | None ->
+            passOptions <- false
+            None
+        | Some v -> 
+            match v |> (fun json ->json__ModDictInt64o (json__MomentComplexo) (new Dictionary<int64,MomentComplex>()) json) with
+            | Some res -> Some res
+            | None ->
+                passOptions <- false
+                None
+
+    let bookso =
+        match json__tryFindByName json "books" with
+        | None ->
+            passOptions <- false
+            None
+        | Some v -> 
+            match v |> json__Listo (json__BOOKo) with
+            | Some res -> Some res
+            | None ->
+                passOptions <- false
+                None
+
     if passOptions then
         ({
             facts = factso.Value
-            projectxs = projectxso.Value }:RuntimeData) |> Some
+            projectxs = projectxso.Value
+            files = fileso.Value
+            mxs = mxso.Value
+            books = bookso.Value }:RuntimeData) |> Some
     else
         None
 

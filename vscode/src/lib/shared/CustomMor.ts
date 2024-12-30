@@ -45,6 +45,53 @@ export const bin__EuComplex = (bi:BinIndexed):jcs.EuComplex => {
     }
 }
 
+// [FBindComplex] Structure
+
+export const FBindComplex_empty = (): jcs.FBindComplex => { 
+    return {
+        file: { id: 0, sort: 0, createdat: new Date(), updatedat: new Date(), p: marshall.pFILE_empty() },
+        fbind: { id: 0, sort: 0, createdat: new Date(), updatedat: new Date(), p: marshall.pFBIND_empty() },
+    } as jcs.FBindComplex
+}
+
+export const FBindComplex__bin = (bb:BytesBuilder) => (v:any) => {
+
+    marshall.FILE__bin (bb) (v.file)
+    marshall.FBIND__bin (bb) (v.fbind)
+}
+
+export const bin__FBindComplex = (bi:BinIndexed):jcs.FBindComplex => {
+
+    return {
+        file: marshall.bin__FILE (bi),
+        fbind: marshall.bin__FBIND (bi),
+    }
+}
+
+// [MomentComplex] Structure
+
+export const MomentComplex_empty = (): jcs.MomentComplex => { 
+    return {
+        fbxs: [],
+        m: { id: 0, sort: 0, createdat: new Date(), updatedat: new Date(), p: marshall.pMOMENT_empty() },
+    } as jcs.MomentComplex
+}
+
+export const MomentComplex__bin = (bb:BytesBuilder) => (v:any) => {
+
+    
+    marshall.array__bin (FBindComplex__bin) (bb) (v.fbxs)
+    marshall.MOMENT__bin (bb) (v.m)
+}
+
+export const bin__MomentComplex = (bi:BinIndexed):jcs.MomentComplex => {
+
+    return {
+        fbxs: marshall.bin__array (bin__FBindComplex) (bi),
+        m: marshall.bin__MOMENT (bi),
+    }
+}
+
 // [TableComplex] Structure
 
 export const TableComplex_empty = (): jcs.TableComplex => { 
@@ -231,6 +278,9 @@ export const RuntimeData_empty = (): jcs.RuntimeData => {
     return {
         facts: [],
         projectxs: {},
+        files: {},
+        mxs: {},
+        books: [],
     } as jcs.RuntimeData
 }
 
@@ -240,6 +290,12 @@ export const RuntimeData__bin = (bb:BytesBuilder) => (v:any) => {
     marshall.array__bin (Fact__bin) (bb) (v.facts)
     
     marshall.dict__bin (marshall.int64__bin)(ProjectComplex__bin) (bb) (v.projectxs)
+    
+    marshall.dict__bin (marshall.int64__bin)(marshall.FILE__bin) (bb) (v.files)
+    
+    marshall.dict__bin (marshall.int64__bin)(MomentComplex__bin) (bb) (v.mxs)
+    
+    marshall.array__bin (marshall.BOOK__bin) (bb) (v.books)
 }
 
 export const bin__RuntimeData = (bi:BinIndexed):jcs.RuntimeData => {
@@ -247,6 +303,9 @@ export const bin__RuntimeData = (bi:BinIndexed):jcs.RuntimeData => {
     return {
         facts: marshall.bin__array (bin__Fact) (bi),
         projectxs: marshall.bin__dict(marshall.bin__int64)(bin__ProjectComplex) (bi),
+        files: marshall.bin__dict(marshall.bin__int64)(marshall.bin__FILE) (bi),
+        mxs: marshall.bin__dict(marshall.bin__int64)(bin__MomentComplex) (bi),
+        books: marshall.bin__array (marshall.bin__BOOK) (bi),
     }
 }
 

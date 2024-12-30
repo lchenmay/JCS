@@ -1,6 +1,7 @@
 ﻿module BizLogics.Db
 
 open System
+open System.IO
 open System.Threading
 open System.Text
 open System.Collections.Generic
@@ -31,6 +32,73 @@ let creator metadata populate =
     let p = metadata.empty__p()
     populate p
     p__createRcd p metadata metadata.table conn
+
+
+let createEU caption auth = 
+    (fun (p:pEU) -> 
+        p.Caption <- caption
+        p.AuthType <- auth) 
+    |> creator EU_metadata
+
+let createFILE id (owner,caption,suffix,desc) = 
+
+    let p = FILE_metadata.empty__p()
+    p.Caption <- caption
+    p.Owner <- owner
+    p.Suffix <- suffix
+    p.Desc <- desc
+    
+    let pretx = None |> opctx__pretx
+
+    let rcd = 
+        p
+        |> id__CreateTx id pretx FILE_metadata
+
+    if pretx |> loggedPipeline "BizLogics.Db" conn then
+        Some rcd
+    else
+        None
+
+
+let buildfilename id (suffix:string) =
+    let f = 
+        if suffix.Length > 0 then
+            id.ToString() + "." + suffix
+        else
+            id.ToString()
+    Path.Combine(runtime.host.fsDir,"managed",f)
+
+
+let w = 100
+let h = 100
+
+let checkFileThumbnail (file:FILE) = 
+
+    if file.p.Thumbnail.Length = 0 then
+        match file.p.Suffix with
+        | "jpg" | "jpeg" | "png" ->
+            
+            let filename = buildfilename file.ID file.p.Suffix
+            if File.Exists filename then
+                try
+                    let bin = 
+                        File.ReadAllBytes filename
+                        |> Util.SixLaborsImageSharp.generateThumbnail (w,h)
+
+                    file.p.Thumbnail <- bin
+
+                    if  update 
+                            "BizLogics.Db.checkFileThumbnail" conn FILE_metadata 
+                            (file.ID,file.p) = false then
+                        file.p.Thumbnail <- [| |]
+
+                with
+                | ex -> ()
+
+        | _ -> ()
+    file
+
+
 
 let tryCU localizor creator updator ps = 
     match localizor ps with

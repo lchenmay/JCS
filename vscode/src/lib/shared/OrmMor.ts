@@ -4,76 +4,40 @@ import * as binCommon from '~/lib/util/bin'
 const marshall = {...binCommon }
 
 
-// [ADDRESS] Structure
+// [BOOK] Structure
 
 
-export const pADDRESS__bin = (bb:BytesBuilder) => (p:jcs.pADDRESS) => {
+export const pBOOK__bin = (bb:BytesBuilder) => (p:jcs.pBOOK) => {
 
     
     marshall.str__bin (bb) (p.Caption)
-    
-    marshall.int64__bin (bb) (p.Bind)
-    
-    marshall.int32__bin (bb) (p.AddressType)
-    
-    marshall.str__bin (bb) (p.Line1)
-    
-    marshall.str__bin (bb) (p.Line2)
-    
-    marshall.str__bin (bb) (p.State)
-    
-    marshall.str__bin (bb) (p.County)
-    
-    marshall.str__bin (bb) (p.Town)
-    
-    marshall.str__bin (bb) (p.Contact)
-    
-    marshall.str__bin (bb) (p.Tel)
     
     marshall.str__bin (bb) (p.Email)
     
-    marshall.str__bin (bb) (p.Zip)
-    
-    marshall.int64__bin (bb) (p.City)
-    
-    marshall.int64__bin (bb) (p.Country)
-    
-    marshall.str__bin (bb) (p.Remarks)
+    marshall.str__bin (bb) (p.Message)
 }
 
-export const ADDRESS__bin = (bb:BytesBuilder) => (v:jcs.ADDRESS) => {
+export const BOOK__bin = (bb:BytesBuilder) => (v:jcs.BOOK) => {
     marshall.int64__bin (bb) (v.id)
     marshall.int64__bin (bb) (v.sort)
     marshall.DateTime__bin (bb) (v.createdat)
     marshall.DateTime__bin (bb) (v.updatedat)
 
-    pADDRESS__bin (bb) (v.p)
+    pBOOK__bin (bb) (v.p)
 }
 
-export const bin__pADDRESS = (bi:BinIndexed):jcs.pADDRESS => {
+export const bin__pBOOK = (bi:BinIndexed):jcs.pBOOK => {
 
-    let p = pADDRESS_empty()
+    let p = pBOOK_empty()
     p.Caption = marshall.bin__str (bi)
-    p.Bind = marshall.bin__int64 (bi)
-    p.AddressType = marshall.bin__int32 (bi)
-    p.Line1 = marshall.bin__str (bi)
-    p.Line2 = marshall.bin__str (bi)
-    p.State = marshall.bin__str (bi)
-    p.County = marshall.bin__str (bi)
-    p.Town = marshall.bin__str (bi)
-    p.Contact = marshall.bin__str (bi)
-    p.Tel = marshall.bin__str (bi)
     p.Email = marshall.bin__str (bi)
-    p.Zip = marshall.bin__str (bi)
-    p.City = marshall.bin__int64 (bi)
-    p.Country = marshall.bin__int64 (bi)
-    p.Remarks = marshall.bin__str (bi)
+    p.Message = marshall.bin__str (bi)
 
     return p
 }
 
 
-export const bin__ADDRESS = (bi:BinIndexed):jcs.ADDRESS => {
+export const bin__BOOK = (bi:BinIndexed):jcs.BOOK => {
 
     let ID = marshall.bin__int64 (bi)
     let Sort = marshall.bin__int64 (bi)
@@ -85,269 +49,7 @@ export const bin__ADDRESS = (bi:BinIndexed):jcs.ADDRESS => {
         sort: Sort,
         createdat: Createdat,
         updatedat: Updatedat,
-        p:  bin__pADDRESS (bi)
-    }
-}
-
-// [BIZ] Structure
-
-
-export const pBIZ__bin = (bb:BytesBuilder) => (p:jcs.pBIZ) => {
-
-    
-    marshall.str__bin (bb) (p.Code)
-    
-    marshall.str__bin (bb) (p.Caption)
-    
-    marshall.int64__bin (bb) (p.Parent)
-    
-    marshall.int64__bin (bb) (p.BasicAcct)
-    
-    marshall.str__bin (bb) (p.DescTxt)
-    
-    marshall.str__bin (bb) (p.Website)
-    
-    marshall.str__bin (bb) (p.Icon)
-    
-    marshall.int64__bin (bb) (p.City)
-    
-    marshall.int64__bin (bb) (p.Country)
-    
-    marshall.int64__bin (bb) (p.Lang)
-    
-    marshall.bool__bin (bb) (p.IsSocialPlatform)
-    
-    marshall.bool__bin (bb) (p.IsCmsSource)
-    
-    marshall.bool__bin (bb) (p.IsPayGateway)
-}
-
-export const BIZ__bin = (bb:BytesBuilder) => (v:jcs.BIZ) => {
-    marshall.int64__bin (bb) (v.id)
-    marshall.int64__bin (bb) (v.sort)
-    marshall.DateTime__bin (bb) (v.createdat)
-    marshall.DateTime__bin (bb) (v.updatedat)
-
-    pBIZ__bin (bb) (v.p)
-}
-
-export const bin__pBIZ = (bi:BinIndexed):jcs.pBIZ => {
-
-    let p = pBIZ_empty()
-    p.Code = marshall.bin__str (bi)
-    p.Caption = marshall.bin__str (bi)
-    p.Parent = marshall.bin__int64 (bi)
-    p.BasicAcct = marshall.bin__int64 (bi)
-    p.DescTxt = marshall.bin__str (bi)
-    p.Website = marshall.bin__str (bi)
-    p.Icon = marshall.bin__str (bi)
-    p.City = marshall.bin__int64 (bi)
-    p.Country = marshall.bin__int64 (bi)
-    p.Lang = marshall.bin__int64 (bi)
-    p.IsSocialPlatform = marshall.bin__bool (bi)
-    p.IsCmsSource = marshall.bin__bool (bi)
-    p.IsPayGateway = marshall.bin__bool (bi)
-
-    return p
-}
-
-
-export const bin__BIZ = (bi:BinIndexed):jcs.BIZ => {
-
-    let ID = marshall.bin__int64 (bi)
-    let Sort = marshall.bin__int64 (bi)
-    let Createdat = marshall.bin__DateTime (bi)
-    let Updatedat = marshall.bin__DateTime (bi)
-    
-    return {
-        id: ID,
-        sort: Sort,
-        createdat: Createdat,
-        updatedat: Updatedat,
-        p:  bin__pBIZ (bi)
-    }
-}
-
-// [CAT] Structure
-
-
-export const pCAT__bin = (bb:BytesBuilder) => (p:jcs.pCAT) => {
-
-    
-    marshall.str__bin (bb) (p.Caption)
-    
-    marshall.int64__bin (bb) (p.Lang)
-    
-    marshall.int64__bin (bb) (p.Zh)
-    
-    marshall.int64__bin (bb) (p.Parent)
-    
-    marshall.int32__bin (bb) (p.CatState)
-}
-
-export const CAT__bin = (bb:BytesBuilder) => (v:jcs.CAT) => {
-    marshall.int64__bin (bb) (v.id)
-    marshall.int64__bin (bb) (v.sort)
-    marshall.DateTime__bin (bb) (v.createdat)
-    marshall.DateTime__bin (bb) (v.updatedat)
-
-    pCAT__bin (bb) (v.p)
-}
-
-export const bin__pCAT = (bi:BinIndexed):jcs.pCAT => {
-
-    let p = pCAT_empty()
-    p.Caption = marshall.bin__str (bi)
-    p.Lang = marshall.bin__int64 (bi)
-    p.Zh = marshall.bin__int64 (bi)
-    p.Parent = marshall.bin__int64 (bi)
-    p.CatState = marshall.bin__int32 (bi)
-
-    return p
-}
-
-
-export const bin__CAT = (bi:BinIndexed):jcs.CAT => {
-
-    let ID = marshall.bin__int64 (bi)
-    let Sort = marshall.bin__int64 (bi)
-    let Createdat = marshall.bin__DateTime (bi)
-    let Updatedat = marshall.bin__DateTime (bi)
-    
-    return {
-        id: ID,
-        sort: Sort,
-        createdat: Createdat,
-        updatedat: Updatedat,
-        p:  bin__pCAT (bi)
-    }
-}
-
-// [CITY] Structure
-
-
-export const pCITY__bin = (bb:BytesBuilder) => (p:jcs.pCITY) => {
-
-    
-    marshall.str__bin (bb) (p.Fullname)
-    
-    marshall.str__bin (bb) (p.MetropolitanCode3IATA)
-    
-    marshall.str__bin (bb) (p.NameEn)
-    
-    marshall.int64__bin (bb) (p.Country)
-    
-    marshall.int64__bin (bb) (p.Place)
-    
-    marshall.str__bin (bb) (p.Icon)
-    
-    marshall.str__bin (bb) (p.Tel)
-}
-
-export const CITY__bin = (bb:BytesBuilder) => (v:jcs.CITY) => {
-    marshall.int64__bin (bb) (v.id)
-    marshall.int64__bin (bb) (v.sort)
-    marshall.DateTime__bin (bb) (v.createdat)
-    marshall.DateTime__bin (bb) (v.updatedat)
-
-    pCITY__bin (bb) (v.p)
-}
-
-export const bin__pCITY = (bi:BinIndexed):jcs.pCITY => {
-
-    let p = pCITY_empty()
-    p.Fullname = marshall.bin__str (bi)
-    p.MetropolitanCode3IATA = marshall.bin__str (bi)
-    p.NameEn = marshall.bin__str (bi)
-    p.Country = marshall.bin__int64 (bi)
-    p.Place = marshall.bin__int64 (bi)
-    p.Icon = marshall.bin__str (bi)
-    p.Tel = marshall.bin__str (bi)
-
-    return p
-}
-
-
-export const bin__CITY = (bi:BinIndexed):jcs.CITY => {
-
-    let ID = marshall.bin__int64 (bi)
-    let Sort = marshall.bin__int64 (bi)
-    let Createdat = marshall.bin__DateTime (bi)
-    let Updatedat = marshall.bin__DateTime (bi)
-    
-    return {
-        id: ID,
-        sort: Sort,
-        createdat: Createdat,
-        updatedat: Updatedat,
-        p:  bin__pCITY (bi)
-    }
-}
-
-// [CRY] Structure
-
-
-export const pCRY__bin = (bb:BytesBuilder) => (p:jcs.pCRY) => {
-
-    
-    marshall.str__bin (bb) (p.Code2)
-    
-    marshall.str__bin (bb) (p.Caption)
-    
-    marshall.str__bin (bb) (p.Fullname)
-    
-    marshall.str__bin (bb) (p.Icon)
-    
-    marshall.str__bin (bb) (p.Tel)
-    
-    marshall.int64__bin (bb) (p.Cur)
-    
-    marshall.int64__bin (bb) (p.Capital)
-    
-    marshall.int64__bin (bb) (p.Place)
-    
-    marshall.int64__bin (bb) (p.Lang)
-}
-
-export const CRY__bin = (bb:BytesBuilder) => (v:jcs.CRY) => {
-    marshall.int64__bin (bb) (v.id)
-    marshall.int64__bin (bb) (v.sort)
-    marshall.DateTime__bin (bb) (v.createdat)
-    marshall.DateTime__bin (bb) (v.updatedat)
-
-    pCRY__bin (bb) (v.p)
-}
-
-export const bin__pCRY = (bi:BinIndexed):jcs.pCRY => {
-
-    let p = pCRY_empty()
-    p.Code2 = marshall.bin__str (bi)
-    p.Caption = marshall.bin__str (bi)
-    p.Fullname = marshall.bin__str (bi)
-    p.Icon = marshall.bin__str (bi)
-    p.Tel = marshall.bin__str (bi)
-    p.Cur = marshall.bin__int64 (bi)
-    p.Capital = marshall.bin__int64 (bi)
-    p.Place = marshall.bin__int64 (bi)
-    p.Lang = marshall.bin__int64 (bi)
-
-    return p
-}
-
-
-export const bin__CRY = (bi:BinIndexed):jcs.CRY => {
-
-    let ID = marshall.bin__int64 (bi)
-    let Sort = marshall.bin__int64 (bi)
-    let Createdat = marshall.bin__DateTime (bi)
-    let Updatedat = marshall.bin__DateTime (bi)
-    
-    return {
-        id: ID,
-        sort: Sort,
-        createdat: Createdat,
-        updatedat: Updatedat,
-        p:  bin__pCRY (bi)
+        p:  bin__pBOOK (bi)
     }
 }
 
@@ -359,49 +61,7 @@ export const pEU__bin = (bb:BytesBuilder) => (p:jcs.pEU) => {
     
     marshall.str__bin (bb) (p.Caption)
     
-    marshall.str__bin (bb) (p.Username)
-    
-    marshall.int64__bin (bb) (p.SocialAuthBiz)
-    
-    marshall.str__bin (bb) (p.SocialAuthId)
-    
-    marshall.str__bin (bb) (p.SocialAuthAvatar)
-    
-    marshall.str__bin (bb) (p.Email)
-    
-    marshall.str__bin (bb) (p.Tel)
-    
-    marshall.int32__bin (bb) (p.Gender)
-    
-    marshall.int32__bin (bb) (p.Status)
-    
-    marshall.int32__bin (bb) (p.Admin)
-    
-    marshall.int32__bin (bb) (p.BizPartner)
-    
-    marshall.int64__bin (bb) (p.Privilege)
-    
-    marshall.int32__bin (bb) (p.Verify)
-    
-    marshall.str__bin (bb) (p.Pwd)
-    
-    marshall.bool__bin (bb) (p.Online)
-    
-    marshall.str__bin (bb) (p.Icon)
-    
-    marshall.str__bin (bb) (p.Background)
-    
-    marshall.int64__bin (bb) (p.BasicAcct)
-    
-    marshall.int64__bin (bb) (p.Citizen)
-    
-    marshall.str__bin (bb) (p.Refer)
-    
-    marshall.int64__bin (bb) (p.Referer)
-    
-    marshall.str__bin (bb) (p.Url)
-    
-    marshall.str__bin (bb) (p.About)
+    marshall.int32__bin (bb) (p.AuthType)
 }
 
 export const EU__bin = (bb:BytesBuilder) => (v:jcs.EU) => {
@@ -417,28 +77,7 @@ export const bin__pEU = (bi:BinIndexed):jcs.pEU => {
 
     let p = pEU_empty()
     p.Caption = marshall.bin__str (bi)
-    p.Username = marshall.bin__str (bi)
-    p.SocialAuthBiz = marshall.bin__int64 (bi)
-    p.SocialAuthId = marshall.bin__str (bi)
-    p.SocialAuthAvatar = marshall.bin__str (bi)
-    p.Email = marshall.bin__str (bi)
-    p.Tel = marshall.bin__str (bi)
-    p.Gender = marshall.bin__int32 (bi)
-    p.Status = marshall.bin__int32 (bi)
-    p.Admin = marshall.bin__int32 (bi)
-    p.BizPartner = marshall.bin__int32 (bi)
-    p.Privilege = marshall.bin__int64 (bi)
-    p.Verify = marshall.bin__int32 (bi)
-    p.Pwd = marshall.bin__str (bi)
-    p.Online = marshall.bin__bool (bi)
-    p.Icon = marshall.bin__str (bi)
-    p.Background = marshall.bin__str (bi)
-    p.BasicAcct = marshall.bin__int64 (bi)
-    p.Citizen = marshall.bin__int64 (bi)
-    p.Refer = marshall.bin__str (bi)
-    p.Referer = marshall.bin__int64 (bi)
-    p.Url = marshall.bin__str (bi)
-    p.About = marshall.bin__str (bi)
+    p.AuthType = marshall.bin__int32 (bi)
 
     return p
 }
@@ -460,98 +99,54 @@ export const bin__EU = (bi:BinIndexed):jcs.EU => {
     }
 }
 
-// [CSI] Structure
+// [FILE] Structure
 
 
-export const pCSI__bin = (bb:BytesBuilder) => (p:jcs.pCSI) => {
-
-    
-    marshall.int32__bin (bb) (p.Type)
-    
-    marshall.int64__bin (bb) (p.Lang)
-    
-    marshall.int64__bin (bb) (p.Bind)
-}
-
-export const CSI__bin = (bb:BytesBuilder) => (v:jcs.CSI) => {
-    marshall.int64__bin (bb) (v.id)
-    marshall.int64__bin (bb) (v.sort)
-    marshall.DateTime__bin (bb) (v.createdat)
-    marshall.DateTime__bin (bb) (v.updatedat)
-
-    pCSI__bin (bb) (v.p)
-}
-
-export const bin__pCSI = (bi:BinIndexed):jcs.pCSI => {
-
-    let p = pCSI_empty()
-    p.Type = marshall.bin__int32 (bi)
-    p.Lang = marshall.bin__int64 (bi)
-    p.Bind = marshall.bin__int64 (bi)
-
-    return p
-}
-
-
-export const bin__CSI = (bi:BinIndexed):jcs.CSI => {
-
-    let ID = marshall.bin__int64 (bi)
-    let Sort = marshall.bin__int64 (bi)
-    let Createdat = marshall.bin__DateTime (bi)
-    let Updatedat = marshall.bin__DateTime (bi)
-    
-    return {
-        id: ID,
-        sort: Sort,
-        createdat: Createdat,
-        updatedat: Updatedat,
-        p:  bin__pCSI (bi)
-    }
-}
-
-// [CWC] Structure
-
-
-export const pCWC__bin = (bb:BytesBuilder) => (p:jcs.pCWC) => {
+export const pFILE__bin = (bb:BytesBuilder) => (p:jcs.pFILE) => {
 
     
     marshall.str__bin (bb) (p.Caption)
     
-    marshall.int64__bin (bb) (p.ExternalId)
+    marshall.str__bin (bb) (p.Desc)
     
-    marshall.str__bin (bb) (p.Icon)
+    marshall.str__bin (bb) (p.Suffix)
     
-    marshall.int64__bin (bb) (p.EU)
+    marshall.int64__bin (bb) (p.Size)
     
-    marshall.int64__bin (bb) (p.Biz)
+    marshall.int32__bin (bb) (p.Thumbnail.length)
+    bb.append(p.Thumbnail)
     
-    marshall.str__bin (bb) (p.Json)
+    marshall.int64__bin (bb) (p.Owner)
 }
 
-export const CWC__bin = (bb:BytesBuilder) => (v:jcs.CWC) => {
+export const FILE__bin = (bb:BytesBuilder) => (v:jcs.FILE) => {
     marshall.int64__bin (bb) (v.id)
     marshall.int64__bin (bb) (v.sort)
     marshall.DateTime__bin (bb) (v.createdat)
     marshall.DateTime__bin (bb) (v.updatedat)
 
-    pCWC__bin (bb) (v.p)
+    pFILE__bin (bb) (v.p)
 }
 
-export const bin__pCWC = (bi:BinIndexed):jcs.pCWC => {
+export const bin__pFILE = (bi:BinIndexed):jcs.pFILE => {
 
-    let p = pCWC_empty()
+    let p = pFILE_empty()
     p.Caption = marshall.bin__str (bi)
-    p.ExternalId = marshall.bin__int64 (bi)
-    p.Icon = marshall.bin__str (bi)
-    p.EU = marshall.bin__int64 (bi)
-    p.Biz = marshall.bin__int64 (bi)
-    p.Json = marshall.bin__str (bi)
+    p.Desc = marshall.bin__str (bi)
+    p.Suffix = marshall.bin__str (bi)
+    p.Size = marshall.bin__int64 (bi)
+    
+    let lengthThumbnail = binCommon.bin__int32(bi)
+    p.Thumbnail = bi.bin.slice(bi.index,lengthThumbnail)
+    bi.index += lengthThumbnail
+    
+    p.Owner = marshall.bin__int64 (bi)
 
     return p
 }
 
 
-export const bin__CWC = (bi:BinIndexed):jcs.CWC => {
+export const bin__FILE = (bi:BinIndexed):jcs.FILE => {
 
     let ID = marshall.bin__int64 (bi)
     let Sort = marshall.bin__int64 (bi)
@@ -563,7 +158,215 @@ export const bin__CWC = (bi:BinIndexed):jcs.CWC => {
         sort: Sort,
         createdat: Createdat,
         updatedat: Updatedat,
-        p:  bin__pCWC (bi)
+        p:  bin__pFILE (bi)
+    }
+}
+
+// [FBIND] Structure
+
+
+export const pFBIND__bin = (bb:BytesBuilder) => (p:jcs.pFBIND) => {
+
+    
+    marshall.int64__bin (bb) (p.File)
+    
+    marshall.int64__bin (bb) (p.Moment)
+    
+    marshall.str__bin (bb) (p.Desc)
+}
+
+export const FBIND__bin = (bb:BytesBuilder) => (v:jcs.FBIND) => {
+    marshall.int64__bin (bb) (v.id)
+    marshall.int64__bin (bb) (v.sort)
+    marshall.DateTime__bin (bb) (v.createdat)
+    marshall.DateTime__bin (bb) (v.updatedat)
+
+    pFBIND__bin (bb) (v.p)
+}
+
+export const bin__pFBIND = (bi:BinIndexed):jcs.pFBIND => {
+
+    let p = pFBIND_empty()
+    p.File = marshall.bin__int64 (bi)
+    p.Moment = marshall.bin__int64 (bi)
+    p.Desc = marshall.bin__str (bi)
+
+    return p
+}
+
+
+export const bin__FBIND = (bi:BinIndexed):jcs.FBIND => {
+
+    let ID = marshall.bin__int64 (bi)
+    let Sort = marshall.bin__int64 (bi)
+    let Createdat = marshall.bin__DateTime (bi)
+    let Updatedat = marshall.bin__DateTime (bi)
+    
+    return {
+        id: ID,
+        sort: Sort,
+        createdat: Createdat,
+        updatedat: Updatedat,
+        p:  bin__pFBIND (bi)
+    }
+}
+
+// [MOMENT] Structure
+
+
+export const pMOMENT__bin = (bb:BytesBuilder) => (p:jcs.pMOMENT) => {
+
+    
+    marshall.str__bin (bb) (p.Title)
+    
+    marshall.str__bin (bb) (p.Summary)
+    
+    marshall.str__bin (bb) (p.FullText)
+    
+    marshall.str__bin (bb) (p.PreviewImgUrl)
+    
+    marshall.str__bin (bb) (p.Link)
+    
+    marshall.int32__bin (bb) (p.Type)
+    
+    marshall.int32__bin (bb) (p.State)
+    
+    marshall.int32__bin (bb) (p.MediaType)
+}
+
+export const MOMENT__bin = (bb:BytesBuilder) => (v:jcs.MOMENT) => {
+    marshall.int64__bin (bb) (v.id)
+    marshall.int64__bin (bb) (v.sort)
+    marshall.DateTime__bin (bb) (v.createdat)
+    marshall.DateTime__bin (bb) (v.updatedat)
+
+    pMOMENT__bin (bb) (v.p)
+}
+
+export const bin__pMOMENT = (bi:BinIndexed):jcs.pMOMENT => {
+
+    let p = pMOMENT_empty()
+    p.Title = marshall.bin__str (bi)
+    p.Summary = marshall.bin__str (bi)
+    p.FullText = marshall.bin__str (bi)
+    p.PreviewImgUrl = marshall.bin__str (bi)
+    p.Link = marshall.bin__str (bi)
+    p.Type = marshall.bin__int32 (bi)
+    p.State = marshall.bin__int32 (bi)
+    p.MediaType = marshall.bin__int32 (bi)
+
+    return p
+}
+
+
+export const bin__MOMENT = (bi:BinIndexed):jcs.MOMENT => {
+
+    let ID = marshall.bin__int64 (bi)
+    let Sort = marshall.bin__int64 (bi)
+    let Createdat = marshall.bin__DateTime (bi)
+    let Updatedat = marshall.bin__DateTime (bi)
+    
+    return {
+        id: ID,
+        sort: Sort,
+        createdat: Createdat,
+        updatedat: Updatedat,
+        p:  bin__pMOMENT (bi)
+    }
+}
+
+// [LOG] Structure
+
+
+export const pLOG__bin = (bb:BytesBuilder) => (p:jcs.pLOG) => {
+
+    
+    marshall.str__bin (bb) (p.Location)
+    
+    marshall.str__bin (bb) (p.Content)
+    
+    marshall.str__bin (bb) (p.Sql)
+}
+
+export const LOG__bin = (bb:BytesBuilder) => (v:jcs.LOG) => {
+    marshall.int64__bin (bb) (v.id)
+    marshall.int64__bin (bb) (v.sort)
+    marshall.DateTime__bin (bb) (v.createdat)
+    marshall.DateTime__bin (bb) (v.updatedat)
+
+    pLOG__bin (bb) (v.p)
+}
+
+export const bin__pLOG = (bi:BinIndexed):jcs.pLOG => {
+
+    let p = pLOG_empty()
+    p.Location = marshall.bin__str (bi)
+    p.Content = marshall.bin__str (bi)
+    p.Sql = marshall.bin__str (bi)
+
+    return p
+}
+
+
+export const bin__LOG = (bi:BinIndexed):jcs.LOG => {
+
+    let ID = marshall.bin__int64 (bi)
+    let Sort = marshall.bin__int64 (bi)
+    let Createdat = marshall.bin__DateTime (bi)
+    let Updatedat = marshall.bin__DateTime (bi)
+    
+    return {
+        id: ID,
+        sort: Sort,
+        createdat: Createdat,
+        updatedat: Updatedat,
+        p:  bin__pLOG (bi)
+    }
+}
+
+// [PLOG] Structure
+
+
+export const pPLOG__bin = (bb:BytesBuilder) => (p:jcs.pPLOG) => {
+
+    
+    marshall.str__bin (bb) (p.Ip)
+    
+    marshall.str__bin (bb) (p.Request)
+}
+
+export const PLOG__bin = (bb:BytesBuilder) => (v:jcs.PLOG) => {
+    marshall.int64__bin (bb) (v.id)
+    marshall.int64__bin (bb) (v.sort)
+    marshall.DateTime__bin (bb) (v.createdat)
+    marshall.DateTime__bin (bb) (v.updatedat)
+
+    pPLOG__bin (bb) (v.p)
+}
+
+export const bin__pPLOG = (bi:BinIndexed):jcs.pPLOG => {
+
+    let p = pPLOG_empty()
+    p.Ip = marshall.bin__str (bi)
+    p.Request = marshall.bin__str (bi)
+
+    return p
+}
+
+
+export const bin__PLOG = (bi:BinIndexed):jcs.PLOG => {
+
+    let ID = marshall.bin__int64 (bi)
+    let Sort = marshall.bin__int64 (bi)
+    let Createdat = marshall.bin__DateTime (bi)
+    let Updatedat = marshall.bin__DateTime (bi)
+    
+    return {
+        id: ID,
+        sort: Sort,
+        createdat: Createdat,
+        updatedat: Updatedat,
+        p:  bin__pPLOG (bi)
     }
 }
 
@@ -1052,170 +855,30 @@ export const bin__VARTYPE = (bi:BinIndexed):jcs.VARTYPE => {
         p:  bin__pVARTYPE (bi)
     }
 }
-export const addressAddressTypeEnum_Default = 0 // 默认
-export const addressAddressTypeEnum_Biz = 1 // 机构
-export const addressAddressTypeEnum_EndUser = 2 // 用户
-
-export const pADDRESS_empty = (): jcs.pADDRESS => {
+export const pBOOK_empty = (): jcs.pBOOK => {
     return {
         Caption: "",
-        Bind: 0,
-        AddressType: 0,
-        Line1: "",
-        Line2: "",
-        State: "",
-        County: "",
-        Town: "",
-        Contact: "",
-        Tel: "",
         Email: "",
-        Zip: "",
-        City: 0,
-        Country: 0,
-        Remarks: "" }
+        Message: "" }
 }
 
-export const ADDRESS_empty = (): jcs.ADDRESS => {
+export const BOOK_empty = (): jcs.BOOK => {
     return {
         id: 0,
         createdat: new Date(),
         updatedat: new Date(),
         sort: 0,
-        p: pADDRESS_empty() }
+        p: pBOOK_empty() }
 }
 
-export const pBIZ_empty = (): jcs.pBIZ => {
-    return {
-        Code: "",
-        Caption: "",
-        Parent: 0,
-        BasicAcct: 0,
-        DescTxt: "",
-        Website: "",
-        Icon: "",
-        City: 0,
-        Country: 0,
-        Lang: 0,
-        IsSocialPlatform: true,
-        IsCmsSource: true,
-        IsPayGateway: true }
-}
-
-export const BIZ_empty = (): jcs.BIZ => {
-    return {
-        id: 0,
-        createdat: new Date(),
-        updatedat: new Date(),
-        sort: 0,
-        p: pBIZ_empty() }
-}
-
-export const catCatStateEnum_Normal = 0 // 正常
-export const catCatStateEnum_Hidden = 1 // 隐藏
-export const catCatStateEnum_Obsolete = 2 // 过时
-
-export const pCAT_empty = (): jcs.pCAT => {
-    return {
-        Caption: "",
-        Lang: 0,
-        Zh: 0,
-        Parent: 0,
-        CatState: 0 }
-}
-
-export const CAT_empty = (): jcs.CAT => {
-    return {
-        id: 0,
-        createdat: new Date(),
-        updatedat: new Date(),
-        sort: 0,
-        p: pCAT_empty() }
-}
-
-export const pCITY_empty = (): jcs.pCITY => {
-    return {
-        Fullname: "",
-        MetropolitanCode3IATA: "",
-        NameEn: "",
-        Country: 0,
-        Place: 0,
-        Icon: "",
-        Tel: "" }
-}
-
-export const CITY_empty = (): jcs.CITY => {
-    return {
-        id: 0,
-        createdat: new Date(),
-        updatedat: new Date(),
-        sort: 0,
-        p: pCITY_empty() }
-}
-
-export const pCRY_empty = (): jcs.pCRY => {
-    return {
-        Code2: "",
-        Caption: "",
-        Fullname: "",
-        Icon: "",
-        Tel: "",
-        Cur: 0,
-        Capital: 0,
-        Place: 0,
-        Lang: 0 }
-}
-
-export const CRY_empty = (): jcs.CRY => {
-    return {
-        id: 0,
-        createdat: new Date(),
-        updatedat: new Date(),
-        sort: 0,
-        p: pCRY_empty() }
-}
-
-export const euGenderEnum_Unknown = 0 // 未知
-export const euGenderEnum_Male = 1 // 男
-export const euGenderEnum_Female = 2 // 女
-
-export const euStatusEnum_Normal = 0 // 正常
-export const euStatusEnum_Frozen = 1 // 冻结
-export const euStatusEnum_Terminated = 2 // 注销
-
-export const euAdminEnum_None = 0 // 无
-export const euAdminEnum_Admin = 1 // 管理员
-
-export const euBizPartnerEnum_None = 0 // None
-export const euBizPartnerEnum_Partner = 1 // 
-
-export const euVerifyEnum_Normal = 0 // 常规
-export const euVerifyEnum_Verified = 1 // 认证
+export const euAuthTypeEnum_Normal = 0 // Normal
+export const euAuthTypeEnum_Authorized = 1 // Authorized
+export const euAuthTypeEnum_Admin = 2 // Admin
 
 export const pEU_empty = (): jcs.pEU => {
     return {
         Caption: "",
-        Username: "",
-        SocialAuthBiz: 0,
-        SocialAuthId: "",
-        SocialAuthAvatar: "",
-        Email: "",
-        Tel: "",
-        Gender: 0,
-        Status: 0,
-        Admin: 0,
-        BizPartner: 0,
-        Privilege: 0,
-        Verify: 0,
-        Pwd: "",
-        Online: true,
-        Icon: "",
-        Background: "",
-        BasicAcct: 0,
-        Citizen: 0,
-        Refer: "",
-        Referer: 0,
-        Url: "",
-        About: "" }
+        AuthType: 0 }
 }
 
 export const EU_empty = (): jcs.EU => {
@@ -1227,44 +890,112 @@ export const EU_empty = (): jcs.EU => {
         p: pEU_empty() }
 }
 
-export const csiTypeEnum_Normal = 0 // 常规
-export const csiTypeEnum_ToplinesGlobalNews = 1 // 全站新闻置顶
-export const csiTypeEnum_ToplinesGlobalPerson = 2 // 全站人物置顶
-export const csiTypeEnum_ToplinesGlobalEvent = 3 // 全站事件置顶
-
-export const pCSI_empty = (): jcs.pCSI => {
-    return {
-        Type: 0,
-        Lang: 0,
-        Bind: 0 }
-}
-
-export const CSI_empty = (): jcs.CSI => {
-    return {
-        id: 0,
-        createdat: new Date(),
-        updatedat: new Date(),
-        sort: 0,
-        p: pCSI_empty() }
-}
-
-export const pCWC_empty = (): jcs.pCWC => {
+export const pFILE_empty = (): jcs.pFILE => {
     return {
         Caption: "",
-        ExternalId: 0,
-        Icon: "",
-        EU: 0,
-        Biz: 0,
-        Json: "" }
+        Desc: "",
+        Suffix: "",
+        Size: 0,
+        Thumbnail: [],
+        Owner: 0 }
 }
 
-export const CWC_empty = (): jcs.CWC => {
+export const FILE_empty = (): jcs.FILE => {
     return {
         id: 0,
         createdat: new Date(),
         updatedat: new Date(),
         sort: 0,
-        p: pCWC_empty() }
+        p: pFILE_empty() }
+}
+
+export const pFBIND_empty = (): jcs.pFBIND => {
+    return {
+        File: 0,
+        Moment: 0,
+        Desc: "" }
+}
+
+export const FBIND_empty = (): jcs.FBIND => {
+    return {
+        id: 0,
+        createdat: new Date(),
+        updatedat: new Date(),
+        sort: 0,
+        p: pFBIND_empty() }
+}
+
+export const momentTypeEnum_Original = 0 // 原创图文视频
+export const momentTypeEnum_Repost = 1 // 转发
+export const momentTypeEnum_Thread = 2 // 文章
+export const momentTypeEnum_Forum = 3 // 论坛
+export const momentTypeEnum_Question = 4 // 问题
+export const momentTypeEnum_Answer = 5 // 回答
+export const momentTypeEnum_BookmarkList = 6 // 收藏夹
+export const momentTypeEnum_Poll = 7 // 投票
+export const momentTypeEnum_Miles = 8 // 文贵直播文字版
+export const momentTypeEnum_Dict = 9 // 辞典
+export const momentTypeEnum_WebPage = 10 // 页面
+export const momentTypeEnum_MediaFile = 11 // 媒体文件
+
+export const momentStateEnum_Normal = 0 // 正常
+export const momentStateEnum_Deleted = 1 // 标记删除
+export const momentStateEnum_Scratch = 2 // 草稿
+
+export const momentMediaTypeEnum_None = 0 // 无
+export const momentMediaTypeEnum_Video = 1 // 视频
+export const momentMediaTypeEnum_Audio = 2 // 音频
+
+export const pMOMENT_empty = (): jcs.pMOMENT => {
+    return {
+        Title: "",
+        Summary: "",
+        FullText: "",
+        PreviewImgUrl: "",
+        Link: "",
+        Type: 0,
+        State: 0,
+        MediaType: 0 }
+}
+
+export const MOMENT_empty = (): jcs.MOMENT => {
+    return {
+        id: 0,
+        createdat: new Date(),
+        updatedat: new Date(),
+        sort: 0,
+        p: pMOMENT_empty() }
+}
+
+export const pLOG_empty = (): jcs.pLOG => {
+    return {
+        Location: "",
+        Content: "",
+        Sql: "" }
+}
+
+export const LOG_empty = (): jcs.LOG => {
+    return {
+        id: 0,
+        createdat: new Date(),
+        updatedat: new Date(),
+        sort: 0,
+        p: pLOG_empty() }
+}
+
+export const pPLOG_empty = (): jcs.pPLOG => {
+    return {
+        Ip: "",
+        Request: "" }
+}
+
+export const PLOG_empty = (): jcs.PLOG => {
+    return {
+        id: 0,
+        createdat: new Date(),
+        updatedat: new Date(),
+        sort: 0,
+        p: pPLOG_empty() }
 }
 
 export const pAPI_empty = (): jcs.pAPI => {

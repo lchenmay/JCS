@@ -29,147 +29,55 @@ open Util.Bin
 open Shared.OrmTypes
 open Shared.Types
 
-// [ADDRESS] Structure
+// [BOOK] Structure
 
 
-let pADDRESS__bin (bb:BytesBuilder) (p:pADDRESS) =
+let pBOOK__bin (bb:BytesBuilder) (p:pBOOK) =
 
     
     let binCaption = p.Caption |> Encoding.UTF8.GetBytes
     binCaption.Length |> BitConverter.GetBytes |> bb.append
     binCaption |> bb.append
     
-    p.Bind |> BitConverter.GetBytes |> bb.append
-    
-    p.AddressType |> EnumToValue |> BitConverter.GetBytes |> bb.append
-    
-    let binLine1 = p.Line1 |> Encoding.UTF8.GetBytes
-    binLine1.Length |> BitConverter.GetBytes |> bb.append
-    binLine1 |> bb.append
-    
-    let binLine2 = p.Line2 |> Encoding.UTF8.GetBytes
-    binLine2.Length |> BitConverter.GetBytes |> bb.append
-    binLine2 |> bb.append
-    
-    let binState = p.State |> Encoding.UTF8.GetBytes
-    binState.Length |> BitConverter.GetBytes |> bb.append
-    binState |> bb.append
-    
-    let binCounty = p.County |> Encoding.UTF8.GetBytes
-    binCounty.Length |> BitConverter.GetBytes |> bb.append
-    binCounty |> bb.append
-    
-    let binTown = p.Town |> Encoding.UTF8.GetBytes
-    binTown.Length |> BitConverter.GetBytes |> bb.append
-    binTown |> bb.append
-    
-    let binContact = p.Contact |> Encoding.UTF8.GetBytes
-    binContact.Length |> BitConverter.GetBytes |> bb.append
-    binContact |> bb.append
-    
-    let binTel = p.Tel |> Encoding.UTF8.GetBytes
-    binTel.Length |> BitConverter.GetBytes |> bb.append
-    binTel |> bb.append
-    
     let binEmail = p.Email |> Encoding.UTF8.GetBytes
     binEmail.Length |> BitConverter.GetBytes |> bb.append
     binEmail |> bb.append
     
-    let binZip = p.Zip |> Encoding.UTF8.GetBytes
-    binZip.Length |> BitConverter.GetBytes |> bb.append
-    binZip |> bb.append
-    
-    p.City |> BitConverter.GetBytes |> bb.append
-    
-    p.Country |> BitConverter.GetBytes |> bb.append
-    
-    let binRemarks = p.Remarks |> Encoding.UTF8.GetBytes
-    binRemarks.Length |> BitConverter.GetBytes |> bb.append
-    binRemarks |> bb.append
+    let binMessage = p.Message |> Encoding.UTF8.GetBytes
+    binMessage.Length |> BitConverter.GetBytes |> bb.append
+    binMessage |> bb.append
 
-let ADDRESS__bin (bb:BytesBuilder) (v:ADDRESS) =
+let BOOK__bin (bb:BytesBuilder) (v:BOOK) =
     v.ID |> BitConverter.GetBytes |> bb.append
     v.Sort |> BitConverter.GetBytes |> bb.append
     DateTime__bin bb v.Createdat
     DateTime__bin bb v.Updatedat
     
-    pADDRESS__bin bb v.p
+    pBOOK__bin bb v.p
 
-let bin__pADDRESS (bi:BinIndexed):pADDRESS =
+let bin__pBOOK (bi:BinIndexed):pBOOK =
     let bin,index = bi
 
-    let p = pADDRESS_empty()
+    let p = pBOOK_empty()
     
     let count_Caption = BitConverter.ToInt32(bin,index.Value)
     index.Value <- index.Value + 4
     p.Caption <- Encoding.UTF8.GetString(bin,index.Value,count_Caption)
     index.Value <- index.Value + count_Caption
-    
-    p.Bind <- BitConverter.ToInt64(bin,index.Value)
-    index.Value <- index.Value + 8
-    
-    p.AddressType <- BitConverter.ToInt32(bin,index.Value) |> EnumOfValue
-    index.Value <- index.Value + 4
-    
-    let count_Line1 = BitConverter.ToInt32(bin,index.Value)
-    index.Value <- index.Value + 4
-    p.Line1 <- Encoding.UTF8.GetString(bin,index.Value,count_Line1)
-    index.Value <- index.Value + count_Line1
-    
-    let count_Line2 = BitConverter.ToInt32(bin,index.Value)
-    index.Value <- index.Value + 4
-    p.Line2 <- Encoding.UTF8.GetString(bin,index.Value,count_Line2)
-    index.Value <- index.Value + count_Line2
-    
-    let count_State = BitConverter.ToInt32(bin,index.Value)
-    index.Value <- index.Value + 4
-    p.State <- Encoding.UTF8.GetString(bin,index.Value,count_State)
-    index.Value <- index.Value + count_State
-    
-    let count_County = BitConverter.ToInt32(bin,index.Value)
-    index.Value <- index.Value + 4
-    p.County <- Encoding.UTF8.GetString(bin,index.Value,count_County)
-    index.Value <- index.Value + count_County
-    
-    let count_Town = BitConverter.ToInt32(bin,index.Value)
-    index.Value <- index.Value + 4
-    p.Town <- Encoding.UTF8.GetString(bin,index.Value,count_Town)
-    index.Value <- index.Value + count_Town
-    
-    let count_Contact = BitConverter.ToInt32(bin,index.Value)
-    index.Value <- index.Value + 4
-    p.Contact <- Encoding.UTF8.GetString(bin,index.Value,count_Contact)
-    index.Value <- index.Value + count_Contact
-    
-    let count_Tel = BitConverter.ToInt32(bin,index.Value)
-    index.Value <- index.Value + 4
-    p.Tel <- Encoding.UTF8.GetString(bin,index.Value,count_Tel)
-    index.Value <- index.Value + count_Tel
     
     let count_Email = BitConverter.ToInt32(bin,index.Value)
     index.Value <- index.Value + 4
     p.Email <- Encoding.UTF8.GetString(bin,index.Value,count_Email)
     index.Value <- index.Value + count_Email
     
-    let count_Zip = BitConverter.ToInt32(bin,index.Value)
+    let count_Message = BitConverter.ToInt32(bin,index.Value)
     index.Value <- index.Value + 4
-    p.Zip <- Encoding.UTF8.GetString(bin,index.Value,count_Zip)
-    index.Value <- index.Value + count_Zip
-    
-    p.City <- BitConverter.ToInt64(bin,index.Value)
-    index.Value <- index.Value + 8
-    
-    p.Country <- BitConverter.ToInt64(bin,index.Value)
-    index.Value <- index.Value + 8
-    
-    let count_Remarks = BitConverter.ToInt32(bin,index.Value)
-    index.Value <- index.Value + 4
-    p.Remarks <- Encoding.UTF8.GetString(bin,index.Value,count_Remarks)
-    index.Value <- index.Value + count_Remarks
+    p.Message <- Encoding.UTF8.GetString(bin,index.Value,count_Message)
+    index.Value <- index.Value + count_Message
     
     p
 
-let bin__ADDRESS (bi:BinIndexed):ADDRESS =
+let bin__BOOK (bi:BinIndexed):BOOK =
     let bin,index = bi
 
     let ID = BitConverter.ToInt64(bin,index.Value)
@@ -187,29 +95,17 @@ let bin__ADDRESS (bi:BinIndexed):ADDRESS =
         Sort = Sort
         Createdat = Createdat
         Updatedat = Updatedat
-        p = bin__pADDRESS bi }
+        p = bin__pBOOK bi }
 
-let pADDRESS__json (p:pADDRESS) =
+let pBOOK__json (p:pBOOK) =
 
     [|
         ("Caption",p.Caption |> Json.Str)
-        ("Bind",p.Bind.ToString() |> Json.Num)
-        ("AddressType",(p.AddressType |> EnumToValue).ToString() |> Json.Num)
-        ("Line1",p.Line1 |> Json.Str)
-        ("Line2",p.Line2 |> Json.Str)
-        ("State",p.State |> Json.Str)
-        ("County",p.County |> Json.Str)
-        ("Town",p.Town |> Json.Str)
-        ("Contact",p.Contact |> Json.Str)
-        ("Tel",p.Tel |> Json.Str)
         ("Email",p.Email |> Json.Str)
-        ("Zip",p.Zip |> Json.Str)
-        ("City",p.City.ToString() |> Json.Num)
-        ("Country",p.Country.ToString() |> Json.Num)
-        ("Remarks",p.Remarks |> Json.Str) |]
+        ("Message",p.Message |> Json.Str) |]
     |> Json.Braket
 
-let ADDRESS__json (v:ADDRESS) =
+let BOOK__json (v:BOOK) =
 
     let p = v.p
     
@@ -217,431 +113,31 @@ let ADDRESS__json (v:ADDRESS) =
         ("sort",v.Sort.ToString() |> Json.Num)
         ("createdat",(v.Createdat |> Util.Time.wintime__unixtime).ToString() |> Json.Num)
         ("updatedat",(v.Updatedat |> Util.Time.wintime__unixtime).ToString() |> Json.Num)
-        ("p",pADDRESS__json v.p) |]
+        ("p",pBOOK__json v.p) |]
     |> Json.Braket
 
-let ADDRESS__jsonTbw (w:TextBlockWriter) (v:ADDRESS) =
-    json__str w (ADDRESS__json v)
+let BOOK__jsonTbw (w:TextBlockWriter) (v:BOOK) =
+    json__str w (BOOK__json v)
 
-let ADDRESS__jsonStr (v:ADDRESS) =
-    (ADDRESS__json v) |> json__strFinal
+let BOOK__jsonStr (v:BOOK) =
+    (BOOK__json v) |> json__strFinal
 
 
-let json__pADDRESSo (json:Json):pADDRESS option =
+let json__pBOOKo (json:Json):pBOOK option =
     let fields = json |> json__items
 
-    let p = pADDRESS_empty()
-    
-    p.Caption <- checkfieldz fields "Caption" 256
-    
-    p.Bind <- checkfield fields "Bind" |> parse_int64
-    
-    p.AddressType <- checkfield fields "AddressType" |> parse_int32 |> EnumOfValue
-    
-    p.Line1 <- checkfieldz fields "Line1" 300
-    
-    p.Line2 <- checkfieldz fields "Line2" 300
-    
-    p.State <- checkfieldz fields "State" 16
-    
-    p.County <- checkfieldz fields "County" 16
-    
-    p.Town <- checkfieldz fields "Town" 16
-    
-    p.Contact <- checkfieldz fields "Contact" 64
-    
-    p.Tel <- checkfieldz fields "Tel" 20
-    
-    p.Email <- checkfieldz fields "Email" 256
-    
-    p.Zip <- checkfieldz fields "Zip" 16
-    
-    p.City <- checkfield fields "City" |> parse_int64
-    
-    p.Country <- checkfield fields "Country" |> parse_int64
-    
-    p.Remarks <- checkfield fields "Remarks"
-    
-    p |> Some
-    
-
-let json__ADDRESSo (json:Json):ADDRESS option =
-    let fields = json |> json__items
-
-    let ID = checkfield fields "id" |> parse_int64
-    let Sort = checkfield fields "sort" |> parse_int64
-    let Createdat = checkfield fields "createdat" |> parse_int64 |> DateTime.FromBinary
-    let Updatedat = checkfield fields "updatedat" |> parse_int64 |> DateTime.FromBinary
-    
-    let o  =
-        match
-            json
-            |> tryFindByAtt "p" with
-        | Some (s,v) -> json__pADDRESSo v
-        | None -> None
-    
-    match o with
-    | Some p ->
-        
-        {
-            ID = ID
-            Sort = Sort
-            Createdat = Createdat
-            Updatedat = Updatedat
-            p = p } |> Some
-        
-    | None -> None
-
-let ADDRESS_clone src =
-    let bb = new BytesBuilder()
-    ADDRESS__bin bb src
-    bin__ADDRESS (bb.bytes(),ref 0)
-
-// [BIZ] Structure
-
-
-let pBIZ__bin (bb:BytesBuilder) (p:pBIZ) =
-
-    
-    let binCode = p.Code |> Encoding.UTF8.GetBytes
-    binCode.Length |> BitConverter.GetBytes |> bb.append
-    binCode |> bb.append
-    
-    let binCaption = p.Caption |> Encoding.UTF8.GetBytes
-    binCaption.Length |> BitConverter.GetBytes |> bb.append
-    binCaption |> bb.append
-    
-    p.Parent |> BitConverter.GetBytes |> bb.append
-    
-    p.BasicAcct |> BitConverter.GetBytes |> bb.append
-    
-    let binDescTxt = p.DescTxt |> Encoding.UTF8.GetBytes
-    binDescTxt.Length |> BitConverter.GetBytes |> bb.append
-    binDescTxt |> bb.append
-    
-    let binWebsite = p.Website |> Encoding.UTF8.GetBytes
-    binWebsite.Length |> BitConverter.GetBytes |> bb.append
-    binWebsite |> bb.append
-    
-    let binIcon = p.Icon |> Encoding.UTF8.GetBytes
-    binIcon.Length |> BitConverter.GetBytes |> bb.append
-    binIcon |> bb.append
-    
-    p.City |> BitConverter.GetBytes |> bb.append
-    
-    p.Country |> BitConverter.GetBytes |> bb.append
-    
-    p.Lang |> BitConverter.GetBytes |> bb.append
-    
-    p.IsSocialPlatform |> BitConverter.GetBytes |> bb.append
-    
-    p.IsCmsSource |> BitConverter.GetBytes |> bb.append
-    
-    p.IsPayGateway |> BitConverter.GetBytes |> bb.append
-
-let BIZ__bin (bb:BytesBuilder) (v:BIZ) =
-    v.ID |> BitConverter.GetBytes |> bb.append
-    v.Sort |> BitConverter.GetBytes |> bb.append
-    DateTime__bin bb v.Createdat
-    DateTime__bin bb v.Updatedat
-    
-    pBIZ__bin bb v.p
-
-let bin__pBIZ (bi:BinIndexed):pBIZ =
-    let bin,index = bi
-
-    let p = pBIZ_empty()
-    
-    let count_Code = BitConverter.ToInt32(bin,index.Value)
-    index.Value <- index.Value + 4
-    p.Code <- Encoding.UTF8.GetString(bin,index.Value,count_Code)
-    index.Value <- index.Value + count_Code
-    
-    let count_Caption = BitConverter.ToInt32(bin,index.Value)
-    index.Value <- index.Value + 4
-    p.Caption <- Encoding.UTF8.GetString(bin,index.Value,count_Caption)
-    index.Value <- index.Value + count_Caption
-    
-    p.Parent <- BitConverter.ToInt64(bin,index.Value)
-    index.Value <- index.Value + 8
-    
-    p.BasicAcct <- BitConverter.ToInt64(bin,index.Value)
-    index.Value <- index.Value + 8
-    
-    let count_DescTxt = BitConverter.ToInt32(bin,index.Value)
-    index.Value <- index.Value + 4
-    p.DescTxt <- Encoding.UTF8.GetString(bin,index.Value,count_DescTxt)
-    index.Value <- index.Value + count_DescTxt
-    
-    let count_Website = BitConverter.ToInt32(bin,index.Value)
-    index.Value <- index.Value + 4
-    p.Website <- Encoding.UTF8.GetString(bin,index.Value,count_Website)
-    index.Value <- index.Value + count_Website
-    
-    let count_Icon = BitConverter.ToInt32(bin,index.Value)
-    index.Value <- index.Value + 4
-    p.Icon <- Encoding.UTF8.GetString(bin,index.Value,count_Icon)
-    index.Value <- index.Value + count_Icon
-    
-    p.City <- BitConverter.ToInt64(bin,index.Value)
-    index.Value <- index.Value + 8
-    
-    p.Country <- BitConverter.ToInt64(bin,index.Value)
-    index.Value <- index.Value + 8
-    
-    p.Lang <- BitConverter.ToInt64(bin,index.Value)
-    index.Value <- index.Value + 8
-    
-    p.IsSocialPlatform <- BitConverter.ToBoolean(bin,index.Value)
-    index.Value <- index.Value + 1
-    
-    p.IsCmsSource <- BitConverter.ToBoolean(bin,index.Value)
-    index.Value <- index.Value + 1
-    
-    p.IsPayGateway <- BitConverter.ToBoolean(bin,index.Value)
-    index.Value <- index.Value + 1
-    
-    p
-
-let bin__BIZ (bi:BinIndexed):BIZ =
-    let bin,index = bi
-
-    let ID = BitConverter.ToInt64(bin,index.Value)
-    index.Value <- index.Value + 8
-    
-    let Sort = BitConverter.ToInt64(bin,index.Value)
-    index.Value <- index.Value + 8
-    
-    let Createdat = bin__DateTime bi
-    
-    let Updatedat = bin__DateTime bi
-    
-    {
-        ID = ID
-        Sort = Sort
-        Createdat = Createdat
-        Updatedat = Updatedat
-        p = bin__pBIZ bi }
-
-let pBIZ__json (p:pBIZ) =
-
-    [|
-        ("Code",p.Code |> Json.Str)
-        ("Caption",p.Caption |> Json.Str)
-        ("Parent",p.Parent.ToString() |> Json.Num)
-        ("BasicAcct",p.BasicAcct.ToString() |> Json.Num)
-        ("DescTxt",p.DescTxt |> Json.Str)
-        ("Website",p.Website |> Json.Str)
-        ("Icon",p.Icon |> Json.Str)
-        ("City",p.City.ToString() |> Json.Num)
-        ("Country",p.Country.ToString() |> Json.Num)
-        ("Lang",p.Lang.ToString() |> Json.Num)
-        ("IsSocialPlatform",if p.IsSocialPlatform then Json.True else Json.False)
-        ("IsCmsSource",if p.IsCmsSource then Json.True else Json.False)
-        ("IsPayGateway",if p.IsPayGateway then Json.True else Json.False) |]
-    |> Json.Braket
-
-let BIZ__json (v:BIZ) =
-
-    let p = v.p
-    
-    [|  ("id",v.ID.ToString() |> Json.Num)
-        ("sort",v.Sort.ToString() |> Json.Num)
-        ("createdat",(v.Createdat |> Util.Time.wintime__unixtime).ToString() |> Json.Num)
-        ("updatedat",(v.Updatedat |> Util.Time.wintime__unixtime).ToString() |> Json.Num)
-        ("p",pBIZ__json v.p) |]
-    |> Json.Braket
-
-let BIZ__jsonTbw (w:TextBlockWriter) (v:BIZ) =
-    json__str w (BIZ__json v)
-
-let BIZ__jsonStr (v:BIZ) =
-    (BIZ__json v) |> json__strFinal
-
-
-let json__pBIZo (json:Json):pBIZ option =
-    let fields = json |> json__items
-
-    let p = pBIZ_empty()
-    
-    p.Code <- checkfieldz fields "Code" 64
-    
-    p.Caption <- checkfieldz fields "Caption" 256
-    
-    p.Parent <- checkfield fields "Parent" |> parse_int64
-    
-    p.BasicAcct <- checkfield fields "BasicAcct" |> parse_int64
-    
-    p.DescTxt <- checkfield fields "DescTxt"
-    
-    p.Website <- checkfieldz fields "Website" 256
-    
-    p.Icon <- checkfieldz fields "Icon" 256
-    
-    p.City <- checkfield fields "City" |> parse_int64
-    
-    p.Country <- checkfield fields "Country" |> parse_int64
-    
-    p.Lang <- checkfield fields "Lang" |> parse_int64
-    
-    p.IsSocialPlatform <- checkfield fields "IsSocialPlatform" = "true"
-    
-    p.IsCmsSource <- checkfield fields "IsCmsSource" = "true"
-    
-    p.IsPayGateway <- checkfield fields "IsPayGateway" = "true"
-    
-    p |> Some
-    
-
-let json__BIZo (json:Json):BIZ option =
-    let fields = json |> json__items
-
-    let ID = checkfield fields "id" |> parse_int64
-    let Sort = checkfield fields "sort" |> parse_int64
-    let Createdat = checkfield fields "createdat" |> parse_int64 |> DateTime.FromBinary
-    let Updatedat = checkfield fields "updatedat" |> parse_int64 |> DateTime.FromBinary
-    
-    let o  =
-        match
-            json
-            |> tryFindByAtt "p" with
-        | Some (s,v) -> json__pBIZo v
-        | None -> None
-    
-    match o with
-    | Some p ->
-        
-        {
-            ID = ID
-            Sort = Sort
-            Createdat = Createdat
-            Updatedat = Updatedat
-            p = p } |> Some
-        
-    | None -> None
-
-let BIZ_clone src =
-    let bb = new BytesBuilder()
-    BIZ__bin bb src
-    bin__BIZ (bb.bytes(),ref 0)
-
-// [CAT] Structure
-
-
-let pCAT__bin (bb:BytesBuilder) (p:pCAT) =
-
-    
-    let binCaption = p.Caption |> Encoding.UTF8.GetBytes
-    binCaption.Length |> BitConverter.GetBytes |> bb.append
-    binCaption |> bb.append
-    
-    p.Lang |> BitConverter.GetBytes |> bb.append
-    
-    p.Zh |> BitConverter.GetBytes |> bb.append
-    
-    p.Parent |> BitConverter.GetBytes |> bb.append
-    
-    p.CatState |> EnumToValue |> BitConverter.GetBytes |> bb.append
-
-let CAT__bin (bb:BytesBuilder) (v:CAT) =
-    v.ID |> BitConverter.GetBytes |> bb.append
-    v.Sort |> BitConverter.GetBytes |> bb.append
-    DateTime__bin bb v.Createdat
-    DateTime__bin bb v.Updatedat
-    
-    pCAT__bin bb v.p
-
-let bin__pCAT (bi:BinIndexed):pCAT =
-    let bin,index = bi
-
-    let p = pCAT_empty()
-    
-    let count_Caption = BitConverter.ToInt32(bin,index.Value)
-    index.Value <- index.Value + 4
-    p.Caption <- Encoding.UTF8.GetString(bin,index.Value,count_Caption)
-    index.Value <- index.Value + count_Caption
-    
-    p.Lang <- BitConverter.ToInt64(bin,index.Value)
-    index.Value <- index.Value + 8
-    
-    p.Zh <- BitConverter.ToInt64(bin,index.Value)
-    index.Value <- index.Value + 8
-    
-    p.Parent <- BitConverter.ToInt64(bin,index.Value)
-    index.Value <- index.Value + 8
-    
-    p.CatState <- BitConverter.ToInt32(bin,index.Value) |> EnumOfValue
-    index.Value <- index.Value + 4
-    
-    p
-
-let bin__CAT (bi:BinIndexed):CAT =
-    let bin,index = bi
-
-    let ID = BitConverter.ToInt64(bin,index.Value)
-    index.Value <- index.Value + 8
-    
-    let Sort = BitConverter.ToInt64(bin,index.Value)
-    index.Value <- index.Value + 8
-    
-    let Createdat = bin__DateTime bi
-    
-    let Updatedat = bin__DateTime bi
-    
-    {
-        ID = ID
-        Sort = Sort
-        Createdat = Createdat
-        Updatedat = Updatedat
-        p = bin__pCAT bi }
-
-let pCAT__json (p:pCAT) =
-
-    [|
-        ("Caption",p.Caption |> Json.Str)
-        ("Lang",p.Lang.ToString() |> Json.Num)
-        ("Zh",p.Zh.ToString() |> Json.Num)
-        ("Parent",p.Parent.ToString() |> Json.Num)
-        ("CatState",(p.CatState |> EnumToValue).ToString() |> Json.Num) |]
-    |> Json.Braket
-
-let CAT__json (v:CAT) =
-
-    let p = v.p
-    
-    [|  ("id",v.ID.ToString() |> Json.Num)
-        ("sort",v.Sort.ToString() |> Json.Num)
-        ("createdat",(v.Createdat |> Util.Time.wintime__unixtime).ToString() |> Json.Num)
-        ("updatedat",(v.Updatedat |> Util.Time.wintime__unixtime).ToString() |> Json.Num)
-        ("p",pCAT__json v.p) |]
-    |> Json.Braket
-
-let CAT__jsonTbw (w:TextBlockWriter) (v:CAT) =
-    json__str w (CAT__json v)
-
-let CAT__jsonStr (v:CAT) =
-    (CAT__json v) |> json__strFinal
-
-
-let json__pCATo (json:Json):pCAT option =
-    let fields = json |> json__items
-
-    let p = pCAT_empty()
+    let p = pBOOK_empty()
     
     p.Caption <- checkfieldz fields "Caption" 64
     
-    p.Lang <- checkfield fields "Lang" |> parse_int64
+    p.Email <- checkfieldz fields "Email" 64
     
-    p.Zh <- checkfield fields "Zh" |> parse_int64
-    
-    p.Parent <- checkfield fields "Parent" |> parse_int64
-    
-    p.CatState <- checkfield fields "CatState" |> parse_int32 |> EnumOfValue
+    p.Message <- checkfield fields "Message"
     
     p |> Some
     
 
-let json__CATo (json:Json):CAT option =
+let json__BOOKo (json:Json):BOOK option =
     let fields = json |> json__items
 
     let ID = checkfield fields "id" |> parse_int64
@@ -653,7 +149,7 @@ let json__CATo (json:Json):CAT option =
         match
             json
             |> tryFindByAtt "p" with
-        | Some (s,v) -> json__pCATo v
+        | Some (s,v) -> json__pBOOKo v
         | None -> None
     
     match o with
@@ -668,386 +164,10 @@ let json__CATo (json:Json):CAT option =
         
     | None -> None
 
-let CAT_clone src =
+let BOOK_clone src =
     let bb = new BytesBuilder()
-    CAT__bin bb src
-    bin__CAT (bb.bytes(),ref 0)
-
-// [CITY] Structure
-
-
-let pCITY__bin (bb:BytesBuilder) (p:pCITY) =
-
-    
-    let binFullname = p.Fullname |> Encoding.UTF8.GetBytes
-    binFullname.Length |> BitConverter.GetBytes |> bb.append
-    binFullname |> bb.append
-    
-    let binMetropolitanCode3IATA = p.MetropolitanCode3IATA |> Encoding.UTF8.GetBytes
-    binMetropolitanCode3IATA.Length |> BitConverter.GetBytes |> bb.append
-    binMetropolitanCode3IATA |> bb.append
-    
-    let binNameEn = p.NameEn |> Encoding.UTF8.GetBytes
-    binNameEn.Length |> BitConverter.GetBytes |> bb.append
-    binNameEn |> bb.append
-    
-    p.Country |> BitConverter.GetBytes |> bb.append
-    
-    p.Place |> BitConverter.GetBytes |> bb.append
-    
-    let binIcon = p.Icon |> Encoding.UTF8.GetBytes
-    binIcon.Length |> BitConverter.GetBytes |> bb.append
-    binIcon |> bb.append
-    
-    let binTel = p.Tel |> Encoding.UTF8.GetBytes
-    binTel.Length |> BitConverter.GetBytes |> bb.append
-    binTel |> bb.append
-
-let CITY__bin (bb:BytesBuilder) (v:CITY) =
-    v.ID |> BitConverter.GetBytes |> bb.append
-    v.Sort |> BitConverter.GetBytes |> bb.append
-    DateTime__bin bb v.Createdat
-    DateTime__bin bb v.Updatedat
-    
-    pCITY__bin bb v.p
-
-let bin__pCITY (bi:BinIndexed):pCITY =
-    let bin,index = bi
-
-    let p = pCITY_empty()
-    
-    let count_Fullname = BitConverter.ToInt32(bin,index.Value)
-    index.Value <- index.Value + 4
-    p.Fullname <- Encoding.UTF8.GetString(bin,index.Value,count_Fullname)
-    index.Value <- index.Value + count_Fullname
-    
-    let count_MetropolitanCode3IATA = BitConverter.ToInt32(bin,index.Value)
-    index.Value <- index.Value + 4
-    p.MetropolitanCode3IATA <- Encoding.UTF8.GetString(bin,index.Value,count_MetropolitanCode3IATA)
-    index.Value <- index.Value + count_MetropolitanCode3IATA
-    
-    let count_NameEn = BitConverter.ToInt32(bin,index.Value)
-    index.Value <- index.Value + 4
-    p.NameEn <- Encoding.UTF8.GetString(bin,index.Value,count_NameEn)
-    index.Value <- index.Value + count_NameEn
-    
-    p.Country <- BitConverter.ToInt64(bin,index.Value)
-    index.Value <- index.Value + 8
-    
-    p.Place <- BitConverter.ToInt64(bin,index.Value)
-    index.Value <- index.Value + 8
-    
-    let count_Icon = BitConverter.ToInt32(bin,index.Value)
-    index.Value <- index.Value + 4
-    p.Icon <- Encoding.UTF8.GetString(bin,index.Value,count_Icon)
-    index.Value <- index.Value + count_Icon
-    
-    let count_Tel = BitConverter.ToInt32(bin,index.Value)
-    index.Value <- index.Value + 4
-    p.Tel <- Encoding.UTF8.GetString(bin,index.Value,count_Tel)
-    index.Value <- index.Value + count_Tel
-    
-    p
-
-let bin__CITY (bi:BinIndexed):CITY =
-    let bin,index = bi
-
-    let ID = BitConverter.ToInt64(bin,index.Value)
-    index.Value <- index.Value + 8
-    
-    let Sort = BitConverter.ToInt64(bin,index.Value)
-    index.Value <- index.Value + 8
-    
-    let Createdat = bin__DateTime bi
-    
-    let Updatedat = bin__DateTime bi
-    
-    {
-        ID = ID
-        Sort = Sort
-        Createdat = Createdat
-        Updatedat = Updatedat
-        p = bin__pCITY bi }
-
-let pCITY__json (p:pCITY) =
-
-    [|
-        ("Fullname",p.Fullname |> Json.Str)
-        ("MetropolitanCode3IATA",p.MetropolitanCode3IATA |> Json.Str)
-        ("NameEn",p.NameEn |> Json.Str)
-        ("Country",p.Country.ToString() |> Json.Num)
-        ("Place",p.Place.ToString() |> Json.Num)
-        ("Icon",p.Icon |> Json.Str)
-        ("Tel",p.Tel |> Json.Str) |]
-    |> Json.Braket
-
-let CITY__json (v:CITY) =
-
-    let p = v.p
-    
-    [|  ("id",v.ID.ToString() |> Json.Num)
-        ("sort",v.Sort.ToString() |> Json.Num)
-        ("createdat",(v.Createdat |> Util.Time.wintime__unixtime).ToString() |> Json.Num)
-        ("updatedat",(v.Updatedat |> Util.Time.wintime__unixtime).ToString() |> Json.Num)
-        ("p",pCITY__json v.p) |]
-    |> Json.Braket
-
-let CITY__jsonTbw (w:TextBlockWriter) (v:CITY) =
-    json__str w (CITY__json v)
-
-let CITY__jsonStr (v:CITY) =
-    (CITY__json v) |> json__strFinal
-
-
-let json__pCITYo (json:Json):pCITY option =
-    let fields = json |> json__items
-
-    let p = pCITY_empty()
-    
-    p.Fullname <- checkfieldz fields "Fullname" 64
-    
-    p.MetropolitanCode3IATA <- checkfieldz fields "MetropolitanCode3IATA" 3
-    
-    p.NameEn <- checkfieldz fields "NameEn" 64
-    
-    p.Country <- checkfield fields "Country" |> parse_int64
-    
-    p.Place <- checkfield fields "Place" |> parse_int64
-    
-    p.Icon <- checkfieldz fields "Icon" 256
-    
-    p.Tel <- checkfieldz fields "Tel" 4
-    
-    p |> Some
-    
-
-let json__CITYo (json:Json):CITY option =
-    let fields = json |> json__items
-
-    let ID = checkfield fields "id" |> parse_int64
-    let Sort = checkfield fields "sort" |> parse_int64
-    let Createdat = checkfield fields "createdat" |> parse_int64 |> DateTime.FromBinary
-    let Updatedat = checkfield fields "updatedat" |> parse_int64 |> DateTime.FromBinary
-    
-    let o  =
-        match
-            json
-            |> tryFindByAtt "p" with
-        | Some (s,v) -> json__pCITYo v
-        | None -> None
-    
-    match o with
-    | Some p ->
-        
-        {
-            ID = ID
-            Sort = Sort
-            Createdat = Createdat
-            Updatedat = Updatedat
-            p = p } |> Some
-        
-    | None -> None
-
-let CITY_clone src =
-    let bb = new BytesBuilder()
-    CITY__bin bb src
-    bin__CITY (bb.bytes(),ref 0)
-
-// [CRY] Structure
-
-
-let pCRY__bin (bb:BytesBuilder) (p:pCRY) =
-
-    
-    let binCode2 = p.Code2 |> Encoding.UTF8.GetBytes
-    binCode2.Length |> BitConverter.GetBytes |> bb.append
-    binCode2 |> bb.append
-    
-    let binCaption = p.Caption |> Encoding.UTF8.GetBytes
-    binCaption.Length |> BitConverter.GetBytes |> bb.append
-    binCaption |> bb.append
-    
-    let binFullname = p.Fullname |> Encoding.UTF8.GetBytes
-    binFullname.Length |> BitConverter.GetBytes |> bb.append
-    binFullname |> bb.append
-    
-    let binIcon = p.Icon |> Encoding.UTF8.GetBytes
-    binIcon.Length |> BitConverter.GetBytes |> bb.append
-    binIcon |> bb.append
-    
-    let binTel = p.Tel |> Encoding.UTF8.GetBytes
-    binTel.Length |> BitConverter.GetBytes |> bb.append
-    binTel |> bb.append
-    
-    p.Cur |> BitConverter.GetBytes |> bb.append
-    
-    p.Capital |> BitConverter.GetBytes |> bb.append
-    
-    p.Place |> BitConverter.GetBytes |> bb.append
-    
-    p.Lang |> BitConverter.GetBytes |> bb.append
-
-let CRY__bin (bb:BytesBuilder) (v:CRY) =
-    v.ID |> BitConverter.GetBytes |> bb.append
-    v.Sort |> BitConverter.GetBytes |> bb.append
-    DateTime__bin bb v.Createdat
-    DateTime__bin bb v.Updatedat
-    
-    pCRY__bin bb v.p
-
-let bin__pCRY (bi:BinIndexed):pCRY =
-    let bin,index = bi
-
-    let p = pCRY_empty()
-    
-    let count_Code2 = BitConverter.ToInt32(bin,index.Value)
-    index.Value <- index.Value + 4
-    p.Code2 <- Encoding.UTF8.GetString(bin,index.Value,count_Code2)
-    index.Value <- index.Value + count_Code2
-    
-    let count_Caption = BitConverter.ToInt32(bin,index.Value)
-    index.Value <- index.Value + 4
-    p.Caption <- Encoding.UTF8.GetString(bin,index.Value,count_Caption)
-    index.Value <- index.Value + count_Caption
-    
-    let count_Fullname = BitConverter.ToInt32(bin,index.Value)
-    index.Value <- index.Value + 4
-    p.Fullname <- Encoding.UTF8.GetString(bin,index.Value,count_Fullname)
-    index.Value <- index.Value + count_Fullname
-    
-    let count_Icon = BitConverter.ToInt32(bin,index.Value)
-    index.Value <- index.Value + 4
-    p.Icon <- Encoding.UTF8.GetString(bin,index.Value,count_Icon)
-    index.Value <- index.Value + count_Icon
-    
-    let count_Tel = BitConverter.ToInt32(bin,index.Value)
-    index.Value <- index.Value + 4
-    p.Tel <- Encoding.UTF8.GetString(bin,index.Value,count_Tel)
-    index.Value <- index.Value + count_Tel
-    
-    p.Cur <- BitConverter.ToInt64(bin,index.Value)
-    index.Value <- index.Value + 8
-    
-    p.Capital <- BitConverter.ToInt64(bin,index.Value)
-    index.Value <- index.Value + 8
-    
-    p.Place <- BitConverter.ToInt64(bin,index.Value)
-    index.Value <- index.Value + 8
-    
-    p.Lang <- BitConverter.ToInt64(bin,index.Value)
-    index.Value <- index.Value + 8
-    
-    p
-
-let bin__CRY (bi:BinIndexed):CRY =
-    let bin,index = bi
-
-    let ID = BitConverter.ToInt64(bin,index.Value)
-    index.Value <- index.Value + 8
-    
-    let Sort = BitConverter.ToInt64(bin,index.Value)
-    index.Value <- index.Value + 8
-    
-    let Createdat = bin__DateTime bi
-    
-    let Updatedat = bin__DateTime bi
-    
-    {
-        ID = ID
-        Sort = Sort
-        Createdat = Createdat
-        Updatedat = Updatedat
-        p = bin__pCRY bi }
-
-let pCRY__json (p:pCRY) =
-
-    [|
-        ("Code2",p.Code2 |> Json.Str)
-        ("Caption",p.Caption |> Json.Str)
-        ("Fullname",p.Fullname |> Json.Str)
-        ("Icon",p.Icon |> Json.Str)
-        ("Tel",p.Tel |> Json.Str)
-        ("Cur",p.Cur.ToString() |> Json.Num)
-        ("Capital",p.Capital.ToString() |> Json.Num)
-        ("Place",p.Place.ToString() |> Json.Num)
-        ("Lang",p.Lang.ToString() |> Json.Num) |]
-    |> Json.Braket
-
-let CRY__json (v:CRY) =
-
-    let p = v.p
-    
-    [|  ("id",v.ID.ToString() |> Json.Num)
-        ("sort",v.Sort.ToString() |> Json.Num)
-        ("createdat",(v.Createdat |> Util.Time.wintime__unixtime).ToString() |> Json.Num)
-        ("updatedat",(v.Updatedat |> Util.Time.wintime__unixtime).ToString() |> Json.Num)
-        ("p",pCRY__json v.p) |]
-    |> Json.Braket
-
-let CRY__jsonTbw (w:TextBlockWriter) (v:CRY) =
-    json__str w (CRY__json v)
-
-let CRY__jsonStr (v:CRY) =
-    (CRY__json v) |> json__strFinal
-
-
-let json__pCRYo (json:Json):pCRY option =
-    let fields = json |> json__items
-
-    let p = pCRY_empty()
-    
-    p.Code2 <- checkfieldz fields "Code2" 2
-    
-    p.Caption <- checkfieldz fields "Caption" 64
-    
-    p.Fullname <- checkfieldz fields "Fullname" 256
-    
-    p.Icon <- checkfieldz fields "Icon" 256
-    
-    p.Tel <- checkfieldz fields "Tel" 4
-    
-    p.Cur <- checkfield fields "Cur" |> parse_int64
-    
-    p.Capital <- checkfield fields "Capital" |> parse_int64
-    
-    p.Place <- checkfield fields "Place" |> parse_int64
-    
-    p.Lang <- checkfield fields "Lang" |> parse_int64
-    
-    p |> Some
-    
-
-let json__CRYo (json:Json):CRY option =
-    let fields = json |> json__items
-
-    let ID = checkfield fields "id" |> parse_int64
-    let Sort = checkfield fields "sort" |> parse_int64
-    let Createdat = checkfield fields "createdat" |> parse_int64 |> DateTime.FromBinary
-    let Updatedat = checkfield fields "updatedat" |> parse_int64 |> DateTime.FromBinary
-    
-    let o  =
-        match
-            json
-            |> tryFindByAtt "p" with
-        | Some (s,v) -> json__pCRYo v
-        | None -> None
-    
-    match o with
-    | Some p ->
-        
-        {
-            ID = ID
-            Sort = Sort
-            Createdat = Createdat
-            Updatedat = Updatedat
-            p = p } |> Some
-        
-    | None -> None
-
-let CRY_clone src =
-    let bb = new BytesBuilder()
-    CRY__bin bb src
-    bin__CRY (bb.bytes(),ref 0)
+    BOOK__bin bb src
+    bin__BOOK (bb.bytes(),ref 0)
 
 // [EU] Structure
 
@@ -1059,71 +179,7 @@ let pEU__bin (bb:BytesBuilder) (p:pEU) =
     binCaption.Length |> BitConverter.GetBytes |> bb.append
     binCaption |> bb.append
     
-    let binUsername = p.Username |> Encoding.UTF8.GetBytes
-    binUsername.Length |> BitConverter.GetBytes |> bb.append
-    binUsername |> bb.append
-    
-    p.SocialAuthBiz |> BitConverter.GetBytes |> bb.append
-    
-    let binSocialAuthId = p.SocialAuthId |> Encoding.UTF8.GetBytes
-    binSocialAuthId.Length |> BitConverter.GetBytes |> bb.append
-    binSocialAuthId |> bb.append
-    
-    let binSocialAuthAvatar = p.SocialAuthAvatar |> Encoding.UTF8.GetBytes
-    binSocialAuthAvatar.Length |> BitConverter.GetBytes |> bb.append
-    binSocialAuthAvatar |> bb.append
-    
-    let binEmail = p.Email |> Encoding.UTF8.GetBytes
-    binEmail.Length |> BitConverter.GetBytes |> bb.append
-    binEmail |> bb.append
-    
-    let binTel = p.Tel |> Encoding.UTF8.GetBytes
-    binTel.Length |> BitConverter.GetBytes |> bb.append
-    binTel |> bb.append
-    
-    p.Gender |> EnumToValue |> BitConverter.GetBytes |> bb.append
-    
-    p.Status |> EnumToValue |> BitConverter.GetBytes |> bb.append
-    
-    p.Admin |> EnumToValue |> BitConverter.GetBytes |> bb.append
-    
-    p.BizPartner |> EnumToValue |> BitConverter.GetBytes |> bb.append
-    
-    p.Privilege |> BitConverter.GetBytes |> bb.append
-    
-    p.Verify |> EnumToValue |> BitConverter.GetBytes |> bb.append
-    
-    let binPwd = p.Pwd |> Encoding.UTF8.GetBytes
-    binPwd.Length |> BitConverter.GetBytes |> bb.append
-    binPwd |> bb.append
-    
-    p.Online |> BitConverter.GetBytes |> bb.append
-    
-    let binIcon = p.Icon |> Encoding.UTF8.GetBytes
-    binIcon.Length |> BitConverter.GetBytes |> bb.append
-    binIcon |> bb.append
-    
-    let binBackground = p.Background |> Encoding.UTF8.GetBytes
-    binBackground.Length |> BitConverter.GetBytes |> bb.append
-    binBackground |> bb.append
-    
-    p.BasicAcct |> BitConverter.GetBytes |> bb.append
-    
-    p.Citizen |> BitConverter.GetBytes |> bb.append
-    
-    let binRefer = p.Refer |> Encoding.UTF8.GetBytes
-    binRefer.Length |> BitConverter.GetBytes |> bb.append
-    binRefer |> bb.append
-    
-    p.Referer |> BitConverter.GetBytes |> bb.append
-    
-    let binUrl = p.Url |> Encoding.UTF8.GetBytes
-    binUrl.Length |> BitConverter.GetBytes |> bb.append
-    binUrl |> bb.append
-    
-    let binAbout = p.About |> Encoding.UTF8.GetBytes
-    binAbout.Length |> BitConverter.GetBytes |> bb.append
-    binAbout |> bb.append
+    p.AuthType |> EnumToValue |> BitConverter.GetBytes |> bb.append
 
 let EU__bin (bb:BytesBuilder) (v:EU) =
     v.ID |> BitConverter.GetBytes |> bb.append
@@ -1143,93 +199,8 @@ let bin__pEU (bi:BinIndexed):pEU =
     p.Caption <- Encoding.UTF8.GetString(bin,index.Value,count_Caption)
     index.Value <- index.Value + count_Caption
     
-    let count_Username = BitConverter.ToInt32(bin,index.Value)
+    p.AuthType <- BitConverter.ToInt32(bin,index.Value) |> EnumOfValue
     index.Value <- index.Value + 4
-    p.Username <- Encoding.UTF8.GetString(bin,index.Value,count_Username)
-    index.Value <- index.Value + count_Username
-    
-    p.SocialAuthBiz <- BitConverter.ToInt64(bin,index.Value)
-    index.Value <- index.Value + 8
-    
-    let count_SocialAuthId = BitConverter.ToInt32(bin,index.Value)
-    index.Value <- index.Value + 4
-    p.SocialAuthId <- Encoding.UTF8.GetString(bin,index.Value,count_SocialAuthId)
-    index.Value <- index.Value + count_SocialAuthId
-    
-    let count_SocialAuthAvatar = BitConverter.ToInt32(bin,index.Value)
-    index.Value <- index.Value + 4
-    p.SocialAuthAvatar <- Encoding.UTF8.GetString(bin,index.Value,count_SocialAuthAvatar)
-    index.Value <- index.Value + count_SocialAuthAvatar
-    
-    let count_Email = BitConverter.ToInt32(bin,index.Value)
-    index.Value <- index.Value + 4
-    p.Email <- Encoding.UTF8.GetString(bin,index.Value,count_Email)
-    index.Value <- index.Value + count_Email
-    
-    let count_Tel = BitConverter.ToInt32(bin,index.Value)
-    index.Value <- index.Value + 4
-    p.Tel <- Encoding.UTF8.GetString(bin,index.Value,count_Tel)
-    index.Value <- index.Value + count_Tel
-    
-    p.Gender <- BitConverter.ToInt32(bin,index.Value) |> EnumOfValue
-    index.Value <- index.Value + 4
-    
-    p.Status <- BitConverter.ToInt32(bin,index.Value) |> EnumOfValue
-    index.Value <- index.Value + 4
-    
-    p.Admin <- BitConverter.ToInt32(bin,index.Value) |> EnumOfValue
-    index.Value <- index.Value + 4
-    
-    p.BizPartner <- BitConverter.ToInt32(bin,index.Value) |> EnumOfValue
-    index.Value <- index.Value + 4
-    
-    p.Privilege <- BitConverter.ToInt64(bin,index.Value)
-    index.Value <- index.Value + 8
-    
-    p.Verify <- BitConverter.ToInt32(bin,index.Value) |> EnumOfValue
-    index.Value <- index.Value + 4
-    
-    let count_Pwd = BitConverter.ToInt32(bin,index.Value)
-    index.Value <- index.Value + 4
-    p.Pwd <- Encoding.UTF8.GetString(bin,index.Value,count_Pwd)
-    index.Value <- index.Value + count_Pwd
-    
-    p.Online <- BitConverter.ToBoolean(bin,index.Value)
-    index.Value <- index.Value + 1
-    
-    let count_Icon = BitConverter.ToInt32(bin,index.Value)
-    index.Value <- index.Value + 4
-    p.Icon <- Encoding.UTF8.GetString(bin,index.Value,count_Icon)
-    index.Value <- index.Value + count_Icon
-    
-    let count_Background = BitConverter.ToInt32(bin,index.Value)
-    index.Value <- index.Value + 4
-    p.Background <- Encoding.UTF8.GetString(bin,index.Value,count_Background)
-    index.Value <- index.Value + count_Background
-    
-    p.BasicAcct <- BitConverter.ToInt64(bin,index.Value)
-    index.Value <- index.Value + 8
-    
-    p.Citizen <- BitConverter.ToInt64(bin,index.Value)
-    index.Value <- index.Value + 8
-    
-    let count_Refer = BitConverter.ToInt32(bin,index.Value)
-    index.Value <- index.Value + 4
-    p.Refer <- Encoding.UTF8.GetString(bin,index.Value,count_Refer)
-    index.Value <- index.Value + count_Refer
-    
-    p.Referer <- BitConverter.ToInt64(bin,index.Value)
-    index.Value <- index.Value + 8
-    
-    let count_Url = BitConverter.ToInt32(bin,index.Value)
-    index.Value <- index.Value + 4
-    p.Url <- Encoding.UTF8.GetString(bin,index.Value,count_Url)
-    index.Value <- index.Value + count_Url
-    
-    let count_About = BitConverter.ToInt32(bin,index.Value)
-    index.Value <- index.Value + 4
-    p.About <- Encoding.UTF8.GetString(bin,index.Value,count_About)
-    index.Value <- index.Value + count_About
     
     p
 
@@ -1257,28 +228,7 @@ let pEU__json (p:pEU) =
 
     [|
         ("Caption",p.Caption |> Json.Str)
-        ("Username",p.Username |> Json.Str)
-        ("SocialAuthBiz",p.SocialAuthBiz.ToString() |> Json.Num)
-        ("SocialAuthId",p.SocialAuthId |> Json.Str)
-        ("SocialAuthAvatar",p.SocialAuthAvatar |> Json.Str)
-        ("Email",p.Email |> Json.Str)
-        ("Tel",p.Tel |> Json.Str)
-        ("Gender",(p.Gender |> EnumToValue).ToString() |> Json.Num)
-        ("Status",(p.Status |> EnumToValue).ToString() |> Json.Num)
-        ("Admin",(p.Admin |> EnumToValue).ToString() |> Json.Num)
-        ("BizPartner",(p.BizPartner |> EnumToValue).ToString() |> Json.Num)
-        ("Privilege",p.Privilege.ToString() |> Json.Num)
-        ("Verify",(p.Verify |> EnumToValue).ToString() |> Json.Num)
-        ("Pwd",p.Pwd |> Json.Str)
-        ("Online",if p.Online then Json.True else Json.False)
-        ("Icon",p.Icon |> Json.Str)
-        ("Background",p.Background |> Json.Str)
-        ("BasicAcct",p.BasicAcct.ToString() |> Json.Num)
-        ("Citizen",p.Citizen.ToString() |> Json.Num)
-        ("Refer",p.Refer |> Json.Str)
-        ("Referer",p.Referer.ToString() |> Json.Num)
-        ("Url",p.Url |> Json.Str)
-        ("About",p.About |> Json.Str) |]
+        ("AuthType",(p.AuthType |> EnumToValue).ToString() |> Json.Num) |]
     |> Json.Braket
 
 let EU__json (v:EU) =
@@ -1306,49 +256,7 @@ let json__pEUo (json:Json):pEU option =
     
     p.Caption <- checkfieldz fields "Caption" 64
     
-    p.Username <- checkfieldz fields "Username" 64
-    
-    p.SocialAuthBiz <- checkfield fields "SocialAuthBiz" |> parse_int64
-    
-    p.SocialAuthId <- checkfield fields "SocialAuthId"
-    
-    p.SocialAuthAvatar <- checkfield fields "SocialAuthAvatar"
-    
-    p.Email <- checkfieldz fields "Email" 256
-    
-    p.Tel <- checkfieldz fields "Tel" 32
-    
-    p.Gender <- checkfield fields "Gender" |> parse_int32 |> EnumOfValue
-    
-    p.Status <- checkfield fields "Status" |> parse_int32 |> EnumOfValue
-    
-    p.Admin <- checkfield fields "Admin" |> parse_int32 |> EnumOfValue
-    
-    p.BizPartner <- checkfield fields "BizPartner" |> parse_int32 |> EnumOfValue
-    
-    p.Privilege <- checkfield fields "Privilege" |> parse_int64
-    
-    p.Verify <- checkfield fields "Verify" |> parse_int32 |> EnumOfValue
-    
-    p.Pwd <- checkfieldz fields "Pwd" 16
-    
-    p.Online <- checkfield fields "Online" = "true"
-    
-    p.Icon <- checkfieldz fields "Icon" 256
-    
-    p.Background <- checkfieldz fields "Background" 256
-    
-    p.BasicAcct <- checkfield fields "BasicAcct" |> parse_int64
-    
-    p.Citizen <- checkfield fields "Citizen" |> parse_int64
-    
-    p.Refer <- checkfieldz fields "Refer" 9
-    
-    p.Referer <- checkfield fields "Referer" |> parse_int64
-    
-    p.Url <- checkfield fields "Url"
-    
-    p.About <- checkfield fields "About"
+    p.AuthType <- checkfield fields "AuthType" |> parse_int32 |> EnumOfValue
     
     p |> Some
     
@@ -1385,198 +293,73 @@ let EU_clone src =
     EU__bin bb src
     bin__EU (bb.bytes(),ref 0)
 
-// [CSI] Structure
+// [FILE] Structure
 
 
-let pCSI__bin (bb:BytesBuilder) (p:pCSI) =
-
-    
-    p.Type |> EnumToValue |> BitConverter.GetBytes |> bb.append
-    
-    p.Lang |> BitConverter.GetBytes |> bb.append
-    
-    p.Bind |> BitConverter.GetBytes |> bb.append
-
-let CSI__bin (bb:BytesBuilder) (v:CSI) =
-    v.ID |> BitConverter.GetBytes |> bb.append
-    v.Sort |> BitConverter.GetBytes |> bb.append
-    DateTime__bin bb v.Createdat
-    DateTime__bin bb v.Updatedat
-    
-    pCSI__bin bb v.p
-
-let bin__pCSI (bi:BinIndexed):pCSI =
-    let bin,index = bi
-
-    let p = pCSI_empty()
-    
-    p.Type <- BitConverter.ToInt32(bin,index.Value) |> EnumOfValue
-    index.Value <- index.Value + 4
-    
-    p.Lang <- BitConverter.ToInt64(bin,index.Value)
-    index.Value <- index.Value + 8
-    
-    p.Bind <- BitConverter.ToInt64(bin,index.Value)
-    index.Value <- index.Value + 8
-    
-    p
-
-let bin__CSI (bi:BinIndexed):CSI =
-    let bin,index = bi
-
-    let ID = BitConverter.ToInt64(bin,index.Value)
-    index.Value <- index.Value + 8
-    
-    let Sort = BitConverter.ToInt64(bin,index.Value)
-    index.Value <- index.Value + 8
-    
-    let Createdat = bin__DateTime bi
-    
-    let Updatedat = bin__DateTime bi
-    
-    {
-        ID = ID
-        Sort = Sort
-        Createdat = Createdat
-        Updatedat = Updatedat
-        p = bin__pCSI bi }
-
-let pCSI__json (p:pCSI) =
-
-    [|
-        ("Type",(p.Type |> EnumToValue).ToString() |> Json.Num)
-        ("Lang",p.Lang.ToString() |> Json.Num)
-        ("Bind",p.Bind.ToString() |> Json.Num) |]
-    |> Json.Braket
-
-let CSI__json (v:CSI) =
-
-    let p = v.p
-    
-    [|  ("id",v.ID.ToString() |> Json.Num)
-        ("sort",v.Sort.ToString() |> Json.Num)
-        ("createdat",(v.Createdat |> Util.Time.wintime__unixtime).ToString() |> Json.Num)
-        ("updatedat",(v.Updatedat |> Util.Time.wintime__unixtime).ToString() |> Json.Num)
-        ("p",pCSI__json v.p) |]
-    |> Json.Braket
-
-let CSI__jsonTbw (w:TextBlockWriter) (v:CSI) =
-    json__str w (CSI__json v)
-
-let CSI__jsonStr (v:CSI) =
-    (CSI__json v) |> json__strFinal
-
-
-let json__pCSIo (json:Json):pCSI option =
-    let fields = json |> json__items
-
-    let p = pCSI_empty()
-    
-    p.Type <- checkfield fields "Type" |> parse_int32 |> EnumOfValue
-    
-    p.Lang <- checkfield fields "Lang" |> parse_int64
-    
-    p.Bind <- checkfield fields "Bind" |> parse_int64
-    
-    p |> Some
-    
-
-let json__CSIo (json:Json):CSI option =
-    let fields = json |> json__items
-
-    let ID = checkfield fields "id" |> parse_int64
-    let Sort = checkfield fields "sort" |> parse_int64
-    let Createdat = checkfield fields "createdat" |> parse_int64 |> DateTime.FromBinary
-    let Updatedat = checkfield fields "updatedat" |> parse_int64 |> DateTime.FromBinary
-    
-    let o  =
-        match
-            json
-            |> tryFindByAtt "p" with
-        | Some (s,v) -> json__pCSIo v
-        | None -> None
-    
-    match o with
-    | Some p ->
-        
-        {
-            ID = ID
-            Sort = Sort
-            Createdat = Createdat
-            Updatedat = Updatedat
-            p = p } |> Some
-        
-    | None -> None
-
-let CSI_clone src =
-    let bb = new BytesBuilder()
-    CSI__bin bb src
-    bin__CSI (bb.bytes(),ref 0)
-
-// [CWC] Structure
-
-
-let pCWC__bin (bb:BytesBuilder) (p:pCWC) =
+let pFILE__bin (bb:BytesBuilder) (p:pFILE) =
 
     
     let binCaption = p.Caption |> Encoding.UTF8.GetBytes
     binCaption.Length |> BitConverter.GetBytes |> bb.append
     binCaption |> bb.append
     
-    p.ExternalId |> BitConverter.GetBytes |> bb.append
+    let binDesc = p.Desc |> Encoding.UTF8.GetBytes
+    binDesc.Length |> BitConverter.GetBytes |> bb.append
+    binDesc |> bb.append
     
-    let binIcon = p.Icon |> Encoding.UTF8.GetBytes
-    binIcon.Length |> BitConverter.GetBytes |> bb.append
-    binIcon |> bb.append
+    let binSuffix = p.Suffix |> Encoding.UTF8.GetBytes
+    binSuffix.Length |> BitConverter.GetBytes |> bb.append
+    binSuffix |> bb.append
     
-    p.EU |> BitConverter.GetBytes |> bb.append
+    p.Size |> BitConverter.GetBytes |> bb.append
     
-    p.Biz |> BitConverter.GetBytes |> bb.append
+    p.Thumbnail.Length |> BitConverter.GetBytes |> bb.append
+    p.Thumbnail |> bb.append
     
-    let binJson = p.Json |> Encoding.UTF8.GetBytes
-    binJson.Length |> BitConverter.GetBytes |> bb.append
-    binJson |> bb.append
+    p.Owner |> BitConverter.GetBytes |> bb.append
 
-let CWC__bin (bb:BytesBuilder) (v:CWC) =
+let FILE__bin (bb:BytesBuilder) (v:FILE) =
     v.ID |> BitConverter.GetBytes |> bb.append
     v.Sort |> BitConverter.GetBytes |> bb.append
     DateTime__bin bb v.Createdat
     DateTime__bin bb v.Updatedat
     
-    pCWC__bin bb v.p
+    pFILE__bin bb v.p
 
-let bin__pCWC (bi:BinIndexed):pCWC =
+let bin__pFILE (bi:BinIndexed):pFILE =
     let bin,index = bi
 
-    let p = pCWC_empty()
+    let p = pFILE_empty()
     
     let count_Caption = BitConverter.ToInt32(bin,index.Value)
     index.Value <- index.Value + 4
     p.Caption <- Encoding.UTF8.GetString(bin,index.Value,count_Caption)
     index.Value <- index.Value + count_Caption
     
-    p.ExternalId <- BitConverter.ToInt64(bin,index.Value)
-    index.Value <- index.Value + 8
-    
-    let count_Icon = BitConverter.ToInt32(bin,index.Value)
+    let count_Desc = BitConverter.ToInt32(bin,index.Value)
     index.Value <- index.Value + 4
-    p.Icon <- Encoding.UTF8.GetString(bin,index.Value,count_Icon)
-    index.Value <- index.Value + count_Icon
+    p.Desc <- Encoding.UTF8.GetString(bin,index.Value,count_Desc)
+    index.Value <- index.Value + count_Desc
     
-    p.EU <- BitConverter.ToInt64(bin,index.Value)
-    index.Value <- index.Value + 8
-    
-    p.Biz <- BitConverter.ToInt64(bin,index.Value)
-    index.Value <- index.Value + 8
-    
-    let count_Json = BitConverter.ToInt32(bin,index.Value)
+    let count_Suffix = BitConverter.ToInt32(bin,index.Value)
     index.Value <- index.Value + 4
-    p.Json <- Encoding.UTF8.GetString(bin,index.Value,count_Json)
-    index.Value <- index.Value + count_Json
+    p.Suffix <- Encoding.UTF8.GetString(bin,index.Value,count_Suffix)
+    index.Value <- index.Value + count_Suffix
+    
+    p.Size <- BitConverter.ToInt64(bin,index.Value)
+    index.Value <- index.Value + 8
+    
+    let length_Thumbnail = BitConverter.ToInt32(bin,index.Value)
+    index.Value <- index.Value + 4
+    p.Thumbnail <- Array.sub bin index.Value length_Thumbnail
+    index.Value <- index.Value + length_Thumbnail
+    
+    p.Owner <- BitConverter.ToInt64(bin,index.Value)
+    index.Value <- index.Value + 8
     
     p
 
-let bin__CWC (bi:BinIndexed):CWC =
+let bin__FILE (bi:BinIndexed):FILE =
     let bin,index = bi
 
     let ID = BitConverter.ToInt64(bin,index.Value)
@@ -1594,20 +377,20 @@ let bin__CWC (bi:BinIndexed):CWC =
         Sort = Sort
         Createdat = Createdat
         Updatedat = Updatedat
-        p = bin__pCWC bi }
+        p = bin__pFILE bi }
 
-let pCWC__json (p:pCWC) =
+let pFILE__json (p:pFILE) =
 
     [|
         ("Caption",p.Caption |> Json.Str)
-        ("ExternalId",p.ExternalId.ToString() |> Json.Num)
-        ("Icon",p.Icon |> Json.Str)
-        ("EU",p.EU.ToString() |> Json.Num)
-        ("Biz",p.Biz.ToString() |> Json.Num)
-        ("Json",p.Json |> Json.Str) |]
+        ("Desc",p.Desc |> Json.Str)
+        ("Suffix",p.Suffix |> Json.Str)
+        ("Size",p.Size.ToString() |> Json.Num)
+        ("Thumbnail",p.Thumbnail |> Convert.ToBase64String |> Json.Str)
+        ("Owner",p.Owner.ToString() |> Json.Num) |]
     |> Json.Braket
 
-let CWC__json (v:CWC) =
+let FILE__json (v:FILE) =
 
     let p = v.p
     
@@ -1615,37 +398,35 @@ let CWC__json (v:CWC) =
         ("sort",v.Sort.ToString() |> Json.Num)
         ("createdat",(v.Createdat |> Util.Time.wintime__unixtime).ToString() |> Json.Num)
         ("updatedat",(v.Updatedat |> Util.Time.wintime__unixtime).ToString() |> Json.Num)
-        ("p",pCWC__json v.p) |]
+        ("p",pFILE__json v.p) |]
     |> Json.Braket
 
-let CWC__jsonTbw (w:TextBlockWriter) (v:CWC) =
-    json__str w (CWC__json v)
+let FILE__jsonTbw (w:TextBlockWriter) (v:FILE) =
+    json__str w (FILE__json v)
 
-let CWC__jsonStr (v:CWC) =
-    (CWC__json v) |> json__strFinal
+let FILE__jsonStr (v:FILE) =
+    (FILE__json v) |> json__strFinal
 
 
-let json__pCWCo (json:Json):pCWC option =
+let json__pFILEo (json:Json):pFILE option =
     let fields = json |> json__items
 
-    let p = pCWC_empty()
+    let p = pFILE_empty()
     
-    p.Caption <- checkfieldz fields "Caption" 64
+    p.Caption <- checkfield fields "Caption"
     
-    p.ExternalId <- checkfield fields "ExternalId" |> parse_int64
+    p.Desc <- checkfield fields "Desc"
     
-    p.Icon <- checkfieldz fields "Icon" 256
+    p.Suffix <- checkfieldz fields "Suffix" 4
     
-    p.EU <- checkfield fields "EU" |> parse_int64
+    p.Size <- checkfield fields "Size" |> parse_int64
     
-    p.Biz <- checkfield fields "Biz" |> parse_int64
-    
-    p.Json <- checkfield fields "Json"
+    p.Owner <- checkfield fields "Owner" |> parse_int64
     
     p |> Some
     
 
-let json__CWCo (json:Json):CWC option =
+let json__FILEo (json:Json):FILE option =
     let fields = json |> json__items
 
     let ID = checkfield fields "id" |> parse_int64
@@ -1657,7 +438,7 @@ let json__CWCo (json:Json):CWC option =
         match
             json
             |> tryFindByAtt "p" with
-        | Some (s,v) -> json__pCWCo v
+        | Some (s,v) -> json__pFILEo v
         | None -> None
     
     match o with
@@ -1672,10 +453,598 @@ let json__CWCo (json:Json):CWC option =
         
     | None -> None
 
-let CWC_clone src =
+let FILE_clone src =
     let bb = new BytesBuilder()
-    CWC__bin bb src
-    bin__CWC (bb.bytes(),ref 0)
+    FILE__bin bb src
+    bin__FILE (bb.bytes(),ref 0)
+
+// [FBIND] Structure
+
+
+let pFBIND__bin (bb:BytesBuilder) (p:pFBIND) =
+
+    
+    p.File |> BitConverter.GetBytes |> bb.append
+    
+    p.Moment |> BitConverter.GetBytes |> bb.append
+    
+    let binDesc = p.Desc |> Encoding.UTF8.GetBytes
+    binDesc.Length |> BitConverter.GetBytes |> bb.append
+    binDesc |> bb.append
+
+let FBIND__bin (bb:BytesBuilder) (v:FBIND) =
+    v.ID |> BitConverter.GetBytes |> bb.append
+    v.Sort |> BitConverter.GetBytes |> bb.append
+    DateTime__bin bb v.Createdat
+    DateTime__bin bb v.Updatedat
+    
+    pFBIND__bin bb v.p
+
+let bin__pFBIND (bi:BinIndexed):pFBIND =
+    let bin,index = bi
+
+    let p = pFBIND_empty()
+    
+    p.File <- BitConverter.ToInt64(bin,index.Value)
+    index.Value <- index.Value + 8
+    
+    p.Moment <- BitConverter.ToInt64(bin,index.Value)
+    index.Value <- index.Value + 8
+    
+    let count_Desc = BitConverter.ToInt32(bin,index.Value)
+    index.Value <- index.Value + 4
+    p.Desc <- Encoding.UTF8.GetString(bin,index.Value,count_Desc)
+    index.Value <- index.Value + count_Desc
+    
+    p
+
+let bin__FBIND (bi:BinIndexed):FBIND =
+    let bin,index = bi
+
+    let ID = BitConverter.ToInt64(bin,index.Value)
+    index.Value <- index.Value + 8
+    
+    let Sort = BitConverter.ToInt64(bin,index.Value)
+    index.Value <- index.Value + 8
+    
+    let Createdat = bin__DateTime bi
+    
+    let Updatedat = bin__DateTime bi
+    
+    {
+        ID = ID
+        Sort = Sort
+        Createdat = Createdat
+        Updatedat = Updatedat
+        p = bin__pFBIND bi }
+
+let pFBIND__json (p:pFBIND) =
+
+    [|
+        ("File",p.File.ToString() |> Json.Num)
+        ("Moment",p.Moment.ToString() |> Json.Num)
+        ("Desc",p.Desc |> Json.Str) |]
+    |> Json.Braket
+
+let FBIND__json (v:FBIND) =
+
+    let p = v.p
+    
+    [|  ("id",v.ID.ToString() |> Json.Num)
+        ("sort",v.Sort.ToString() |> Json.Num)
+        ("createdat",(v.Createdat |> Util.Time.wintime__unixtime).ToString() |> Json.Num)
+        ("updatedat",(v.Updatedat |> Util.Time.wintime__unixtime).ToString() |> Json.Num)
+        ("p",pFBIND__json v.p) |]
+    |> Json.Braket
+
+let FBIND__jsonTbw (w:TextBlockWriter) (v:FBIND) =
+    json__str w (FBIND__json v)
+
+let FBIND__jsonStr (v:FBIND) =
+    (FBIND__json v) |> json__strFinal
+
+
+let json__pFBINDo (json:Json):pFBIND option =
+    let fields = json |> json__items
+
+    let p = pFBIND_empty()
+    
+    p.File <- checkfield fields "File" |> parse_int64
+    
+    p.Moment <- checkfield fields "Moment" |> parse_int64
+    
+    p.Desc <- checkfield fields "Desc"
+    
+    p |> Some
+    
+
+let json__FBINDo (json:Json):FBIND option =
+    let fields = json |> json__items
+
+    let ID = checkfield fields "id" |> parse_int64
+    let Sort = checkfield fields "sort" |> parse_int64
+    let Createdat = checkfield fields "createdat" |> parse_int64 |> DateTime.FromBinary
+    let Updatedat = checkfield fields "updatedat" |> parse_int64 |> DateTime.FromBinary
+    
+    let o  =
+        match
+            json
+            |> tryFindByAtt "p" with
+        | Some (s,v) -> json__pFBINDo v
+        | None -> None
+    
+    match o with
+    | Some p ->
+        
+        {
+            ID = ID
+            Sort = Sort
+            Createdat = Createdat
+            Updatedat = Updatedat
+            p = p } |> Some
+        
+    | None -> None
+
+let FBIND_clone src =
+    let bb = new BytesBuilder()
+    FBIND__bin bb src
+    bin__FBIND (bb.bytes(),ref 0)
+
+// [MOMENT] Structure
+
+
+let pMOMENT__bin (bb:BytesBuilder) (p:pMOMENT) =
+
+    
+    let binTitle = p.Title |> Encoding.UTF8.GetBytes
+    binTitle.Length |> BitConverter.GetBytes |> bb.append
+    binTitle |> bb.append
+    
+    let binSummary = p.Summary |> Encoding.UTF8.GetBytes
+    binSummary.Length |> BitConverter.GetBytes |> bb.append
+    binSummary |> bb.append
+    
+    let binFullText = p.FullText |> Encoding.UTF8.GetBytes
+    binFullText.Length |> BitConverter.GetBytes |> bb.append
+    binFullText |> bb.append
+    
+    let binPreviewImgUrl = p.PreviewImgUrl |> Encoding.UTF8.GetBytes
+    binPreviewImgUrl.Length |> BitConverter.GetBytes |> bb.append
+    binPreviewImgUrl |> bb.append
+    
+    let binLink = p.Link |> Encoding.UTF8.GetBytes
+    binLink.Length |> BitConverter.GetBytes |> bb.append
+    binLink |> bb.append
+    
+    p.Type |> EnumToValue |> BitConverter.GetBytes |> bb.append
+    
+    p.State |> EnumToValue |> BitConverter.GetBytes |> bb.append
+    
+    p.MediaType |> EnumToValue |> BitConverter.GetBytes |> bb.append
+
+let MOMENT__bin (bb:BytesBuilder) (v:MOMENT) =
+    v.ID |> BitConverter.GetBytes |> bb.append
+    v.Sort |> BitConverter.GetBytes |> bb.append
+    DateTime__bin bb v.Createdat
+    DateTime__bin bb v.Updatedat
+    
+    pMOMENT__bin bb v.p
+
+let bin__pMOMENT (bi:BinIndexed):pMOMENT =
+    let bin,index = bi
+
+    let p = pMOMENT_empty()
+    
+    let count_Title = BitConverter.ToInt32(bin,index.Value)
+    index.Value <- index.Value + 4
+    p.Title <- Encoding.UTF8.GetString(bin,index.Value,count_Title)
+    index.Value <- index.Value + count_Title
+    
+    let count_Summary = BitConverter.ToInt32(bin,index.Value)
+    index.Value <- index.Value + 4
+    p.Summary <- Encoding.UTF8.GetString(bin,index.Value,count_Summary)
+    index.Value <- index.Value + count_Summary
+    
+    let count_FullText = BitConverter.ToInt32(bin,index.Value)
+    index.Value <- index.Value + 4
+    p.FullText <- Encoding.UTF8.GetString(bin,index.Value,count_FullText)
+    index.Value <- index.Value + count_FullText
+    
+    let count_PreviewImgUrl = BitConverter.ToInt32(bin,index.Value)
+    index.Value <- index.Value + 4
+    p.PreviewImgUrl <- Encoding.UTF8.GetString(bin,index.Value,count_PreviewImgUrl)
+    index.Value <- index.Value + count_PreviewImgUrl
+    
+    let count_Link = BitConverter.ToInt32(bin,index.Value)
+    index.Value <- index.Value + 4
+    p.Link <- Encoding.UTF8.GetString(bin,index.Value,count_Link)
+    index.Value <- index.Value + count_Link
+    
+    p.Type <- BitConverter.ToInt32(bin,index.Value) |> EnumOfValue
+    index.Value <- index.Value + 4
+    
+    p.State <- BitConverter.ToInt32(bin,index.Value) |> EnumOfValue
+    index.Value <- index.Value + 4
+    
+    p.MediaType <- BitConverter.ToInt32(bin,index.Value) |> EnumOfValue
+    index.Value <- index.Value + 4
+    
+    p
+
+let bin__MOMENT (bi:BinIndexed):MOMENT =
+    let bin,index = bi
+
+    let ID = BitConverter.ToInt64(bin,index.Value)
+    index.Value <- index.Value + 8
+    
+    let Sort = BitConverter.ToInt64(bin,index.Value)
+    index.Value <- index.Value + 8
+    
+    let Createdat = bin__DateTime bi
+    
+    let Updatedat = bin__DateTime bi
+    
+    {
+        ID = ID
+        Sort = Sort
+        Createdat = Createdat
+        Updatedat = Updatedat
+        p = bin__pMOMENT bi }
+
+let pMOMENT__json (p:pMOMENT) =
+
+    [|
+        ("Title",p.Title |> Json.Str)
+        ("Summary",p.Summary |> Json.Str)
+        ("FullText",p.FullText |> Json.Str)
+        ("PreviewImgUrl",p.PreviewImgUrl |> Json.Str)
+        ("Link",p.Link |> Json.Str)
+        ("Type",(p.Type |> EnumToValue).ToString() |> Json.Num)
+        ("State",(p.State |> EnumToValue).ToString() |> Json.Num)
+        ("MediaType",(p.MediaType |> EnumToValue).ToString() |> Json.Num) |]
+    |> Json.Braket
+
+let MOMENT__json (v:MOMENT) =
+
+    let p = v.p
+    
+    [|  ("id",v.ID.ToString() |> Json.Num)
+        ("sort",v.Sort.ToString() |> Json.Num)
+        ("createdat",(v.Createdat |> Util.Time.wintime__unixtime).ToString() |> Json.Num)
+        ("updatedat",(v.Updatedat |> Util.Time.wintime__unixtime).ToString() |> Json.Num)
+        ("p",pMOMENT__json v.p) |]
+    |> Json.Braket
+
+let MOMENT__jsonTbw (w:TextBlockWriter) (v:MOMENT) =
+    json__str w (MOMENT__json v)
+
+let MOMENT__jsonStr (v:MOMENT) =
+    (MOMENT__json v) |> json__strFinal
+
+
+let json__pMOMENTo (json:Json):pMOMENT option =
+    let fields = json |> json__items
+
+    let p = pMOMENT_empty()
+    
+    p.Title <- checkfield fields "Title"
+    
+    p.Summary <- checkfield fields "Summary"
+    
+    p.FullText <- checkfield fields "FullText"
+    
+    p.PreviewImgUrl <- checkfield fields "PreviewImgUrl"
+    
+    p.Link <- checkfield fields "Link"
+    
+    p.Type <- checkfield fields "Type" |> parse_int32 |> EnumOfValue
+    
+    p.State <- checkfield fields "State" |> parse_int32 |> EnumOfValue
+    
+    p.MediaType <- checkfield fields "MediaType" |> parse_int32 |> EnumOfValue
+    
+    p |> Some
+    
+
+let json__MOMENTo (json:Json):MOMENT option =
+    let fields = json |> json__items
+
+    let ID = checkfield fields "id" |> parse_int64
+    let Sort = checkfield fields "sort" |> parse_int64
+    let Createdat = checkfield fields "createdat" |> parse_int64 |> DateTime.FromBinary
+    let Updatedat = checkfield fields "updatedat" |> parse_int64 |> DateTime.FromBinary
+    
+    let o  =
+        match
+            json
+            |> tryFindByAtt "p" with
+        | Some (s,v) -> json__pMOMENTo v
+        | None -> None
+    
+    match o with
+    | Some p ->
+        
+        {
+            ID = ID
+            Sort = Sort
+            Createdat = Createdat
+            Updatedat = Updatedat
+            p = p } |> Some
+        
+    | None -> None
+
+let MOMENT_clone src =
+    let bb = new BytesBuilder()
+    MOMENT__bin bb src
+    bin__MOMENT (bb.bytes(),ref 0)
+
+// [LOG] Structure
+
+
+let pLOG__bin (bb:BytesBuilder) (p:pLOG) =
+
+    
+    let binLocation = p.Location |> Encoding.UTF8.GetBytes
+    binLocation.Length |> BitConverter.GetBytes |> bb.append
+    binLocation |> bb.append
+    
+    let binContent = p.Content |> Encoding.UTF8.GetBytes
+    binContent.Length |> BitConverter.GetBytes |> bb.append
+    binContent |> bb.append
+    
+    let binSql = p.Sql |> Encoding.UTF8.GetBytes
+    binSql.Length |> BitConverter.GetBytes |> bb.append
+    binSql |> bb.append
+
+let LOG__bin (bb:BytesBuilder) (v:LOG) =
+    v.ID |> BitConverter.GetBytes |> bb.append
+    v.Sort |> BitConverter.GetBytes |> bb.append
+    DateTime__bin bb v.Createdat
+    DateTime__bin bb v.Updatedat
+    
+    pLOG__bin bb v.p
+
+let bin__pLOG (bi:BinIndexed):pLOG =
+    let bin,index = bi
+
+    let p = pLOG_empty()
+    
+    let count_Location = BitConverter.ToInt32(bin,index.Value)
+    index.Value <- index.Value + 4
+    p.Location <- Encoding.UTF8.GetString(bin,index.Value,count_Location)
+    index.Value <- index.Value + count_Location
+    
+    let count_Content = BitConverter.ToInt32(bin,index.Value)
+    index.Value <- index.Value + 4
+    p.Content <- Encoding.UTF8.GetString(bin,index.Value,count_Content)
+    index.Value <- index.Value + count_Content
+    
+    let count_Sql = BitConverter.ToInt32(bin,index.Value)
+    index.Value <- index.Value + 4
+    p.Sql <- Encoding.UTF8.GetString(bin,index.Value,count_Sql)
+    index.Value <- index.Value + count_Sql
+    
+    p
+
+let bin__LOG (bi:BinIndexed):LOG =
+    let bin,index = bi
+
+    let ID = BitConverter.ToInt64(bin,index.Value)
+    index.Value <- index.Value + 8
+    
+    let Sort = BitConverter.ToInt64(bin,index.Value)
+    index.Value <- index.Value + 8
+    
+    let Createdat = bin__DateTime bi
+    
+    let Updatedat = bin__DateTime bi
+    
+    {
+        ID = ID
+        Sort = Sort
+        Createdat = Createdat
+        Updatedat = Updatedat
+        p = bin__pLOG bi }
+
+let pLOG__json (p:pLOG) =
+
+    [|
+        ("Location",p.Location |> Json.Str)
+        ("Content",p.Content |> Json.Str)
+        ("Sql",p.Sql |> Json.Str) |]
+    |> Json.Braket
+
+let LOG__json (v:LOG) =
+
+    let p = v.p
+    
+    [|  ("id",v.ID.ToString() |> Json.Num)
+        ("sort",v.Sort.ToString() |> Json.Num)
+        ("createdat",(v.Createdat |> Util.Time.wintime__unixtime).ToString() |> Json.Num)
+        ("updatedat",(v.Updatedat |> Util.Time.wintime__unixtime).ToString() |> Json.Num)
+        ("p",pLOG__json v.p) |]
+    |> Json.Braket
+
+let LOG__jsonTbw (w:TextBlockWriter) (v:LOG) =
+    json__str w (LOG__json v)
+
+let LOG__jsonStr (v:LOG) =
+    (LOG__json v) |> json__strFinal
+
+
+let json__pLOGo (json:Json):pLOG option =
+    let fields = json |> json__items
+
+    let p = pLOG_empty()
+    
+    p.Location <- checkfield fields "Location"
+    
+    p.Content <- checkfield fields "Content"
+    
+    p.Sql <- checkfield fields "Sql"
+    
+    p |> Some
+    
+
+let json__LOGo (json:Json):LOG option =
+    let fields = json |> json__items
+
+    let ID = checkfield fields "id" |> parse_int64
+    let Sort = checkfield fields "sort" |> parse_int64
+    let Createdat = checkfield fields "createdat" |> parse_int64 |> DateTime.FromBinary
+    let Updatedat = checkfield fields "updatedat" |> parse_int64 |> DateTime.FromBinary
+    
+    let o  =
+        match
+            json
+            |> tryFindByAtt "p" with
+        | Some (s,v) -> json__pLOGo v
+        | None -> None
+    
+    match o with
+    | Some p ->
+        
+        {
+            ID = ID
+            Sort = Sort
+            Createdat = Createdat
+            Updatedat = Updatedat
+            p = p } |> Some
+        
+    | None -> None
+
+let LOG_clone src =
+    let bb = new BytesBuilder()
+    LOG__bin bb src
+    bin__LOG (bb.bytes(),ref 0)
+
+// [PLOG] Structure
+
+
+let pPLOG__bin (bb:BytesBuilder) (p:pPLOG) =
+
+    
+    let binIp = p.Ip |> Encoding.UTF8.GetBytes
+    binIp.Length |> BitConverter.GetBytes |> bb.append
+    binIp |> bb.append
+    
+    let binRequest = p.Request |> Encoding.UTF8.GetBytes
+    binRequest.Length |> BitConverter.GetBytes |> bb.append
+    binRequest |> bb.append
+
+let PLOG__bin (bb:BytesBuilder) (v:PLOG) =
+    v.ID |> BitConverter.GetBytes |> bb.append
+    v.Sort |> BitConverter.GetBytes |> bb.append
+    DateTime__bin bb v.Createdat
+    DateTime__bin bb v.Updatedat
+    
+    pPLOG__bin bb v.p
+
+let bin__pPLOG (bi:BinIndexed):pPLOG =
+    let bin,index = bi
+
+    let p = pPLOG_empty()
+    
+    let count_Ip = BitConverter.ToInt32(bin,index.Value)
+    index.Value <- index.Value + 4
+    p.Ip <- Encoding.UTF8.GetString(bin,index.Value,count_Ip)
+    index.Value <- index.Value + count_Ip
+    
+    let count_Request = BitConverter.ToInt32(bin,index.Value)
+    index.Value <- index.Value + 4
+    p.Request <- Encoding.UTF8.GetString(bin,index.Value,count_Request)
+    index.Value <- index.Value + count_Request
+    
+    p
+
+let bin__PLOG (bi:BinIndexed):PLOG =
+    let bin,index = bi
+
+    let ID = BitConverter.ToInt64(bin,index.Value)
+    index.Value <- index.Value + 8
+    
+    let Sort = BitConverter.ToInt64(bin,index.Value)
+    index.Value <- index.Value + 8
+    
+    let Createdat = bin__DateTime bi
+    
+    let Updatedat = bin__DateTime bi
+    
+    {
+        ID = ID
+        Sort = Sort
+        Createdat = Createdat
+        Updatedat = Updatedat
+        p = bin__pPLOG bi }
+
+let pPLOG__json (p:pPLOG) =
+
+    [|
+        ("Ip",p.Ip |> Json.Str)
+        ("Request",p.Request |> Json.Str) |]
+    |> Json.Braket
+
+let PLOG__json (v:PLOG) =
+
+    let p = v.p
+    
+    [|  ("id",v.ID.ToString() |> Json.Num)
+        ("sort",v.Sort.ToString() |> Json.Num)
+        ("createdat",(v.Createdat |> Util.Time.wintime__unixtime).ToString() |> Json.Num)
+        ("updatedat",(v.Updatedat |> Util.Time.wintime__unixtime).ToString() |> Json.Num)
+        ("p",pPLOG__json v.p) |]
+    |> Json.Braket
+
+let PLOG__jsonTbw (w:TextBlockWriter) (v:PLOG) =
+    json__str w (PLOG__json v)
+
+let PLOG__jsonStr (v:PLOG) =
+    (PLOG__json v) |> json__strFinal
+
+
+let json__pPLOGo (json:Json):pPLOG option =
+    let fields = json |> json__items
+
+    let p = pPLOG_empty()
+    
+    p.Ip <- checkfieldz fields "Ip" 64
+    
+    p.Request <- checkfield fields "Request"
+    
+    p |> Some
+    
+
+let json__PLOGo (json:Json):PLOG option =
+    let fields = json |> json__items
+
+    let ID = checkfield fields "id" |> parse_int64
+    let Sort = checkfield fields "sort" |> parse_int64
+    let Createdat = checkfield fields "createdat" |> parse_int64 |> DateTime.FromBinary
+    let Updatedat = checkfield fields "updatedat" |> parse_int64 |> DateTime.FromBinary
+    
+    let o  =
+        match
+            json
+            |> tryFindByAtt "p" with
+        | Some (s,v) -> json__pPLOGo v
+        | None -> None
+    
+    match o with
+    | Some p ->
+        
+        {
+            ID = ID
+            Sort = Sort
+            Createdat = Createdat
+            Updatedat = Updatedat
+            p = p } |> Some
+        
+    | None -> None
+
+let PLOG_clone src =
+    let bb = new BytesBuilder()
+    PLOG__bin bb src
+    bin__PLOG (bb.bytes(),ref 0)
 
 // [API] Structure
 
@@ -3059,94 +2428,46 @@ let VARTYPE_clone src =
 
 let mutable conn = ""
 
-let db__pADDRESS(line:Object[]): pADDRESS =
-    let p = pADDRESS_empty()
+let db__pBOOK(line:Object[]): pBOOK =
+    let p = pBOOK_empty()
 
     p.Caption <- string(line[4]).TrimEnd()
-    p.Bind <- if Convert.IsDBNull(line[5]) then 0L else line[5] :?> int64
-    p.AddressType <- EnumOfValue(if Convert.IsDBNull(line[6]) then 0 else line[6] :?> int)
-    p.Line1 <- string(line[7]).TrimEnd()
-    p.Line2 <- string(line[8]).TrimEnd()
-    p.State <- string(line[9]).TrimEnd()
-    p.County <- string(line[10]).TrimEnd()
-    p.Town <- string(line[11]).TrimEnd()
-    p.Contact <- string(line[12]).TrimEnd()
-    p.Tel <- string(line[13]).TrimEnd()
-    p.Email <- string(line[14]).TrimEnd()
-    p.Zip <- string(line[15]).TrimEnd()
-    p.City <- if Convert.IsDBNull(line[16]) then 0L else line[16] :?> int64
-    p.Country <- if Convert.IsDBNull(line[17]) then 0L else line[17] :?> int64
-    p.Remarks <- string(line[18]).TrimEnd()
+    p.Email <- string(line[5]).TrimEnd()
+    p.Message <- string(line[6]).TrimEnd()
 
     p
 
-let pADDRESS__sps (p:pADDRESS) =
+let pBOOK__sps (p:pBOOK) =
     match rdbms with
     | Rdbms.SqlServer ->
         [|
             ("Caption", p.Caption) |> kvp__sqlparam
-            ("Bind", p.Bind) |> kvp__sqlparam
-            ("AddressType", p.AddressType) |> kvp__sqlparam
-            ("Line1", p.Line1) |> kvp__sqlparam
-            ("Line2", p.Line2) |> kvp__sqlparam
-            ("State", p.State) |> kvp__sqlparam
-            ("County", p.County) |> kvp__sqlparam
-            ("Town", p.Town) |> kvp__sqlparam
-            ("Contact", p.Contact) |> kvp__sqlparam
-            ("Tel", p.Tel) |> kvp__sqlparam
             ("Email", p.Email) |> kvp__sqlparam
-            ("Zip", p.Zip) |> kvp__sqlparam
-            ("City", p.City) |> kvp__sqlparam
-            ("Country", p.Country) |> kvp__sqlparam
-            ("Remarks", p.Remarks) |> kvp__sqlparam |]
+            ("Message", p.Message) |> kvp__sqlparam |]
     | Rdbms.PostgreSql ->
         [|
             ("caption", p.Caption) |> kvp__sqlparam
-            ("bind", p.Bind) |> kvp__sqlparam
-            ("addresstype", p.AddressType) |> kvp__sqlparam
-            ("line1", p.Line1) |> kvp__sqlparam
-            ("line2", p.Line2) |> kvp__sqlparam
-            ("state", p.State) |> kvp__sqlparam
-            ("county", p.County) |> kvp__sqlparam
-            ("town", p.Town) |> kvp__sqlparam
-            ("contact", p.Contact) |> kvp__sqlparam
-            ("tel", p.Tel) |> kvp__sqlparam
             ("email", p.Email) |> kvp__sqlparam
-            ("zip", p.Zip) |> kvp__sqlparam
-            ("city", p.City) |> kvp__sqlparam
-            ("country", p.Country) |> kvp__sqlparam
-            ("remarks", p.Remarks) |> kvp__sqlparam |]
+            ("message", p.Message) |> kvp__sqlparam |]
 
-let db__ADDRESS = db__Rcd db__pADDRESS
+let db__BOOK = db__Rcd db__pBOOK
 
-let ADDRESS_wrapper item: ADDRESS =
+let BOOK_wrapper item: BOOK =
     let (i,c,u,s),p = item
     { ID = i; Createdat = c; Updatedat = u; Sort = s; p = p }
 
-let pADDRESS_clone (p:pADDRESS): pADDRESS = {
+let pBOOK_clone (p:pBOOK): pBOOK = {
     Caption = p.Caption
-    Bind = p.Bind
-    AddressType = p.AddressType
-    Line1 = p.Line1
-    Line2 = p.Line2
-    State = p.State
-    County = p.County
-    Town = p.Town
-    Contact = p.Contact
-    Tel = p.Tel
     Email = p.Email
-    Zip = p.Zip
-    City = p.City
-    Country = p.Country
-    Remarks = p.Remarks }
+    Message = p.Message }
 
-let ADDRESS_update_transaction output (updater,suc,fail) (rcd:ADDRESS) =
-    let rollback_p = rcd.p |> pADDRESS_clone
+let BOOK_update_transaction output (updater,suc,fail) (rcd:BOOK) =
+    let rollback_p = rcd.p |> pBOOK_clone
     let rollback_updatedat = rcd.Updatedat
     updater rcd.p
     let ctime,res =
         (rcd.ID,rcd.p,rollback_p,rollback_updatedat)
-        |> update (conn,output,ADDRESS_table,ADDRESS_sql_update(),pADDRESS__sps,suc,fail)
+        |> update (conn,output,BOOK_table,BOOK_sql_update(),pBOOK__sps,suc,fail)
     match res with
     | Suc ctx ->
         rcd.Updatedat <- ctime
@@ -3156,565 +2477,51 @@ let ADDRESS_update_transaction output (updater,suc,fail) (rcd:ADDRESS) =
         rcd.Updatedat <- rollback_updatedat
         fail eso
 
-let ADDRESS_update output (rcd:ADDRESS) =
+let BOOK_update output (rcd:BOOK) =
     rcd
-    |> ADDRESS_update_transaction output ((fun p -> ()),(fun (ctime,ctx) -> ()),(fun dte -> ()))
+    |> BOOK_update_transaction output ((fun p -> ()),(fun (ctime,ctx) -> ()),(fun dte -> ()))
 
-let ADDRESS_create_incremental_transaction output (suc,fail) p =
-    let cid = Interlocked.Increment ADDRESS_id
+let BOOK_create_incremental_transaction output (suc,fail) p =
+    let cid = Interlocked.Increment BOOK_id
     let ctime = DateTime.UtcNow
-    match create (conn,output,ADDRESS_table,pADDRESS__sps) (cid,ctime,p) with
-    | Suc ctx -> ((cid,ctime,ctime,cid),p) |> ADDRESS_wrapper |> suc
+    match create (conn,output,BOOK_table,pBOOK__sps) (cid,ctime,p) with
+    | Suc ctx -> ((cid,ctime,ctime,cid),p) |> BOOK_wrapper |> suc
     | Fail(eso,ctx) -> fail(eso,ctx)
 
-let ADDRESS_create output p =
-    ADDRESS_create_incremental_transaction output ((fun rcd -> ()),(fun (eso,ctx) -> ())) p
+let BOOK_create output p =
+    BOOK_create_incremental_transaction output ((fun rcd -> ()),(fun (eso,ctx) -> ())) p
     
 
-let id__ADDRESSo id: ADDRESS option = id__rcd(conn,ADDRESS_fieldorders(),ADDRESS_table,db__ADDRESS) id
+let id__BOOKo id: BOOK option = id__rcd(conn,BOOK_fieldorders(),BOOK_table,db__BOOK) id
 
-let ADDRESS_metadata = {
-    fieldorders = ADDRESS_fieldorders
-    db__rcd = db__ADDRESS 
-    wrapper = ADDRESS_wrapper
-    sps = pADDRESS__sps
-    id = ADDRESS_id
-    id__rcdo = id__ADDRESSo
-    clone = pADDRESS_clone
-    empty__p = pADDRESS_empty
-    rcd__bin = ADDRESS__bin
-    bin__rcd = bin__ADDRESS
-    sql_update = ADDRESS_sql_update
-    rcd_update = ADDRESS_update
-    table = ADDRESS_table
-    shorthand = "address" }
+let BOOK_metadata = {
+    fieldorders = BOOK_fieldorders
+    db__rcd = db__BOOK 
+    wrapper = BOOK_wrapper
+    sps = pBOOK__sps
+    id = BOOK_id
+    id__rcdo = id__BOOKo
+    clone = pBOOK_clone
+    empty__p = pBOOK_empty
+    rcd__bin = BOOK__bin
+    bin__rcd = bin__BOOK
+    sql_update = BOOK_sql_update
+    rcd_update = BOOK_update
+    table = BOOK_table
+    shorthand = "book" }
 
-let ADDRESSTxSqlServer =
+let BOOKTxSqlServer =
     """
-    IF NOT EXISTS(SELECT * FROM sysobjects WHERE [name]='Ca_Address' AND xtype='U')
+    IF NOT EXISTS(SELECT * FROM sysobjects WHERE [name]='Ca_Book' AND xtype='U')
     BEGIN
 
-        CREATE TABLE Ca_Address ([ID] BIGINT NOT NULL
+        CREATE TABLE Ca_Book ([ID] BIGINT NOT NULL
     ,[Createdat] BIGINT NOT NULL
     ,[Updatedat] BIGINT NOT NULL
     ,[Sort] BIGINT NOT NULL,
     ,[Caption]
-    ,[Bind]
-    ,[AddressType]
-    ,[Line1]
-    ,[Line2]
-    ,[State]
-    ,[County]
-    ,[Town]
-    ,[Contact]
-    ,[Tel]
     ,[Email]
-    ,[Zip]
-    ,[City]
-    ,[Country]
-    ,[Remarks])
-    END
-    """
-
-
-let db__pBIZ(line:Object[]): pBIZ =
-    let p = pBIZ_empty()
-
-    p.Code <- string(line[4]).TrimEnd()
-    p.Caption <- string(line[5]).TrimEnd()
-    p.Parent <- if Convert.IsDBNull(line[6]) then 0L else line[6] :?> int64
-    p.BasicAcct <- if Convert.IsDBNull(line[7]) then 0L else line[7] :?> int64
-    p.DescTxt <- string(line[8]).TrimEnd()
-    p.Website <- string(line[9]).TrimEnd()
-    p.Icon <- string(line[10]).TrimEnd()
-    p.City <- if Convert.IsDBNull(line[11]) then 0L else line[11] :?> int64
-    p.Country <- if Convert.IsDBNull(line[12]) then 0L else line[12] :?> int64
-    p.Lang <- if Convert.IsDBNull(line[13]) then 0L else line[13] :?> int64
-    p.IsSocialPlatform <- if Convert.IsDBNull(line[14]) then false else line[14] :?> bool
-    p.IsCmsSource <- if Convert.IsDBNull(line[15]) then false else line[15] :?> bool
-    p.IsPayGateway <- if Convert.IsDBNull(line[16]) then false else line[16] :?> bool
-
-    p
-
-let pBIZ__sps (p:pBIZ) =
-    match rdbms with
-    | Rdbms.SqlServer ->
-        [|
-            ("Code", p.Code) |> kvp__sqlparam
-            ("Caption", p.Caption) |> kvp__sqlparam
-            ("Parent", p.Parent) |> kvp__sqlparam
-            ("BasicAcct", p.BasicAcct) |> kvp__sqlparam
-            ("DescTxt", p.DescTxt) |> kvp__sqlparam
-            ("Website", p.Website) |> kvp__sqlparam
-            ("Icon", p.Icon) |> kvp__sqlparam
-            ("City", p.City) |> kvp__sqlparam
-            ("Country", p.Country) |> kvp__sqlparam
-            ("Lang", p.Lang) |> kvp__sqlparam
-            ("IsSocialPlatform", p.IsSocialPlatform) |> kvp__sqlparam
-            ("IsCmsSource", p.IsCmsSource) |> kvp__sqlparam
-            ("IsPayGateway", p.IsPayGateway) |> kvp__sqlparam |]
-    | Rdbms.PostgreSql ->
-        [|
-            ("code", p.Code) |> kvp__sqlparam
-            ("caption", p.Caption) |> kvp__sqlparam
-            ("parent", p.Parent) |> kvp__sqlparam
-            ("basicacct", p.BasicAcct) |> kvp__sqlparam
-            ("desctxt", p.DescTxt) |> kvp__sqlparam
-            ("website", p.Website) |> kvp__sqlparam
-            ("icon", p.Icon) |> kvp__sqlparam
-            ("city", p.City) |> kvp__sqlparam
-            ("country", p.Country) |> kvp__sqlparam
-            ("lang", p.Lang) |> kvp__sqlparam
-            ("issocialplatform", p.IsSocialPlatform) |> kvp__sqlparam
-            ("iscmssource", p.IsCmsSource) |> kvp__sqlparam
-            ("ispaygateway", p.IsPayGateway) |> kvp__sqlparam |]
-
-let db__BIZ = db__Rcd db__pBIZ
-
-let BIZ_wrapper item: BIZ =
-    let (i,c,u,s),p = item
-    { ID = i; Createdat = c; Updatedat = u; Sort = s; p = p }
-
-let pBIZ_clone (p:pBIZ): pBIZ = {
-    Code = p.Code
-    Caption = p.Caption
-    Parent = p.Parent
-    BasicAcct = p.BasicAcct
-    DescTxt = p.DescTxt
-    Website = p.Website
-    Icon = p.Icon
-    City = p.City
-    Country = p.Country
-    Lang = p.Lang
-    IsSocialPlatform = p.IsSocialPlatform
-    IsCmsSource = p.IsCmsSource
-    IsPayGateway = p.IsPayGateway }
-
-let BIZ_update_transaction output (updater,suc,fail) (rcd:BIZ) =
-    let rollback_p = rcd.p |> pBIZ_clone
-    let rollback_updatedat = rcd.Updatedat
-    updater rcd.p
-    let ctime,res =
-        (rcd.ID,rcd.p,rollback_p,rollback_updatedat)
-        |> update (conn,output,BIZ_table,BIZ_sql_update(),pBIZ__sps,suc,fail)
-    match res with
-    | Suc ctx ->
-        rcd.Updatedat <- ctime
-        suc(ctime,ctx)
-    | Fail(eso,ctx) ->
-        rcd.p <- rollback_p
-        rcd.Updatedat <- rollback_updatedat
-        fail eso
-
-let BIZ_update output (rcd:BIZ) =
-    rcd
-    |> BIZ_update_transaction output ((fun p -> ()),(fun (ctime,ctx) -> ()),(fun dte -> ()))
-
-let BIZ_create_incremental_transaction output (suc,fail) p =
-    let cid = Interlocked.Increment BIZ_id
-    let ctime = DateTime.UtcNow
-    match create (conn,output,BIZ_table,pBIZ__sps) (cid,ctime,p) with
-    | Suc ctx -> ((cid,ctime,ctime,cid),p) |> BIZ_wrapper |> suc
-    | Fail(eso,ctx) -> fail(eso,ctx)
-
-let BIZ_create output p =
-    BIZ_create_incremental_transaction output ((fun rcd -> ()),(fun (eso,ctx) -> ())) p
-    
-
-let id__BIZo id: BIZ option = id__rcd(conn,BIZ_fieldorders(),BIZ_table,db__BIZ) id
-
-let BIZ_metadata = {
-    fieldorders = BIZ_fieldorders
-    db__rcd = db__BIZ 
-    wrapper = BIZ_wrapper
-    sps = pBIZ__sps
-    id = BIZ_id
-    id__rcdo = id__BIZo
-    clone = pBIZ_clone
-    empty__p = pBIZ_empty
-    rcd__bin = BIZ__bin
-    bin__rcd = bin__BIZ
-    sql_update = BIZ_sql_update
-    rcd_update = BIZ_update
-    table = BIZ_table
-    shorthand = "biz" }
-
-let BIZTxSqlServer =
-    """
-    IF NOT EXISTS(SELECT * FROM sysobjects WHERE [name]='Ca_Biz' AND xtype='U')
-    BEGIN
-
-        CREATE TABLE Ca_Biz ([ID] BIGINT NOT NULL
-    ,[Createdat] BIGINT NOT NULL
-    ,[Updatedat] BIGINT NOT NULL
-    ,[Sort] BIGINT NOT NULL,
-    ,[Code]
-    ,[Caption]
-    ,[Parent]
-    ,[BasicAcct]
-    ,[DescTxt]
-    ,[Website]
-    ,[Icon]
-    ,[City]
-    ,[Country]
-    ,[Lang]
-    ,[IsSocialPlatform]
-    ,[IsCmsSource]
-    ,[IsPayGateway])
-    END
-    """
-
-
-let db__pCAT(line:Object[]): pCAT =
-    let p = pCAT_empty()
-
-    p.Caption <- string(line[4]).TrimEnd()
-    p.Lang <- if Convert.IsDBNull(line[5]) then 0L else line[5] :?> int64
-    p.Zh <- if Convert.IsDBNull(line[6]) then 0L else line[6] :?> int64
-    p.Parent <- if Convert.IsDBNull(line[7]) then 0L else line[7] :?> int64
-    p.CatState <- EnumOfValue(if Convert.IsDBNull(line[8]) then 0 else line[8] :?> int)
-
-    p
-
-let pCAT__sps (p:pCAT) =
-    match rdbms with
-    | Rdbms.SqlServer ->
-        [|
-            ("Caption", p.Caption) |> kvp__sqlparam
-            ("Lang", p.Lang) |> kvp__sqlparam
-            ("Zh", p.Zh) |> kvp__sqlparam
-            ("Parent", p.Parent) |> kvp__sqlparam
-            ("CatState", p.CatState) |> kvp__sqlparam |]
-    | Rdbms.PostgreSql ->
-        [|
-            ("caption", p.Caption) |> kvp__sqlparam
-            ("lang", p.Lang) |> kvp__sqlparam
-            ("zh", p.Zh) |> kvp__sqlparam
-            ("parent", p.Parent) |> kvp__sqlparam
-            ("catstate", p.CatState) |> kvp__sqlparam |]
-
-let db__CAT = db__Rcd db__pCAT
-
-let CAT_wrapper item: CAT =
-    let (i,c,u,s),p = item
-    { ID = i; Createdat = c; Updatedat = u; Sort = s; p = p }
-
-let pCAT_clone (p:pCAT): pCAT = {
-    Caption = p.Caption
-    Lang = p.Lang
-    Zh = p.Zh
-    Parent = p.Parent
-    CatState = p.CatState }
-
-let CAT_update_transaction output (updater,suc,fail) (rcd:CAT) =
-    let rollback_p = rcd.p |> pCAT_clone
-    let rollback_updatedat = rcd.Updatedat
-    updater rcd.p
-    let ctime,res =
-        (rcd.ID,rcd.p,rollback_p,rollback_updatedat)
-        |> update (conn,output,CAT_table,CAT_sql_update(),pCAT__sps,suc,fail)
-    match res with
-    | Suc ctx ->
-        rcd.Updatedat <- ctime
-        suc(ctime,ctx)
-    | Fail(eso,ctx) ->
-        rcd.p <- rollback_p
-        rcd.Updatedat <- rollback_updatedat
-        fail eso
-
-let CAT_update output (rcd:CAT) =
-    rcd
-    |> CAT_update_transaction output ((fun p -> ()),(fun (ctime,ctx) -> ()),(fun dte -> ()))
-
-let CAT_create_incremental_transaction output (suc,fail) p =
-    let cid = Interlocked.Increment CAT_id
-    let ctime = DateTime.UtcNow
-    match create (conn,output,CAT_table,pCAT__sps) (cid,ctime,p) with
-    | Suc ctx -> ((cid,ctime,ctime,cid),p) |> CAT_wrapper |> suc
-    | Fail(eso,ctx) -> fail(eso,ctx)
-
-let CAT_create output p =
-    CAT_create_incremental_transaction output ((fun rcd -> ()),(fun (eso,ctx) -> ())) p
-    
-
-let id__CATo id: CAT option = id__rcd(conn,CAT_fieldorders(),CAT_table,db__CAT) id
-
-let CAT_metadata = {
-    fieldorders = CAT_fieldorders
-    db__rcd = db__CAT 
-    wrapper = CAT_wrapper
-    sps = pCAT__sps
-    id = CAT_id
-    id__rcdo = id__CATo
-    clone = pCAT_clone
-    empty__p = pCAT_empty
-    rcd__bin = CAT__bin
-    bin__rcd = bin__CAT
-    sql_update = CAT_sql_update
-    rcd_update = CAT_update
-    table = CAT_table
-    shorthand = "cat" }
-
-let CATTxSqlServer =
-    """
-    IF NOT EXISTS(SELECT * FROM sysobjects WHERE [name]='Ca_Cat' AND xtype='U')
-    BEGIN
-
-        CREATE TABLE Ca_Cat ([ID] BIGINT NOT NULL
-    ,[Createdat] BIGINT NOT NULL
-    ,[Updatedat] BIGINT NOT NULL
-    ,[Sort] BIGINT NOT NULL,
-    ,[Caption]
-    ,[Lang]
-    ,[Zh]
-    ,[Parent]
-    ,[CatState])
-    END
-    """
-
-
-let db__pCITY(line:Object[]): pCITY =
-    let p = pCITY_empty()
-
-    p.Fullname <- string(line[4]).TrimEnd()
-    p.MetropolitanCode3IATA <- string(line[5]).TrimEnd()
-    p.NameEn <- string(line[6]).TrimEnd()
-    p.Country <- if Convert.IsDBNull(line[7]) then 0L else line[7] :?> int64
-    p.Place <- if Convert.IsDBNull(line[8]) then 0L else line[8] :?> int64
-    p.Icon <- string(line[9]).TrimEnd()
-    p.Tel <- string(line[10]).TrimEnd()
-
-    p
-
-let pCITY__sps (p:pCITY) =
-    match rdbms with
-    | Rdbms.SqlServer ->
-        [|
-            ("Fullname", p.Fullname) |> kvp__sqlparam
-            ("MetropolitanCode3IATA", p.MetropolitanCode3IATA) |> kvp__sqlparam
-            ("NameEn", p.NameEn) |> kvp__sqlparam
-            ("Country", p.Country) |> kvp__sqlparam
-            ("Place", p.Place) |> kvp__sqlparam
-            ("Icon", p.Icon) |> kvp__sqlparam
-            ("Tel", p.Tel) |> kvp__sqlparam |]
-    | Rdbms.PostgreSql ->
-        [|
-            ("fullname", p.Fullname) |> kvp__sqlparam
-            ("metropolitancode3iata", p.MetropolitanCode3IATA) |> kvp__sqlparam
-            ("nameen", p.NameEn) |> kvp__sqlparam
-            ("country", p.Country) |> kvp__sqlparam
-            ("place", p.Place) |> kvp__sqlparam
-            ("icon", p.Icon) |> kvp__sqlparam
-            ("tel", p.Tel) |> kvp__sqlparam |]
-
-let db__CITY = db__Rcd db__pCITY
-
-let CITY_wrapper item: CITY =
-    let (i,c,u,s),p = item
-    { ID = i; Createdat = c; Updatedat = u; Sort = s; p = p }
-
-let pCITY_clone (p:pCITY): pCITY = {
-    Fullname = p.Fullname
-    MetropolitanCode3IATA = p.MetropolitanCode3IATA
-    NameEn = p.NameEn
-    Country = p.Country
-    Place = p.Place
-    Icon = p.Icon
-    Tel = p.Tel }
-
-let CITY_update_transaction output (updater,suc,fail) (rcd:CITY) =
-    let rollback_p = rcd.p |> pCITY_clone
-    let rollback_updatedat = rcd.Updatedat
-    updater rcd.p
-    let ctime,res =
-        (rcd.ID,rcd.p,rollback_p,rollback_updatedat)
-        |> update (conn,output,CITY_table,CITY_sql_update(),pCITY__sps,suc,fail)
-    match res with
-    | Suc ctx ->
-        rcd.Updatedat <- ctime
-        suc(ctime,ctx)
-    | Fail(eso,ctx) ->
-        rcd.p <- rollback_p
-        rcd.Updatedat <- rollback_updatedat
-        fail eso
-
-let CITY_update output (rcd:CITY) =
-    rcd
-    |> CITY_update_transaction output ((fun p -> ()),(fun (ctime,ctx) -> ()),(fun dte -> ()))
-
-let CITY_create_incremental_transaction output (suc,fail) p =
-    let cid = Interlocked.Increment CITY_id
-    let ctime = DateTime.UtcNow
-    match create (conn,output,CITY_table,pCITY__sps) (cid,ctime,p) with
-    | Suc ctx -> ((cid,ctime,ctime,cid),p) |> CITY_wrapper |> suc
-    | Fail(eso,ctx) -> fail(eso,ctx)
-
-let CITY_create output p =
-    CITY_create_incremental_transaction output ((fun rcd -> ()),(fun (eso,ctx) -> ())) p
-    
-
-let id__CITYo id: CITY option = id__rcd(conn,CITY_fieldorders(),CITY_table,db__CITY) id
-
-let CITY_metadata = {
-    fieldorders = CITY_fieldorders
-    db__rcd = db__CITY 
-    wrapper = CITY_wrapper
-    sps = pCITY__sps
-    id = CITY_id
-    id__rcdo = id__CITYo
-    clone = pCITY_clone
-    empty__p = pCITY_empty
-    rcd__bin = CITY__bin
-    bin__rcd = bin__CITY
-    sql_update = CITY_sql_update
-    rcd_update = CITY_update
-    table = CITY_table
-    shorthand = "city" }
-
-let CITYTxSqlServer =
-    """
-    IF NOT EXISTS(SELECT * FROM sysobjects WHERE [name]='Ca_City' AND xtype='U')
-    BEGIN
-
-        CREATE TABLE Ca_City ([ID] BIGINT NOT NULL
-    ,[Createdat] BIGINT NOT NULL
-    ,[Updatedat] BIGINT NOT NULL
-    ,[Sort] BIGINT NOT NULL,
-    ,[Fullname]
-    ,[MetropolitanCode3IATA]
-    ,[NameEn]
-    ,[Country]
-    ,[Place]
-    ,[Icon]
-    ,[Tel])
-    END
-    """
-
-
-let db__pCRY(line:Object[]): pCRY =
-    let p = pCRY_empty()
-
-    p.Code2 <- string(line[4]).TrimEnd()
-    p.Caption <- string(line[5]).TrimEnd()
-    p.Fullname <- string(line[6]).TrimEnd()
-    p.Icon <- string(line[7]).TrimEnd()
-    p.Tel <- string(line[8]).TrimEnd()
-    p.Cur <- if Convert.IsDBNull(line[9]) then 0L else line[9] :?> int64
-    p.Capital <- if Convert.IsDBNull(line[10]) then 0L else line[10] :?> int64
-    p.Place <- if Convert.IsDBNull(line[11]) then 0L else line[11] :?> int64
-    p.Lang <- if Convert.IsDBNull(line[12]) then 0L else line[12] :?> int64
-
-    p
-
-let pCRY__sps (p:pCRY) =
-    match rdbms with
-    | Rdbms.SqlServer ->
-        [|
-            ("Code2", p.Code2) |> kvp__sqlparam
-            ("Caption", p.Caption) |> kvp__sqlparam
-            ("Fullname", p.Fullname) |> kvp__sqlparam
-            ("Icon", p.Icon) |> kvp__sqlparam
-            ("Tel", p.Tel) |> kvp__sqlparam
-            ("Cur", p.Cur) |> kvp__sqlparam
-            ("Capital", p.Capital) |> kvp__sqlparam
-            ("Place", p.Place) |> kvp__sqlparam
-            ("Lang", p.Lang) |> kvp__sqlparam |]
-    | Rdbms.PostgreSql ->
-        [|
-            ("code2", p.Code2) |> kvp__sqlparam
-            ("caption", p.Caption) |> kvp__sqlparam
-            ("fullname", p.Fullname) |> kvp__sqlparam
-            ("icon", p.Icon) |> kvp__sqlparam
-            ("tel", p.Tel) |> kvp__sqlparam
-            ("cur", p.Cur) |> kvp__sqlparam
-            ("capital", p.Capital) |> kvp__sqlparam
-            ("place", p.Place) |> kvp__sqlparam
-            ("lang", p.Lang) |> kvp__sqlparam |]
-
-let db__CRY = db__Rcd db__pCRY
-
-let CRY_wrapper item: CRY =
-    let (i,c,u,s),p = item
-    { ID = i; Createdat = c; Updatedat = u; Sort = s; p = p }
-
-let pCRY_clone (p:pCRY): pCRY = {
-    Code2 = p.Code2
-    Caption = p.Caption
-    Fullname = p.Fullname
-    Icon = p.Icon
-    Tel = p.Tel
-    Cur = p.Cur
-    Capital = p.Capital
-    Place = p.Place
-    Lang = p.Lang }
-
-let CRY_update_transaction output (updater,suc,fail) (rcd:CRY) =
-    let rollback_p = rcd.p |> pCRY_clone
-    let rollback_updatedat = rcd.Updatedat
-    updater rcd.p
-    let ctime,res =
-        (rcd.ID,rcd.p,rollback_p,rollback_updatedat)
-        |> update (conn,output,CRY_table,CRY_sql_update(),pCRY__sps,suc,fail)
-    match res with
-    | Suc ctx ->
-        rcd.Updatedat <- ctime
-        suc(ctime,ctx)
-    | Fail(eso,ctx) ->
-        rcd.p <- rollback_p
-        rcd.Updatedat <- rollback_updatedat
-        fail eso
-
-let CRY_update output (rcd:CRY) =
-    rcd
-    |> CRY_update_transaction output ((fun p -> ()),(fun (ctime,ctx) -> ()),(fun dte -> ()))
-
-let CRY_create_incremental_transaction output (suc,fail) p =
-    let cid = Interlocked.Increment CRY_id
-    let ctime = DateTime.UtcNow
-    match create (conn,output,CRY_table,pCRY__sps) (cid,ctime,p) with
-    | Suc ctx -> ((cid,ctime,ctime,cid),p) |> CRY_wrapper |> suc
-    | Fail(eso,ctx) -> fail(eso,ctx)
-
-let CRY_create output p =
-    CRY_create_incremental_transaction output ((fun rcd -> ()),(fun (eso,ctx) -> ())) p
-    
-
-let id__CRYo id: CRY option = id__rcd(conn,CRY_fieldorders(),CRY_table,db__CRY) id
-
-let CRY_metadata = {
-    fieldorders = CRY_fieldorders
-    db__rcd = db__CRY 
-    wrapper = CRY_wrapper
-    sps = pCRY__sps
-    id = CRY_id
-    id__rcdo = id__CRYo
-    clone = pCRY_clone
-    empty__p = pCRY_empty
-    rcd__bin = CRY__bin
-    bin__rcd = bin__CRY
-    sql_update = CRY_sql_update
-    rcd_update = CRY_update
-    table = CRY_table
-    shorthand = "cry" }
-
-let CRYTxSqlServer =
-    """
-    IF NOT EXISTS(SELECT * FROM sysobjects WHERE [name]='Ca_Country' AND xtype='U')
-    BEGIN
-
-        CREATE TABLE Ca_Country ([ID] BIGINT NOT NULL
-    ,[Createdat] BIGINT NOT NULL
-    ,[Updatedat] BIGINT NOT NULL
-    ,[Sort] BIGINT NOT NULL,
-    ,[Code2]
-    ,[Caption]
-    ,[Fullname]
-    ,[Icon]
-    ,[Tel]
-    ,[Cur]
-    ,[Capital]
-    ,[Place]
-    ,[Lang])
+    ,[Message])
     END
     """
 
@@ -3723,28 +2530,7 @@ let db__pEU(line:Object[]): pEU =
     let p = pEU_empty()
 
     p.Caption <- string(line[4]).TrimEnd()
-    p.Username <- string(line[5]).TrimEnd()
-    p.SocialAuthBiz <- if Convert.IsDBNull(line[6]) then 0L else line[6] :?> int64
-    p.SocialAuthId <- string(line[7]).TrimEnd()
-    p.SocialAuthAvatar <- string(line[8]).TrimEnd()
-    p.Email <- string(line[9]).TrimEnd()
-    p.Tel <- string(line[10]).TrimEnd()
-    p.Gender <- EnumOfValue(if Convert.IsDBNull(line[11]) then 0 else line[11] :?> int)
-    p.Status <- EnumOfValue(if Convert.IsDBNull(line[12]) then 0 else line[12] :?> int)
-    p.Admin <- EnumOfValue(if Convert.IsDBNull(line[13]) then 0 else line[13] :?> int)
-    p.BizPartner <- EnumOfValue(if Convert.IsDBNull(line[14]) then 0 else line[14] :?> int)
-    p.Privilege <- if Convert.IsDBNull(line[15]) then 0L else line[15] :?> int64
-    p.Verify <- EnumOfValue(if Convert.IsDBNull(line[16]) then 0 else line[16] :?> int)
-    p.Pwd <- string(line[17]).TrimEnd()
-    p.Online <- if Convert.IsDBNull(line[18]) then false else line[18] :?> bool
-    p.Icon <- string(line[19]).TrimEnd()
-    p.Background <- string(line[20]).TrimEnd()
-    p.BasicAcct <- if Convert.IsDBNull(line[21]) then 0L else line[21] :?> int64
-    p.Citizen <- if Convert.IsDBNull(line[22]) then 0L else line[22] :?> int64
-    p.Refer <- string(line[23]).TrimEnd()
-    p.Referer <- if Convert.IsDBNull(line[24]) then 0L else line[24] :?> int64
-    p.Url <- string(line[25]).TrimEnd()
-    p.About <- string(line[26]).TrimEnd()
+    p.AuthType <- EnumOfValue(if Convert.IsDBNull(line[5]) then 0 else line[5] :?> int)
 
     p
 
@@ -3753,53 +2539,11 @@ let pEU__sps (p:pEU) =
     | Rdbms.SqlServer ->
         [|
             ("Caption", p.Caption) |> kvp__sqlparam
-            ("Username", p.Username) |> kvp__sqlparam
-            ("SocialAuthBiz", p.SocialAuthBiz) |> kvp__sqlparam
-            ("SocialAuthId", p.SocialAuthId) |> kvp__sqlparam
-            ("SocialAuthAvatar", p.SocialAuthAvatar) |> kvp__sqlparam
-            ("Email", p.Email) |> kvp__sqlparam
-            ("Tel", p.Tel) |> kvp__sqlparam
-            ("Gender", p.Gender) |> kvp__sqlparam
-            ("Status", p.Status) |> kvp__sqlparam
-            ("Admin", p.Admin) |> kvp__sqlparam
-            ("BizPartner", p.BizPartner) |> kvp__sqlparam
-            ("Privilege", p.Privilege) |> kvp__sqlparam
-            ("Verify", p.Verify) |> kvp__sqlparam
-            ("Pwd", p.Pwd) |> kvp__sqlparam
-            ("Online", p.Online) |> kvp__sqlparam
-            ("Icon", p.Icon) |> kvp__sqlparam
-            ("Background", p.Background) |> kvp__sqlparam
-            ("BasicAcct", p.BasicAcct) |> kvp__sqlparam
-            ("Citizen", p.Citizen) |> kvp__sqlparam
-            ("Refer", p.Refer) |> kvp__sqlparam
-            ("Referer", p.Referer) |> kvp__sqlparam
-            ("Url", p.Url) |> kvp__sqlparam
-            ("About", p.About) |> kvp__sqlparam |]
+            ("AuthType", p.AuthType) |> kvp__sqlparam |]
     | Rdbms.PostgreSql ->
         [|
             ("caption", p.Caption) |> kvp__sqlparam
-            ("username", p.Username) |> kvp__sqlparam
-            ("socialauthbiz", p.SocialAuthBiz) |> kvp__sqlparam
-            ("socialauthid", p.SocialAuthId) |> kvp__sqlparam
-            ("socialauthavatar", p.SocialAuthAvatar) |> kvp__sqlparam
-            ("email", p.Email) |> kvp__sqlparam
-            ("tel", p.Tel) |> kvp__sqlparam
-            ("gender", p.Gender) |> kvp__sqlparam
-            ("status", p.Status) |> kvp__sqlparam
-            ("admin", p.Admin) |> kvp__sqlparam
-            ("bizpartner", p.BizPartner) |> kvp__sqlparam
-            ("privilege", p.Privilege) |> kvp__sqlparam
-            ("verify", p.Verify) |> kvp__sqlparam
-            ("pwd", p.Pwd) |> kvp__sqlparam
-            ("online", p.Online) |> kvp__sqlparam
-            ("icon", p.Icon) |> kvp__sqlparam
-            ("background", p.Background) |> kvp__sqlparam
-            ("basicacct", p.BasicAcct) |> kvp__sqlparam
-            ("citizen", p.Citizen) |> kvp__sqlparam
-            ("refer", p.Refer) |> kvp__sqlparam
-            ("referer", p.Referer) |> kvp__sqlparam
-            ("url", p.Url) |> kvp__sqlparam
-            ("about", p.About) |> kvp__sqlparam |]
+            ("authtype", p.AuthType) |> kvp__sqlparam |]
 
 let db__EU = db__Rcd db__pEU
 
@@ -3809,28 +2553,7 @@ let EU_wrapper item: EU =
 
 let pEU_clone (p:pEU): pEU = {
     Caption = p.Caption
-    Username = p.Username
-    SocialAuthBiz = p.SocialAuthBiz
-    SocialAuthId = p.SocialAuthId
-    SocialAuthAvatar = p.SocialAuthAvatar
-    Email = p.Email
-    Tel = p.Tel
-    Gender = p.Gender
-    Status = p.Status
-    Admin = p.Admin
-    BizPartner = p.BizPartner
-    Privilege = p.Privilege
-    Verify = p.Verify
-    Pwd = p.Pwd
-    Online = p.Online
-    Icon = p.Icon
-    Background = p.Background
-    BasicAcct = p.BasicAcct
-    Citizen = p.Citizen
-    Refer = p.Refer
-    Referer = p.Referer
-    Url = p.Url
-    About = p.About }
+    AuthType = p.AuthType }
 
 let EU_update_transaction output (updater,suc,fail) (rcd:EU) =
     let rollback_p = rcd.p |> pEU_clone
@@ -3891,182 +2614,63 @@ let EUTxSqlServer =
     ,[Updatedat] BIGINT NOT NULL
     ,[Sort] BIGINT NOT NULL,
     ,[Caption]
-    ,[Username]
-    ,[SocialAuthBiz]
-    ,[SocialAuthId]
-    ,[SocialAuthAvatar]
-    ,[Email]
-    ,[Tel]
-    ,[Gender]
-    ,[Status]
-    ,[Admin]
-    ,[BizPartner]
-    ,[Privilege]
-    ,[Verify]
-    ,[Pwd]
-    ,[Online]
-    ,[Icon]
-    ,[Background]
-    ,[BasicAcct]
-    ,[Citizen]
-    ,[Refer]
-    ,[Referer]
-    ,[Url]
-    ,[About])
+    ,[AuthType])
     END
     """
 
 
-let db__pCSI(line:Object[]): pCSI =
-    let p = pCSI_empty()
-
-    p.Type <- EnumOfValue(if Convert.IsDBNull(line[4]) then 0 else line[4] :?> int)
-    p.Lang <- if Convert.IsDBNull(line[5]) then 0L else line[5] :?> int64
-    p.Bind <- if Convert.IsDBNull(line[6]) then 0L else line[6] :?> int64
-
-    p
-
-let pCSI__sps (p:pCSI) =
-    match rdbms with
-    | Rdbms.SqlServer ->
-        [|
-            ("Type", p.Type) |> kvp__sqlparam
-            ("Lang", p.Lang) |> kvp__sqlparam
-            ("Bind", p.Bind) |> kvp__sqlparam |]
-    | Rdbms.PostgreSql ->
-        [|
-            ("type", p.Type) |> kvp__sqlparam
-            ("lang", p.Lang) |> kvp__sqlparam
-            ("bind", p.Bind) |> kvp__sqlparam |]
-
-let db__CSI = db__Rcd db__pCSI
-
-let CSI_wrapper item: CSI =
-    let (i,c,u,s),p = item
-    { ID = i; Createdat = c; Updatedat = u; Sort = s; p = p }
-
-let pCSI_clone (p:pCSI): pCSI = {
-    Type = p.Type
-    Lang = p.Lang
-    Bind = p.Bind }
-
-let CSI_update_transaction output (updater,suc,fail) (rcd:CSI) =
-    let rollback_p = rcd.p |> pCSI_clone
-    let rollback_updatedat = rcd.Updatedat
-    updater rcd.p
-    let ctime,res =
-        (rcd.ID,rcd.p,rollback_p,rollback_updatedat)
-        |> update (conn,output,CSI_table,CSI_sql_update(),pCSI__sps,suc,fail)
-    match res with
-    | Suc ctx ->
-        rcd.Updatedat <- ctime
-        suc(ctime,ctx)
-    | Fail(eso,ctx) ->
-        rcd.p <- rollback_p
-        rcd.Updatedat <- rollback_updatedat
-        fail eso
-
-let CSI_update output (rcd:CSI) =
-    rcd
-    |> CSI_update_transaction output ((fun p -> ()),(fun (ctime,ctx) -> ()),(fun dte -> ()))
-
-let CSI_create_incremental_transaction output (suc,fail) p =
-    let cid = Interlocked.Increment CSI_id
-    let ctime = DateTime.UtcNow
-    match create (conn,output,CSI_table,pCSI__sps) (cid,ctime,p) with
-    | Suc ctx -> ((cid,ctime,ctime,cid),p) |> CSI_wrapper |> suc
-    | Fail(eso,ctx) -> fail(eso,ctx)
-
-let CSI_create output p =
-    CSI_create_incremental_transaction output ((fun rcd -> ()),(fun (eso,ctx) -> ())) p
-    
-
-let id__CSIo id: CSI option = id__rcd(conn,CSI_fieldorders(),CSI_table,db__CSI) id
-
-let CSI_metadata = {
-    fieldorders = CSI_fieldorders
-    db__rcd = db__CSI 
-    wrapper = CSI_wrapper
-    sps = pCSI__sps
-    id = CSI_id
-    id__rcdo = id__CSIo
-    clone = pCSI_clone
-    empty__p = pCSI_empty
-    rcd__bin = CSI__bin
-    bin__rcd = bin__CSI
-    sql_update = CSI_sql_update
-    rcd_update = CSI_update
-    table = CSI_table
-    shorthand = "csi" }
-
-let CSITxSqlServer =
-    """
-    IF NOT EXISTS(SELECT * FROM sysobjects WHERE [name]='Ca_SpecialItem' AND xtype='U')
-    BEGIN
-
-        CREATE TABLE Ca_SpecialItem ([ID] BIGINT NOT NULL
-    ,[Createdat] BIGINT NOT NULL
-    ,[Updatedat] BIGINT NOT NULL
-    ,[Sort] BIGINT NOT NULL,
-    ,[Type]
-    ,[Lang]
-    ,[Bind])
-    END
-    """
-
-
-let db__pCWC(line:Object[]): pCWC =
-    let p = pCWC_empty()
+let db__pFILE(line:Object[]): pFILE =
+    let p = pFILE_empty()
 
     p.Caption <- string(line[4]).TrimEnd()
-    p.ExternalId <- if Convert.IsDBNull(line[5]) then 0L else line[5] :?> int64
-    p.Icon <- string(line[6]).TrimEnd()
-    p.EU <- if Convert.IsDBNull(line[7]) then 0L else line[7] :?> int64
-    p.Biz <- if Convert.IsDBNull(line[8]) then 0L else line[8] :?> int64
-    p.Json <- string(line[9]).TrimEnd()
+    p.Desc <- string(line[5]).TrimEnd()
+    p.Suffix <- string(line[6]).TrimEnd()
+    p.Size <- if Convert.IsDBNull(line[7]) then 0L else line[7] :?> int64
+    p.Thumbnail <- if Convert.IsDBNull(line[8]) then [| |] else line[8] :?> byte[]
+    p.Owner <- if Convert.IsDBNull(line[9]) then 0L else line[9] :?> int64
 
     p
 
-let pCWC__sps (p:pCWC) =
+let pFILE__sps (p:pFILE) =
     match rdbms with
     | Rdbms.SqlServer ->
         [|
             ("Caption", p.Caption) |> kvp__sqlparam
-            ("ExternalId", p.ExternalId) |> kvp__sqlparam
-            ("Icon", p.Icon) |> kvp__sqlparam
-            ("EU", p.EU) |> kvp__sqlparam
-            ("Biz", p.Biz) |> kvp__sqlparam
-            ("Json", p.Json) |> kvp__sqlparam |]
+            ("Desc", p.Desc) |> kvp__sqlparam
+            ("Suffix", p.Suffix) |> kvp__sqlparam
+            ("Size", p.Size) |> kvp__sqlparam
+            ("Thumbnail", p.Thumbnail) |> kvp__sqlparam
+            ("Owner", p.Owner) |> kvp__sqlparam |]
     | Rdbms.PostgreSql ->
         [|
             ("caption", p.Caption) |> kvp__sqlparam
-            ("externalid", p.ExternalId) |> kvp__sqlparam
-            ("icon", p.Icon) |> kvp__sqlparam
-            ("eu", p.EU) |> kvp__sqlparam
-            ("biz", p.Biz) |> kvp__sqlparam
-            ("json", p.Json) |> kvp__sqlparam |]
+            ("desc", p.Desc) |> kvp__sqlparam
+            ("suffix", p.Suffix) |> kvp__sqlparam
+            ("size", p.Size) |> kvp__sqlparam
+            ("thumbnail", p.Thumbnail) |> kvp__sqlparam
+            ("owner", p.Owner) |> kvp__sqlparam |]
 
-let db__CWC = db__Rcd db__pCWC
+let db__FILE = db__Rcd db__pFILE
 
-let CWC_wrapper item: CWC =
+let FILE_wrapper item: FILE =
     let (i,c,u,s),p = item
     { ID = i; Createdat = c; Updatedat = u; Sort = s; p = p }
 
-let pCWC_clone (p:pCWC): pCWC = {
+let pFILE_clone (p:pFILE): pFILE = {
     Caption = p.Caption
-    ExternalId = p.ExternalId
-    Icon = p.Icon
-    EU = p.EU
-    Biz = p.Biz
-    Json = p.Json }
+    Desc = p.Desc
+    Suffix = p.Suffix
+    Size = p.Size
+    Thumbnail = p.Thumbnail
+    Owner = p.Owner }
 
-let CWC_update_transaction output (updater,suc,fail) (rcd:CWC) =
-    let rollback_p = rcd.p |> pCWC_clone
+let FILE_update_transaction output (updater,suc,fail) (rcd:FILE) =
+    let rollback_p = rcd.p |> pFILE_clone
     let rollback_updatedat = rcd.Updatedat
     updater rcd.p
     let ctime,res =
         (rcd.ID,rcd.p,rollback_p,rollback_updatedat)
-        |> update (conn,output,CWC_table,CWC_sql_update(),pCWC__sps,suc,fail)
+        |> update (conn,output,FILE_table,FILE_sql_update(),pFILE__sps,suc,fail)
     match res with
     | Suc ctx ->
         rcd.Updatedat <- ctime
@@ -4076,54 +2680,466 @@ let CWC_update_transaction output (updater,suc,fail) (rcd:CWC) =
         rcd.Updatedat <- rollback_updatedat
         fail eso
 
-let CWC_update output (rcd:CWC) =
+let FILE_update output (rcd:FILE) =
     rcd
-    |> CWC_update_transaction output ((fun p -> ()),(fun (ctime,ctx) -> ()),(fun dte -> ()))
+    |> FILE_update_transaction output ((fun p -> ()),(fun (ctime,ctx) -> ()),(fun dte -> ()))
 
-let CWC_create_incremental_transaction output (suc,fail) p =
-    let cid = Interlocked.Increment CWC_id
+let FILE_create_incremental_transaction output (suc,fail) p =
+    let cid = Interlocked.Increment FILE_id
     let ctime = DateTime.UtcNow
-    match create (conn,output,CWC_table,pCWC__sps) (cid,ctime,p) with
-    | Suc ctx -> ((cid,ctime,ctime,cid),p) |> CWC_wrapper |> suc
+    match create (conn,output,FILE_table,pFILE__sps) (cid,ctime,p) with
+    | Suc ctx -> ((cid,ctime,ctime,cid),p) |> FILE_wrapper |> suc
     | Fail(eso,ctx) -> fail(eso,ctx)
 
-let CWC_create output p =
-    CWC_create_incremental_transaction output ((fun rcd -> ()),(fun (eso,ctx) -> ())) p
+let FILE_create output p =
+    FILE_create_incremental_transaction output ((fun rcd -> ()),(fun (eso,ctx) -> ())) p
     
 
-let id__CWCo id: CWC option = id__rcd(conn,CWC_fieldorders(),CWC_table,db__CWC) id
+let id__FILEo id: FILE option = id__rcd(conn,FILE_fieldorders(),FILE_table,db__FILE) id
 
-let CWC_metadata = {
-    fieldorders = CWC_fieldorders
-    db__rcd = db__CWC 
-    wrapper = CWC_wrapper
-    sps = pCWC__sps
-    id = CWC_id
-    id__rcdo = id__CWCo
-    clone = pCWC_clone
-    empty__p = pCWC_empty
-    rcd__bin = CWC__bin
-    bin__rcd = bin__CWC
-    sql_update = CWC_sql_update
-    rcd_update = CWC_update
-    table = CWC_table
-    shorthand = "cwc" }
+let FILE_metadata = {
+    fieldorders = FILE_fieldorders
+    db__rcd = db__FILE 
+    wrapper = FILE_wrapper
+    sps = pFILE__sps
+    id = FILE_id
+    id__rcdo = id__FILEo
+    clone = pFILE_clone
+    empty__p = pFILE_empty
+    rcd__bin = FILE__bin
+    bin__rcd = bin__FILE
+    sql_update = FILE_sql_update
+    rcd_update = FILE_update
+    table = FILE_table
+    shorthand = "file" }
 
-let CWCTxSqlServer =
+let FILETxSqlServer =
     """
-    IF NOT EXISTS(SELECT * FROM sysobjects WHERE [name]='Ca_WebCredential' AND xtype='U')
+    IF NOT EXISTS(SELECT * FROM sysobjects WHERE [name]='Ca_File' AND xtype='U')
     BEGIN
 
-        CREATE TABLE Ca_WebCredential ([ID] BIGINT NOT NULL
+        CREATE TABLE Ca_File ([ID] BIGINT NOT NULL
     ,[Createdat] BIGINT NOT NULL
     ,[Updatedat] BIGINT NOT NULL
     ,[Sort] BIGINT NOT NULL,
     ,[Caption]
-    ,[ExternalId]
-    ,[Icon]
-    ,[EU]
-    ,[Biz]
-    ,[Json])
+    ,[Desc]
+    ,[Suffix]
+    ,[Size]
+    ,[Thumbnail]
+    ,[Owner])
+    END
+    """
+
+
+let db__pFBIND(line:Object[]): pFBIND =
+    let p = pFBIND_empty()
+
+    p.File <- if Convert.IsDBNull(line[4]) then 0L else line[4] :?> int64
+    p.Moment <- if Convert.IsDBNull(line[5]) then 0L else line[5] :?> int64
+    p.Desc <- string(line[6]).TrimEnd()
+
+    p
+
+let pFBIND__sps (p:pFBIND) =
+    match rdbms with
+    | Rdbms.SqlServer ->
+        [|
+            ("File", p.File) |> kvp__sqlparam
+            ("Moment", p.Moment) |> kvp__sqlparam
+            ("Desc", p.Desc) |> kvp__sqlparam |]
+    | Rdbms.PostgreSql ->
+        [|
+            ("file", p.File) |> kvp__sqlparam
+            ("moment", p.Moment) |> kvp__sqlparam
+            ("desc", p.Desc) |> kvp__sqlparam |]
+
+let db__FBIND = db__Rcd db__pFBIND
+
+let FBIND_wrapper item: FBIND =
+    let (i,c,u,s),p = item
+    { ID = i; Createdat = c; Updatedat = u; Sort = s; p = p }
+
+let pFBIND_clone (p:pFBIND): pFBIND = {
+    File = p.File
+    Moment = p.Moment
+    Desc = p.Desc }
+
+let FBIND_update_transaction output (updater,suc,fail) (rcd:FBIND) =
+    let rollback_p = rcd.p |> pFBIND_clone
+    let rollback_updatedat = rcd.Updatedat
+    updater rcd.p
+    let ctime,res =
+        (rcd.ID,rcd.p,rollback_p,rollback_updatedat)
+        |> update (conn,output,FBIND_table,FBIND_sql_update(),pFBIND__sps,suc,fail)
+    match res with
+    | Suc ctx ->
+        rcd.Updatedat <- ctime
+        suc(ctime,ctx)
+    | Fail(eso,ctx) ->
+        rcd.p <- rollback_p
+        rcd.Updatedat <- rollback_updatedat
+        fail eso
+
+let FBIND_update output (rcd:FBIND) =
+    rcd
+    |> FBIND_update_transaction output ((fun p -> ()),(fun (ctime,ctx) -> ()),(fun dte -> ()))
+
+let FBIND_create_incremental_transaction output (suc,fail) p =
+    let cid = Interlocked.Increment FBIND_id
+    let ctime = DateTime.UtcNow
+    match create (conn,output,FBIND_table,pFBIND__sps) (cid,ctime,p) with
+    | Suc ctx -> ((cid,ctime,ctime,cid),p) |> FBIND_wrapper |> suc
+    | Fail(eso,ctx) -> fail(eso,ctx)
+
+let FBIND_create output p =
+    FBIND_create_incremental_transaction output ((fun rcd -> ()),(fun (eso,ctx) -> ())) p
+    
+
+let id__FBINDo id: FBIND option = id__rcd(conn,FBIND_fieldorders(),FBIND_table,db__FBIND) id
+
+let FBIND_metadata = {
+    fieldorders = FBIND_fieldorders
+    db__rcd = db__FBIND 
+    wrapper = FBIND_wrapper
+    sps = pFBIND__sps
+    id = FBIND_id
+    id__rcdo = id__FBINDo
+    clone = pFBIND_clone
+    empty__p = pFBIND_empty
+    rcd__bin = FBIND__bin
+    bin__rcd = bin__FBIND
+    sql_update = FBIND_sql_update
+    rcd_update = FBIND_update
+    table = FBIND_table
+    shorthand = "fbind" }
+
+let FBINDTxSqlServer =
+    """
+    IF NOT EXISTS(SELECT * FROM sysobjects WHERE [name]='Social_FileBind' AND xtype='U')
+    BEGIN
+
+        CREATE TABLE Social_FileBind ([ID] BIGINT NOT NULL
+    ,[Createdat] BIGINT NOT NULL
+    ,[Updatedat] BIGINT NOT NULL
+    ,[Sort] BIGINT NOT NULL,
+    ,[File]
+    ,[Moment]
+    ,[Desc])
+    END
+    """
+
+
+let db__pMOMENT(line:Object[]): pMOMENT =
+    let p = pMOMENT_empty()
+
+    p.Title <- string(line[4]).TrimEnd()
+    p.Summary <- string(line[5]).TrimEnd()
+    p.FullText <- string(line[6]).TrimEnd()
+    p.PreviewImgUrl <- string(line[7]).TrimEnd()
+    p.Link <- string(line[8]).TrimEnd()
+    p.Type <- EnumOfValue(if Convert.IsDBNull(line[9]) then 0 else line[9] :?> int)
+    p.State <- EnumOfValue(if Convert.IsDBNull(line[10]) then 0 else line[10] :?> int)
+    p.MediaType <- EnumOfValue(if Convert.IsDBNull(line[11]) then 0 else line[11] :?> int)
+
+    p
+
+let pMOMENT__sps (p:pMOMENT) =
+    match rdbms with
+    | Rdbms.SqlServer ->
+        [|
+            ("Title", p.Title) |> kvp__sqlparam
+            ("Summary", p.Summary) |> kvp__sqlparam
+            ("FullText", p.FullText) |> kvp__sqlparam
+            ("PreviewImgUrl", p.PreviewImgUrl) |> kvp__sqlparam
+            ("Link", p.Link) |> kvp__sqlparam
+            ("Type", p.Type) |> kvp__sqlparam
+            ("State", p.State) |> kvp__sqlparam
+            ("MediaType", p.MediaType) |> kvp__sqlparam |]
+    | Rdbms.PostgreSql ->
+        [|
+            ("title", p.Title) |> kvp__sqlparam
+            ("summary", p.Summary) |> kvp__sqlparam
+            ("fulltext", p.FullText) |> kvp__sqlparam
+            ("previewimgurl", p.PreviewImgUrl) |> kvp__sqlparam
+            ("link", p.Link) |> kvp__sqlparam
+            ("type", p.Type) |> kvp__sqlparam
+            ("state", p.State) |> kvp__sqlparam
+            ("mediatype", p.MediaType) |> kvp__sqlparam |]
+
+let db__MOMENT = db__Rcd db__pMOMENT
+
+let MOMENT_wrapper item: MOMENT =
+    let (i,c,u,s),p = item
+    { ID = i; Createdat = c; Updatedat = u; Sort = s; p = p }
+
+let pMOMENT_clone (p:pMOMENT): pMOMENT = {
+    Title = p.Title
+    Summary = p.Summary
+    FullText = p.FullText
+    PreviewImgUrl = p.PreviewImgUrl
+    Link = p.Link
+    Type = p.Type
+    State = p.State
+    MediaType = p.MediaType }
+
+let MOMENT_update_transaction output (updater,suc,fail) (rcd:MOMENT) =
+    let rollback_p = rcd.p |> pMOMENT_clone
+    let rollback_updatedat = rcd.Updatedat
+    updater rcd.p
+    let ctime,res =
+        (rcd.ID,rcd.p,rollback_p,rollback_updatedat)
+        |> update (conn,output,MOMENT_table,MOMENT_sql_update(),pMOMENT__sps,suc,fail)
+    match res with
+    | Suc ctx ->
+        rcd.Updatedat <- ctime
+        suc(ctime,ctx)
+    | Fail(eso,ctx) ->
+        rcd.p <- rollback_p
+        rcd.Updatedat <- rollback_updatedat
+        fail eso
+
+let MOMENT_update output (rcd:MOMENT) =
+    rcd
+    |> MOMENT_update_transaction output ((fun p -> ()),(fun (ctime,ctx) -> ()),(fun dte -> ()))
+
+let MOMENT_create_incremental_transaction output (suc,fail) p =
+    let cid = Interlocked.Increment MOMENT_id
+    let ctime = DateTime.UtcNow
+    match create (conn,output,MOMENT_table,pMOMENT__sps) (cid,ctime,p) with
+    | Suc ctx -> ((cid,ctime,ctime,cid),p) |> MOMENT_wrapper |> suc
+    | Fail(eso,ctx) -> fail(eso,ctx)
+
+let MOMENT_create output p =
+    MOMENT_create_incremental_transaction output ((fun rcd -> ()),(fun (eso,ctx) -> ())) p
+    
+
+let id__MOMENTo id: MOMENT option = id__rcd(conn,MOMENT_fieldorders(),MOMENT_table,db__MOMENT) id
+
+let MOMENT_metadata = {
+    fieldorders = MOMENT_fieldorders
+    db__rcd = db__MOMENT 
+    wrapper = MOMENT_wrapper
+    sps = pMOMENT__sps
+    id = MOMENT_id
+    id__rcdo = id__MOMENTo
+    clone = pMOMENT_clone
+    empty__p = pMOMENT_empty
+    rcd__bin = MOMENT__bin
+    bin__rcd = bin__MOMENT
+    sql_update = MOMENT_sql_update
+    rcd_update = MOMENT_update
+    table = MOMENT_table
+    shorthand = "moment" }
+
+let MOMENTTxSqlServer =
+    """
+    IF NOT EXISTS(SELECT * FROM sysobjects WHERE [name]='Social_Moment' AND xtype='U')
+    BEGIN
+
+        CREATE TABLE Social_Moment ([ID] BIGINT NOT NULL
+    ,[Createdat] BIGINT NOT NULL
+    ,[Updatedat] BIGINT NOT NULL
+    ,[Sort] BIGINT NOT NULL,
+    ,[Title]
+    ,[Summary]
+    ,[FullText]
+    ,[PreviewImgUrl]
+    ,[Link]
+    ,[Type]
+    ,[State]
+    ,[MediaType])
+    END
+    """
+
+
+let db__pLOG(line:Object[]): pLOG =
+    let p = pLOG_empty()
+
+    p.Location <- string(line[4]).TrimEnd()
+    p.Content <- string(line[5]).TrimEnd()
+    p.Sql <- string(line[6]).TrimEnd()
+
+    p
+
+let pLOG__sps (p:pLOG) =
+    match rdbms with
+    | Rdbms.SqlServer ->
+        [|
+            ("Location", p.Location) |> kvp__sqlparam
+            ("Content", p.Content) |> kvp__sqlparam
+            ("Sql", p.Sql) |> kvp__sqlparam |]
+    | Rdbms.PostgreSql ->
+        [|
+            ("location", p.Location) |> kvp__sqlparam
+            ("content", p.Content) |> kvp__sqlparam
+            ("sql", p.Sql) |> kvp__sqlparam |]
+
+let db__LOG = db__Rcd db__pLOG
+
+let LOG_wrapper item: LOG =
+    let (i,c,u,s),p = item
+    { ID = i; Createdat = c; Updatedat = u; Sort = s; p = p }
+
+let pLOG_clone (p:pLOG): pLOG = {
+    Location = p.Location
+    Content = p.Content
+    Sql = p.Sql }
+
+let LOG_update_transaction output (updater,suc,fail) (rcd:LOG) =
+    let rollback_p = rcd.p |> pLOG_clone
+    let rollback_updatedat = rcd.Updatedat
+    updater rcd.p
+    let ctime,res =
+        (rcd.ID,rcd.p,rollback_p,rollback_updatedat)
+        |> update (conn,output,LOG_table,LOG_sql_update(),pLOG__sps,suc,fail)
+    match res with
+    | Suc ctx ->
+        rcd.Updatedat <- ctime
+        suc(ctime,ctx)
+    | Fail(eso,ctx) ->
+        rcd.p <- rollback_p
+        rcd.Updatedat <- rollback_updatedat
+        fail eso
+
+let LOG_update output (rcd:LOG) =
+    rcd
+    |> LOG_update_transaction output ((fun p -> ()),(fun (ctime,ctx) -> ()),(fun dte -> ()))
+
+let LOG_create_incremental_transaction output (suc,fail) p =
+    let cid = Interlocked.Increment LOG_id
+    let ctime = DateTime.UtcNow
+    match create (conn,output,LOG_table,pLOG__sps) (cid,ctime,p) with
+    | Suc ctx -> ((cid,ctime,ctime,cid),p) |> LOG_wrapper |> suc
+    | Fail(eso,ctx) -> fail(eso,ctx)
+
+let LOG_create output p =
+    LOG_create_incremental_transaction output ((fun rcd -> ()),(fun (eso,ctx) -> ())) p
+    
+
+let id__LOGo id: LOG option = id__rcd(conn,LOG_fieldorders(),LOG_table,db__LOG) id
+
+let LOG_metadata = {
+    fieldorders = LOG_fieldorders
+    db__rcd = db__LOG 
+    wrapper = LOG_wrapper
+    sps = pLOG__sps
+    id = LOG_id
+    id__rcdo = id__LOGo
+    clone = pLOG_clone
+    empty__p = pLOG_empty
+    rcd__bin = LOG__bin
+    bin__rcd = bin__LOG
+    sql_update = LOG_sql_update
+    rcd_update = LOG_update
+    table = LOG_table
+    shorthand = "log" }
+
+let LOGTxSqlServer =
+    """
+    IF NOT EXISTS(SELECT * FROM sysobjects WHERE [name]='Sys_Log' AND xtype='U')
+    BEGIN
+
+        CREATE TABLE Sys_Log ([ID] BIGINT NOT NULL
+    ,[Createdat] BIGINT NOT NULL
+    ,[Updatedat] BIGINT NOT NULL
+    ,[Sort] BIGINT NOT NULL,
+    ,[Location]
+    ,[Content]
+    ,[Sql])
+    END
+    """
+
+
+let db__pPLOG(line:Object[]): pPLOG =
+    let p = pPLOG_empty()
+
+    p.Ip <- string(line[4]).TrimEnd()
+    p.Request <- string(line[5]).TrimEnd()
+
+    p
+
+let pPLOG__sps (p:pPLOG) =
+    match rdbms with
+    | Rdbms.SqlServer ->
+        [|
+            ("Ip", p.Ip) |> kvp__sqlparam
+            ("Request", p.Request) |> kvp__sqlparam |]
+    | Rdbms.PostgreSql ->
+        [|
+            ("ip", p.Ip) |> kvp__sqlparam
+            ("request", p.Request) |> kvp__sqlparam |]
+
+let db__PLOG = db__Rcd db__pPLOG
+
+let PLOG_wrapper item: PLOG =
+    let (i,c,u,s),p = item
+    { ID = i; Createdat = c; Updatedat = u; Sort = s; p = p }
+
+let pPLOG_clone (p:pPLOG): pPLOG = {
+    Ip = p.Ip
+    Request = p.Request }
+
+let PLOG_update_transaction output (updater,suc,fail) (rcd:PLOG) =
+    let rollback_p = rcd.p |> pPLOG_clone
+    let rollback_updatedat = rcd.Updatedat
+    updater rcd.p
+    let ctime,res =
+        (rcd.ID,rcd.p,rollback_p,rollback_updatedat)
+        |> update (conn,output,PLOG_table,PLOG_sql_update(),pPLOG__sps,suc,fail)
+    match res with
+    | Suc ctx ->
+        rcd.Updatedat <- ctime
+        suc(ctime,ctx)
+    | Fail(eso,ctx) ->
+        rcd.p <- rollback_p
+        rcd.Updatedat <- rollback_updatedat
+        fail eso
+
+let PLOG_update output (rcd:PLOG) =
+    rcd
+    |> PLOG_update_transaction output ((fun p -> ()),(fun (ctime,ctx) -> ()),(fun dte -> ()))
+
+let PLOG_create_incremental_transaction output (suc,fail) p =
+    let cid = Interlocked.Increment PLOG_id
+    let ctime = DateTime.UtcNow
+    match create (conn,output,PLOG_table,pPLOG__sps) (cid,ctime,p) with
+    | Suc ctx -> ((cid,ctime,ctime,cid),p) |> PLOG_wrapper |> suc
+    | Fail(eso,ctx) -> fail(eso,ctx)
+
+let PLOG_create output p =
+    PLOG_create_incremental_transaction output ((fun rcd -> ()),(fun (eso,ctx) -> ())) p
+    
+
+let id__PLOGo id: PLOG option = id__rcd(conn,PLOG_fieldorders(),PLOG_table,db__PLOG) id
+
+let PLOG_metadata = {
+    fieldorders = PLOG_fieldorders
+    db__rcd = db__PLOG 
+    wrapper = PLOG_wrapper
+    sps = pPLOG__sps
+    id = PLOG_id
+    id__rcdo = id__PLOGo
+    clone = pPLOG_clone
+    empty__p = pPLOG_empty
+    rcd__bin = PLOG__bin
+    bin__rcd = bin__PLOG
+    sql_update = PLOG_sql_update
+    rcd_update = PLOG_update
+    table = PLOG_table
+    shorthand = "plog" }
+
+let PLOGTxSqlServer =
+    """
+    IF NOT EXISTS(SELECT * FROM sysobjects WHERE [name]='Sys_PageLog' AND xtype='U')
+    BEGIN
+
+        CREATE TABLE Sys_PageLog ([ID] BIGINT NOT NULL
+    ,[Createdat] BIGINT NOT NULL
+    ,[Updatedat] BIGINT NOT NULL
+    ,[Sort] BIGINT NOT NULL,
+    ,[Ip]
+    ,[Request])
     END
     """
 
@@ -5086,33 +4102,31 @@ let VARTYPETxSqlServer =
 
 
 type MetadataEnum = 
-| ADDRESS = 0
-| BIZ = 1
-| CAT = 2
-| CITY = 3
-| CRY = 4
-| EU = 5
-| CSI = 6
-| CWC = 7
-| API = 8
-| FIELD = 9
-| HOSTCONFIG = 10
-| PROJECT = 11
-| TABLE = 12
-| COMP = 13
-| PAGE = 14
-| TEMPLATE = 15
-| VARTYPE = 16
+| BOOK = 0
+| EU = 1
+| FILE = 2
+| FBIND = 3
+| MOMENT = 4
+| LOG = 5
+| PLOG = 6
+| API = 7
+| FIELD = 8
+| HOSTCONFIG = 9
+| PROJECT = 10
+| TABLE = 11
+| COMP = 12
+| PAGE = 13
+| TEMPLATE = 14
+| VARTYPE = 15
 
 let tablenames = [|
-    ADDRESS_metadata.table
-    BIZ_metadata.table
-    CAT_metadata.table
-    CITY_metadata.table
-    CRY_metadata.table
+    BOOK_metadata.table
     EU_metadata.table
-    CSI_metadata.table
-    CWC_metadata.table
+    FILE_metadata.table
+    FBIND_metadata.table
+    MOMENT_metadata.table
+    LOG_metadata.table
+    PLOG_metadata.table
     API_metadata.table
     FIELD_metadata.table
     HOSTCONFIG_metadata.table
@@ -5125,96 +4139,20 @@ let tablenames = [|
 
 let init() =
 
-    let sqlMaxCa_Address, sqlCountCa_Address =
+    let sqlMaxCa_Book, sqlCountCa_Book =
         match rdbms with
-        | Rdbms.SqlServer -> "SELECT MAX(ID) FROM [Ca_Address]", "SELECT COUNT(ID) FROM [Ca_Address]"
-        | Rdbms.PostgreSql -> "SELECT MAX(id) FROM ca_address", "SELECT COUNT(id) FROM ca_address"
-    match singlevalue_query conn (str__sql sqlMaxCa_Address) with
+        | Rdbms.SqlServer -> "SELECT MAX(ID) FROM [Ca_Book]", "SELECT COUNT(ID) FROM [Ca_Book]"
+        | Rdbms.PostgreSql -> "SELECT MAX(id) FROM ca_book", "SELECT COUNT(id) FROM ca_book"
+    match singlevalue_query conn (str__sql sqlMaxCa_Book) with
     | Some v ->
         let max = v :?> int64
-        if max > ADDRESS_id.Value then
-            ADDRESS_id.Value <- max
+        if max > BOOK_id.Value then
+            BOOK_id.Value <- max
     | None -> ()
 
-    match singlevalue_query conn (str__sql sqlCountCa_Address) with
+    match singlevalue_query conn (str__sql sqlCountCa_Book) with
     | Some v ->
-        ADDRESS_count.Value <-
-            match rdbms with
-            | Rdbms.SqlServer -> v :?> int32
-            | Rdbms.PostgreSql -> v :?> int64 |> int32
-    | None -> ()
-
-    let sqlMaxCa_Biz, sqlCountCa_Biz =
-        match rdbms with
-        | Rdbms.SqlServer -> "SELECT MAX(ID) FROM [Ca_Biz]", "SELECT COUNT(ID) FROM [Ca_Biz]"
-        | Rdbms.PostgreSql -> "SELECT MAX(id) FROM ca_biz", "SELECT COUNT(id) FROM ca_biz"
-    match singlevalue_query conn (str__sql sqlMaxCa_Biz) with
-    | Some v ->
-        let max = v :?> int64
-        if max > BIZ_id.Value then
-            BIZ_id.Value <- max
-    | None -> ()
-
-    match singlevalue_query conn (str__sql sqlCountCa_Biz) with
-    | Some v ->
-        BIZ_count.Value <-
-            match rdbms with
-            | Rdbms.SqlServer -> v :?> int32
-            | Rdbms.PostgreSql -> v :?> int64 |> int32
-    | None -> ()
-
-    let sqlMaxCa_Cat, sqlCountCa_Cat =
-        match rdbms with
-        | Rdbms.SqlServer -> "SELECT MAX(ID) FROM [Ca_Cat]", "SELECT COUNT(ID) FROM [Ca_Cat]"
-        | Rdbms.PostgreSql -> "SELECT MAX(id) FROM ca_cat", "SELECT COUNT(id) FROM ca_cat"
-    match singlevalue_query conn (str__sql sqlMaxCa_Cat) with
-    | Some v ->
-        let max = v :?> int64
-        if max > CAT_id.Value then
-            CAT_id.Value <- max
-    | None -> ()
-
-    match singlevalue_query conn (str__sql sqlCountCa_Cat) with
-    | Some v ->
-        CAT_count.Value <-
-            match rdbms with
-            | Rdbms.SqlServer -> v :?> int32
-            | Rdbms.PostgreSql -> v :?> int64 |> int32
-    | None -> ()
-
-    let sqlMaxCa_City, sqlCountCa_City =
-        match rdbms with
-        | Rdbms.SqlServer -> "SELECT MAX(ID) FROM [Ca_City]", "SELECT COUNT(ID) FROM [Ca_City]"
-        | Rdbms.PostgreSql -> "SELECT MAX(id) FROM ca_city", "SELECT COUNT(id) FROM ca_city"
-    match singlevalue_query conn (str__sql sqlMaxCa_City) with
-    | Some v ->
-        let max = v :?> int64
-        if max > CITY_id.Value then
-            CITY_id.Value <- max
-    | None -> ()
-
-    match singlevalue_query conn (str__sql sqlCountCa_City) with
-    | Some v ->
-        CITY_count.Value <-
-            match rdbms with
-            | Rdbms.SqlServer -> v :?> int32
-            | Rdbms.PostgreSql -> v :?> int64 |> int32
-    | None -> ()
-
-    let sqlMaxCa_Country, sqlCountCa_Country =
-        match rdbms with
-        | Rdbms.SqlServer -> "SELECT MAX(ID) FROM [Ca_Country]", "SELECT COUNT(ID) FROM [Ca_Country]"
-        | Rdbms.PostgreSql -> "SELECT MAX(id) FROM ca_country", "SELECT COUNT(id) FROM ca_country"
-    match singlevalue_query conn (str__sql sqlMaxCa_Country) with
-    | Some v ->
-        let max = v :?> int64
-        if max > CRY_id.Value then
-            CRY_id.Value <- max
-    | None -> ()
-
-    match singlevalue_query conn (str__sql sqlCountCa_Country) with
-    | Some v ->
-        CRY_count.Value <-
+        BOOK_count.Value <-
             match rdbms with
             | Rdbms.SqlServer -> v :?> int32
             | Rdbms.PostgreSql -> v :?> int64 |> int32
@@ -5239,39 +4177,96 @@ let init() =
             | Rdbms.PostgreSql -> v :?> int64 |> int32
     | None -> ()
 
-    let sqlMaxCa_SpecialItem, sqlCountCa_SpecialItem =
+    let sqlMaxCa_File, sqlCountCa_File =
         match rdbms with
-        | Rdbms.SqlServer -> "SELECT MAX(ID) FROM [Ca_SpecialItem]", "SELECT COUNT(ID) FROM [Ca_SpecialItem]"
-        | Rdbms.PostgreSql -> "SELECT MAX(id) FROM ca_specialitem", "SELECT COUNT(id) FROM ca_specialitem"
-    match singlevalue_query conn (str__sql sqlMaxCa_SpecialItem) with
+        | Rdbms.SqlServer -> "SELECT MAX(ID) FROM [Ca_File]", "SELECT COUNT(ID) FROM [Ca_File]"
+        | Rdbms.PostgreSql -> "SELECT MAX(id) FROM ca_file", "SELECT COUNT(id) FROM ca_file"
+    match singlevalue_query conn (str__sql sqlMaxCa_File) with
     | Some v ->
         let max = v :?> int64
-        if max > CSI_id.Value then
-            CSI_id.Value <- max
+        if max > FILE_id.Value then
+            FILE_id.Value <- max
     | None -> ()
 
-    match singlevalue_query conn (str__sql sqlCountCa_SpecialItem) with
+    match singlevalue_query conn (str__sql sqlCountCa_File) with
     | Some v ->
-        CSI_count.Value <-
+        FILE_count.Value <-
             match rdbms with
             | Rdbms.SqlServer -> v :?> int32
             | Rdbms.PostgreSql -> v :?> int64 |> int32
     | None -> ()
 
-    let sqlMaxCa_WebCredential, sqlCountCa_WebCredential =
+    let sqlMaxSocial_FileBind, sqlCountSocial_FileBind =
         match rdbms with
-        | Rdbms.SqlServer -> "SELECT MAX(ID) FROM [Ca_WebCredential]", "SELECT COUNT(ID) FROM [Ca_WebCredential]"
-        | Rdbms.PostgreSql -> "SELECT MAX(id) FROM ca_webcredential", "SELECT COUNT(id) FROM ca_webcredential"
-    match singlevalue_query conn (str__sql sqlMaxCa_WebCredential) with
+        | Rdbms.SqlServer -> "SELECT MAX(ID) FROM [Social_FileBind]", "SELECT COUNT(ID) FROM [Social_FileBind]"
+        | Rdbms.PostgreSql -> "SELECT MAX(id) FROM social_filebind", "SELECT COUNT(id) FROM social_filebind"
+    match singlevalue_query conn (str__sql sqlMaxSocial_FileBind) with
     | Some v ->
         let max = v :?> int64
-        if max > CWC_id.Value then
-            CWC_id.Value <- max
+        if max > FBIND_id.Value then
+            FBIND_id.Value <- max
     | None -> ()
 
-    match singlevalue_query conn (str__sql sqlCountCa_WebCredential) with
+    match singlevalue_query conn (str__sql sqlCountSocial_FileBind) with
     | Some v ->
-        CWC_count.Value <-
+        FBIND_count.Value <-
+            match rdbms with
+            | Rdbms.SqlServer -> v :?> int32
+            | Rdbms.PostgreSql -> v :?> int64 |> int32
+    | None -> ()
+
+    let sqlMaxSocial_Moment, sqlCountSocial_Moment =
+        match rdbms with
+        | Rdbms.SqlServer -> "SELECT MAX(ID) FROM [Social_Moment]", "SELECT COUNT(ID) FROM [Social_Moment]"
+        | Rdbms.PostgreSql -> "SELECT MAX(id) FROM social_moment", "SELECT COUNT(id) FROM social_moment"
+    match singlevalue_query conn (str__sql sqlMaxSocial_Moment) with
+    | Some v ->
+        let max = v :?> int64
+        if max > MOMENT_id.Value then
+            MOMENT_id.Value <- max
+    | None -> ()
+
+    match singlevalue_query conn (str__sql sqlCountSocial_Moment) with
+    | Some v ->
+        MOMENT_count.Value <-
+            match rdbms with
+            | Rdbms.SqlServer -> v :?> int32
+            | Rdbms.PostgreSql -> v :?> int64 |> int32
+    | None -> ()
+
+    let sqlMaxSys_Log, sqlCountSys_Log =
+        match rdbms with
+        | Rdbms.SqlServer -> "SELECT MAX(ID) FROM [Sys_Log]", "SELECT COUNT(ID) FROM [Sys_Log]"
+        | Rdbms.PostgreSql -> "SELECT MAX(id) FROM sys_log", "SELECT COUNT(id) FROM sys_log"
+    match singlevalue_query conn (str__sql sqlMaxSys_Log) with
+    | Some v ->
+        let max = v :?> int64
+        if max > LOG_id.Value then
+            LOG_id.Value <- max
+    | None -> ()
+
+    match singlevalue_query conn (str__sql sqlCountSys_Log) with
+    | Some v ->
+        LOG_count.Value <-
+            match rdbms with
+            | Rdbms.SqlServer -> v :?> int32
+            | Rdbms.PostgreSql -> v :?> int64 |> int32
+    | None -> ()
+
+    let sqlMaxSys_PageLog, sqlCountSys_PageLog =
+        match rdbms with
+        | Rdbms.SqlServer -> "SELECT MAX(ID) FROM [Sys_PageLog]", "SELECT COUNT(ID) FROM [Sys_PageLog]"
+        | Rdbms.PostgreSql -> "SELECT MAX(id) FROM sys_pagelog", "SELECT COUNT(id) FROM sys_pagelog"
+    match singlevalue_query conn (str__sql sqlMaxSys_PageLog) with
+    | Some v ->
+        let max = v :?> int64
+        if max > PLOG_id.Value then
+            PLOG_id.Value <- max
+    | None -> ()
+
+    match singlevalue_query conn (str__sql sqlCountSys_PageLog) with
+    | Some v ->
+        PLOG_count.Value <-
             match rdbms with
             | Rdbms.SqlServer -> v :?> int32
             | Rdbms.PostgreSql -> v :?> int64 |> int32

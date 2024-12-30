@@ -30,8 +30,8 @@ open UtilWebServer.Server.Service
 [<EntryPoint>]
 let main argv =
 
-    TypeSys.Program.run()
-    BizLogics.CodeRobot.run()
+    //TypeSys.Program.run()
+    //BizLogics.CodeRobot.run()
 
     init runtime
 
@@ -71,8 +71,8 @@ let main argv =
             | _ -> Some empty
         | None -> Some empty
     
-    //startEngine runtime
-    startWebSocket runtime
+    startEngine runtime
+    //startWebSocket runtime
 
     Util.Runtime.halt output "" ""
 

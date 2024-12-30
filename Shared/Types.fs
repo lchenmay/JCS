@@ -16,6 +16,14 @@ open Shared.OrmTypes
 type EuComplex = {
 eu: EU }
 
+type FBindComplex = {
+file: FILE
+fbind: FBIND }
+
+type MomentComplex = {
+fbxs: FBindComplex[]
+m: MOMENT }
+
 type TableComplex = {
 fields: ModDictStr<FIELD>
 table: TABLE }
@@ -49,7 +57,11 @@ type Fact =
 
 type RuntimeData = {
 mutable facts: Fact list
-projectxs: ModDictInt64<ProjectComplex> }
+projectxs: ModDictInt64<ProjectComplex> 
+files: ModDictInt64<FILE>
+mxs: ModDictInt64<MomentComplex>
+books: List<BOOK> }
+
 
 type ClientRuntime = {
 mutable version: int }

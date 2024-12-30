@@ -1,442 +1,73 @@
 [
   {
-    "name": "Ca_Country",
-    "shorthand": "cry",
-    "id": 1001,
-    "fields": [
-      {
-        "enum": "Chars",
-        "length": 2,
-        "name": "Code2"
-      },
-      {
-        "enum": "Chars",
-        "length": 64,
-        "name": "Caption"
-      },
-      {
-        "enum": "Chars",
-        "length": 256,
-        "name": "Fullname"
-      },
-      {
-        "enum": "Link",
-        "length": 256,
-        "name": "Icon"
-      },
-      {
-        "enum": "Chars",
-        "length": 4,
-        "name": "Tel"
-      },
-      {
-        "enum": "FK",
-        "name": "Cur"
-      },
-      {
-        "enum": "FK",
-        "ref": "Ca_City",
-        "name": "Capital"
-      },
-      {
-        "enum": "FK",
-        "name": "Place"
-      },
-      {
-        "enum": "FK",
-        "name": "Lang"
-      }
-    ],
-    "cache": true
-  },
-  {
-    "name": "Ca_City",
-    "shorthand": "city",
-    "id": 1001,
-    "fields": [
-      {
-        "enum": "Chars",
-        "length": 64,
-        "name": "Fullname"
-      },
-      {
-        "enum": "Chars",
-        "length": 3,
-        "name": "MetropolitanCode3IATA"
-      },
-      {
-        "enum": "Chars",
-        "length": 64,
-        "name": "NameEn"
-      },
-      {
-        "enum": "FK",
-        "name": "Country"
-      },
-      {
-        "enum": "FK",
-        "name": "Place"
-      },
-      {
-        "enum": "Link",
-        "length": 256,
-        "name": "Icon"
-      },
-      {
-        "enum": "Chars",
-        "length": 4,
-        "name": "Tel"
-      }
-    ],
-    "cache": true
-  },
-  {
-    "name": "Ca_Cat",
-    "shorthand": "cat",
-    "fields": [
-      {
-        "enum": "Chars",
-        "length": 64,
-        "name": "Caption"
-      },
-      {
-        "enum": "FK",
-        "ref": "Ca_Lang",
-        "name": "Lang"
-      },
-      {
-        "enum": "FK",
-        "ref": "Ca_Cat",
-        "name": "Zh"
-      },
-      {
-        "enum": "FK",
-        "ref": "Ca_Cat",
-        "name": "Parent"
-      },
-      {
-        "enum": "SelectLines",
-        "lines": "Normal//正常///Hidden//隐藏///Obsolete//过时",
-        "name": "CatState"
-      }
-    ],
-    "cache": true
-  },
-  {
-    "name": "Ca_SpecialItem",
-    "fields": [
-      {
-        "enum": "SelectLines",
-        "lines": "Normal//常规///ToplinesGlobalNews//全站新闻置顶///ToplinesGlobalPerson//全站人物置顶///ToplinesGlobalEvent//全站事件置顶",
-        "name": "Type"
-      },
-      {
-        "enum": "FK",
-        "name": "Lang"
-      },
-      {
-        "enum": "Integer",
-        "name": "Bind"
-      }
-    ]
-  },
-  {
-    "name": "Ca_Biz",
-    "shorthand": "biz",
-    "id": 75865464,
-    "fields": [
-      {
-        "enum": "Chars",
-        "length": 64,
-        "name": "Code"
-      },
-      {
-        "enum": "Caption",
-        "length": 256,
-        "name": "Caption"
-      },
-      {
-        "enum": "FK",
-        "ref": "Ca_Biz",
-        "name": "Parent"
-      },
-      {
-        "enum": "FK",
-        "ref": "Fi_Acct",
-        "name": "BasicAcct"
-      },
-      {
-        "enum": "Text",
-        "name": "DescTxt"
-      },
-      {
-        "enum": "Link",
-        "length": 256,
-        "name": "Website"
-      },
-      {
-        "enum": "Link",
-        "length": 256,
-        "name": "Icon"
-      },
-      {
-        "enum": "FK",
-        "name": "City"
-      },
-      {
-        "enum": "FK",
-        "name": "Country"
-      },
-      {
-        "enum": "FK",
-        "name": "Lang"
-      },
-      {
-        "enum": "Boolean",
-        "name": "IsSocialPlatform"
-      },
-      {
-        "enum": "Boolean",
-        "name": "IsCmsSource"
-      },
-      {
-        "enum": "Boolean",
-        "name": "IsPayGateway"
-      }
-    ]
-  },
-  {
     "name": "Ca_EndUser",
     "shorthand": "eu",
-    "id": 54367576,
+    "id": 1001,
     "fields": [
       {
-        "enum": "Caption",
+        "enum": "Chars",
         "length": 64,
         "name": "Caption"
       },
       {
-        "enum": "Caption",
-        "length": 64,
-        "name": "Username"
-      },
-      {
-        "enum": "FK",
-        "name": "SocialAuthBiz"
-      },
-      {
-        "enum": "Text",
-        "name": "SocialAuthId"
-      },
-      {
-        "enum": "Text",
-        "name": "SocialAuthAvatar"
-      },
-      {
-        "enum": "Chars",
-        "length": 256,
-        "name": "Email"
-      },
-      {
-        "enum": "Chars",
-        "length": 32,
-        "name": "Tel"
-      },
-      {
         "enum": "SelectLines",
-        "lines": "Unknown//未知///Male//男///Female//女",
-        "name": "Gender"
-      },
-      {
-        "enum": "SelectLines",
-        "lines": "Normal//正常///Frozen//冻结///Terminated//注销",
-        "name": "Status"
-      },
-      {
-        "enum": "SelectLines",
-        "lines": "None//无///Admin//管理员",
-        "name": "Admin"
-      },
-      {
-        "enum": "SelectLines",
-        "lines": "None//None///Partner//",
-        "name": "BizPartner"
-      },
-      {
-        "enum": "Integer",
-        "name": "Privilege"
-      },
-      {
-        "enum": "SelectLines",
-        "lines": "Normal//常规///Verified//认证",
-        "name": "Verify"
-      },
-      {
-        "enum": "Chars",
-        "length": 16,
-        "name": "Pwd"
-      },
-      {
-        "enum": "Boolean",
-        "name": "Online"
-      },
-      {
-        "enum": "Link",
-        "length": 256,
-        "name": "Icon"
-      },
-      {
-        "enum": "Link",
-        "length": 256,
-        "name": "Background"
-      },
-      {
-        "enum": "FK",
-        "ref": "Fi_Acct",
-        "name": "BasicAcct"
-      },
-      {
-        "enum": "FK",
-        "name": "Citizen"
-      },
-      {
-        "enum": "Caption",
-        "length": 9,
-        "name": "Refer"
-      },
-      {
-        "enum": "FK",
-        "name": "Referer"
-      },
-      {
-        "enum": "Text",
-        "name": "Url"
-      },
-      {
-        "enum": "Text",
-        "name": "About"
+        "lines": "Normal//Normal///Authorized//Authorized///Admin//Admin",
+        "name": "AuthType"
       }
     ]
   },
   {
-    "name": "Ca_WebCredential",
+    "name": "Ca_File",
+    "shorthand": "file",
+    "id": 35461231,
     "fields": [
       {
-        "enum": "Caption",
-        "length": 64,
+        "enum": "Text",
         "name": "Caption"
       },
       {
-        "enum": "Integer",
-        "name": "ExternalId"
+        "enum": "Text",
+        "name": "Desc"
       },
       {
-        "enum": "Link",
-        "length": 256,
-        "name": "Icon"
+        "enum": "Chars",
+        "length": 4,
+        "name": "Suffix"
+      },
+      {
+        "enum": "Integer",
+        "name": "Size"
+      },
+      {
+        "enum": "Bin",
+        "name": "Thumbnail"
       },
       {
         "enum": "FK",
         "ref": "Ca_EndUser",
-        "name": "EU"
-      },
-      {
-        "enum": "FK",
-        "ref": "Ca_Biz",
-        "name": "Biz"
-      },
-      {
-        "enum": "Text",
-        "name": "Json"
+        "name": "Owner"
       }
-    ],
-    "cache": true
+    ]
   },
-
   {
-    "name": "Ca_Address",
-    "shorthand": "address",
+    "name": "Ca_Book",
+    "shorthand": "book",
+    "id": 1001,
     "fields": [
-      {
-        "enum": "Caption",
-        "length": 256,
-        "name": "Caption"
-      },
-
-      {
-        "enum": "Integer",
-        "name": "Bind"
-      },
-      {
-        "enum": "SelectLines",
-        "lines": "Default//默认///Biz//机构///EndUser//用户",
-        "name": "AddressType"
-      },
-
-      {
-        "enum": "Chars",
-        "length": 300,
-        "name": "Line1"
-      },
-      {
-        "enum": "Chars",
-        "length": 300,
-        "name": "Line2"
-      },
-      {
-        "enum": "Chars",
-        "length": 16,
-        "name": "State"
-      },
-      {
-        "enum": "Chars",
-        "length": 16,
-        "name": "County"
-      },
-      {
-        "enum": "Chars",
-        "length": 16,
-        "name": "Town"
-      },
-
       {
         "enum": "Chars",
         "length": 64,
-        "name": "Contact"
+        "name": "Caption"
       },
       {
         "enum": "Chars",
-        "length": 20,
-        "name": "Tel"
-      },
-      {
-        "enum": "Chars",
-        "length": 256,
+        "length": 64,
         "name": "Email"
       },
-
-      {
-        "enum": "Chars",
-        "length": 16,
-        "name": "Zip"
-      },
-
-      {
-        "enum": "FK",
-        "ref": "Ca_City",
-        "name": "City"
-      },
-      {
-        "enum": "FK",
-        "ref": "Ca_Country",
-        "name": "Country"
-      },
-
       {
         "enum": "Text",
-        "name": "Remarks"
+        "name": "Message"
       }
-
     ]
   }
 ]

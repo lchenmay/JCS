@@ -1,1560 +1,124 @@
 USE [JCS]
--- [Ca_Address] ----------------------
+-- [Ca_Book] ----------------------
 
-IF NOT EXISTS(SELECT * FROM sysobjects WHERE [name]='Ca_Address' AND xtype='U')
+IF NOT EXISTS(SELECT * FROM sysobjects WHERE [name]='Ca_Book' AND xtype='U')
 
 BEGIN
 
-    CREATE TABLE Ca_Address ([ID] BIGINT NOT NULL
-        ,[Createdat] BIGINT NOT NULL
-        ,[Updatedat] BIGINT NOT NULL
-        ,[Sort] BIGINT NOT NULL,
-        [Caption] NVARCHAR(256) COLLATE Chinese_PRC_CI_AS
-        ,[Bind] BIGINT
-        ,[AddressType] INT
-        ,[Line1] NVARCHAR(300) COLLATE Chinese_PRC_CI_AS
-        ,[Line2] NVARCHAR(300) COLLATE Chinese_PRC_CI_AS
-        ,[State] NVARCHAR(16) COLLATE Chinese_PRC_CI_AS
-        ,[County] NVARCHAR(16) COLLATE Chinese_PRC_CI_AS
-        ,[Town] NVARCHAR(16) COLLATE Chinese_PRC_CI_AS
-        ,[Contact] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS
-        ,[Tel] NVARCHAR(20) COLLATE Chinese_PRC_CI_AS
-        ,[Email] NVARCHAR(256) COLLATE Chinese_PRC_CI_AS
-        ,[Zip] NVARCHAR(16) COLLATE Chinese_PRC_CI_AS
-        ,[City] BIGINT
-        ,[Country] BIGINT
-        ,[Remarks] NVARCHAR(MAX)
-, CONSTRAINT [PK_Ca_Address] PRIMARY KEY CLUSTERED ([ID] ASC)) ON [PRIMARY]
-END
-
-
--- Dropping obsolete fields -----------
-DECLARE @name_Ca_Address NVARCHAR(64)
-DECLARE cursor_Ca_Address CURSOR FOR 
-    SELECT name FROM SYSCOLUMNS WHERE id=object_id('Ca_Address') AND (name NOT IN ('ID','Createdat','Updatedat','Sort','Caption','Bind','AddressType','Line1','Line2','State','County','Town','Contact','Tel','Email','Zip','City','Country','Remarks'))
-
-OPEN cursor_Ca_Address
-FETCH NEXT FROM cursor_Ca_Address INTO @name_Ca_Address
-
-WHILE @@FETCH_STATUS = 0
-BEGIN
-    PRINT 'Dropping Ca_Address.' + @name_Ca_Address;
-    
-    DECLARE @sql_Ca_Address NVARCHAR(MAX);
-    SET @sql_Ca_Address = 'ALTER TABLE Ca_Address DROP COLUMN ' + QUOTENAME(@name_Ca_Address)
-    EXEC sp_executesql @sql_Ca_Address
-    
-    
-    FETCH NEXT FROM cursor_Ca_Address INTO @name_Ca_Address
-END
-
-CLOSE cursor_Ca_Address;
-DEALLOCATE cursor_Ca_Address;
-
-
--- [Ca_Address.Caption] -------------
-
-
--- [Ca_Address.Caption] -------------
-
-IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ca_Address') AND name='Caption')
-    BEGIN
-     ALTER TABLE Ca_Address ALTER COLUMN [Caption] NVARCHAR(256) COLLATE Chinese_PRC_CI_AS
-    END
-ELSE
-    BEGIN
-    DECLARE @sql_add_Ca_Address_Caption NVARCHAR(MAX);
-    SET @sql_add_Ca_Address_Caption = 'ALTER TABLE Ca_Address ADD [Caption] NVARCHAR(256) COLLATE Chinese_PRC_CI_AS'
-    EXEC sp_executesql @sql_add_Ca_Address_Caption
-    END
-
-
-IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ca_AddressCaption')
-    BEGIN
-    ALTER TABLE Ca_Address DROP  CONSTRAINT [Constraint_Ca_AddressCaption]
-    END
-
-IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ca_AddressCaption')
-    BEGIN
-    ALTER TABLE Ca_Address DROP  CONSTRAINT [UniqueNonclustered_Ca_AddressCaption]
-    END
-
--- [Ca_Address.Bind] -------------
-
-
--- [Ca_Address.Bind] -------------
-
-IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ca_Address') AND name='Bind')
-    BEGIN
-     ALTER TABLE Ca_Address ALTER COLUMN [Bind] BIGINT
-    END
-ELSE
-    BEGIN
-    DECLARE @sql_add_Ca_Address_Bind NVARCHAR(MAX);
-    SET @sql_add_Ca_Address_Bind = 'ALTER TABLE Ca_Address ADD [Bind] BIGINT'
-    EXEC sp_executesql @sql_add_Ca_Address_Bind
-    END
-
-
-IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ca_AddressBind')
-    BEGIN
-    ALTER TABLE Ca_Address DROP  CONSTRAINT [Constraint_Ca_AddressBind]
-    END
-
-IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ca_AddressBind')
-    BEGIN
-    ALTER TABLE Ca_Address DROP  CONSTRAINT [UniqueNonclustered_Ca_AddressBind]
-    END
-
--- [Ca_Address.AddressType] -------------
-
-
--- [Ca_Address.AddressType] -------------
-
-IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ca_Address') AND name='AddressType')
-    BEGIN
-     ALTER TABLE Ca_Address ALTER COLUMN [AddressType] INT
-    END
-ELSE
-    BEGIN
-    DECLARE @sql_add_Ca_Address_AddressType NVARCHAR(MAX);
-    SET @sql_add_Ca_Address_AddressType = 'ALTER TABLE Ca_Address ADD [AddressType] INT'
-    EXEC sp_executesql @sql_add_Ca_Address_AddressType
-    END
-
-
-IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ca_AddressAddressType')
-    BEGIN
-    ALTER TABLE Ca_Address DROP  CONSTRAINT [Constraint_Ca_AddressAddressType]
-    END
-
-IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ca_AddressAddressType')
-    BEGIN
-    ALTER TABLE Ca_Address DROP  CONSTRAINT [UniqueNonclustered_Ca_AddressAddressType]
-    END
-
--- [Ca_Address.Line1] -------------
-
-
--- [Ca_Address.Line1] -------------
-
-IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ca_Address') AND name='Line1')
-    BEGIN
-     ALTER TABLE Ca_Address ALTER COLUMN [Line1] NVARCHAR(300) COLLATE Chinese_PRC_CI_AS
-    END
-ELSE
-    BEGIN
-    DECLARE @sql_add_Ca_Address_Line1 NVARCHAR(MAX);
-    SET @sql_add_Ca_Address_Line1 = 'ALTER TABLE Ca_Address ADD [Line1] NVARCHAR(300) COLLATE Chinese_PRC_CI_AS'
-    EXEC sp_executesql @sql_add_Ca_Address_Line1
-    END
-
-
-IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ca_AddressLine1')
-    BEGIN
-    ALTER TABLE Ca_Address DROP  CONSTRAINT [Constraint_Ca_AddressLine1]
-    END
-
-IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ca_AddressLine1')
-    BEGIN
-    ALTER TABLE Ca_Address DROP  CONSTRAINT [UniqueNonclustered_Ca_AddressLine1]
-    END
-
--- [Ca_Address.Line2] -------------
-
-
--- [Ca_Address.Line2] -------------
-
-IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ca_Address') AND name='Line2')
-    BEGIN
-     ALTER TABLE Ca_Address ALTER COLUMN [Line2] NVARCHAR(300) COLLATE Chinese_PRC_CI_AS
-    END
-ELSE
-    BEGIN
-    DECLARE @sql_add_Ca_Address_Line2 NVARCHAR(MAX);
-    SET @sql_add_Ca_Address_Line2 = 'ALTER TABLE Ca_Address ADD [Line2] NVARCHAR(300) COLLATE Chinese_PRC_CI_AS'
-    EXEC sp_executesql @sql_add_Ca_Address_Line2
-    END
-
-
-IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ca_AddressLine2')
-    BEGIN
-    ALTER TABLE Ca_Address DROP  CONSTRAINT [Constraint_Ca_AddressLine2]
-    END
-
-IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ca_AddressLine2')
-    BEGIN
-    ALTER TABLE Ca_Address DROP  CONSTRAINT [UniqueNonclustered_Ca_AddressLine2]
-    END
-
--- [Ca_Address.State] -------------
-
-
--- [Ca_Address.State] -------------
-
-IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ca_Address') AND name='State')
-    BEGIN
-     ALTER TABLE Ca_Address ALTER COLUMN [State] NVARCHAR(16) COLLATE Chinese_PRC_CI_AS
-    END
-ELSE
-    BEGIN
-    DECLARE @sql_add_Ca_Address_State NVARCHAR(MAX);
-    SET @sql_add_Ca_Address_State = 'ALTER TABLE Ca_Address ADD [State] NVARCHAR(16) COLLATE Chinese_PRC_CI_AS'
-    EXEC sp_executesql @sql_add_Ca_Address_State
-    END
-
-
-IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ca_AddressState')
-    BEGIN
-    ALTER TABLE Ca_Address DROP  CONSTRAINT [Constraint_Ca_AddressState]
-    END
-
-IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ca_AddressState')
-    BEGIN
-    ALTER TABLE Ca_Address DROP  CONSTRAINT [UniqueNonclustered_Ca_AddressState]
-    END
-
--- [Ca_Address.County] -------------
-
-
--- [Ca_Address.County] -------------
-
-IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ca_Address') AND name='County')
-    BEGIN
-     ALTER TABLE Ca_Address ALTER COLUMN [County] NVARCHAR(16) COLLATE Chinese_PRC_CI_AS
-    END
-ELSE
-    BEGIN
-    DECLARE @sql_add_Ca_Address_County NVARCHAR(MAX);
-    SET @sql_add_Ca_Address_County = 'ALTER TABLE Ca_Address ADD [County] NVARCHAR(16) COLLATE Chinese_PRC_CI_AS'
-    EXEC sp_executesql @sql_add_Ca_Address_County
-    END
-
-
-IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ca_AddressCounty')
-    BEGIN
-    ALTER TABLE Ca_Address DROP  CONSTRAINT [Constraint_Ca_AddressCounty]
-    END
-
-IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ca_AddressCounty')
-    BEGIN
-    ALTER TABLE Ca_Address DROP  CONSTRAINT [UniqueNonclustered_Ca_AddressCounty]
-    END
-
--- [Ca_Address.Town] -------------
-
-
--- [Ca_Address.Town] -------------
-
-IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ca_Address') AND name='Town')
-    BEGIN
-     ALTER TABLE Ca_Address ALTER COLUMN [Town] NVARCHAR(16) COLLATE Chinese_PRC_CI_AS
-    END
-ELSE
-    BEGIN
-    DECLARE @sql_add_Ca_Address_Town NVARCHAR(MAX);
-    SET @sql_add_Ca_Address_Town = 'ALTER TABLE Ca_Address ADD [Town] NVARCHAR(16) COLLATE Chinese_PRC_CI_AS'
-    EXEC sp_executesql @sql_add_Ca_Address_Town
-    END
-
-
-IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ca_AddressTown')
-    BEGIN
-    ALTER TABLE Ca_Address DROP  CONSTRAINT [Constraint_Ca_AddressTown]
-    END
-
-IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ca_AddressTown')
-    BEGIN
-    ALTER TABLE Ca_Address DROP  CONSTRAINT [UniqueNonclustered_Ca_AddressTown]
-    END
-
--- [Ca_Address.Contact] -------------
-
-
--- [Ca_Address.Contact] -------------
-
-IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ca_Address') AND name='Contact')
-    BEGIN
-     ALTER TABLE Ca_Address ALTER COLUMN [Contact] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS
-    END
-ELSE
-    BEGIN
-    DECLARE @sql_add_Ca_Address_Contact NVARCHAR(MAX);
-    SET @sql_add_Ca_Address_Contact = 'ALTER TABLE Ca_Address ADD [Contact] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS'
-    EXEC sp_executesql @sql_add_Ca_Address_Contact
-    END
-
-
-IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ca_AddressContact')
-    BEGIN
-    ALTER TABLE Ca_Address DROP  CONSTRAINT [Constraint_Ca_AddressContact]
-    END
-
-IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ca_AddressContact')
-    BEGIN
-    ALTER TABLE Ca_Address DROP  CONSTRAINT [UniqueNonclustered_Ca_AddressContact]
-    END
-
--- [Ca_Address.Tel] -------------
-
-
--- [Ca_Address.Tel] -------------
-
-IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ca_Address') AND name='Tel')
-    BEGIN
-     ALTER TABLE Ca_Address ALTER COLUMN [Tel] NVARCHAR(20) COLLATE Chinese_PRC_CI_AS
-    END
-ELSE
-    BEGIN
-    DECLARE @sql_add_Ca_Address_Tel NVARCHAR(MAX);
-    SET @sql_add_Ca_Address_Tel = 'ALTER TABLE Ca_Address ADD [Tel] NVARCHAR(20) COLLATE Chinese_PRC_CI_AS'
-    EXEC sp_executesql @sql_add_Ca_Address_Tel
-    END
-
-
-IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ca_AddressTel')
-    BEGIN
-    ALTER TABLE Ca_Address DROP  CONSTRAINT [Constraint_Ca_AddressTel]
-    END
-
-IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ca_AddressTel')
-    BEGIN
-    ALTER TABLE Ca_Address DROP  CONSTRAINT [UniqueNonclustered_Ca_AddressTel]
-    END
-
--- [Ca_Address.Email] -------------
-
-
--- [Ca_Address.Email] -------------
-
-IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ca_Address') AND name='Email')
-    BEGIN
-     ALTER TABLE Ca_Address ALTER COLUMN [Email] NVARCHAR(256) COLLATE Chinese_PRC_CI_AS
-    END
-ELSE
-    BEGIN
-    DECLARE @sql_add_Ca_Address_Email NVARCHAR(MAX);
-    SET @sql_add_Ca_Address_Email = 'ALTER TABLE Ca_Address ADD [Email] NVARCHAR(256) COLLATE Chinese_PRC_CI_AS'
-    EXEC sp_executesql @sql_add_Ca_Address_Email
-    END
-
-
-IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ca_AddressEmail')
-    BEGIN
-    ALTER TABLE Ca_Address DROP  CONSTRAINT [Constraint_Ca_AddressEmail]
-    END
-
-IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ca_AddressEmail')
-    BEGIN
-    ALTER TABLE Ca_Address DROP  CONSTRAINT [UniqueNonclustered_Ca_AddressEmail]
-    END
-
--- [Ca_Address.Zip] -------------
-
-
--- [Ca_Address.Zip] -------------
-
-IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ca_Address') AND name='Zip')
-    BEGIN
-     ALTER TABLE Ca_Address ALTER COLUMN [Zip] NVARCHAR(16) COLLATE Chinese_PRC_CI_AS
-    END
-ELSE
-    BEGIN
-    DECLARE @sql_add_Ca_Address_Zip NVARCHAR(MAX);
-    SET @sql_add_Ca_Address_Zip = 'ALTER TABLE Ca_Address ADD [Zip] NVARCHAR(16) COLLATE Chinese_PRC_CI_AS'
-    EXEC sp_executesql @sql_add_Ca_Address_Zip
-    END
-
-
-IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ca_AddressZip')
-    BEGIN
-    ALTER TABLE Ca_Address DROP  CONSTRAINT [Constraint_Ca_AddressZip]
-    END
-
-IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ca_AddressZip')
-    BEGIN
-    ALTER TABLE Ca_Address DROP  CONSTRAINT [UniqueNonclustered_Ca_AddressZip]
-    END
-
--- [Ca_Address.City] -------------
-
-
--- [Ca_Address.City] -------------
-
-IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ca_Address') AND name='City')
-    BEGIN
-     ALTER TABLE Ca_Address ALTER COLUMN [City] BIGINT
-    END
-ELSE
-    BEGIN
-    DECLARE @sql_add_Ca_Address_City NVARCHAR(MAX);
-    SET @sql_add_Ca_Address_City = 'ALTER TABLE Ca_Address ADD [City] BIGINT'
-    EXEC sp_executesql @sql_add_Ca_Address_City
-    END
-
-
-IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ca_AddressCity')
-    BEGIN
-    ALTER TABLE Ca_Address DROP  CONSTRAINT [Constraint_Ca_AddressCity]
-    END
-
-IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ca_AddressCity')
-    BEGIN
-    ALTER TABLE Ca_Address DROP  CONSTRAINT [UniqueNonclustered_Ca_AddressCity]
-    END
-
--- [Ca_Address.Country] -------------
-
-
--- [Ca_Address.Country] -------------
-
-IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ca_Address') AND name='Country')
-    BEGIN
-     ALTER TABLE Ca_Address ALTER COLUMN [Country] BIGINT
-    END
-ELSE
-    BEGIN
-    DECLARE @sql_add_Ca_Address_Country NVARCHAR(MAX);
-    SET @sql_add_Ca_Address_Country = 'ALTER TABLE Ca_Address ADD [Country] BIGINT'
-    EXEC sp_executesql @sql_add_Ca_Address_Country
-    END
-
-
-IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ca_AddressCountry')
-    BEGIN
-    ALTER TABLE Ca_Address DROP  CONSTRAINT [Constraint_Ca_AddressCountry]
-    END
-
-IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ca_AddressCountry')
-    BEGIN
-    ALTER TABLE Ca_Address DROP  CONSTRAINT [UniqueNonclustered_Ca_AddressCountry]
-    END
-
--- [Ca_Address.Remarks] -------------
-
-
--- [Ca_Address.Remarks] -------------
-
-IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ca_Address') AND name='Remarks')
-    BEGIN
-     ALTER TABLE Ca_Address ALTER COLUMN [Remarks] NVARCHAR(MAX)
-    END
-ELSE
-    BEGIN
-    DECLARE @sql_add_Ca_Address_Remarks NVARCHAR(MAX);
-    SET @sql_add_Ca_Address_Remarks = 'ALTER TABLE Ca_Address ADD [Remarks] NVARCHAR(MAX)'
-    EXEC sp_executesql @sql_add_Ca_Address_Remarks
-    END
-
-
-IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ca_AddressRemarks')
-    BEGIN
-    ALTER TABLE Ca_Address DROP  CONSTRAINT [Constraint_Ca_AddressRemarks]
-    END
-
-IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ca_AddressRemarks')
-    BEGIN
-    ALTER TABLE Ca_Address DROP  CONSTRAINT [UniqueNonclustered_Ca_AddressRemarks]
-    END
--- [Ca_Biz] ----------------------
-
-IF NOT EXISTS(SELECT * FROM sysobjects WHERE [name]='Ca_Biz' AND xtype='U')
-
-BEGIN
-
-    CREATE TABLE Ca_Biz ([ID] BIGINT NOT NULL
-        ,[Createdat] BIGINT NOT NULL
-        ,[Updatedat] BIGINT NOT NULL
-        ,[Sort] BIGINT NOT NULL,
-        [Code] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS
-        ,[Caption] NVARCHAR(256) COLLATE Chinese_PRC_CI_AS
-        ,[Parent] BIGINT
-        ,[BasicAcct] BIGINT
-        ,[DescTxt] NVARCHAR(MAX)
-        ,[Website] NVARCHAR(256) COLLATE Chinese_PRC_CI_AS
-        ,[Icon] NVARCHAR(256) COLLATE Chinese_PRC_CI_AS
-        ,[City] BIGINT
-        ,[Country] BIGINT
-        ,[Lang] BIGINT
-        ,[IsSocialPlatform] BIT
-        ,[IsCmsSource] BIT
-        ,[IsPayGateway] BIT
-, CONSTRAINT [PK_Ca_Biz] PRIMARY KEY CLUSTERED ([ID] ASC)) ON [PRIMARY]
-END
-
-
--- Dropping obsolete fields -----------
-DECLARE @name_Ca_Biz NVARCHAR(64)
-DECLARE cursor_Ca_Biz CURSOR FOR 
-    SELECT name FROM SYSCOLUMNS WHERE id=object_id('Ca_Biz') AND (name NOT IN ('ID','Createdat','Updatedat','Sort','Code','Caption','Parent','BasicAcct','DescTxt','Website','Icon','City','Country','Lang','IsSocialPlatform','IsCmsSource','IsPayGateway'))
-
-OPEN cursor_Ca_Biz
-FETCH NEXT FROM cursor_Ca_Biz INTO @name_Ca_Biz
-
-WHILE @@FETCH_STATUS = 0
-BEGIN
-    PRINT 'Dropping Ca_Biz.' + @name_Ca_Biz;
-    
-    DECLARE @sql_Ca_Biz NVARCHAR(MAX);
-    SET @sql_Ca_Biz = 'ALTER TABLE Ca_Biz DROP COLUMN ' + QUOTENAME(@name_Ca_Biz)
-    EXEC sp_executesql @sql_Ca_Biz
-    
-    
-    FETCH NEXT FROM cursor_Ca_Biz INTO @name_Ca_Biz
-END
-
-CLOSE cursor_Ca_Biz;
-DEALLOCATE cursor_Ca_Biz;
-
-
--- [Ca_Biz.Code] -------------
-
-
--- [Ca_Biz.Code] -------------
-
-IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ca_Biz') AND name='Code')
-    BEGIN
-     ALTER TABLE Ca_Biz ALTER COLUMN [Code] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS
-    END
-ELSE
-    BEGIN
-    DECLARE @sql_add_Ca_Biz_Code NVARCHAR(MAX);
-    SET @sql_add_Ca_Biz_Code = 'ALTER TABLE Ca_Biz ADD [Code] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS'
-    EXEC sp_executesql @sql_add_Ca_Biz_Code
-    END
-
-
-IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ca_BizCode')
-    BEGIN
-    ALTER TABLE Ca_Biz DROP  CONSTRAINT [Constraint_Ca_BizCode]
-    END
-
-IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ca_BizCode')
-    BEGIN
-    ALTER TABLE Ca_Biz DROP  CONSTRAINT [UniqueNonclustered_Ca_BizCode]
-    END
-
--- [Ca_Biz.Caption] -------------
-
-
--- [Ca_Biz.Caption] -------------
-
-IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ca_Biz') AND name='Caption')
-    BEGIN
-     ALTER TABLE Ca_Biz ALTER COLUMN [Caption] NVARCHAR(256) COLLATE Chinese_PRC_CI_AS
-    END
-ELSE
-    BEGIN
-    DECLARE @sql_add_Ca_Biz_Caption NVARCHAR(MAX);
-    SET @sql_add_Ca_Biz_Caption = 'ALTER TABLE Ca_Biz ADD [Caption] NVARCHAR(256) COLLATE Chinese_PRC_CI_AS'
-    EXEC sp_executesql @sql_add_Ca_Biz_Caption
-    END
-
-
-IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ca_BizCaption')
-    BEGIN
-    ALTER TABLE Ca_Biz DROP  CONSTRAINT [Constraint_Ca_BizCaption]
-    END
-
-IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ca_BizCaption')
-    BEGIN
-    ALTER TABLE Ca_Biz DROP  CONSTRAINT [UniqueNonclustered_Ca_BizCaption]
-    END
-
--- [Ca_Biz.Parent] -------------
-
-
--- [Ca_Biz.Parent] -------------
-
-IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ca_Biz') AND name='Parent')
-    BEGIN
-     ALTER TABLE Ca_Biz ALTER COLUMN [Parent] BIGINT
-    END
-ELSE
-    BEGIN
-    DECLARE @sql_add_Ca_Biz_Parent NVARCHAR(MAX);
-    SET @sql_add_Ca_Biz_Parent = 'ALTER TABLE Ca_Biz ADD [Parent] BIGINT'
-    EXEC sp_executesql @sql_add_Ca_Biz_Parent
-    END
-
-
-IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ca_BizParent')
-    BEGIN
-    ALTER TABLE Ca_Biz DROP  CONSTRAINT [Constraint_Ca_BizParent]
-    END
-
-IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ca_BizParent')
-    BEGIN
-    ALTER TABLE Ca_Biz DROP  CONSTRAINT [UniqueNonclustered_Ca_BizParent]
-    END
-
--- [Ca_Biz.BasicAcct] -------------
-
-
--- [Ca_Biz.BasicAcct] -------------
-
-IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ca_Biz') AND name='BasicAcct')
-    BEGIN
-     ALTER TABLE Ca_Biz ALTER COLUMN [BasicAcct] BIGINT
-    END
-ELSE
-    BEGIN
-    DECLARE @sql_add_Ca_Biz_BasicAcct NVARCHAR(MAX);
-    SET @sql_add_Ca_Biz_BasicAcct = 'ALTER TABLE Ca_Biz ADD [BasicAcct] BIGINT'
-    EXEC sp_executesql @sql_add_Ca_Biz_BasicAcct
-    END
-
-
-IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ca_BizBasicAcct')
-    BEGIN
-    ALTER TABLE Ca_Biz DROP  CONSTRAINT [Constraint_Ca_BizBasicAcct]
-    END
-
-IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ca_BizBasicAcct')
-    BEGIN
-    ALTER TABLE Ca_Biz DROP  CONSTRAINT [UniqueNonclustered_Ca_BizBasicAcct]
-    END
-
--- [Ca_Biz.DescTxt] -------------
-
-
--- [Ca_Biz.DescTxt] -------------
-
-IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ca_Biz') AND name='DescTxt')
-    BEGIN
-     ALTER TABLE Ca_Biz ALTER COLUMN [DescTxt] NVARCHAR(MAX)
-    END
-ELSE
-    BEGIN
-    DECLARE @sql_add_Ca_Biz_DescTxt NVARCHAR(MAX);
-    SET @sql_add_Ca_Biz_DescTxt = 'ALTER TABLE Ca_Biz ADD [DescTxt] NVARCHAR(MAX)'
-    EXEC sp_executesql @sql_add_Ca_Biz_DescTxt
-    END
-
-
-IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ca_BizDescTxt')
-    BEGIN
-    ALTER TABLE Ca_Biz DROP  CONSTRAINT [Constraint_Ca_BizDescTxt]
-    END
-
-IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ca_BizDescTxt')
-    BEGIN
-    ALTER TABLE Ca_Biz DROP  CONSTRAINT [UniqueNonclustered_Ca_BizDescTxt]
-    END
-
--- [Ca_Biz.Website] -------------
-
-
--- [Ca_Biz.Website] -------------
-
-IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ca_Biz') AND name='Website')
-    BEGIN
-     ALTER TABLE Ca_Biz ALTER COLUMN [Website] NVARCHAR(256) COLLATE Chinese_PRC_CI_AS
-    END
-ELSE
-    BEGIN
-    DECLARE @sql_add_Ca_Biz_Website NVARCHAR(MAX);
-    SET @sql_add_Ca_Biz_Website = 'ALTER TABLE Ca_Biz ADD [Website] NVARCHAR(256) COLLATE Chinese_PRC_CI_AS'
-    EXEC sp_executesql @sql_add_Ca_Biz_Website
-    END
-
-
-IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ca_BizWebsite')
-    BEGIN
-    ALTER TABLE Ca_Biz DROP  CONSTRAINT [Constraint_Ca_BizWebsite]
-    END
-
-IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ca_BizWebsite')
-    BEGIN
-    ALTER TABLE Ca_Biz DROP  CONSTRAINT [UniqueNonclustered_Ca_BizWebsite]
-    END
-
--- [Ca_Biz.Icon] -------------
-
-
--- [Ca_Biz.Icon] -------------
-
-IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ca_Biz') AND name='Icon')
-    BEGIN
-     ALTER TABLE Ca_Biz ALTER COLUMN [Icon] NVARCHAR(256) COLLATE Chinese_PRC_CI_AS
-    END
-ELSE
-    BEGIN
-    DECLARE @sql_add_Ca_Biz_Icon NVARCHAR(MAX);
-    SET @sql_add_Ca_Biz_Icon = 'ALTER TABLE Ca_Biz ADD [Icon] NVARCHAR(256) COLLATE Chinese_PRC_CI_AS'
-    EXEC sp_executesql @sql_add_Ca_Biz_Icon
-    END
-
-
-IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ca_BizIcon')
-    BEGIN
-    ALTER TABLE Ca_Biz DROP  CONSTRAINT [Constraint_Ca_BizIcon]
-    END
-
-IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ca_BizIcon')
-    BEGIN
-    ALTER TABLE Ca_Biz DROP  CONSTRAINT [UniqueNonclustered_Ca_BizIcon]
-    END
-
--- [Ca_Biz.City] -------------
-
-
--- [Ca_Biz.City] -------------
-
-IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ca_Biz') AND name='City')
-    BEGIN
-     ALTER TABLE Ca_Biz ALTER COLUMN [City] BIGINT
-    END
-ELSE
-    BEGIN
-    DECLARE @sql_add_Ca_Biz_City NVARCHAR(MAX);
-    SET @sql_add_Ca_Biz_City = 'ALTER TABLE Ca_Biz ADD [City] BIGINT'
-    EXEC sp_executesql @sql_add_Ca_Biz_City
-    END
-
-
-IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ca_BizCity')
-    BEGIN
-    ALTER TABLE Ca_Biz DROP  CONSTRAINT [Constraint_Ca_BizCity]
-    END
-
-IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ca_BizCity')
-    BEGIN
-    ALTER TABLE Ca_Biz DROP  CONSTRAINT [UniqueNonclustered_Ca_BizCity]
-    END
-
--- [Ca_Biz.Country] -------------
-
-
--- [Ca_Biz.Country] -------------
-
-IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ca_Biz') AND name='Country')
-    BEGIN
-     ALTER TABLE Ca_Biz ALTER COLUMN [Country] BIGINT
-    END
-ELSE
-    BEGIN
-    DECLARE @sql_add_Ca_Biz_Country NVARCHAR(MAX);
-    SET @sql_add_Ca_Biz_Country = 'ALTER TABLE Ca_Biz ADD [Country] BIGINT'
-    EXEC sp_executesql @sql_add_Ca_Biz_Country
-    END
-
-
-IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ca_BizCountry')
-    BEGIN
-    ALTER TABLE Ca_Biz DROP  CONSTRAINT [Constraint_Ca_BizCountry]
-    END
-
-IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ca_BizCountry')
-    BEGIN
-    ALTER TABLE Ca_Biz DROP  CONSTRAINT [UniqueNonclustered_Ca_BizCountry]
-    END
-
--- [Ca_Biz.Lang] -------------
-
-
--- [Ca_Biz.Lang] -------------
-
-IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ca_Biz') AND name='Lang')
-    BEGIN
-     ALTER TABLE Ca_Biz ALTER COLUMN [Lang] BIGINT
-    END
-ELSE
-    BEGIN
-    DECLARE @sql_add_Ca_Biz_Lang NVARCHAR(MAX);
-    SET @sql_add_Ca_Biz_Lang = 'ALTER TABLE Ca_Biz ADD [Lang] BIGINT'
-    EXEC sp_executesql @sql_add_Ca_Biz_Lang
-    END
-
-
-IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ca_BizLang')
-    BEGIN
-    ALTER TABLE Ca_Biz DROP  CONSTRAINT [Constraint_Ca_BizLang]
-    END
-
-IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ca_BizLang')
-    BEGIN
-    ALTER TABLE Ca_Biz DROP  CONSTRAINT [UniqueNonclustered_Ca_BizLang]
-    END
-
--- [Ca_Biz.IsSocialPlatform] -------------
-
-
--- [Ca_Biz.IsSocialPlatform] -------------
-
-IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ca_Biz') AND name='IsSocialPlatform')
-    BEGIN
-     ALTER TABLE Ca_Biz ALTER COLUMN [IsSocialPlatform] BIT
-    END
-ELSE
-    BEGIN
-    DECLARE @sql_add_Ca_Biz_IsSocialPlatform NVARCHAR(MAX);
-    SET @sql_add_Ca_Biz_IsSocialPlatform = 'ALTER TABLE Ca_Biz ADD [IsSocialPlatform] BIT'
-    EXEC sp_executesql @sql_add_Ca_Biz_IsSocialPlatform
-    END
-
-
-IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ca_BizIsSocialPlatform')
-    BEGIN
-    ALTER TABLE Ca_Biz DROP  CONSTRAINT [Constraint_Ca_BizIsSocialPlatform]
-    END
-
-IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ca_BizIsSocialPlatform')
-    BEGIN
-    ALTER TABLE Ca_Biz DROP  CONSTRAINT [UniqueNonclustered_Ca_BizIsSocialPlatform]
-    END
-
--- [Ca_Biz.IsCmsSource] -------------
-
-
--- [Ca_Biz.IsCmsSource] -------------
-
-IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ca_Biz') AND name='IsCmsSource')
-    BEGIN
-     ALTER TABLE Ca_Biz ALTER COLUMN [IsCmsSource] BIT
-    END
-ELSE
-    BEGIN
-    DECLARE @sql_add_Ca_Biz_IsCmsSource NVARCHAR(MAX);
-    SET @sql_add_Ca_Biz_IsCmsSource = 'ALTER TABLE Ca_Biz ADD [IsCmsSource] BIT'
-    EXEC sp_executesql @sql_add_Ca_Biz_IsCmsSource
-    END
-
-
-IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ca_BizIsCmsSource')
-    BEGIN
-    ALTER TABLE Ca_Biz DROP  CONSTRAINT [Constraint_Ca_BizIsCmsSource]
-    END
-
-IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ca_BizIsCmsSource')
-    BEGIN
-    ALTER TABLE Ca_Biz DROP  CONSTRAINT [UniqueNonclustered_Ca_BizIsCmsSource]
-    END
-
--- [Ca_Biz.IsPayGateway] -------------
-
-
--- [Ca_Biz.IsPayGateway] -------------
-
-IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ca_Biz') AND name='IsPayGateway')
-    BEGIN
-     ALTER TABLE Ca_Biz ALTER COLUMN [IsPayGateway] BIT
-    END
-ELSE
-    BEGIN
-    DECLARE @sql_add_Ca_Biz_IsPayGateway NVARCHAR(MAX);
-    SET @sql_add_Ca_Biz_IsPayGateway = 'ALTER TABLE Ca_Biz ADD [IsPayGateway] BIT'
-    EXEC sp_executesql @sql_add_Ca_Biz_IsPayGateway
-    END
-
-
-IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ca_BizIsPayGateway')
-    BEGIN
-    ALTER TABLE Ca_Biz DROP  CONSTRAINT [Constraint_Ca_BizIsPayGateway]
-    END
-
-IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ca_BizIsPayGateway')
-    BEGIN
-    ALTER TABLE Ca_Biz DROP  CONSTRAINT [UniqueNonclustered_Ca_BizIsPayGateway]
-    END
--- [Ca_Cat] ----------------------
-
-IF NOT EXISTS(SELECT * FROM sysobjects WHERE [name]='Ca_Cat' AND xtype='U')
-
-BEGIN
-
-    CREATE TABLE Ca_Cat ([ID] BIGINT NOT NULL
+    CREATE TABLE Ca_Book ([ID] BIGINT NOT NULL
         ,[Createdat] BIGINT NOT NULL
         ,[Updatedat] BIGINT NOT NULL
         ,[Sort] BIGINT NOT NULL,
         [Caption] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS
-        ,[Lang] BIGINT
-        ,[Zh] BIGINT
-        ,[Parent] BIGINT
-        ,[CatState] INT
-, CONSTRAINT [PK_Ca_Cat] PRIMARY KEY CLUSTERED ([ID] ASC)) ON [PRIMARY]
+        ,[Email] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS
+        ,[Message] NVARCHAR(MAX)
+, CONSTRAINT [PK_Ca_Book] PRIMARY KEY CLUSTERED ([ID] ASC)) ON [PRIMARY]
 END
 
 
 -- Dropping obsolete fields -----------
-DECLARE @name_Ca_Cat NVARCHAR(64)
-DECLARE cursor_Ca_Cat CURSOR FOR 
-    SELECT name FROM SYSCOLUMNS WHERE id=object_id('Ca_Cat') AND (name NOT IN ('ID','Createdat','Updatedat','Sort','Caption','Lang','Zh','Parent','CatState'))
+DECLARE @name_Ca_Book NVARCHAR(64)
+DECLARE cursor_Ca_Book CURSOR FOR 
+    SELECT name FROM SYSCOLUMNS WHERE id=object_id('Ca_Book') AND (name NOT IN ('ID','Createdat','Updatedat','Sort','Caption','Email','Message'))
 
-OPEN cursor_Ca_Cat
-FETCH NEXT FROM cursor_Ca_Cat INTO @name_Ca_Cat
-
-WHILE @@FETCH_STATUS = 0
-BEGIN
-    PRINT 'Dropping Ca_Cat.' + @name_Ca_Cat;
-    
-    DECLARE @sql_Ca_Cat NVARCHAR(MAX);
-    SET @sql_Ca_Cat = 'ALTER TABLE Ca_Cat DROP COLUMN ' + QUOTENAME(@name_Ca_Cat)
-    EXEC sp_executesql @sql_Ca_Cat
-    
-    
-    FETCH NEXT FROM cursor_Ca_Cat INTO @name_Ca_Cat
-END
-
-CLOSE cursor_Ca_Cat;
-DEALLOCATE cursor_Ca_Cat;
-
-
--- [Ca_Cat.Caption] -------------
-
-
--- [Ca_Cat.Caption] -------------
-
-IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ca_Cat') AND name='Caption')
-    BEGIN
-     ALTER TABLE Ca_Cat ALTER COLUMN [Caption] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS
-    END
-ELSE
-    BEGIN
-    DECLARE @sql_add_Ca_Cat_Caption NVARCHAR(MAX);
-    SET @sql_add_Ca_Cat_Caption = 'ALTER TABLE Ca_Cat ADD [Caption] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS'
-    EXEC sp_executesql @sql_add_Ca_Cat_Caption
-    END
-
-
-IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ca_CatCaption')
-    BEGIN
-    ALTER TABLE Ca_Cat DROP  CONSTRAINT [Constraint_Ca_CatCaption]
-    END
-
-IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ca_CatCaption')
-    BEGIN
-    ALTER TABLE Ca_Cat DROP  CONSTRAINT [UniqueNonclustered_Ca_CatCaption]
-    END
-
--- [Ca_Cat.Lang] -------------
-
-
--- [Ca_Cat.Lang] -------------
-
-IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ca_Cat') AND name='Lang')
-    BEGIN
-     ALTER TABLE Ca_Cat ALTER COLUMN [Lang] BIGINT
-    END
-ELSE
-    BEGIN
-    DECLARE @sql_add_Ca_Cat_Lang NVARCHAR(MAX);
-    SET @sql_add_Ca_Cat_Lang = 'ALTER TABLE Ca_Cat ADD [Lang] BIGINT'
-    EXEC sp_executesql @sql_add_Ca_Cat_Lang
-    END
-
-
-IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ca_CatLang')
-    BEGIN
-    ALTER TABLE Ca_Cat DROP  CONSTRAINT [Constraint_Ca_CatLang]
-    END
-
-IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ca_CatLang')
-    BEGIN
-    ALTER TABLE Ca_Cat DROP  CONSTRAINT [UniqueNonclustered_Ca_CatLang]
-    END
-
--- [Ca_Cat.Zh] -------------
-
-
--- [Ca_Cat.Zh] -------------
-
-IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ca_Cat') AND name='Zh')
-    BEGIN
-     ALTER TABLE Ca_Cat ALTER COLUMN [Zh] BIGINT
-    END
-ELSE
-    BEGIN
-    DECLARE @sql_add_Ca_Cat_Zh NVARCHAR(MAX);
-    SET @sql_add_Ca_Cat_Zh = 'ALTER TABLE Ca_Cat ADD [Zh] BIGINT'
-    EXEC sp_executesql @sql_add_Ca_Cat_Zh
-    END
-
-
-IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ca_CatZh')
-    BEGIN
-    ALTER TABLE Ca_Cat DROP  CONSTRAINT [Constraint_Ca_CatZh]
-    END
-
-IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ca_CatZh')
-    BEGIN
-    ALTER TABLE Ca_Cat DROP  CONSTRAINT [UniqueNonclustered_Ca_CatZh]
-    END
-
--- [Ca_Cat.Parent] -------------
-
-
--- [Ca_Cat.Parent] -------------
-
-IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ca_Cat') AND name='Parent')
-    BEGIN
-     ALTER TABLE Ca_Cat ALTER COLUMN [Parent] BIGINT
-    END
-ELSE
-    BEGIN
-    DECLARE @sql_add_Ca_Cat_Parent NVARCHAR(MAX);
-    SET @sql_add_Ca_Cat_Parent = 'ALTER TABLE Ca_Cat ADD [Parent] BIGINT'
-    EXEC sp_executesql @sql_add_Ca_Cat_Parent
-    END
-
-
-IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ca_CatParent')
-    BEGIN
-    ALTER TABLE Ca_Cat DROP  CONSTRAINT [Constraint_Ca_CatParent]
-    END
-
-IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ca_CatParent')
-    BEGIN
-    ALTER TABLE Ca_Cat DROP  CONSTRAINT [UniqueNonclustered_Ca_CatParent]
-    END
-
--- [Ca_Cat.CatState] -------------
-
-
--- [Ca_Cat.CatState] -------------
-
-IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ca_Cat') AND name='CatState')
-    BEGIN
-     ALTER TABLE Ca_Cat ALTER COLUMN [CatState] INT
-    END
-ELSE
-    BEGIN
-    DECLARE @sql_add_Ca_Cat_CatState NVARCHAR(MAX);
-    SET @sql_add_Ca_Cat_CatState = 'ALTER TABLE Ca_Cat ADD [CatState] INT'
-    EXEC sp_executesql @sql_add_Ca_Cat_CatState
-    END
-
-
-IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ca_CatCatState')
-    BEGIN
-    ALTER TABLE Ca_Cat DROP  CONSTRAINT [Constraint_Ca_CatCatState]
-    END
-
-IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ca_CatCatState')
-    BEGIN
-    ALTER TABLE Ca_Cat DROP  CONSTRAINT [UniqueNonclustered_Ca_CatCatState]
-    END
--- [Ca_City] ----------------------
-
-IF NOT EXISTS(SELECT * FROM sysobjects WHERE [name]='Ca_City' AND xtype='U')
-
-BEGIN
-
-    CREATE TABLE Ca_City ([ID] BIGINT NOT NULL
-        ,[Createdat] BIGINT NOT NULL
-        ,[Updatedat] BIGINT NOT NULL
-        ,[Sort] BIGINT NOT NULL,
-        [Fullname] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS
-        ,[MetropolitanCode3IATA] NVARCHAR(3) COLLATE Chinese_PRC_CI_AS
-        ,[NameEn] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS
-        ,[Country] BIGINT
-        ,[Place] BIGINT
-        ,[Icon] NVARCHAR(256) COLLATE Chinese_PRC_CI_AS
-        ,[Tel] NVARCHAR(4) COLLATE Chinese_PRC_CI_AS
-, CONSTRAINT [PK_Ca_City] PRIMARY KEY CLUSTERED ([ID] ASC)) ON [PRIMARY]
-END
-
-
--- Dropping obsolete fields -----------
-DECLARE @name_Ca_City NVARCHAR(64)
-DECLARE cursor_Ca_City CURSOR FOR 
-    SELECT name FROM SYSCOLUMNS WHERE id=object_id('Ca_City') AND (name NOT IN ('ID','Createdat','Updatedat','Sort','Fullname','MetropolitanCode3IATA','NameEn','Country','Place','Icon','Tel'))
-
-OPEN cursor_Ca_City
-FETCH NEXT FROM cursor_Ca_City INTO @name_Ca_City
+OPEN cursor_Ca_Book
+FETCH NEXT FROM cursor_Ca_Book INTO @name_Ca_Book
 
 WHILE @@FETCH_STATUS = 0
 BEGIN
-    PRINT 'Dropping Ca_City.' + @name_Ca_City;
+    PRINT 'Dropping Ca_Book.' + @name_Ca_Book;
     
-    DECLARE @sql_Ca_City NVARCHAR(MAX);
-    SET @sql_Ca_City = 'ALTER TABLE Ca_City DROP COLUMN ' + QUOTENAME(@name_Ca_City)
-    EXEC sp_executesql @sql_Ca_City
+    DECLARE @sql_Ca_Book NVARCHAR(MAX);
+    SET @sql_Ca_Book = 'ALTER TABLE Ca_Book DROP COLUMN ' + QUOTENAME(@name_Ca_Book)
+    EXEC sp_executesql @sql_Ca_Book
     
     
-    FETCH NEXT FROM cursor_Ca_City INTO @name_Ca_City
+    FETCH NEXT FROM cursor_Ca_Book INTO @name_Ca_Book
 END
 
-CLOSE cursor_Ca_City;
-DEALLOCATE cursor_Ca_City;
+CLOSE cursor_Ca_Book;
+DEALLOCATE cursor_Ca_Book;
 
 
--- [Ca_City.Fullname] -------------
+-- [Ca_Book.Caption] -------------
 
 
--- [Ca_City.Fullname] -------------
+-- [Ca_Book.Caption] -------------
 
-IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ca_City') AND name='Fullname')
+IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ca_Book') AND name='Caption')
     BEGIN
-     ALTER TABLE Ca_City ALTER COLUMN [Fullname] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS
+     ALTER TABLE Ca_Book ALTER COLUMN [Caption] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS
     END
 ELSE
     BEGIN
-    DECLARE @sql_add_Ca_City_Fullname NVARCHAR(MAX);
-    SET @sql_add_Ca_City_Fullname = 'ALTER TABLE Ca_City ADD [Fullname] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS'
-    EXEC sp_executesql @sql_add_Ca_City_Fullname
+    DECLARE @sql_add_Ca_Book_Caption NVARCHAR(MAX);
+    SET @sql_add_Ca_Book_Caption = 'ALTER TABLE Ca_Book ADD [Caption] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS'
+    EXEC sp_executesql @sql_add_Ca_Book_Caption
     END
 
 
-IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ca_CityFullname')
+IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ca_BookCaption')
     BEGIN
-    ALTER TABLE Ca_City DROP  CONSTRAINT [Constraint_Ca_CityFullname]
+    ALTER TABLE Ca_Book DROP  CONSTRAINT [Constraint_Ca_BookCaption]
     END
 
-IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ca_CityFullname')
+IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ca_BookCaption')
     BEGIN
-    ALTER TABLE Ca_City DROP  CONSTRAINT [UniqueNonclustered_Ca_CityFullname]
+    ALTER TABLE Ca_Book DROP  CONSTRAINT [UniqueNonclustered_Ca_BookCaption]
     END
 
--- [Ca_City.MetropolitanCode3IATA] -------------
+-- [Ca_Book.Email] -------------
 
 
--- [Ca_City.MetropolitanCode3IATA] -------------
+-- [Ca_Book.Email] -------------
 
-IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ca_City') AND name='MetropolitanCode3IATA')
+IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ca_Book') AND name='Email')
     BEGIN
-     ALTER TABLE Ca_City ALTER COLUMN [MetropolitanCode3IATA] NVARCHAR(3) COLLATE Chinese_PRC_CI_AS
-    END
-ELSE
-    BEGIN
-    DECLARE @sql_add_Ca_City_MetropolitanCode3IATA NVARCHAR(MAX);
-    SET @sql_add_Ca_City_MetropolitanCode3IATA = 'ALTER TABLE Ca_City ADD [MetropolitanCode3IATA] NVARCHAR(3) COLLATE Chinese_PRC_CI_AS'
-    EXEC sp_executesql @sql_add_Ca_City_MetropolitanCode3IATA
-    END
-
-
-IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ca_CityMetropolitanCode3IATA')
-    BEGIN
-    ALTER TABLE Ca_City DROP  CONSTRAINT [Constraint_Ca_CityMetropolitanCode3IATA]
-    END
-
-IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ca_CityMetropolitanCode3IATA')
-    BEGIN
-    ALTER TABLE Ca_City DROP  CONSTRAINT [UniqueNonclustered_Ca_CityMetropolitanCode3IATA]
-    END
-
--- [Ca_City.NameEn] -------------
-
-
--- [Ca_City.NameEn] -------------
-
-IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ca_City') AND name='NameEn')
-    BEGIN
-     ALTER TABLE Ca_City ALTER COLUMN [NameEn] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS
+     ALTER TABLE Ca_Book ALTER COLUMN [Email] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS
     END
 ELSE
     BEGIN
-    DECLARE @sql_add_Ca_City_NameEn NVARCHAR(MAX);
-    SET @sql_add_Ca_City_NameEn = 'ALTER TABLE Ca_City ADD [NameEn] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS'
-    EXEC sp_executesql @sql_add_Ca_City_NameEn
+    DECLARE @sql_add_Ca_Book_Email NVARCHAR(MAX);
+    SET @sql_add_Ca_Book_Email = 'ALTER TABLE Ca_Book ADD [Email] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS'
+    EXEC sp_executesql @sql_add_Ca_Book_Email
     END
 
 
-IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ca_CityNameEn')
+IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ca_BookEmail')
     BEGIN
-    ALTER TABLE Ca_City DROP  CONSTRAINT [Constraint_Ca_CityNameEn]
+    ALTER TABLE Ca_Book DROP  CONSTRAINT [Constraint_Ca_BookEmail]
     END
 
-IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ca_CityNameEn')
+IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ca_BookEmail')
     BEGIN
-    ALTER TABLE Ca_City DROP  CONSTRAINT [UniqueNonclustered_Ca_CityNameEn]
+    ALTER TABLE Ca_Book DROP  CONSTRAINT [UniqueNonclustered_Ca_BookEmail]
     END
 
--- [Ca_City.Country] -------------
+-- [Ca_Book.Message] -------------
 
 
--- [Ca_City.Country] -------------
+-- [Ca_Book.Message] -------------
 
-IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ca_City') AND name='Country')
+IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ca_Book') AND name='Message')
     BEGIN
-     ALTER TABLE Ca_City ALTER COLUMN [Country] BIGINT
-    END
-ELSE
-    BEGIN
-    DECLARE @sql_add_Ca_City_Country NVARCHAR(MAX);
-    SET @sql_add_Ca_City_Country = 'ALTER TABLE Ca_City ADD [Country] BIGINT'
-    EXEC sp_executesql @sql_add_Ca_City_Country
-    END
-
-
-IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ca_CityCountry')
-    BEGIN
-    ALTER TABLE Ca_City DROP  CONSTRAINT [Constraint_Ca_CityCountry]
-    END
-
-IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ca_CityCountry')
-    BEGIN
-    ALTER TABLE Ca_City DROP  CONSTRAINT [UniqueNonclustered_Ca_CityCountry]
-    END
-
--- [Ca_City.Place] -------------
-
-
--- [Ca_City.Place] -------------
-
-IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ca_City') AND name='Place')
-    BEGIN
-     ALTER TABLE Ca_City ALTER COLUMN [Place] BIGINT
+     ALTER TABLE Ca_Book ALTER COLUMN [Message] NVARCHAR(MAX)
     END
 ELSE
     BEGIN
-    DECLARE @sql_add_Ca_City_Place NVARCHAR(MAX);
-    SET @sql_add_Ca_City_Place = 'ALTER TABLE Ca_City ADD [Place] BIGINT'
-    EXEC sp_executesql @sql_add_Ca_City_Place
+    DECLARE @sql_add_Ca_Book_Message NVARCHAR(MAX);
+    SET @sql_add_Ca_Book_Message = 'ALTER TABLE Ca_Book ADD [Message] NVARCHAR(MAX)'
+    EXEC sp_executesql @sql_add_Ca_Book_Message
     END
 
 
-IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ca_CityPlace')
+IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ca_BookMessage')
     BEGIN
-    ALTER TABLE Ca_City DROP  CONSTRAINT [Constraint_Ca_CityPlace]
+    ALTER TABLE Ca_Book DROP  CONSTRAINT [Constraint_Ca_BookMessage]
     END
 
-IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ca_CityPlace')
+IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ca_BookMessage')
     BEGIN
-    ALTER TABLE Ca_City DROP  CONSTRAINT [UniqueNonclustered_Ca_CityPlace]
-    END
-
--- [Ca_City.Icon] -------------
-
-
--- [Ca_City.Icon] -------------
-
-IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ca_City') AND name='Icon')
-    BEGIN
-     ALTER TABLE Ca_City ALTER COLUMN [Icon] NVARCHAR(256) COLLATE Chinese_PRC_CI_AS
-    END
-ELSE
-    BEGIN
-    DECLARE @sql_add_Ca_City_Icon NVARCHAR(MAX);
-    SET @sql_add_Ca_City_Icon = 'ALTER TABLE Ca_City ADD [Icon] NVARCHAR(256) COLLATE Chinese_PRC_CI_AS'
-    EXEC sp_executesql @sql_add_Ca_City_Icon
-    END
-
-
-IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ca_CityIcon')
-    BEGIN
-    ALTER TABLE Ca_City DROP  CONSTRAINT [Constraint_Ca_CityIcon]
-    END
-
-IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ca_CityIcon')
-    BEGIN
-    ALTER TABLE Ca_City DROP  CONSTRAINT [UniqueNonclustered_Ca_CityIcon]
-    END
-
--- [Ca_City.Tel] -------------
-
-
--- [Ca_City.Tel] -------------
-
-IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ca_City') AND name='Tel')
-    BEGIN
-     ALTER TABLE Ca_City ALTER COLUMN [Tel] NVARCHAR(4) COLLATE Chinese_PRC_CI_AS
-    END
-ELSE
-    BEGIN
-    DECLARE @sql_add_Ca_City_Tel NVARCHAR(MAX);
-    SET @sql_add_Ca_City_Tel = 'ALTER TABLE Ca_City ADD [Tel] NVARCHAR(4) COLLATE Chinese_PRC_CI_AS'
-    EXEC sp_executesql @sql_add_Ca_City_Tel
-    END
-
-
-IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ca_CityTel')
-    BEGIN
-    ALTER TABLE Ca_City DROP  CONSTRAINT [Constraint_Ca_CityTel]
-    END
-
-IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ca_CityTel')
-    BEGIN
-    ALTER TABLE Ca_City DROP  CONSTRAINT [UniqueNonclustered_Ca_CityTel]
-    END
--- [Ca_Country] ----------------------
-
-IF NOT EXISTS(SELECT * FROM sysobjects WHERE [name]='Ca_Country' AND xtype='U')
-
-BEGIN
-
-    CREATE TABLE Ca_Country ([ID] BIGINT NOT NULL
-        ,[Createdat] BIGINT NOT NULL
-        ,[Updatedat] BIGINT NOT NULL
-        ,[Sort] BIGINT NOT NULL,
-        [Code2] NVARCHAR(2) COLLATE Chinese_PRC_CI_AS
-        ,[Caption] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS
-        ,[Fullname] NVARCHAR(256) COLLATE Chinese_PRC_CI_AS
-        ,[Icon] NVARCHAR(256) COLLATE Chinese_PRC_CI_AS
-        ,[Tel] NVARCHAR(4) COLLATE Chinese_PRC_CI_AS
-        ,[Cur] BIGINT
-        ,[Capital] BIGINT
-        ,[Place] BIGINT
-        ,[Lang] BIGINT
-, CONSTRAINT [PK_Ca_Country] PRIMARY KEY CLUSTERED ([ID] ASC)) ON [PRIMARY]
-END
-
-
--- Dropping obsolete fields -----------
-DECLARE @name_Ca_Country NVARCHAR(64)
-DECLARE cursor_Ca_Country CURSOR FOR 
-    SELECT name FROM SYSCOLUMNS WHERE id=object_id('Ca_Country') AND (name NOT IN ('ID','Createdat','Updatedat','Sort','Code2','Caption','Fullname','Icon','Tel','Cur','Capital','Place','Lang'))
-
-OPEN cursor_Ca_Country
-FETCH NEXT FROM cursor_Ca_Country INTO @name_Ca_Country
-
-WHILE @@FETCH_STATUS = 0
-BEGIN
-    PRINT 'Dropping Ca_Country.' + @name_Ca_Country;
-    
-    DECLARE @sql_Ca_Country NVARCHAR(MAX);
-    SET @sql_Ca_Country = 'ALTER TABLE Ca_Country DROP COLUMN ' + QUOTENAME(@name_Ca_Country)
-    EXEC sp_executesql @sql_Ca_Country
-    
-    
-    FETCH NEXT FROM cursor_Ca_Country INTO @name_Ca_Country
-END
-
-CLOSE cursor_Ca_Country;
-DEALLOCATE cursor_Ca_Country;
-
-
--- [Ca_Country.Code2] -------------
-
-
--- [Ca_Country.Code2] -------------
-
-IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ca_Country') AND name='Code2')
-    BEGIN
-     ALTER TABLE Ca_Country ALTER COLUMN [Code2] NVARCHAR(2) COLLATE Chinese_PRC_CI_AS
-    END
-ELSE
-    BEGIN
-    DECLARE @sql_add_Ca_Country_Code2 NVARCHAR(MAX);
-    SET @sql_add_Ca_Country_Code2 = 'ALTER TABLE Ca_Country ADD [Code2] NVARCHAR(2) COLLATE Chinese_PRC_CI_AS'
-    EXEC sp_executesql @sql_add_Ca_Country_Code2
-    END
-
-
-IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ca_CountryCode2')
-    BEGIN
-    ALTER TABLE Ca_Country DROP  CONSTRAINT [Constraint_Ca_CountryCode2]
-    END
-
-IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ca_CountryCode2')
-    BEGIN
-    ALTER TABLE Ca_Country DROP  CONSTRAINT [UniqueNonclustered_Ca_CountryCode2]
-    END
-
--- [Ca_Country.Caption] -------------
-
-
--- [Ca_Country.Caption] -------------
-
-IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ca_Country') AND name='Caption')
-    BEGIN
-     ALTER TABLE Ca_Country ALTER COLUMN [Caption] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS
-    END
-ELSE
-    BEGIN
-    DECLARE @sql_add_Ca_Country_Caption NVARCHAR(MAX);
-    SET @sql_add_Ca_Country_Caption = 'ALTER TABLE Ca_Country ADD [Caption] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS'
-    EXEC sp_executesql @sql_add_Ca_Country_Caption
-    END
-
-
-IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ca_CountryCaption')
-    BEGIN
-    ALTER TABLE Ca_Country DROP  CONSTRAINT [Constraint_Ca_CountryCaption]
-    END
-
-IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ca_CountryCaption')
-    BEGIN
-    ALTER TABLE Ca_Country DROP  CONSTRAINT [UniqueNonclustered_Ca_CountryCaption]
-    END
-
--- [Ca_Country.Fullname] -------------
-
-
--- [Ca_Country.Fullname] -------------
-
-IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ca_Country') AND name='Fullname')
-    BEGIN
-     ALTER TABLE Ca_Country ALTER COLUMN [Fullname] NVARCHAR(256) COLLATE Chinese_PRC_CI_AS
-    END
-ELSE
-    BEGIN
-    DECLARE @sql_add_Ca_Country_Fullname NVARCHAR(MAX);
-    SET @sql_add_Ca_Country_Fullname = 'ALTER TABLE Ca_Country ADD [Fullname] NVARCHAR(256) COLLATE Chinese_PRC_CI_AS'
-    EXEC sp_executesql @sql_add_Ca_Country_Fullname
-    END
-
-
-IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ca_CountryFullname')
-    BEGIN
-    ALTER TABLE Ca_Country DROP  CONSTRAINT [Constraint_Ca_CountryFullname]
-    END
-
-IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ca_CountryFullname')
-    BEGIN
-    ALTER TABLE Ca_Country DROP  CONSTRAINT [UniqueNonclustered_Ca_CountryFullname]
-    END
-
--- [Ca_Country.Icon] -------------
-
-
--- [Ca_Country.Icon] -------------
-
-IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ca_Country') AND name='Icon')
-    BEGIN
-     ALTER TABLE Ca_Country ALTER COLUMN [Icon] NVARCHAR(256) COLLATE Chinese_PRC_CI_AS
-    END
-ELSE
-    BEGIN
-    DECLARE @sql_add_Ca_Country_Icon NVARCHAR(MAX);
-    SET @sql_add_Ca_Country_Icon = 'ALTER TABLE Ca_Country ADD [Icon] NVARCHAR(256) COLLATE Chinese_PRC_CI_AS'
-    EXEC sp_executesql @sql_add_Ca_Country_Icon
-    END
-
-
-IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ca_CountryIcon')
-    BEGIN
-    ALTER TABLE Ca_Country DROP  CONSTRAINT [Constraint_Ca_CountryIcon]
-    END
-
-IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ca_CountryIcon')
-    BEGIN
-    ALTER TABLE Ca_Country DROP  CONSTRAINT [UniqueNonclustered_Ca_CountryIcon]
-    END
-
--- [Ca_Country.Tel] -------------
-
-
--- [Ca_Country.Tel] -------------
-
-IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ca_Country') AND name='Tel')
-    BEGIN
-     ALTER TABLE Ca_Country ALTER COLUMN [Tel] NVARCHAR(4) COLLATE Chinese_PRC_CI_AS
-    END
-ELSE
-    BEGIN
-    DECLARE @sql_add_Ca_Country_Tel NVARCHAR(MAX);
-    SET @sql_add_Ca_Country_Tel = 'ALTER TABLE Ca_Country ADD [Tel] NVARCHAR(4) COLLATE Chinese_PRC_CI_AS'
-    EXEC sp_executesql @sql_add_Ca_Country_Tel
-    END
-
-
-IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ca_CountryTel')
-    BEGIN
-    ALTER TABLE Ca_Country DROP  CONSTRAINT [Constraint_Ca_CountryTel]
-    END
-
-IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ca_CountryTel')
-    BEGIN
-    ALTER TABLE Ca_Country DROP  CONSTRAINT [UniqueNonclustered_Ca_CountryTel]
-    END
-
--- [Ca_Country.Cur] -------------
-
-
--- [Ca_Country.Cur] -------------
-
-IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ca_Country') AND name='Cur')
-    BEGIN
-     ALTER TABLE Ca_Country ALTER COLUMN [Cur] BIGINT
-    END
-ELSE
-    BEGIN
-    DECLARE @sql_add_Ca_Country_Cur NVARCHAR(MAX);
-    SET @sql_add_Ca_Country_Cur = 'ALTER TABLE Ca_Country ADD [Cur] BIGINT'
-    EXEC sp_executesql @sql_add_Ca_Country_Cur
-    END
-
-
-IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ca_CountryCur')
-    BEGIN
-    ALTER TABLE Ca_Country DROP  CONSTRAINT [Constraint_Ca_CountryCur]
-    END
-
-IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ca_CountryCur')
-    BEGIN
-    ALTER TABLE Ca_Country DROP  CONSTRAINT [UniqueNonclustered_Ca_CountryCur]
-    END
-
--- [Ca_Country.Capital] -------------
-
-
--- [Ca_Country.Capital] -------------
-
-IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ca_Country') AND name='Capital')
-    BEGIN
-     ALTER TABLE Ca_Country ALTER COLUMN [Capital] BIGINT
-    END
-ELSE
-    BEGIN
-    DECLARE @sql_add_Ca_Country_Capital NVARCHAR(MAX);
-    SET @sql_add_Ca_Country_Capital = 'ALTER TABLE Ca_Country ADD [Capital] BIGINT'
-    EXEC sp_executesql @sql_add_Ca_Country_Capital
-    END
-
-
-IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ca_CountryCapital')
-    BEGIN
-    ALTER TABLE Ca_Country DROP  CONSTRAINT [Constraint_Ca_CountryCapital]
-    END
-
-IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ca_CountryCapital')
-    BEGIN
-    ALTER TABLE Ca_Country DROP  CONSTRAINT [UniqueNonclustered_Ca_CountryCapital]
-    END
-
--- [Ca_Country.Place] -------------
-
-
--- [Ca_Country.Place] -------------
-
-IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ca_Country') AND name='Place')
-    BEGIN
-     ALTER TABLE Ca_Country ALTER COLUMN [Place] BIGINT
-    END
-ELSE
-    BEGIN
-    DECLARE @sql_add_Ca_Country_Place NVARCHAR(MAX);
-    SET @sql_add_Ca_Country_Place = 'ALTER TABLE Ca_Country ADD [Place] BIGINT'
-    EXEC sp_executesql @sql_add_Ca_Country_Place
-    END
-
-
-IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ca_CountryPlace')
-    BEGIN
-    ALTER TABLE Ca_Country DROP  CONSTRAINT [Constraint_Ca_CountryPlace]
-    END
-
-IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ca_CountryPlace')
-    BEGIN
-    ALTER TABLE Ca_Country DROP  CONSTRAINT [UniqueNonclustered_Ca_CountryPlace]
-    END
-
--- [Ca_Country.Lang] -------------
-
-
--- [Ca_Country.Lang] -------------
-
-IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ca_Country') AND name='Lang')
-    BEGIN
-     ALTER TABLE Ca_Country ALTER COLUMN [Lang] BIGINT
-    END
-ELSE
-    BEGIN
-    DECLARE @sql_add_Ca_Country_Lang NVARCHAR(MAX);
-    SET @sql_add_Ca_Country_Lang = 'ALTER TABLE Ca_Country ADD [Lang] BIGINT'
-    EXEC sp_executesql @sql_add_Ca_Country_Lang
-    END
-
-
-IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ca_CountryLang')
-    BEGIN
-    ALTER TABLE Ca_Country DROP  CONSTRAINT [Constraint_Ca_CountryLang]
-    END
-
-IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ca_CountryLang')
-    BEGIN
-    ALTER TABLE Ca_Country DROP  CONSTRAINT [UniqueNonclustered_Ca_CountryLang]
+    ALTER TABLE Ca_Book DROP  CONSTRAINT [UniqueNonclustered_Ca_BookMessage]
     END
 -- [Ca_EndUser] ----------------------
 
@@ -1567,28 +131,7 @@ BEGIN
         ,[Updatedat] BIGINT NOT NULL
         ,[Sort] BIGINT NOT NULL,
         [Caption] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS
-        ,[Username] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS
-        ,[SocialAuthBiz] BIGINT
-        ,[SocialAuthId] NVARCHAR(MAX)
-        ,[SocialAuthAvatar] NVARCHAR(MAX)
-        ,[Email] NVARCHAR(256) COLLATE Chinese_PRC_CI_AS
-        ,[Tel] NVARCHAR(32) COLLATE Chinese_PRC_CI_AS
-        ,[Gender] INT
-        ,[Status] INT
-        ,[Admin] INT
-        ,[BizPartner] INT
-        ,[Privilege] BIGINT
-        ,[Verify] INT
-        ,[Pwd] NVARCHAR(16) COLLATE Chinese_PRC_CI_AS
-        ,[Online] BIT
-        ,[Icon] NVARCHAR(256) COLLATE Chinese_PRC_CI_AS
-        ,[Background] NVARCHAR(256) COLLATE Chinese_PRC_CI_AS
-        ,[BasicAcct] BIGINT
-        ,[Citizen] BIGINT
-        ,[Refer] NVARCHAR(9) COLLATE Chinese_PRC_CI_AS
-        ,[Referer] BIGINT
-        ,[Url] NVARCHAR(MAX)
-        ,[About] NVARCHAR(MAX)
+        ,[AuthType] INT
 , CONSTRAINT [PK_Ca_EndUser] PRIMARY KEY CLUSTERED ([ID] ASC)) ON [PRIMARY]
 END
 
@@ -1596,7 +139,7 @@ END
 -- Dropping obsolete fields -----------
 DECLARE @name_Ca_EndUser NVARCHAR(64)
 DECLARE cursor_Ca_EndUser CURSOR FOR 
-    SELECT name FROM SYSCOLUMNS WHERE id=object_id('Ca_EndUser') AND (name NOT IN ('ID','Createdat','Updatedat','Sort','Caption','Username','SocialAuthBiz','SocialAuthId','SocialAuthAvatar','Email','Tel','Gender','Status','Admin','BizPartner','Privilege','Verify','Pwd','Online','Icon','Background','BasicAcct','Citizen','Refer','Referer','Url','About'))
+    SELECT name FROM SYSCOLUMNS WHERE id=object_id('Ca_EndUser') AND (name NOT IN ('ID','Createdat','Updatedat','Sort','Caption','AuthType'))
 
 OPEN cursor_Ca_EndUser
 FETCH NEXT FROM cursor_Ca_EndUser INTO @name_Ca_EndUser
@@ -1644,924 +187,832 @@ IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ca_EndUserCapt
     ALTER TABLE Ca_EndUser DROP  CONSTRAINT [UniqueNonclustered_Ca_EndUserCaption]
     END
 
--- [Ca_EndUser.Username] -------------
+-- [Ca_EndUser.AuthType] -------------
 
 
--- [Ca_EndUser.Username] -------------
+-- [Ca_EndUser.AuthType] -------------
 
-IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ca_EndUser') AND name='Username')
+IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ca_EndUser') AND name='AuthType')
     BEGIN
-     ALTER TABLE Ca_EndUser ALTER COLUMN [Username] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS
+     ALTER TABLE Ca_EndUser ALTER COLUMN [AuthType] INT
     END
 ELSE
     BEGIN
-    DECLARE @sql_add_Ca_EndUser_Username NVARCHAR(MAX);
-    SET @sql_add_Ca_EndUser_Username = 'ALTER TABLE Ca_EndUser ADD [Username] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS'
-    EXEC sp_executesql @sql_add_Ca_EndUser_Username
+    DECLARE @sql_add_Ca_EndUser_AuthType NVARCHAR(MAX);
+    SET @sql_add_Ca_EndUser_AuthType = 'ALTER TABLE Ca_EndUser ADD [AuthType] INT'
+    EXEC sp_executesql @sql_add_Ca_EndUser_AuthType
     END
 
 
-IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ca_EndUserUsername')
+IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ca_EndUserAuthType')
     BEGIN
-    ALTER TABLE Ca_EndUser DROP  CONSTRAINT [Constraint_Ca_EndUserUsername]
+    ALTER TABLE Ca_EndUser DROP  CONSTRAINT [Constraint_Ca_EndUserAuthType]
     END
 
-IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ca_EndUserUsername')
+IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ca_EndUserAuthType')
     BEGIN
-    ALTER TABLE Ca_EndUser DROP  CONSTRAINT [UniqueNonclustered_Ca_EndUserUsername]
+    ALTER TABLE Ca_EndUser DROP  CONSTRAINT [UniqueNonclustered_Ca_EndUserAuthType]
     END
+-- [Ca_File] ----------------------
 
--- [Ca_EndUser.SocialAuthBiz] -------------
-
-
--- [Ca_EndUser.SocialAuthBiz] -------------
-
-IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ca_EndUser') AND name='SocialAuthBiz')
-    BEGIN
-     ALTER TABLE Ca_EndUser ALTER COLUMN [SocialAuthBiz] BIGINT
-    END
-ELSE
-    BEGIN
-    DECLARE @sql_add_Ca_EndUser_SocialAuthBiz NVARCHAR(MAX);
-    SET @sql_add_Ca_EndUser_SocialAuthBiz = 'ALTER TABLE Ca_EndUser ADD [SocialAuthBiz] BIGINT'
-    EXEC sp_executesql @sql_add_Ca_EndUser_SocialAuthBiz
-    END
-
-
-IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ca_EndUserSocialAuthBiz')
-    BEGIN
-    ALTER TABLE Ca_EndUser DROP  CONSTRAINT [Constraint_Ca_EndUserSocialAuthBiz]
-    END
-
-IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ca_EndUserSocialAuthBiz')
-    BEGIN
-    ALTER TABLE Ca_EndUser DROP  CONSTRAINT [UniqueNonclustered_Ca_EndUserSocialAuthBiz]
-    END
-
--- [Ca_EndUser.SocialAuthId] -------------
-
-
--- [Ca_EndUser.SocialAuthId] -------------
-
-IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ca_EndUser') AND name='SocialAuthId')
-    BEGIN
-     ALTER TABLE Ca_EndUser ALTER COLUMN [SocialAuthId] NVARCHAR(MAX)
-    END
-ELSE
-    BEGIN
-    DECLARE @sql_add_Ca_EndUser_SocialAuthId NVARCHAR(MAX);
-    SET @sql_add_Ca_EndUser_SocialAuthId = 'ALTER TABLE Ca_EndUser ADD [SocialAuthId] NVARCHAR(MAX)'
-    EXEC sp_executesql @sql_add_Ca_EndUser_SocialAuthId
-    END
-
-
-IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ca_EndUserSocialAuthId')
-    BEGIN
-    ALTER TABLE Ca_EndUser DROP  CONSTRAINT [Constraint_Ca_EndUserSocialAuthId]
-    END
-
-IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ca_EndUserSocialAuthId')
-    BEGIN
-    ALTER TABLE Ca_EndUser DROP  CONSTRAINT [UniqueNonclustered_Ca_EndUserSocialAuthId]
-    END
-
--- [Ca_EndUser.SocialAuthAvatar] -------------
-
-
--- [Ca_EndUser.SocialAuthAvatar] -------------
-
-IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ca_EndUser') AND name='SocialAuthAvatar')
-    BEGIN
-     ALTER TABLE Ca_EndUser ALTER COLUMN [SocialAuthAvatar] NVARCHAR(MAX)
-    END
-ELSE
-    BEGIN
-    DECLARE @sql_add_Ca_EndUser_SocialAuthAvatar NVARCHAR(MAX);
-    SET @sql_add_Ca_EndUser_SocialAuthAvatar = 'ALTER TABLE Ca_EndUser ADD [SocialAuthAvatar] NVARCHAR(MAX)'
-    EXEC sp_executesql @sql_add_Ca_EndUser_SocialAuthAvatar
-    END
-
-
-IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ca_EndUserSocialAuthAvatar')
-    BEGIN
-    ALTER TABLE Ca_EndUser DROP  CONSTRAINT [Constraint_Ca_EndUserSocialAuthAvatar]
-    END
-
-IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ca_EndUserSocialAuthAvatar')
-    BEGIN
-    ALTER TABLE Ca_EndUser DROP  CONSTRAINT [UniqueNonclustered_Ca_EndUserSocialAuthAvatar]
-    END
-
--- [Ca_EndUser.Email] -------------
-
-
--- [Ca_EndUser.Email] -------------
-
-IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ca_EndUser') AND name='Email')
-    BEGIN
-     ALTER TABLE Ca_EndUser ALTER COLUMN [Email] NVARCHAR(256) COLLATE Chinese_PRC_CI_AS
-    END
-ELSE
-    BEGIN
-    DECLARE @sql_add_Ca_EndUser_Email NVARCHAR(MAX);
-    SET @sql_add_Ca_EndUser_Email = 'ALTER TABLE Ca_EndUser ADD [Email] NVARCHAR(256) COLLATE Chinese_PRC_CI_AS'
-    EXEC sp_executesql @sql_add_Ca_EndUser_Email
-    END
-
-
-IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ca_EndUserEmail')
-    BEGIN
-    ALTER TABLE Ca_EndUser DROP  CONSTRAINT [Constraint_Ca_EndUserEmail]
-    END
-
-IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ca_EndUserEmail')
-    BEGIN
-    ALTER TABLE Ca_EndUser DROP  CONSTRAINT [UniqueNonclustered_Ca_EndUserEmail]
-    END
-
--- [Ca_EndUser.Tel] -------------
-
-
--- [Ca_EndUser.Tel] -------------
-
-IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ca_EndUser') AND name='Tel')
-    BEGIN
-     ALTER TABLE Ca_EndUser ALTER COLUMN [Tel] NVARCHAR(32) COLLATE Chinese_PRC_CI_AS
-    END
-ELSE
-    BEGIN
-    DECLARE @sql_add_Ca_EndUser_Tel NVARCHAR(MAX);
-    SET @sql_add_Ca_EndUser_Tel = 'ALTER TABLE Ca_EndUser ADD [Tel] NVARCHAR(32) COLLATE Chinese_PRC_CI_AS'
-    EXEC sp_executesql @sql_add_Ca_EndUser_Tel
-    END
-
-
-IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ca_EndUserTel')
-    BEGIN
-    ALTER TABLE Ca_EndUser DROP  CONSTRAINT [Constraint_Ca_EndUserTel]
-    END
-
-IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ca_EndUserTel')
-    BEGIN
-    ALTER TABLE Ca_EndUser DROP  CONSTRAINT [UniqueNonclustered_Ca_EndUserTel]
-    END
-
--- [Ca_EndUser.Gender] -------------
-
-
--- [Ca_EndUser.Gender] -------------
-
-IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ca_EndUser') AND name='Gender')
-    BEGIN
-     ALTER TABLE Ca_EndUser ALTER COLUMN [Gender] INT
-    END
-ELSE
-    BEGIN
-    DECLARE @sql_add_Ca_EndUser_Gender NVARCHAR(MAX);
-    SET @sql_add_Ca_EndUser_Gender = 'ALTER TABLE Ca_EndUser ADD [Gender] INT'
-    EXEC sp_executesql @sql_add_Ca_EndUser_Gender
-    END
-
-
-IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ca_EndUserGender')
-    BEGIN
-    ALTER TABLE Ca_EndUser DROP  CONSTRAINT [Constraint_Ca_EndUserGender]
-    END
-
-IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ca_EndUserGender')
-    BEGIN
-    ALTER TABLE Ca_EndUser DROP  CONSTRAINT [UniqueNonclustered_Ca_EndUserGender]
-    END
-
--- [Ca_EndUser.Status] -------------
-
-
--- [Ca_EndUser.Status] -------------
-
-IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ca_EndUser') AND name='Status')
-    BEGIN
-     ALTER TABLE Ca_EndUser ALTER COLUMN [Status] INT
-    END
-ELSE
-    BEGIN
-    DECLARE @sql_add_Ca_EndUser_Status NVARCHAR(MAX);
-    SET @sql_add_Ca_EndUser_Status = 'ALTER TABLE Ca_EndUser ADD [Status] INT'
-    EXEC sp_executesql @sql_add_Ca_EndUser_Status
-    END
-
-
-IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ca_EndUserStatus')
-    BEGIN
-    ALTER TABLE Ca_EndUser DROP  CONSTRAINT [Constraint_Ca_EndUserStatus]
-    END
-
-IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ca_EndUserStatus')
-    BEGIN
-    ALTER TABLE Ca_EndUser DROP  CONSTRAINT [UniqueNonclustered_Ca_EndUserStatus]
-    END
-
--- [Ca_EndUser.Admin] -------------
-
-
--- [Ca_EndUser.Admin] -------------
-
-IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ca_EndUser') AND name='Admin')
-    BEGIN
-     ALTER TABLE Ca_EndUser ALTER COLUMN [Admin] INT
-    END
-ELSE
-    BEGIN
-    DECLARE @sql_add_Ca_EndUser_Admin NVARCHAR(MAX);
-    SET @sql_add_Ca_EndUser_Admin = 'ALTER TABLE Ca_EndUser ADD [Admin] INT'
-    EXEC sp_executesql @sql_add_Ca_EndUser_Admin
-    END
-
-
-IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ca_EndUserAdmin')
-    BEGIN
-    ALTER TABLE Ca_EndUser DROP  CONSTRAINT [Constraint_Ca_EndUserAdmin]
-    END
-
-IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ca_EndUserAdmin')
-    BEGIN
-    ALTER TABLE Ca_EndUser DROP  CONSTRAINT [UniqueNonclustered_Ca_EndUserAdmin]
-    END
-
--- [Ca_EndUser.BizPartner] -------------
-
-
--- [Ca_EndUser.BizPartner] -------------
-
-IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ca_EndUser') AND name='BizPartner')
-    BEGIN
-     ALTER TABLE Ca_EndUser ALTER COLUMN [BizPartner] INT
-    END
-ELSE
-    BEGIN
-    DECLARE @sql_add_Ca_EndUser_BizPartner NVARCHAR(MAX);
-    SET @sql_add_Ca_EndUser_BizPartner = 'ALTER TABLE Ca_EndUser ADD [BizPartner] INT'
-    EXEC sp_executesql @sql_add_Ca_EndUser_BizPartner
-    END
-
-
-IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ca_EndUserBizPartner')
-    BEGIN
-    ALTER TABLE Ca_EndUser DROP  CONSTRAINT [Constraint_Ca_EndUserBizPartner]
-    END
-
-IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ca_EndUserBizPartner')
-    BEGIN
-    ALTER TABLE Ca_EndUser DROP  CONSTRAINT [UniqueNonclustered_Ca_EndUserBizPartner]
-    END
-
--- [Ca_EndUser.Privilege] -------------
-
-
--- [Ca_EndUser.Privilege] -------------
-
-IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ca_EndUser') AND name='Privilege')
-    BEGIN
-     ALTER TABLE Ca_EndUser ALTER COLUMN [Privilege] BIGINT
-    END
-ELSE
-    BEGIN
-    DECLARE @sql_add_Ca_EndUser_Privilege NVARCHAR(MAX);
-    SET @sql_add_Ca_EndUser_Privilege = 'ALTER TABLE Ca_EndUser ADD [Privilege] BIGINT'
-    EXEC sp_executesql @sql_add_Ca_EndUser_Privilege
-    END
-
-
-IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ca_EndUserPrivilege')
-    BEGIN
-    ALTER TABLE Ca_EndUser DROP  CONSTRAINT [Constraint_Ca_EndUserPrivilege]
-    END
-
-IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ca_EndUserPrivilege')
-    BEGIN
-    ALTER TABLE Ca_EndUser DROP  CONSTRAINT [UniqueNonclustered_Ca_EndUserPrivilege]
-    END
-
--- [Ca_EndUser.Verify] -------------
-
-
--- [Ca_EndUser.Verify] -------------
-
-IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ca_EndUser') AND name='Verify')
-    BEGIN
-     ALTER TABLE Ca_EndUser ALTER COLUMN [Verify] INT
-    END
-ELSE
-    BEGIN
-    DECLARE @sql_add_Ca_EndUser_Verify NVARCHAR(MAX);
-    SET @sql_add_Ca_EndUser_Verify = 'ALTER TABLE Ca_EndUser ADD [Verify] INT'
-    EXEC sp_executesql @sql_add_Ca_EndUser_Verify
-    END
-
-
-IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ca_EndUserVerify')
-    BEGIN
-    ALTER TABLE Ca_EndUser DROP  CONSTRAINT [Constraint_Ca_EndUserVerify]
-    END
-
-IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ca_EndUserVerify')
-    BEGIN
-    ALTER TABLE Ca_EndUser DROP  CONSTRAINT [UniqueNonclustered_Ca_EndUserVerify]
-    END
-
--- [Ca_EndUser.Pwd] -------------
-
-
--- [Ca_EndUser.Pwd] -------------
-
-IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ca_EndUser') AND name='Pwd')
-    BEGIN
-     ALTER TABLE Ca_EndUser ALTER COLUMN [Pwd] NVARCHAR(16) COLLATE Chinese_PRC_CI_AS
-    END
-ELSE
-    BEGIN
-    DECLARE @sql_add_Ca_EndUser_Pwd NVARCHAR(MAX);
-    SET @sql_add_Ca_EndUser_Pwd = 'ALTER TABLE Ca_EndUser ADD [Pwd] NVARCHAR(16) COLLATE Chinese_PRC_CI_AS'
-    EXEC sp_executesql @sql_add_Ca_EndUser_Pwd
-    END
-
-
-IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ca_EndUserPwd')
-    BEGIN
-    ALTER TABLE Ca_EndUser DROP  CONSTRAINT [Constraint_Ca_EndUserPwd]
-    END
-
-IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ca_EndUserPwd')
-    BEGIN
-    ALTER TABLE Ca_EndUser DROP  CONSTRAINT [UniqueNonclustered_Ca_EndUserPwd]
-    END
-
--- [Ca_EndUser.Online] -------------
-
-
--- [Ca_EndUser.Online] -------------
-
-IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ca_EndUser') AND name='Online')
-    BEGIN
-     ALTER TABLE Ca_EndUser ALTER COLUMN [Online] BIT
-    END
-ELSE
-    BEGIN
-    DECLARE @sql_add_Ca_EndUser_Online NVARCHAR(MAX);
-    SET @sql_add_Ca_EndUser_Online = 'ALTER TABLE Ca_EndUser ADD [Online] BIT'
-    EXEC sp_executesql @sql_add_Ca_EndUser_Online
-    END
-
-
-IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ca_EndUserOnline')
-    BEGIN
-    ALTER TABLE Ca_EndUser DROP  CONSTRAINT [Constraint_Ca_EndUserOnline]
-    END
-
-IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ca_EndUserOnline')
-    BEGIN
-    ALTER TABLE Ca_EndUser DROP  CONSTRAINT [UniqueNonclustered_Ca_EndUserOnline]
-    END
-
--- [Ca_EndUser.Icon] -------------
-
-
--- [Ca_EndUser.Icon] -------------
-
-IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ca_EndUser') AND name='Icon')
-    BEGIN
-     ALTER TABLE Ca_EndUser ALTER COLUMN [Icon] NVARCHAR(256) COLLATE Chinese_PRC_CI_AS
-    END
-ELSE
-    BEGIN
-    DECLARE @sql_add_Ca_EndUser_Icon NVARCHAR(MAX);
-    SET @sql_add_Ca_EndUser_Icon = 'ALTER TABLE Ca_EndUser ADD [Icon] NVARCHAR(256) COLLATE Chinese_PRC_CI_AS'
-    EXEC sp_executesql @sql_add_Ca_EndUser_Icon
-    END
-
-
-IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ca_EndUserIcon')
-    BEGIN
-    ALTER TABLE Ca_EndUser DROP  CONSTRAINT [Constraint_Ca_EndUserIcon]
-    END
-
-IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ca_EndUserIcon')
-    BEGIN
-    ALTER TABLE Ca_EndUser DROP  CONSTRAINT [UniqueNonclustered_Ca_EndUserIcon]
-    END
-
--- [Ca_EndUser.Background] -------------
-
-
--- [Ca_EndUser.Background] -------------
-
-IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ca_EndUser') AND name='Background')
-    BEGIN
-     ALTER TABLE Ca_EndUser ALTER COLUMN [Background] NVARCHAR(256) COLLATE Chinese_PRC_CI_AS
-    END
-ELSE
-    BEGIN
-    DECLARE @sql_add_Ca_EndUser_Background NVARCHAR(MAX);
-    SET @sql_add_Ca_EndUser_Background = 'ALTER TABLE Ca_EndUser ADD [Background] NVARCHAR(256) COLLATE Chinese_PRC_CI_AS'
-    EXEC sp_executesql @sql_add_Ca_EndUser_Background
-    END
-
-
-IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ca_EndUserBackground')
-    BEGIN
-    ALTER TABLE Ca_EndUser DROP  CONSTRAINT [Constraint_Ca_EndUserBackground]
-    END
-
-IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ca_EndUserBackground')
-    BEGIN
-    ALTER TABLE Ca_EndUser DROP  CONSTRAINT [UniqueNonclustered_Ca_EndUserBackground]
-    END
-
--- [Ca_EndUser.BasicAcct] -------------
-
-
--- [Ca_EndUser.BasicAcct] -------------
-
-IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ca_EndUser') AND name='BasicAcct')
-    BEGIN
-     ALTER TABLE Ca_EndUser ALTER COLUMN [BasicAcct] BIGINT
-    END
-ELSE
-    BEGIN
-    DECLARE @sql_add_Ca_EndUser_BasicAcct NVARCHAR(MAX);
-    SET @sql_add_Ca_EndUser_BasicAcct = 'ALTER TABLE Ca_EndUser ADD [BasicAcct] BIGINT'
-    EXEC sp_executesql @sql_add_Ca_EndUser_BasicAcct
-    END
-
-
-IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ca_EndUserBasicAcct')
-    BEGIN
-    ALTER TABLE Ca_EndUser DROP  CONSTRAINT [Constraint_Ca_EndUserBasicAcct]
-    END
-
-IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ca_EndUserBasicAcct')
-    BEGIN
-    ALTER TABLE Ca_EndUser DROP  CONSTRAINT [UniqueNonclustered_Ca_EndUserBasicAcct]
-    END
-
--- [Ca_EndUser.Citizen] -------------
-
-
--- [Ca_EndUser.Citizen] -------------
-
-IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ca_EndUser') AND name='Citizen')
-    BEGIN
-     ALTER TABLE Ca_EndUser ALTER COLUMN [Citizen] BIGINT
-    END
-ELSE
-    BEGIN
-    DECLARE @sql_add_Ca_EndUser_Citizen NVARCHAR(MAX);
-    SET @sql_add_Ca_EndUser_Citizen = 'ALTER TABLE Ca_EndUser ADD [Citizen] BIGINT'
-    EXEC sp_executesql @sql_add_Ca_EndUser_Citizen
-    END
-
-
-IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ca_EndUserCitizen')
-    BEGIN
-    ALTER TABLE Ca_EndUser DROP  CONSTRAINT [Constraint_Ca_EndUserCitizen]
-    END
-
-IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ca_EndUserCitizen')
-    BEGIN
-    ALTER TABLE Ca_EndUser DROP  CONSTRAINT [UniqueNonclustered_Ca_EndUserCitizen]
-    END
-
--- [Ca_EndUser.Refer] -------------
-
-
--- [Ca_EndUser.Refer] -------------
-
-IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ca_EndUser') AND name='Refer')
-    BEGIN
-     ALTER TABLE Ca_EndUser ALTER COLUMN [Refer] NVARCHAR(9) COLLATE Chinese_PRC_CI_AS
-    END
-ELSE
-    BEGIN
-    DECLARE @sql_add_Ca_EndUser_Refer NVARCHAR(MAX);
-    SET @sql_add_Ca_EndUser_Refer = 'ALTER TABLE Ca_EndUser ADD [Refer] NVARCHAR(9) COLLATE Chinese_PRC_CI_AS'
-    EXEC sp_executesql @sql_add_Ca_EndUser_Refer
-    END
-
-
-IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ca_EndUserRefer')
-    BEGIN
-    ALTER TABLE Ca_EndUser DROP  CONSTRAINT [Constraint_Ca_EndUserRefer]
-    END
-
-IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ca_EndUserRefer')
-    BEGIN
-    ALTER TABLE Ca_EndUser DROP  CONSTRAINT [UniqueNonclustered_Ca_EndUserRefer]
-    END
-
--- [Ca_EndUser.Referer] -------------
-
-
--- [Ca_EndUser.Referer] -------------
-
-IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ca_EndUser') AND name='Referer')
-    BEGIN
-     ALTER TABLE Ca_EndUser ALTER COLUMN [Referer] BIGINT
-    END
-ELSE
-    BEGIN
-    DECLARE @sql_add_Ca_EndUser_Referer NVARCHAR(MAX);
-    SET @sql_add_Ca_EndUser_Referer = 'ALTER TABLE Ca_EndUser ADD [Referer] BIGINT'
-    EXEC sp_executesql @sql_add_Ca_EndUser_Referer
-    END
-
-
-IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ca_EndUserReferer')
-    BEGIN
-    ALTER TABLE Ca_EndUser DROP  CONSTRAINT [Constraint_Ca_EndUserReferer]
-    END
-
-IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ca_EndUserReferer')
-    BEGIN
-    ALTER TABLE Ca_EndUser DROP  CONSTRAINT [UniqueNonclustered_Ca_EndUserReferer]
-    END
-
--- [Ca_EndUser.Url] -------------
-
-
--- [Ca_EndUser.Url] -------------
-
-IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ca_EndUser') AND name='Url')
-    BEGIN
-     ALTER TABLE Ca_EndUser ALTER COLUMN [Url] NVARCHAR(MAX)
-    END
-ELSE
-    BEGIN
-    DECLARE @sql_add_Ca_EndUser_Url NVARCHAR(MAX);
-    SET @sql_add_Ca_EndUser_Url = 'ALTER TABLE Ca_EndUser ADD [Url] NVARCHAR(MAX)'
-    EXEC sp_executesql @sql_add_Ca_EndUser_Url
-    END
-
-
-IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ca_EndUserUrl')
-    BEGIN
-    ALTER TABLE Ca_EndUser DROP  CONSTRAINT [Constraint_Ca_EndUserUrl]
-    END
-
-IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ca_EndUserUrl')
-    BEGIN
-    ALTER TABLE Ca_EndUser DROP  CONSTRAINT [UniqueNonclustered_Ca_EndUserUrl]
-    END
-
--- [Ca_EndUser.About] -------------
-
-
--- [Ca_EndUser.About] -------------
-
-IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ca_EndUser') AND name='About')
-    BEGIN
-     ALTER TABLE Ca_EndUser ALTER COLUMN [About] NVARCHAR(MAX)
-    END
-ELSE
-    BEGIN
-    DECLARE @sql_add_Ca_EndUser_About NVARCHAR(MAX);
-    SET @sql_add_Ca_EndUser_About = 'ALTER TABLE Ca_EndUser ADD [About] NVARCHAR(MAX)'
-    EXEC sp_executesql @sql_add_Ca_EndUser_About
-    END
-
-
-IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ca_EndUserAbout')
-    BEGIN
-    ALTER TABLE Ca_EndUser DROP  CONSTRAINT [Constraint_Ca_EndUserAbout]
-    END
-
-IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ca_EndUserAbout')
-    BEGIN
-    ALTER TABLE Ca_EndUser DROP  CONSTRAINT [UniqueNonclustered_Ca_EndUserAbout]
-    END
--- [Ca_SpecialItem] ----------------------
-
-IF NOT EXISTS(SELECT * FROM sysobjects WHERE [name]='Ca_SpecialItem' AND xtype='U')
+IF NOT EXISTS(SELECT * FROM sysobjects WHERE [name]='Ca_File' AND xtype='U')
 
 BEGIN
 
-    CREATE TABLE Ca_SpecialItem ([ID] BIGINT NOT NULL
+    CREATE TABLE Ca_File ([ID] BIGINT NOT NULL
         ,[Createdat] BIGINT NOT NULL
         ,[Updatedat] BIGINT NOT NULL
         ,[Sort] BIGINT NOT NULL,
-        [Type] INT
-        ,[Lang] BIGINT
-        ,[Bind] BIGINT
-, CONSTRAINT [PK_Ca_SpecialItem] PRIMARY KEY CLUSTERED ([ID] ASC)) ON [PRIMARY]
+        [Caption] NVARCHAR(MAX)
+        ,[Desc] NVARCHAR(MAX)
+        ,[Suffix] NVARCHAR(4) COLLATE Chinese_PRC_CI_AS
+        ,[Size] BIGINT
+        ,[Thumbnail] VARBINARY(MAX)
+        ,[Owner] BIGINT
+, CONSTRAINT [PK_Ca_File] PRIMARY KEY CLUSTERED ([ID] ASC)) ON [PRIMARY]
 END
 
 
 -- Dropping obsolete fields -----------
-DECLARE @name_Ca_SpecialItem NVARCHAR(64)
-DECLARE cursor_Ca_SpecialItem CURSOR FOR 
-    SELECT name FROM SYSCOLUMNS WHERE id=object_id('Ca_SpecialItem') AND (name NOT IN ('ID','Createdat','Updatedat','Sort','Type','Lang','Bind'))
+DECLARE @name_Ca_File NVARCHAR(64)
+DECLARE cursor_Ca_File CURSOR FOR 
+    SELECT name FROM SYSCOLUMNS WHERE id=object_id('Ca_File') AND (name NOT IN ('ID','Createdat','Updatedat','Sort','Caption','Desc','Suffix','Size','Thumbnail','Owner'))
 
-OPEN cursor_Ca_SpecialItem
-FETCH NEXT FROM cursor_Ca_SpecialItem INTO @name_Ca_SpecialItem
+OPEN cursor_Ca_File
+FETCH NEXT FROM cursor_Ca_File INTO @name_Ca_File
 
 WHILE @@FETCH_STATUS = 0
 BEGIN
-    PRINT 'Dropping Ca_SpecialItem.' + @name_Ca_SpecialItem;
+    PRINT 'Dropping Ca_File.' + @name_Ca_File;
     
-    DECLARE @sql_Ca_SpecialItem NVARCHAR(MAX);
-    SET @sql_Ca_SpecialItem = 'ALTER TABLE Ca_SpecialItem DROP COLUMN ' + QUOTENAME(@name_Ca_SpecialItem)
-    EXEC sp_executesql @sql_Ca_SpecialItem
+    DECLARE @sql_Ca_File NVARCHAR(MAX);
+    SET @sql_Ca_File = 'ALTER TABLE Ca_File DROP COLUMN ' + QUOTENAME(@name_Ca_File)
+    EXEC sp_executesql @sql_Ca_File
     
     
-    FETCH NEXT FROM cursor_Ca_SpecialItem INTO @name_Ca_SpecialItem
+    FETCH NEXT FROM cursor_Ca_File INTO @name_Ca_File
 END
 
-CLOSE cursor_Ca_SpecialItem;
-DEALLOCATE cursor_Ca_SpecialItem;
+CLOSE cursor_Ca_File;
+DEALLOCATE cursor_Ca_File;
 
 
--- [Ca_SpecialItem.Type] -------------
+-- [Ca_File.Caption] -------------
 
 
--- [Ca_SpecialItem.Type] -------------
+-- [Ca_File.Caption] -------------
 
-IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ca_SpecialItem') AND name='Type')
+IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ca_File') AND name='Caption')
     BEGIN
-     ALTER TABLE Ca_SpecialItem ALTER COLUMN [Type] INT
+     ALTER TABLE Ca_File ALTER COLUMN [Caption] NVARCHAR(MAX)
     END
 ELSE
     BEGIN
-    DECLARE @sql_add_Ca_SpecialItem_Type NVARCHAR(MAX);
-    SET @sql_add_Ca_SpecialItem_Type = 'ALTER TABLE Ca_SpecialItem ADD [Type] INT'
-    EXEC sp_executesql @sql_add_Ca_SpecialItem_Type
+    DECLARE @sql_add_Ca_File_Caption NVARCHAR(MAX);
+    SET @sql_add_Ca_File_Caption = 'ALTER TABLE Ca_File ADD [Caption] NVARCHAR(MAX)'
+    EXEC sp_executesql @sql_add_Ca_File_Caption
     END
 
 
-IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ca_SpecialItemType')
+IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ca_FileCaption')
     BEGIN
-    ALTER TABLE Ca_SpecialItem DROP  CONSTRAINT [Constraint_Ca_SpecialItemType]
+    ALTER TABLE Ca_File DROP  CONSTRAINT [Constraint_Ca_FileCaption]
     END
 
-IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ca_SpecialItemType')
+IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ca_FileCaption')
     BEGIN
-    ALTER TABLE Ca_SpecialItem DROP  CONSTRAINT [UniqueNonclustered_Ca_SpecialItemType]
+    ALTER TABLE Ca_File DROP  CONSTRAINT [UniqueNonclustered_Ca_FileCaption]
     END
 
--- [Ca_SpecialItem.Lang] -------------
+-- [Ca_File.Desc] -------------
 
 
--- [Ca_SpecialItem.Lang] -------------
+-- [Ca_File.Desc] -------------
 
-IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ca_SpecialItem') AND name='Lang')
+IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ca_File') AND name='Desc')
     BEGIN
-     ALTER TABLE Ca_SpecialItem ALTER COLUMN [Lang] BIGINT
+     ALTER TABLE Ca_File ALTER COLUMN [Desc] NVARCHAR(MAX)
     END
 ELSE
     BEGIN
-    DECLARE @sql_add_Ca_SpecialItem_Lang NVARCHAR(MAX);
-    SET @sql_add_Ca_SpecialItem_Lang = 'ALTER TABLE Ca_SpecialItem ADD [Lang] BIGINT'
-    EXEC sp_executesql @sql_add_Ca_SpecialItem_Lang
+    DECLARE @sql_add_Ca_File_Desc NVARCHAR(MAX);
+    SET @sql_add_Ca_File_Desc = 'ALTER TABLE Ca_File ADD [Desc] NVARCHAR(MAX)'
+    EXEC sp_executesql @sql_add_Ca_File_Desc
     END
 
 
-IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ca_SpecialItemLang')
+IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ca_FileDesc')
     BEGIN
-    ALTER TABLE Ca_SpecialItem DROP  CONSTRAINT [Constraint_Ca_SpecialItemLang]
+    ALTER TABLE Ca_File DROP  CONSTRAINT [Constraint_Ca_FileDesc]
     END
 
-IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ca_SpecialItemLang')
+IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ca_FileDesc')
     BEGIN
-    ALTER TABLE Ca_SpecialItem DROP  CONSTRAINT [UniqueNonclustered_Ca_SpecialItemLang]
+    ALTER TABLE Ca_File DROP  CONSTRAINT [UniqueNonclustered_Ca_FileDesc]
     END
 
--- [Ca_SpecialItem.Bind] -------------
+-- [Ca_File.Suffix] -------------
 
 
--- [Ca_SpecialItem.Bind] -------------
+-- [Ca_File.Suffix] -------------
 
-IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ca_SpecialItem') AND name='Bind')
+IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ca_File') AND name='Suffix')
     BEGIN
-     ALTER TABLE Ca_SpecialItem ALTER COLUMN [Bind] BIGINT
+     ALTER TABLE Ca_File ALTER COLUMN [Suffix] NVARCHAR(4) COLLATE Chinese_PRC_CI_AS
     END
 ELSE
     BEGIN
-    DECLARE @sql_add_Ca_SpecialItem_Bind NVARCHAR(MAX);
-    SET @sql_add_Ca_SpecialItem_Bind = 'ALTER TABLE Ca_SpecialItem ADD [Bind] BIGINT'
-    EXEC sp_executesql @sql_add_Ca_SpecialItem_Bind
+    DECLARE @sql_add_Ca_File_Suffix NVARCHAR(MAX);
+    SET @sql_add_Ca_File_Suffix = 'ALTER TABLE Ca_File ADD [Suffix] NVARCHAR(4) COLLATE Chinese_PRC_CI_AS'
+    EXEC sp_executesql @sql_add_Ca_File_Suffix
     END
 
 
-IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ca_SpecialItemBind')
+IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ca_FileSuffix')
     BEGIN
-    ALTER TABLE Ca_SpecialItem DROP  CONSTRAINT [Constraint_Ca_SpecialItemBind]
+    ALTER TABLE Ca_File DROP  CONSTRAINT [Constraint_Ca_FileSuffix]
     END
 
-IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ca_SpecialItemBind')
+IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ca_FileSuffix')
     BEGIN
-    ALTER TABLE Ca_SpecialItem DROP  CONSTRAINT [UniqueNonclustered_Ca_SpecialItemBind]
+    ALTER TABLE Ca_File DROP  CONSTRAINT [UniqueNonclustered_Ca_FileSuffix]
     END
--- [Ca_WebCredential] ----------------------
 
-IF NOT EXISTS(SELECT * FROM sysobjects WHERE [name]='Ca_WebCredential' AND xtype='U')
+-- [Ca_File.Size] -------------
+
+
+-- [Ca_File.Size] -------------
+
+IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ca_File') AND name='Size')
+    BEGIN
+     ALTER TABLE Ca_File ALTER COLUMN [Size] BIGINT
+    END
+ELSE
+    BEGIN
+    DECLARE @sql_add_Ca_File_Size NVARCHAR(MAX);
+    SET @sql_add_Ca_File_Size = 'ALTER TABLE Ca_File ADD [Size] BIGINT'
+    EXEC sp_executesql @sql_add_Ca_File_Size
+    END
+
+
+IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ca_FileSize')
+    BEGIN
+    ALTER TABLE Ca_File DROP  CONSTRAINT [Constraint_Ca_FileSize]
+    END
+
+IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ca_FileSize')
+    BEGIN
+    ALTER TABLE Ca_File DROP  CONSTRAINT [UniqueNonclustered_Ca_FileSize]
+    END
+
+-- [Ca_File.Thumbnail] -------------
+
+
+-- [Ca_File.Thumbnail] -------------
+
+IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ca_File') AND name='Thumbnail')
+    BEGIN
+     ALTER TABLE Ca_File ALTER COLUMN [Thumbnail] VARBINARY(MAX)
+    END
+ELSE
+    BEGIN
+    DECLARE @sql_add_Ca_File_Thumbnail NVARCHAR(MAX);
+    SET @sql_add_Ca_File_Thumbnail = 'ALTER TABLE Ca_File ADD [Thumbnail] VARBINARY(MAX)'
+    EXEC sp_executesql @sql_add_Ca_File_Thumbnail
+    END
+
+
+IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ca_FileThumbnail')
+    BEGIN
+    ALTER TABLE Ca_File DROP  CONSTRAINT [Constraint_Ca_FileThumbnail]
+    END
+
+IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ca_FileThumbnail')
+    BEGIN
+    ALTER TABLE Ca_File DROP  CONSTRAINT [UniqueNonclustered_Ca_FileThumbnail]
+    END
+
+-- [Ca_File.Owner] -------------
+
+
+-- [Ca_File.Owner] -------------
+
+IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ca_File') AND name='Owner')
+    BEGIN
+     ALTER TABLE Ca_File ALTER COLUMN [Owner] BIGINT
+    END
+ELSE
+    BEGIN
+    DECLARE @sql_add_Ca_File_Owner NVARCHAR(MAX);
+    SET @sql_add_Ca_File_Owner = 'ALTER TABLE Ca_File ADD [Owner] BIGINT'
+    EXEC sp_executesql @sql_add_Ca_File_Owner
+    END
+
+
+IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ca_FileOwner')
+    BEGIN
+    ALTER TABLE Ca_File DROP  CONSTRAINT [Constraint_Ca_FileOwner]
+    END
+
+IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ca_FileOwner')
+    BEGIN
+    ALTER TABLE Ca_File DROP  CONSTRAINT [UniqueNonclustered_Ca_FileOwner]
+    END
+-- [Social_FileBind] ----------------------
+
+IF NOT EXISTS(SELECT * FROM sysobjects WHERE [name]='Social_FileBind' AND xtype='U')
 
 BEGIN
 
-    CREATE TABLE Ca_WebCredential ([ID] BIGINT NOT NULL
+    CREATE TABLE Social_FileBind ([ID] BIGINT NOT NULL
         ,[Createdat] BIGINT NOT NULL
         ,[Updatedat] BIGINT NOT NULL
         ,[Sort] BIGINT NOT NULL,
-        [Caption] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS
-        ,[ExternalId] BIGINT
-        ,[Icon] NVARCHAR(256) COLLATE Chinese_PRC_CI_AS
-        ,[EU] BIGINT
-        ,[Biz] BIGINT
-        ,[Json] NVARCHAR(MAX)
-, CONSTRAINT [PK_Ca_WebCredential] PRIMARY KEY CLUSTERED ([ID] ASC)) ON [PRIMARY]
+        [File] BIGINT
+        ,[Moment] BIGINT
+        ,[Desc] NVARCHAR(MAX)
+, CONSTRAINT [PK_Social_FileBind] PRIMARY KEY CLUSTERED ([ID] ASC)) ON [PRIMARY]
 END
 
 
 -- Dropping obsolete fields -----------
-DECLARE @name_Ca_WebCredential NVARCHAR(64)
-DECLARE cursor_Ca_WebCredential CURSOR FOR 
-    SELECT name FROM SYSCOLUMNS WHERE id=object_id('Ca_WebCredential') AND (name NOT IN ('ID','Createdat','Updatedat','Sort','Caption','ExternalId','Icon','EU','Biz','Json'))
+DECLARE @name_Social_FileBind NVARCHAR(64)
+DECLARE cursor_Social_FileBind CURSOR FOR 
+    SELECT name FROM SYSCOLUMNS WHERE id=object_id('Social_FileBind') AND (name NOT IN ('ID','Createdat','Updatedat','Sort','File','Moment','Desc'))
 
-OPEN cursor_Ca_WebCredential
-FETCH NEXT FROM cursor_Ca_WebCredential INTO @name_Ca_WebCredential
+OPEN cursor_Social_FileBind
+FETCH NEXT FROM cursor_Social_FileBind INTO @name_Social_FileBind
 
 WHILE @@FETCH_STATUS = 0
 BEGIN
-    PRINT 'Dropping Ca_WebCredential.' + @name_Ca_WebCredential;
+    PRINT 'Dropping Social_FileBind.' + @name_Social_FileBind;
     
-    DECLARE @sql_Ca_WebCredential NVARCHAR(MAX);
-    SET @sql_Ca_WebCredential = 'ALTER TABLE Ca_WebCredential DROP COLUMN ' + QUOTENAME(@name_Ca_WebCredential)
-    EXEC sp_executesql @sql_Ca_WebCredential
+    DECLARE @sql_Social_FileBind NVARCHAR(MAX);
+    SET @sql_Social_FileBind = 'ALTER TABLE Social_FileBind DROP COLUMN ' + QUOTENAME(@name_Social_FileBind)
+    EXEC sp_executesql @sql_Social_FileBind
     
     
-    FETCH NEXT FROM cursor_Ca_WebCredential INTO @name_Ca_WebCredential
+    FETCH NEXT FROM cursor_Social_FileBind INTO @name_Social_FileBind
 END
 
-CLOSE cursor_Ca_WebCredential;
-DEALLOCATE cursor_Ca_WebCredential;
+CLOSE cursor_Social_FileBind;
+DEALLOCATE cursor_Social_FileBind;
 
 
--- [Ca_WebCredential.Caption] -------------
+-- [Social_FileBind.File] -------------
 
 
--- [Ca_WebCredential.Caption] -------------
+-- [Social_FileBind.File] -------------
 
-IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ca_WebCredential') AND name='Caption')
+IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Social_FileBind') AND name='File')
     BEGIN
-     ALTER TABLE Ca_WebCredential ALTER COLUMN [Caption] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS
+     ALTER TABLE Social_FileBind ALTER COLUMN [File] BIGINT
     END
 ELSE
     BEGIN
-    DECLARE @sql_add_Ca_WebCredential_Caption NVARCHAR(MAX);
-    SET @sql_add_Ca_WebCredential_Caption = 'ALTER TABLE Ca_WebCredential ADD [Caption] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS'
-    EXEC sp_executesql @sql_add_Ca_WebCredential_Caption
+    DECLARE @sql_add_Social_FileBind_File NVARCHAR(MAX);
+    SET @sql_add_Social_FileBind_File = 'ALTER TABLE Social_FileBind ADD [File] BIGINT'
+    EXEC sp_executesql @sql_add_Social_FileBind_File
     END
 
 
-IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ca_WebCredentialCaption')
+IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Social_FileBindFile')
     BEGIN
-    ALTER TABLE Ca_WebCredential DROP  CONSTRAINT [Constraint_Ca_WebCredentialCaption]
+    ALTER TABLE Social_FileBind DROP  CONSTRAINT [Constraint_Social_FileBindFile]
     END
 
-IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ca_WebCredentialCaption')
+IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Social_FileBindFile')
     BEGIN
-    ALTER TABLE Ca_WebCredential DROP  CONSTRAINT [UniqueNonclustered_Ca_WebCredentialCaption]
+    ALTER TABLE Social_FileBind DROP  CONSTRAINT [UniqueNonclustered_Social_FileBindFile]
     END
 
--- [Ca_WebCredential.ExternalId] -------------
+-- [Social_FileBind.Moment] -------------
 
 
--- [Ca_WebCredential.ExternalId] -------------
+-- [Social_FileBind.Moment] -------------
 
-IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ca_WebCredential') AND name='ExternalId')
+IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Social_FileBind') AND name='Moment')
     BEGIN
-     ALTER TABLE Ca_WebCredential ALTER COLUMN [ExternalId] BIGINT
-    END
-ELSE
-    BEGIN
-    DECLARE @sql_add_Ca_WebCredential_ExternalId NVARCHAR(MAX);
-    SET @sql_add_Ca_WebCredential_ExternalId = 'ALTER TABLE Ca_WebCredential ADD [ExternalId] BIGINT'
-    EXEC sp_executesql @sql_add_Ca_WebCredential_ExternalId
-    END
-
-
-IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ca_WebCredentialExternalId')
-    BEGIN
-    ALTER TABLE Ca_WebCredential DROP  CONSTRAINT [Constraint_Ca_WebCredentialExternalId]
-    END
-
-IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ca_WebCredentialExternalId')
-    BEGIN
-    ALTER TABLE Ca_WebCredential DROP  CONSTRAINT [UniqueNonclustered_Ca_WebCredentialExternalId]
-    END
-
--- [Ca_WebCredential.Icon] -------------
-
-
--- [Ca_WebCredential.Icon] -------------
-
-IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ca_WebCredential') AND name='Icon')
-    BEGIN
-     ALTER TABLE Ca_WebCredential ALTER COLUMN [Icon] NVARCHAR(256) COLLATE Chinese_PRC_CI_AS
+     ALTER TABLE Social_FileBind ALTER COLUMN [Moment] BIGINT
     END
 ELSE
     BEGIN
-    DECLARE @sql_add_Ca_WebCredential_Icon NVARCHAR(MAX);
-    SET @sql_add_Ca_WebCredential_Icon = 'ALTER TABLE Ca_WebCredential ADD [Icon] NVARCHAR(256) COLLATE Chinese_PRC_CI_AS'
-    EXEC sp_executesql @sql_add_Ca_WebCredential_Icon
+    DECLARE @sql_add_Social_FileBind_Moment NVARCHAR(MAX);
+    SET @sql_add_Social_FileBind_Moment = 'ALTER TABLE Social_FileBind ADD [Moment] BIGINT'
+    EXEC sp_executesql @sql_add_Social_FileBind_Moment
     END
 
 
-IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ca_WebCredentialIcon')
+IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Social_FileBindMoment')
     BEGIN
-    ALTER TABLE Ca_WebCredential DROP  CONSTRAINT [Constraint_Ca_WebCredentialIcon]
+    ALTER TABLE Social_FileBind DROP  CONSTRAINT [Constraint_Social_FileBindMoment]
     END
 
-IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ca_WebCredentialIcon')
+IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Social_FileBindMoment')
     BEGIN
-    ALTER TABLE Ca_WebCredential DROP  CONSTRAINT [UniqueNonclustered_Ca_WebCredentialIcon]
+    ALTER TABLE Social_FileBind DROP  CONSTRAINT [UniqueNonclustered_Social_FileBindMoment]
     END
 
--- [Ca_WebCredential.EU] -------------
+-- [Social_FileBind.Desc] -------------
 
 
--- [Ca_WebCredential.EU] -------------
+-- [Social_FileBind.Desc] -------------
 
-IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ca_WebCredential') AND name='EU')
+IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Social_FileBind') AND name='Desc')
     BEGIN
-     ALTER TABLE Ca_WebCredential ALTER COLUMN [EU] BIGINT
-    END
-ELSE
-    BEGIN
-    DECLARE @sql_add_Ca_WebCredential_EU NVARCHAR(MAX);
-    SET @sql_add_Ca_WebCredential_EU = 'ALTER TABLE Ca_WebCredential ADD [EU] BIGINT'
-    EXEC sp_executesql @sql_add_Ca_WebCredential_EU
-    END
-
-
-IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ca_WebCredentialEU')
-    BEGIN
-    ALTER TABLE Ca_WebCredential DROP  CONSTRAINT [Constraint_Ca_WebCredentialEU]
-    END
-
-IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ca_WebCredentialEU')
-    BEGIN
-    ALTER TABLE Ca_WebCredential DROP  CONSTRAINT [UniqueNonclustered_Ca_WebCredentialEU]
-    END
-
--- [Ca_WebCredential.Biz] -------------
-
-
--- [Ca_WebCredential.Biz] -------------
-
-IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ca_WebCredential') AND name='Biz')
-    BEGIN
-     ALTER TABLE Ca_WebCredential ALTER COLUMN [Biz] BIGINT
+     ALTER TABLE Social_FileBind ALTER COLUMN [Desc] NVARCHAR(MAX)
     END
 ELSE
     BEGIN
-    DECLARE @sql_add_Ca_WebCredential_Biz NVARCHAR(MAX);
-    SET @sql_add_Ca_WebCredential_Biz = 'ALTER TABLE Ca_WebCredential ADD [Biz] BIGINT'
-    EXEC sp_executesql @sql_add_Ca_WebCredential_Biz
+    DECLARE @sql_add_Social_FileBind_Desc NVARCHAR(MAX);
+    SET @sql_add_Social_FileBind_Desc = 'ALTER TABLE Social_FileBind ADD [Desc] NVARCHAR(MAX)'
+    EXEC sp_executesql @sql_add_Social_FileBind_Desc
     END
 
 
-IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ca_WebCredentialBiz')
+IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Social_FileBindDesc')
     BEGIN
-    ALTER TABLE Ca_WebCredential DROP  CONSTRAINT [Constraint_Ca_WebCredentialBiz]
+    ALTER TABLE Social_FileBind DROP  CONSTRAINT [Constraint_Social_FileBindDesc]
     END
 
-IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ca_WebCredentialBiz')
+IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Social_FileBindDesc')
     BEGIN
-    ALTER TABLE Ca_WebCredential DROP  CONSTRAINT [UniqueNonclustered_Ca_WebCredentialBiz]
+    ALTER TABLE Social_FileBind DROP  CONSTRAINT [UniqueNonclustered_Social_FileBindDesc]
     END
+-- [Social_Moment] ----------------------
 
--- [Ca_WebCredential.Json] -------------
+IF NOT EXISTS(SELECT * FROM sysobjects WHERE [name]='Social_Moment' AND xtype='U')
+
+BEGIN
+
+    CREATE TABLE Social_Moment ([ID] BIGINT NOT NULL
+        ,[Createdat] BIGINT NOT NULL
+        ,[Updatedat] BIGINT NOT NULL
+        ,[Sort] BIGINT NOT NULL,
+        [Title] NVARCHAR(MAX)
+        ,[Summary] NVARCHAR(MAX)
+        ,[FullText] NVARCHAR(MAX)
+        ,[PreviewImgUrl] NVARCHAR(MAX)
+        ,[Link] NVARCHAR(MAX)
+        ,[Type] INT
+        ,[State] INT
+        ,[MediaType] INT
+, CONSTRAINT [PK_Social_Moment] PRIMARY KEY CLUSTERED ([ID] ASC)) ON [PRIMARY]
+END
 
 
--- [Ca_WebCredential.Json] -------------
+-- Dropping obsolete fields -----------
+DECLARE @name_Social_Moment NVARCHAR(64)
+DECLARE cursor_Social_Moment CURSOR FOR 
+    SELECT name FROM SYSCOLUMNS WHERE id=object_id('Social_Moment') AND (name NOT IN ('ID','Createdat','Updatedat','Sort','Title','Summary','FullText','PreviewImgUrl','Link','Type','State','MediaType'))
 
-IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ca_WebCredential') AND name='Json')
+OPEN cursor_Social_Moment
+FETCH NEXT FROM cursor_Social_Moment INTO @name_Social_Moment
+
+WHILE @@FETCH_STATUS = 0
+BEGIN
+    PRINT 'Dropping Social_Moment.' + @name_Social_Moment;
+    
+    DECLARE @sql_Social_Moment NVARCHAR(MAX);
+    SET @sql_Social_Moment = 'ALTER TABLE Social_Moment DROP COLUMN ' + QUOTENAME(@name_Social_Moment)
+    EXEC sp_executesql @sql_Social_Moment
+    
+    
+    FETCH NEXT FROM cursor_Social_Moment INTO @name_Social_Moment
+END
+
+CLOSE cursor_Social_Moment;
+DEALLOCATE cursor_Social_Moment;
+
+
+-- [Social_Moment.Title] -------------
+
+
+-- [Social_Moment.Title] -------------
+
+IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Social_Moment') AND name='Title')
     BEGIN
-     ALTER TABLE Ca_WebCredential ALTER COLUMN [Json] NVARCHAR(MAX)
+     ALTER TABLE Social_Moment ALTER COLUMN [Title] NVARCHAR(MAX)
     END
 ELSE
     BEGIN
-    DECLARE @sql_add_Ca_WebCredential_Json NVARCHAR(MAX);
-    SET @sql_add_Ca_WebCredential_Json = 'ALTER TABLE Ca_WebCredential ADD [Json] NVARCHAR(MAX)'
-    EXEC sp_executesql @sql_add_Ca_WebCredential_Json
+    DECLARE @sql_add_Social_Moment_Title NVARCHAR(MAX);
+    SET @sql_add_Social_Moment_Title = 'ALTER TABLE Social_Moment ADD [Title] NVARCHAR(MAX)'
+    EXEC sp_executesql @sql_add_Social_Moment_Title
     END
 
 
-IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ca_WebCredentialJson')
+IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Social_MomentTitle')
     BEGIN
-    ALTER TABLE Ca_WebCredential DROP  CONSTRAINT [Constraint_Ca_WebCredentialJson]
+    ALTER TABLE Social_Moment DROP  CONSTRAINT [Constraint_Social_MomentTitle]
     END
 
-IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ca_WebCredentialJson')
+IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Social_MomentTitle')
     BEGIN
-    ALTER TABLE Ca_WebCredential DROP  CONSTRAINT [UniqueNonclustered_Ca_WebCredentialJson]
+    ALTER TABLE Social_Moment DROP  CONSTRAINT [UniqueNonclustered_Social_MomentTitle]
+    END
+
+-- [Social_Moment.Summary] -------------
+
+
+-- [Social_Moment.Summary] -------------
+
+IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Social_Moment') AND name='Summary')
+    BEGIN
+     ALTER TABLE Social_Moment ALTER COLUMN [Summary] NVARCHAR(MAX)
+    END
+ELSE
+    BEGIN
+    DECLARE @sql_add_Social_Moment_Summary NVARCHAR(MAX);
+    SET @sql_add_Social_Moment_Summary = 'ALTER TABLE Social_Moment ADD [Summary] NVARCHAR(MAX)'
+    EXEC sp_executesql @sql_add_Social_Moment_Summary
+    END
+
+
+IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Social_MomentSummary')
+    BEGIN
+    ALTER TABLE Social_Moment DROP  CONSTRAINT [Constraint_Social_MomentSummary]
+    END
+
+IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Social_MomentSummary')
+    BEGIN
+    ALTER TABLE Social_Moment DROP  CONSTRAINT [UniqueNonclustered_Social_MomentSummary]
+    END
+
+-- [Social_Moment.FullText] -------------
+
+
+-- [Social_Moment.FullText] -------------
+
+IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Social_Moment') AND name='FullText')
+    BEGIN
+     ALTER TABLE Social_Moment ALTER COLUMN [FullText] NVARCHAR(MAX)
+    END
+ELSE
+    BEGIN
+    DECLARE @sql_add_Social_Moment_FullText NVARCHAR(MAX);
+    SET @sql_add_Social_Moment_FullText = 'ALTER TABLE Social_Moment ADD [FullText] NVARCHAR(MAX)'
+    EXEC sp_executesql @sql_add_Social_Moment_FullText
+    END
+
+
+IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Social_MomentFullText')
+    BEGIN
+    ALTER TABLE Social_Moment DROP  CONSTRAINT [Constraint_Social_MomentFullText]
+    END
+
+IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Social_MomentFullText')
+    BEGIN
+    ALTER TABLE Social_Moment DROP  CONSTRAINT [UniqueNonclustered_Social_MomentFullText]
+    END
+
+-- [Social_Moment.PreviewImgUrl] -------------
+
+
+-- [Social_Moment.PreviewImgUrl] -------------
+
+IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Social_Moment') AND name='PreviewImgUrl')
+    BEGIN
+     ALTER TABLE Social_Moment ALTER COLUMN [PreviewImgUrl] NVARCHAR(MAX)
+    END
+ELSE
+    BEGIN
+    DECLARE @sql_add_Social_Moment_PreviewImgUrl NVARCHAR(MAX);
+    SET @sql_add_Social_Moment_PreviewImgUrl = 'ALTER TABLE Social_Moment ADD [PreviewImgUrl] NVARCHAR(MAX)'
+    EXEC sp_executesql @sql_add_Social_Moment_PreviewImgUrl
+    END
+
+
+IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Social_MomentPreviewImgUrl')
+    BEGIN
+    ALTER TABLE Social_Moment DROP  CONSTRAINT [Constraint_Social_MomentPreviewImgUrl]
+    END
+
+IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Social_MomentPreviewImgUrl')
+    BEGIN
+    ALTER TABLE Social_Moment DROP  CONSTRAINT [UniqueNonclustered_Social_MomentPreviewImgUrl]
+    END
+
+-- [Social_Moment.Link] -------------
+
+
+-- [Social_Moment.Link] -------------
+
+IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Social_Moment') AND name='Link')
+    BEGIN
+     ALTER TABLE Social_Moment ALTER COLUMN [Link] NVARCHAR(MAX)
+    END
+ELSE
+    BEGIN
+    DECLARE @sql_add_Social_Moment_Link NVARCHAR(MAX);
+    SET @sql_add_Social_Moment_Link = 'ALTER TABLE Social_Moment ADD [Link] NVARCHAR(MAX)'
+    EXEC sp_executesql @sql_add_Social_Moment_Link
+    END
+
+
+IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Social_MomentLink')
+    BEGIN
+    ALTER TABLE Social_Moment DROP  CONSTRAINT [Constraint_Social_MomentLink]
+    END
+
+IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Social_MomentLink')
+    BEGIN
+    ALTER TABLE Social_Moment DROP  CONSTRAINT [UniqueNonclustered_Social_MomentLink]
+    END
+
+-- [Social_Moment.Type] -------------
+
+
+-- [Social_Moment.Type] -------------
+
+IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Social_Moment') AND name='Type')
+    BEGIN
+     ALTER TABLE Social_Moment ALTER COLUMN [Type] INT
+    END
+ELSE
+    BEGIN
+    DECLARE @sql_add_Social_Moment_Type NVARCHAR(MAX);
+    SET @sql_add_Social_Moment_Type = 'ALTER TABLE Social_Moment ADD [Type] INT'
+    EXEC sp_executesql @sql_add_Social_Moment_Type
+    END
+
+
+IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Social_MomentType')
+    BEGIN
+    ALTER TABLE Social_Moment DROP  CONSTRAINT [Constraint_Social_MomentType]
+    END
+
+IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Social_MomentType')
+    BEGIN
+    ALTER TABLE Social_Moment DROP  CONSTRAINT [UniqueNonclustered_Social_MomentType]
+    END
+
+-- [Social_Moment.State] -------------
+
+
+-- [Social_Moment.State] -------------
+
+IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Social_Moment') AND name='State')
+    BEGIN
+     ALTER TABLE Social_Moment ALTER COLUMN [State] INT
+    END
+ELSE
+    BEGIN
+    DECLARE @sql_add_Social_Moment_State NVARCHAR(MAX);
+    SET @sql_add_Social_Moment_State = 'ALTER TABLE Social_Moment ADD [State] INT'
+    EXEC sp_executesql @sql_add_Social_Moment_State
+    END
+
+
+IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Social_MomentState')
+    BEGIN
+    ALTER TABLE Social_Moment DROP  CONSTRAINT [Constraint_Social_MomentState]
+    END
+
+IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Social_MomentState')
+    BEGIN
+    ALTER TABLE Social_Moment DROP  CONSTRAINT [UniqueNonclustered_Social_MomentState]
+    END
+
+-- [Social_Moment.MediaType] -------------
+
+
+-- [Social_Moment.MediaType] -------------
+
+IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Social_Moment') AND name='MediaType')
+    BEGIN
+     ALTER TABLE Social_Moment ALTER COLUMN [MediaType] INT
+    END
+ELSE
+    BEGIN
+    DECLARE @sql_add_Social_Moment_MediaType NVARCHAR(MAX);
+    SET @sql_add_Social_Moment_MediaType = 'ALTER TABLE Social_Moment ADD [MediaType] INT'
+    EXEC sp_executesql @sql_add_Social_Moment_MediaType
+    END
+
+
+IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Social_MomentMediaType')
+    BEGIN
+    ALTER TABLE Social_Moment DROP  CONSTRAINT [Constraint_Social_MomentMediaType]
+    END
+
+IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Social_MomentMediaType')
+    BEGIN
+    ALTER TABLE Social_Moment DROP  CONSTRAINT [UniqueNonclustered_Social_MomentMediaType]
+    END
+-- [Sys_Log] ----------------------
+
+IF NOT EXISTS(SELECT * FROM sysobjects WHERE [name]='Sys_Log' AND xtype='U')
+
+BEGIN
+
+    CREATE TABLE Sys_Log ([ID] BIGINT NOT NULL
+        ,[Createdat] BIGINT NOT NULL
+        ,[Updatedat] BIGINT NOT NULL
+        ,[Sort] BIGINT NOT NULL,
+        [Location] NVARCHAR(MAX)
+        ,[Content] NVARCHAR(MAX)
+        ,[Sql] NVARCHAR(MAX)
+, CONSTRAINT [PK_Sys_Log] PRIMARY KEY CLUSTERED ([ID] ASC)) ON [PRIMARY]
+END
+
+
+-- Dropping obsolete fields -----------
+DECLARE @name_Sys_Log NVARCHAR(64)
+DECLARE cursor_Sys_Log CURSOR FOR 
+    SELECT name FROM SYSCOLUMNS WHERE id=object_id('Sys_Log') AND (name NOT IN ('ID','Createdat','Updatedat','Sort','Location','Content','Sql'))
+
+OPEN cursor_Sys_Log
+FETCH NEXT FROM cursor_Sys_Log INTO @name_Sys_Log
+
+WHILE @@FETCH_STATUS = 0
+BEGIN
+    PRINT 'Dropping Sys_Log.' + @name_Sys_Log;
+    
+    DECLARE @sql_Sys_Log NVARCHAR(MAX);
+    SET @sql_Sys_Log = 'ALTER TABLE Sys_Log DROP COLUMN ' + QUOTENAME(@name_Sys_Log)
+    EXEC sp_executesql @sql_Sys_Log
+    
+    
+    FETCH NEXT FROM cursor_Sys_Log INTO @name_Sys_Log
+END
+
+CLOSE cursor_Sys_Log;
+DEALLOCATE cursor_Sys_Log;
+
+
+-- [Sys_Log.Location] -------------
+
+
+-- [Sys_Log.Location] -------------
+
+IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Sys_Log') AND name='Location')
+    BEGIN
+     ALTER TABLE Sys_Log ALTER COLUMN [Location] NVARCHAR(MAX)
+    END
+ELSE
+    BEGIN
+    DECLARE @sql_add_Sys_Log_Location NVARCHAR(MAX);
+    SET @sql_add_Sys_Log_Location = 'ALTER TABLE Sys_Log ADD [Location] NVARCHAR(MAX)'
+    EXEC sp_executesql @sql_add_Sys_Log_Location
+    END
+
+
+IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Sys_LogLocation')
+    BEGIN
+    ALTER TABLE Sys_Log DROP  CONSTRAINT [Constraint_Sys_LogLocation]
+    END
+
+IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Sys_LogLocation')
+    BEGIN
+    ALTER TABLE Sys_Log DROP  CONSTRAINT [UniqueNonclustered_Sys_LogLocation]
+    END
+
+-- [Sys_Log.Content] -------------
+
+
+-- [Sys_Log.Content] -------------
+
+IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Sys_Log') AND name='Content')
+    BEGIN
+     ALTER TABLE Sys_Log ALTER COLUMN [Content] NVARCHAR(MAX)
+    END
+ELSE
+    BEGIN
+    DECLARE @sql_add_Sys_Log_Content NVARCHAR(MAX);
+    SET @sql_add_Sys_Log_Content = 'ALTER TABLE Sys_Log ADD [Content] NVARCHAR(MAX)'
+    EXEC sp_executesql @sql_add_Sys_Log_Content
+    END
+
+
+IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Sys_LogContent')
+    BEGIN
+    ALTER TABLE Sys_Log DROP  CONSTRAINT [Constraint_Sys_LogContent]
+    END
+
+IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Sys_LogContent')
+    BEGIN
+    ALTER TABLE Sys_Log DROP  CONSTRAINT [UniqueNonclustered_Sys_LogContent]
+    END
+
+-- [Sys_Log.Sql] -------------
+
+
+-- [Sys_Log.Sql] -------------
+
+IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Sys_Log') AND name='Sql')
+    BEGIN
+     ALTER TABLE Sys_Log ALTER COLUMN [Sql] NVARCHAR(MAX)
+    END
+ELSE
+    BEGIN
+    DECLARE @sql_add_Sys_Log_Sql NVARCHAR(MAX);
+    SET @sql_add_Sys_Log_Sql = 'ALTER TABLE Sys_Log ADD [Sql] NVARCHAR(MAX)'
+    EXEC sp_executesql @sql_add_Sys_Log_Sql
+    END
+
+
+IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Sys_LogSql')
+    BEGIN
+    ALTER TABLE Sys_Log DROP  CONSTRAINT [Constraint_Sys_LogSql]
+    END
+
+IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Sys_LogSql')
+    BEGIN
+    ALTER TABLE Sys_Log DROP  CONSTRAINT [UniqueNonclustered_Sys_LogSql]
+    END
+-- [Sys_PageLog] ----------------------
+
+IF NOT EXISTS(SELECT * FROM sysobjects WHERE [name]='Sys_PageLog' AND xtype='U')
+
+BEGIN
+
+    CREATE TABLE Sys_PageLog ([ID] BIGINT NOT NULL
+        ,[Createdat] BIGINT NOT NULL
+        ,[Updatedat] BIGINT NOT NULL
+        ,[Sort] BIGINT NOT NULL,
+        [Ip] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS
+        ,[Request] NVARCHAR(MAX)
+, CONSTRAINT [PK_Sys_PageLog] PRIMARY KEY CLUSTERED ([ID] ASC)) ON [PRIMARY]
+END
+
+
+-- Dropping obsolete fields -----------
+DECLARE @name_Sys_PageLog NVARCHAR(64)
+DECLARE cursor_Sys_PageLog CURSOR FOR 
+    SELECT name FROM SYSCOLUMNS WHERE id=object_id('Sys_PageLog') AND (name NOT IN ('ID','Createdat','Updatedat','Sort','Ip','Request'))
+
+OPEN cursor_Sys_PageLog
+FETCH NEXT FROM cursor_Sys_PageLog INTO @name_Sys_PageLog
+
+WHILE @@FETCH_STATUS = 0
+BEGIN
+    PRINT 'Dropping Sys_PageLog.' + @name_Sys_PageLog;
+    
+    DECLARE @sql_Sys_PageLog NVARCHAR(MAX);
+    SET @sql_Sys_PageLog = 'ALTER TABLE Sys_PageLog DROP COLUMN ' + QUOTENAME(@name_Sys_PageLog)
+    EXEC sp_executesql @sql_Sys_PageLog
+    
+    
+    FETCH NEXT FROM cursor_Sys_PageLog INTO @name_Sys_PageLog
+END
+
+CLOSE cursor_Sys_PageLog;
+DEALLOCATE cursor_Sys_PageLog;
+
+
+-- [Sys_PageLog.Ip] -------------
+
+
+-- [Sys_PageLog.Ip] -------------
+
+IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Sys_PageLog') AND name='Ip')
+    BEGIN
+     ALTER TABLE Sys_PageLog ALTER COLUMN [Ip] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS
+    END
+ELSE
+    BEGIN
+    DECLARE @sql_add_Sys_PageLog_Ip NVARCHAR(MAX);
+    SET @sql_add_Sys_PageLog_Ip = 'ALTER TABLE Sys_PageLog ADD [Ip] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS'
+    EXEC sp_executesql @sql_add_Sys_PageLog_Ip
+    END
+
+
+IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Sys_PageLogIp')
+    BEGIN
+    ALTER TABLE Sys_PageLog DROP  CONSTRAINT [Constraint_Sys_PageLogIp]
+    END
+
+IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Sys_PageLogIp')
+    BEGIN
+    ALTER TABLE Sys_PageLog DROP  CONSTRAINT [UniqueNonclustered_Sys_PageLogIp]
+    END
+
+-- [Sys_PageLog.Request] -------------
+
+
+-- [Sys_PageLog.Request] -------------
+
+IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Sys_PageLog') AND name='Request')
+    BEGIN
+     ALTER TABLE Sys_PageLog ALTER COLUMN [Request] NVARCHAR(MAX)
+    END
+ELSE
+    BEGIN
+    DECLARE @sql_add_Sys_PageLog_Request NVARCHAR(MAX);
+    SET @sql_add_Sys_PageLog_Request = 'ALTER TABLE Sys_PageLog ADD [Request] NVARCHAR(MAX)'
+    EXEC sp_executesql @sql_add_Sys_PageLog_Request
+    END
+
+
+IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Sys_PageLogRequest')
+    BEGIN
+    ALTER TABLE Sys_PageLog DROP  CONSTRAINT [Constraint_Sys_PageLogRequest]
+    END
+
+IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Sys_PageLogRequest')
+    BEGIN
+    ALTER TABLE Sys_PageLog DROP  CONSTRAINT [UniqueNonclustered_Sys_PageLogRequest]
     END
 -- [Ts_Api] ----------------------
 

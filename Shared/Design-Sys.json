@@ -1,0 +1,35 @@
+[
+  {
+    "name": "Sys_Log",
+    "shorthand": "log",
+    "fields": [
+      {
+        "enum": "Text",
+        "name": "Location"
+      },
+      {
+        "enum": "Text",
+        "name": "Content"
+      },
+      {
+        "enum": "Text",
+        "name": "Sql"
+      }
+    ]
+  },
+  {
+    "name": "Sys_PageLog",
+    "shorthand": "plog",
+    "fields": [
+      {
+        "enum": "Chars",
+        "length": 64,
+        "name": "Ip"
+      },
+      {
+        "enum": "Text",
+        "name": "Request"
+      }
+    ]
+  }
+]

@@ -1,821 +1,63 @@
--- [Ca_Address] ----------------------
+-- [Ca_Book] ----------------------
 
 DO $$
 DECLARE
     condition boolean;
 BEGIN
-    condition := (SELECT EXISTS(SELECT * FROM information_schema.tables WHERE table_name = 'ca_address'));
+    condition := (SELECT EXISTS(SELECT * FROM information_schema.tables WHERE table_name = 'ca_book'));
 
     IF not condition THEN
-    CREATE TABLE ca_address (id BIGINT NOT NULL
-        ,createdat BIGINT NOT NULL
-        ,updatedat BIGINT NOT NULL
-        ,sort BIGINT NOT NULL
-        ,"caption" VARCHAR(256)
-        ,"bind" BIGINT
-        ,"addresstype" INT
-        ,"line1" VARCHAR(300)
-        ,"line2" VARCHAR(300)
-        ,"state" VARCHAR(16)
-        ,"county" VARCHAR(16)
-        ,"town" VARCHAR(16)
-        ,"contact" VARCHAR(64)
-        ,"tel" VARCHAR(20)
-        ,"email" VARCHAR(256)
-        ,"zip" VARCHAR(16)
-        ,"city" BIGINT
-        ,"country" BIGINT
-        ,"remarks" TEXT);
-
-   END IF;
-END $$;
-
-
--- [Ca_Address.Caption] -------------
-
-
-DO $$
-DECLARE
-    condition boolean;
-BEGIN
-    condition := (SELECT EXISTS(SELECT column_name FROM information_schema.columns WHERE table_name='ca_address' AND column_name='caption'));
-
-    IF not condition THEN
-        ALTER TABLE ca_address ADD "caption" varchar(256);
-    END IF;
-END $$;
-
--- [Ca_Address.Bind] -------------
-
-
-DO $$
-DECLARE
-    condition boolean;
-BEGIN
-    condition := (SELECT EXISTS(SELECT column_name FROM information_schema.columns WHERE table_name='ca_address' AND column_name='bind'));
-
-    IF not condition THEN
-        ALTER TABLE ca_address ADD "bind" bigint;
-    END IF;
-END $$;
-
--- [Ca_Address.AddressType] -------------
-
-
-DO $$
-DECLARE
-    condition boolean;
-BEGIN
-    condition := (SELECT EXISTS(SELECT column_name FROM information_schema.columns WHERE table_name='ca_address' AND column_name='addresstype'));
-
-    IF not condition THEN
-        ALTER TABLE ca_address ADD "addresstype" int;
-    END IF;
-END $$;
-
--- [Ca_Address.Line1] -------------
-
-
-DO $$
-DECLARE
-    condition boolean;
-BEGIN
-    condition := (SELECT EXISTS(SELECT column_name FROM information_schema.columns WHERE table_name='ca_address' AND column_name='line1'));
-
-    IF not condition THEN
-        ALTER TABLE ca_address ADD "line1" varchar(300);
-    END IF;
-END $$;
-
--- [Ca_Address.Line2] -------------
-
-
-DO $$
-DECLARE
-    condition boolean;
-BEGIN
-    condition := (SELECT EXISTS(SELECT column_name FROM information_schema.columns WHERE table_name='ca_address' AND column_name='line2'));
-
-    IF not condition THEN
-        ALTER TABLE ca_address ADD "line2" varchar(300);
-    END IF;
-END $$;
-
--- [Ca_Address.State] -------------
-
-
-DO $$
-DECLARE
-    condition boolean;
-BEGIN
-    condition := (SELECT EXISTS(SELECT column_name FROM information_schema.columns WHERE table_name='ca_address' AND column_name='state'));
-
-    IF not condition THEN
-        ALTER TABLE ca_address ADD "state" varchar(16);
-    END IF;
-END $$;
-
--- [Ca_Address.County] -------------
-
-
-DO $$
-DECLARE
-    condition boolean;
-BEGIN
-    condition := (SELECT EXISTS(SELECT column_name FROM information_schema.columns WHERE table_name='ca_address' AND column_name='county'));
-
-    IF not condition THEN
-        ALTER TABLE ca_address ADD "county" varchar(16);
-    END IF;
-END $$;
-
--- [Ca_Address.Town] -------------
-
-
-DO $$
-DECLARE
-    condition boolean;
-BEGIN
-    condition := (SELECT EXISTS(SELECT column_name FROM information_schema.columns WHERE table_name='ca_address' AND column_name='town'));
-
-    IF not condition THEN
-        ALTER TABLE ca_address ADD "town" varchar(16);
-    END IF;
-END $$;
-
--- [Ca_Address.Contact] -------------
-
-
-DO $$
-DECLARE
-    condition boolean;
-BEGIN
-    condition := (SELECT EXISTS(SELECT column_name FROM information_schema.columns WHERE table_name='ca_address' AND column_name='contact'));
-
-    IF not condition THEN
-        ALTER TABLE ca_address ADD "contact" varchar(64);
-    END IF;
-END $$;
-
--- [Ca_Address.Tel] -------------
-
-
-DO $$
-DECLARE
-    condition boolean;
-BEGIN
-    condition := (SELECT EXISTS(SELECT column_name FROM information_schema.columns WHERE table_name='ca_address' AND column_name='tel'));
-
-    IF not condition THEN
-        ALTER TABLE ca_address ADD "tel" varchar(20);
-    END IF;
-END $$;
-
--- [Ca_Address.Email] -------------
-
-
-DO $$
-DECLARE
-    condition boolean;
-BEGIN
-    condition := (SELECT EXISTS(SELECT column_name FROM information_schema.columns WHERE table_name='ca_address' AND column_name='email'));
-
-    IF not condition THEN
-        ALTER TABLE ca_address ADD "email" varchar(256);
-    END IF;
-END $$;
-
--- [Ca_Address.Zip] -------------
-
-
-DO $$
-DECLARE
-    condition boolean;
-BEGIN
-    condition := (SELECT EXISTS(SELECT column_name FROM information_schema.columns WHERE table_name='ca_address' AND column_name='zip'));
-
-    IF not condition THEN
-        ALTER TABLE ca_address ADD "zip" varchar(16);
-    END IF;
-END $$;
-
--- [Ca_Address.City] -------------
-
-
-DO $$
-DECLARE
-    condition boolean;
-BEGIN
-    condition := (SELECT EXISTS(SELECT column_name FROM information_schema.columns WHERE table_name='ca_address' AND column_name='city'));
-
-    IF not condition THEN
-        ALTER TABLE ca_address ADD "city" bigint;
-    END IF;
-END $$;
-
--- [Ca_Address.Country] -------------
-
-
-DO $$
-DECLARE
-    condition boolean;
-BEGIN
-    condition := (SELECT EXISTS(SELECT column_name FROM information_schema.columns WHERE table_name='ca_address' AND column_name='country'));
-
-    IF not condition THEN
-        ALTER TABLE ca_address ADD "country" bigint;
-    END IF;
-END $$;
-
--- [Ca_Address.Remarks] -------------
-
-
-DO $$
-DECLARE
-    condition boolean;
-BEGIN
-    condition := (SELECT EXISTS(SELECT column_name FROM information_schema.columns WHERE table_name='ca_address' AND column_name='remarks'));
-
-    IF not condition THEN
-        ALTER TABLE ca_address ADD "remarks" text;
-    END IF;
-END $$;
--- [Ca_Biz] ----------------------
-
-DO $$
-DECLARE
-    condition boolean;
-BEGIN
-    condition := (SELECT EXISTS(SELECT * FROM information_schema.tables WHERE table_name = 'ca_biz'));
-
-    IF not condition THEN
-    CREATE TABLE ca_biz (id BIGINT NOT NULL
-        ,createdat BIGINT NOT NULL
-        ,updatedat BIGINT NOT NULL
-        ,sort BIGINT NOT NULL
-        ,"code" VARCHAR(64)
-        ,"caption" VARCHAR(256)
-        ,"parent" BIGINT
-        ,"basicacct" BIGINT
-        ,"desctxt" TEXT
-        ,"website" VARCHAR(256)
-        ,"icon" VARCHAR(256)
-        ,"city" BIGINT
-        ,"country" BIGINT
-        ,"lang" BIGINT
-        ,"issocialplatform" BOOLEAN
-        ,"iscmssource" BOOLEAN
-        ,"ispaygateway" BOOLEAN);
-
-   END IF;
-END $$;
-
-
--- [Ca_Biz.Code] -------------
-
-
-DO $$
-DECLARE
-    condition boolean;
-BEGIN
-    condition := (SELECT EXISTS(SELECT column_name FROM information_schema.columns WHERE table_name='ca_biz' AND column_name='code'));
-
-    IF not condition THEN
-        ALTER TABLE ca_biz ADD "code" varchar(64);
-    END IF;
-END $$;
-
--- [Ca_Biz.Caption] -------------
-
-
-DO $$
-DECLARE
-    condition boolean;
-BEGIN
-    condition := (SELECT EXISTS(SELECT column_name FROM information_schema.columns WHERE table_name='ca_biz' AND column_name='caption'));
-
-    IF not condition THEN
-        ALTER TABLE ca_biz ADD "caption" varchar(256);
-    END IF;
-END $$;
-
--- [Ca_Biz.Parent] -------------
-
-
-DO $$
-DECLARE
-    condition boolean;
-BEGIN
-    condition := (SELECT EXISTS(SELECT column_name FROM information_schema.columns WHERE table_name='ca_biz' AND column_name='parent'));
-
-    IF not condition THEN
-        ALTER TABLE ca_biz ADD "parent" bigint;
-    END IF;
-END $$;
-
--- [Ca_Biz.BasicAcct] -------------
-
-
-DO $$
-DECLARE
-    condition boolean;
-BEGIN
-    condition := (SELECT EXISTS(SELECT column_name FROM information_schema.columns WHERE table_name='ca_biz' AND column_name='basicacct'));
-
-    IF not condition THEN
-        ALTER TABLE ca_biz ADD "basicacct" bigint;
-    END IF;
-END $$;
-
--- [Ca_Biz.DescTxt] -------------
-
-
-DO $$
-DECLARE
-    condition boolean;
-BEGIN
-    condition := (SELECT EXISTS(SELECT column_name FROM information_schema.columns WHERE table_name='ca_biz' AND column_name='desctxt'));
-
-    IF not condition THEN
-        ALTER TABLE ca_biz ADD "desctxt" text;
-    END IF;
-END $$;
-
--- [Ca_Biz.Website] -------------
-
-
-DO $$
-DECLARE
-    condition boolean;
-BEGIN
-    condition := (SELECT EXISTS(SELECT column_name FROM information_schema.columns WHERE table_name='ca_biz' AND column_name='website'));
-
-    IF not condition THEN
-        ALTER TABLE ca_biz ADD "website" varchar(256);
-    END IF;
-END $$;
-
--- [Ca_Biz.Icon] -------------
-
-
-DO $$
-DECLARE
-    condition boolean;
-BEGIN
-    condition := (SELECT EXISTS(SELECT column_name FROM information_schema.columns WHERE table_name='ca_biz' AND column_name='icon'));
-
-    IF not condition THEN
-        ALTER TABLE ca_biz ADD "icon" varchar(256);
-    END IF;
-END $$;
-
--- [Ca_Biz.City] -------------
-
-
-DO $$
-DECLARE
-    condition boolean;
-BEGIN
-    condition := (SELECT EXISTS(SELECT column_name FROM information_schema.columns WHERE table_name='ca_biz' AND column_name='city'));
-
-    IF not condition THEN
-        ALTER TABLE ca_biz ADD "city" bigint;
-    END IF;
-END $$;
-
--- [Ca_Biz.Country] -------------
-
-
-DO $$
-DECLARE
-    condition boolean;
-BEGIN
-    condition := (SELECT EXISTS(SELECT column_name FROM information_schema.columns WHERE table_name='ca_biz' AND column_name='country'));
-
-    IF not condition THEN
-        ALTER TABLE ca_biz ADD "country" bigint;
-    END IF;
-END $$;
-
--- [Ca_Biz.Lang] -------------
-
-
-DO $$
-DECLARE
-    condition boolean;
-BEGIN
-    condition := (SELECT EXISTS(SELECT column_name FROM information_schema.columns WHERE table_name='ca_biz' AND column_name='lang'));
-
-    IF not condition THEN
-        ALTER TABLE ca_biz ADD "lang" bigint;
-    END IF;
-END $$;
-
--- [Ca_Biz.IsSocialPlatform] -------------
-
-
-DO $$
-DECLARE
-    condition boolean;
-BEGIN
-    condition := (SELECT EXISTS(SELECT column_name FROM information_schema.columns WHERE table_name='ca_biz' AND column_name='issocialplatform'));
-
-    IF not condition THEN
-        ALTER TABLE ca_biz ADD "issocialplatform" boolean;
-    END IF;
-END $$;
-
--- [Ca_Biz.IsCmsSource] -------------
-
-
-DO $$
-DECLARE
-    condition boolean;
-BEGIN
-    condition := (SELECT EXISTS(SELECT column_name FROM information_schema.columns WHERE table_name='ca_biz' AND column_name='iscmssource'));
-
-    IF not condition THEN
-        ALTER TABLE ca_biz ADD "iscmssource" boolean;
-    END IF;
-END $$;
-
--- [Ca_Biz.IsPayGateway] -------------
-
-
-DO $$
-DECLARE
-    condition boolean;
-BEGIN
-    condition := (SELECT EXISTS(SELECT column_name FROM information_schema.columns WHERE table_name='ca_biz' AND column_name='ispaygateway'));
-
-    IF not condition THEN
-        ALTER TABLE ca_biz ADD "ispaygateway" boolean;
-    END IF;
-END $$;
--- [Ca_Cat] ----------------------
-
-DO $$
-DECLARE
-    condition boolean;
-BEGIN
-    condition := (SELECT EXISTS(SELECT * FROM information_schema.tables WHERE table_name = 'ca_cat'));
-
-    IF not condition THEN
-    CREATE TABLE ca_cat (id BIGINT NOT NULL
+    CREATE TABLE ca_book (id BIGINT NOT NULL
         ,createdat BIGINT NOT NULL
         ,updatedat BIGINT NOT NULL
         ,sort BIGINT NOT NULL
         ,"caption" VARCHAR(64)
-        ,"lang" BIGINT
-        ,"zh" BIGINT
-        ,"parent" BIGINT
-        ,"catstate" INT);
+        ,"email" VARCHAR(64)
+        ,"message" TEXT);
 
    END IF;
 END $$;
 
 
--- [Ca_Cat.Caption] -------------
+-- [Ca_Book.Caption] -------------
 
 
 DO $$
 DECLARE
     condition boolean;
 BEGIN
-    condition := (SELECT EXISTS(SELECT column_name FROM information_schema.columns WHERE table_name='ca_cat' AND column_name='caption'));
+    condition := (SELECT EXISTS(SELECT column_name FROM information_schema.columns WHERE table_name='ca_book' AND column_name='caption'));
 
     IF not condition THEN
-        ALTER TABLE ca_cat ADD "caption" varchar(64);
+        ALTER TABLE ca_book ADD "caption" varchar(64);
     END IF;
 END $$;
 
--- [Ca_Cat.Lang] -------------
+-- [Ca_Book.Email] -------------
 
 
 DO $$
 DECLARE
     condition boolean;
 BEGIN
-    condition := (SELECT EXISTS(SELECT column_name FROM information_schema.columns WHERE table_name='ca_cat' AND column_name='lang'));
+    condition := (SELECT EXISTS(SELECT column_name FROM information_schema.columns WHERE table_name='ca_book' AND column_name='email'));
 
     IF not condition THEN
-        ALTER TABLE ca_cat ADD "lang" bigint;
+        ALTER TABLE ca_book ADD "email" varchar(64);
     END IF;
 END $$;
 
--- [Ca_Cat.Zh] -------------
+-- [Ca_Book.Message] -------------
 
 
 DO $$
 DECLARE
     condition boolean;
 BEGIN
-    condition := (SELECT EXISTS(SELECT column_name FROM information_schema.columns WHERE table_name='ca_cat' AND column_name='zh'));
+    condition := (SELECT EXISTS(SELECT column_name FROM information_schema.columns WHERE table_name='ca_book' AND column_name='message'));
 
     IF not condition THEN
-        ALTER TABLE ca_cat ADD "zh" bigint;
-    END IF;
-END $$;
-
--- [Ca_Cat.Parent] -------------
-
-
-DO $$
-DECLARE
-    condition boolean;
-BEGIN
-    condition := (SELECT EXISTS(SELECT column_name FROM information_schema.columns WHERE table_name='ca_cat' AND column_name='parent'));
-
-    IF not condition THEN
-        ALTER TABLE ca_cat ADD "parent" bigint;
-    END IF;
-END $$;
-
--- [Ca_Cat.CatState] -------------
-
-
-DO $$
-DECLARE
-    condition boolean;
-BEGIN
-    condition := (SELECT EXISTS(SELECT column_name FROM information_schema.columns WHERE table_name='ca_cat' AND column_name='catstate'));
-
-    IF not condition THEN
-        ALTER TABLE ca_cat ADD "catstate" int;
-    END IF;
-END $$;
--- [Ca_City] ----------------------
-
-DO $$
-DECLARE
-    condition boolean;
-BEGIN
-    condition := (SELECT EXISTS(SELECT * FROM information_schema.tables WHERE table_name = 'ca_city'));
-
-    IF not condition THEN
-    CREATE TABLE ca_city (id BIGINT NOT NULL
-        ,createdat BIGINT NOT NULL
-        ,updatedat BIGINT NOT NULL
-        ,sort BIGINT NOT NULL
-        ,"fullname" VARCHAR(64)
-        ,"metropolitancode3iata" VARCHAR(3)
-        ,"nameen" VARCHAR(64)
-        ,"country" BIGINT
-        ,"place" BIGINT
-        ,"icon" VARCHAR(256)
-        ,"tel" VARCHAR(4));
-
-   END IF;
-END $$;
-
-
--- [Ca_City.Fullname] -------------
-
-
-DO $$
-DECLARE
-    condition boolean;
-BEGIN
-    condition := (SELECT EXISTS(SELECT column_name FROM information_schema.columns WHERE table_name='ca_city' AND column_name='fullname'));
-
-    IF not condition THEN
-        ALTER TABLE ca_city ADD "fullname" varchar(64);
-    END IF;
-END $$;
-
--- [Ca_City.MetropolitanCode3IATA] -------------
-
-
-DO $$
-DECLARE
-    condition boolean;
-BEGIN
-    condition := (SELECT EXISTS(SELECT column_name FROM information_schema.columns WHERE table_name='ca_city' AND column_name='metropolitancode3iata'));
-
-    IF not condition THEN
-        ALTER TABLE ca_city ADD "metropolitancode3iata" varchar(3);
-    END IF;
-END $$;
-
--- [Ca_City.NameEn] -------------
-
-
-DO $$
-DECLARE
-    condition boolean;
-BEGIN
-    condition := (SELECT EXISTS(SELECT column_name FROM information_schema.columns WHERE table_name='ca_city' AND column_name='nameen'));
-
-    IF not condition THEN
-        ALTER TABLE ca_city ADD "nameen" varchar(64);
-    END IF;
-END $$;
-
--- [Ca_City.Country] -------------
-
-
-DO $$
-DECLARE
-    condition boolean;
-BEGIN
-    condition := (SELECT EXISTS(SELECT column_name FROM information_schema.columns WHERE table_name='ca_city' AND column_name='country'));
-
-    IF not condition THEN
-        ALTER TABLE ca_city ADD "country" bigint;
-    END IF;
-END $$;
-
--- [Ca_City.Place] -------------
-
-
-DO $$
-DECLARE
-    condition boolean;
-BEGIN
-    condition := (SELECT EXISTS(SELECT column_name FROM information_schema.columns WHERE table_name='ca_city' AND column_name='place'));
-
-    IF not condition THEN
-        ALTER TABLE ca_city ADD "place" bigint;
-    END IF;
-END $$;
-
--- [Ca_City.Icon] -------------
-
-
-DO $$
-DECLARE
-    condition boolean;
-BEGIN
-    condition := (SELECT EXISTS(SELECT column_name FROM information_schema.columns WHERE table_name='ca_city' AND column_name='icon'));
-
-    IF not condition THEN
-        ALTER TABLE ca_city ADD "icon" varchar(256);
-    END IF;
-END $$;
-
--- [Ca_City.Tel] -------------
-
-
-DO $$
-DECLARE
-    condition boolean;
-BEGIN
-    condition := (SELECT EXISTS(SELECT column_name FROM information_schema.columns WHERE table_name='ca_city' AND column_name='tel'));
-
-    IF not condition THEN
-        ALTER TABLE ca_city ADD "tel" varchar(4);
-    END IF;
-END $$;
--- [Ca_Country] ----------------------
-
-DO $$
-DECLARE
-    condition boolean;
-BEGIN
-    condition := (SELECT EXISTS(SELECT * FROM information_schema.tables WHERE table_name = 'ca_country'));
-
-    IF not condition THEN
-    CREATE TABLE ca_country (id BIGINT NOT NULL
-        ,createdat BIGINT NOT NULL
-        ,updatedat BIGINT NOT NULL
-        ,sort BIGINT NOT NULL
-        ,"code2" VARCHAR(2)
-        ,"caption" VARCHAR(64)
-        ,"fullname" VARCHAR(256)
-        ,"icon" VARCHAR(256)
-        ,"tel" VARCHAR(4)
-        ,"cur" BIGINT
-        ,"capital" BIGINT
-        ,"place" BIGINT
-        ,"lang" BIGINT);
-
-   END IF;
-END $$;
-
-
--- [Ca_Country.Code2] -------------
-
-
-DO $$
-DECLARE
-    condition boolean;
-BEGIN
-    condition := (SELECT EXISTS(SELECT column_name FROM information_schema.columns WHERE table_name='ca_country' AND column_name='code2'));
-
-    IF not condition THEN
-        ALTER TABLE ca_country ADD "code2" varchar(2);
-    END IF;
-END $$;
-
--- [Ca_Country.Caption] -------------
-
-
-DO $$
-DECLARE
-    condition boolean;
-BEGIN
-    condition := (SELECT EXISTS(SELECT column_name FROM information_schema.columns WHERE table_name='ca_country' AND column_name='caption'));
-
-    IF not condition THEN
-        ALTER TABLE ca_country ADD "caption" varchar(64);
-    END IF;
-END $$;
-
--- [Ca_Country.Fullname] -------------
-
-
-DO $$
-DECLARE
-    condition boolean;
-BEGIN
-    condition := (SELECT EXISTS(SELECT column_name FROM information_schema.columns WHERE table_name='ca_country' AND column_name='fullname'));
-
-    IF not condition THEN
-        ALTER TABLE ca_country ADD "fullname" varchar(256);
-    END IF;
-END $$;
-
--- [Ca_Country.Icon] -------------
-
-
-DO $$
-DECLARE
-    condition boolean;
-BEGIN
-    condition := (SELECT EXISTS(SELECT column_name FROM information_schema.columns WHERE table_name='ca_country' AND column_name='icon'));
-
-    IF not condition THEN
-        ALTER TABLE ca_country ADD "icon" varchar(256);
-    END IF;
-END $$;
-
--- [Ca_Country.Tel] -------------
-
-
-DO $$
-DECLARE
-    condition boolean;
-BEGIN
-    condition := (SELECT EXISTS(SELECT column_name FROM information_schema.columns WHERE table_name='ca_country' AND column_name='tel'));
-
-    IF not condition THEN
-        ALTER TABLE ca_country ADD "tel" varchar(4);
-    END IF;
-END $$;
-
--- [Ca_Country.Cur] -------------
-
-
-DO $$
-DECLARE
-    condition boolean;
-BEGIN
-    condition := (SELECT EXISTS(SELECT column_name FROM information_schema.columns WHERE table_name='ca_country' AND column_name='cur'));
-
-    IF not condition THEN
-        ALTER TABLE ca_country ADD "cur" bigint;
-    END IF;
-END $$;
-
--- [Ca_Country.Capital] -------------
-
-
-DO $$
-DECLARE
-    condition boolean;
-BEGIN
-    condition := (SELECT EXISTS(SELECT column_name FROM information_schema.columns WHERE table_name='ca_country' AND column_name='capital'));
-
-    IF not condition THEN
-        ALTER TABLE ca_country ADD "capital" bigint;
-    END IF;
-END $$;
-
--- [Ca_Country.Place] -------------
-
-
-DO $$
-DECLARE
-    condition boolean;
-BEGIN
-    condition := (SELECT EXISTS(SELECT column_name FROM information_schema.columns WHERE table_name='ca_country' AND column_name='place'));
-
-    IF not condition THEN
-        ALTER TABLE ca_country ADD "place" bigint;
-    END IF;
-END $$;
-
--- [Ca_Country.Lang] -------------
-
-
-DO $$
-DECLARE
-    condition boolean;
-BEGIN
-    condition := (SELECT EXISTS(SELECT column_name FROM information_schema.columns WHERE table_name='ca_country' AND column_name='lang'));
-
-    IF not condition THEN
-        ALTER TABLE ca_country ADD "lang" bigint;
+        ALTER TABLE ca_book ADD "message" text;
     END IF;
 END $$;
 -- [Ca_EndUser] ----------------------
@@ -832,28 +74,7 @@ BEGIN
         ,updatedat BIGINT NOT NULL
         ,sort BIGINT NOT NULL
         ,"caption" VARCHAR(64)
-        ,"username" VARCHAR(64)
-        ,"socialauthbiz" BIGINT
-        ,"socialauthid" TEXT
-        ,"socialauthavatar" TEXT
-        ,"email" VARCHAR(256)
-        ,"tel" VARCHAR(32)
-        ,"gender" INT
-        ,"status" INT
-        ,"admin" INT
-        ,"bizpartner" INT
-        ,"privilege" BIGINT
-        ,"verify" INT
-        ,"pwd" VARCHAR(16)
-        ,"online" BOOLEAN
-        ,"icon" VARCHAR(256)
-        ,"background" VARCHAR(256)
-        ,"basicacct" BIGINT
-        ,"citizen" BIGINT
-        ,"refer" VARCHAR(9)
-        ,"referer" BIGINT
-        ,"url" TEXT
-        ,"about" TEXT);
+        ,"authtype" INT);
 
    END IF;
 END $$;
@@ -873,480 +94,432 @@ BEGIN
     END IF;
 END $$;
 
--- [Ca_EndUser.Username] -------------
+-- [Ca_EndUser.AuthType] -------------
 
 
 DO $$
 DECLARE
     condition boolean;
 BEGIN
-    condition := (SELECT EXISTS(SELECT column_name FROM information_schema.columns WHERE table_name='ca_enduser' AND column_name='username'));
+    condition := (SELECT EXISTS(SELECT column_name FROM information_schema.columns WHERE table_name='ca_enduser' AND column_name='authtype'));
 
     IF not condition THEN
-        ALTER TABLE ca_enduser ADD "username" varchar(64);
+        ALTER TABLE ca_enduser ADD "authtype" int;
     END IF;
 END $$;
-
--- [Ca_EndUser.SocialAuthBiz] -------------
-
+-- [Ca_File] ----------------------
 
 DO $$
 DECLARE
     condition boolean;
 BEGIN
-    condition := (SELECT EXISTS(SELECT column_name FROM information_schema.columns WHERE table_name='ca_enduser' AND column_name='socialauthbiz'));
+    condition := (SELECT EXISTS(SELECT * FROM information_schema.tables WHERE table_name = 'ca_file'));
 
     IF not condition THEN
-        ALTER TABLE ca_enduser ADD "socialauthbiz" bigint;
-    END IF;
-END $$;
-
--- [Ca_EndUser.SocialAuthId] -------------
-
-
-DO $$
-DECLARE
-    condition boolean;
-BEGIN
-    condition := (SELECT EXISTS(SELECT column_name FROM information_schema.columns WHERE table_name='ca_enduser' AND column_name='socialauthid'));
-
-    IF not condition THEN
-        ALTER TABLE ca_enduser ADD "socialauthid" text;
-    END IF;
-END $$;
-
--- [Ca_EndUser.SocialAuthAvatar] -------------
-
-
-DO $$
-DECLARE
-    condition boolean;
-BEGIN
-    condition := (SELECT EXISTS(SELECT column_name FROM information_schema.columns WHERE table_name='ca_enduser' AND column_name='socialauthavatar'));
-
-    IF not condition THEN
-        ALTER TABLE ca_enduser ADD "socialauthavatar" text;
-    END IF;
-END $$;
-
--- [Ca_EndUser.Email] -------------
-
-
-DO $$
-DECLARE
-    condition boolean;
-BEGIN
-    condition := (SELECT EXISTS(SELECT column_name FROM information_schema.columns WHERE table_name='ca_enduser' AND column_name='email'));
-
-    IF not condition THEN
-        ALTER TABLE ca_enduser ADD "email" varchar(256);
-    END IF;
-END $$;
-
--- [Ca_EndUser.Tel] -------------
-
-
-DO $$
-DECLARE
-    condition boolean;
-BEGIN
-    condition := (SELECT EXISTS(SELECT column_name FROM information_schema.columns WHERE table_name='ca_enduser' AND column_name='tel'));
-
-    IF not condition THEN
-        ALTER TABLE ca_enduser ADD "tel" varchar(32);
-    END IF;
-END $$;
-
--- [Ca_EndUser.Gender] -------------
-
-
-DO $$
-DECLARE
-    condition boolean;
-BEGIN
-    condition := (SELECT EXISTS(SELECT column_name FROM information_schema.columns WHERE table_name='ca_enduser' AND column_name='gender'));
-
-    IF not condition THEN
-        ALTER TABLE ca_enduser ADD "gender" int;
-    END IF;
-END $$;
-
--- [Ca_EndUser.Status] -------------
-
-
-DO $$
-DECLARE
-    condition boolean;
-BEGIN
-    condition := (SELECT EXISTS(SELECT column_name FROM information_schema.columns WHERE table_name='ca_enduser' AND column_name='status'));
-
-    IF not condition THEN
-        ALTER TABLE ca_enduser ADD "status" int;
-    END IF;
-END $$;
-
--- [Ca_EndUser.Admin] -------------
-
-
-DO $$
-DECLARE
-    condition boolean;
-BEGIN
-    condition := (SELECT EXISTS(SELECT column_name FROM information_schema.columns WHERE table_name='ca_enduser' AND column_name='admin'));
-
-    IF not condition THEN
-        ALTER TABLE ca_enduser ADD "admin" int;
-    END IF;
-END $$;
-
--- [Ca_EndUser.BizPartner] -------------
-
-
-DO $$
-DECLARE
-    condition boolean;
-BEGIN
-    condition := (SELECT EXISTS(SELECT column_name FROM information_schema.columns WHERE table_name='ca_enduser' AND column_name='bizpartner'));
-
-    IF not condition THEN
-        ALTER TABLE ca_enduser ADD "bizpartner" int;
-    END IF;
-END $$;
-
--- [Ca_EndUser.Privilege] -------------
-
-
-DO $$
-DECLARE
-    condition boolean;
-BEGIN
-    condition := (SELECT EXISTS(SELECT column_name FROM information_schema.columns WHERE table_name='ca_enduser' AND column_name='privilege'));
-
-    IF not condition THEN
-        ALTER TABLE ca_enduser ADD "privilege" bigint;
-    END IF;
-END $$;
-
--- [Ca_EndUser.Verify] -------------
-
-
-DO $$
-DECLARE
-    condition boolean;
-BEGIN
-    condition := (SELECT EXISTS(SELECT column_name FROM information_schema.columns WHERE table_name='ca_enduser' AND column_name='verify'));
-
-    IF not condition THEN
-        ALTER TABLE ca_enduser ADD "verify" int;
-    END IF;
-END $$;
-
--- [Ca_EndUser.Pwd] -------------
-
-
-DO $$
-DECLARE
-    condition boolean;
-BEGIN
-    condition := (SELECT EXISTS(SELECT column_name FROM information_schema.columns WHERE table_name='ca_enduser' AND column_name='pwd'));
-
-    IF not condition THEN
-        ALTER TABLE ca_enduser ADD "pwd" varchar(16);
-    END IF;
-END $$;
-
--- [Ca_EndUser.Online] -------------
-
-
-DO $$
-DECLARE
-    condition boolean;
-BEGIN
-    condition := (SELECT EXISTS(SELECT column_name FROM information_schema.columns WHERE table_name='ca_enduser' AND column_name='online'));
-
-    IF not condition THEN
-        ALTER TABLE ca_enduser ADD "online" boolean;
-    END IF;
-END $$;
-
--- [Ca_EndUser.Icon] -------------
-
-
-DO $$
-DECLARE
-    condition boolean;
-BEGIN
-    condition := (SELECT EXISTS(SELECT column_name FROM information_schema.columns WHERE table_name='ca_enduser' AND column_name='icon'));
-
-    IF not condition THEN
-        ALTER TABLE ca_enduser ADD "icon" varchar(256);
-    END IF;
-END $$;
-
--- [Ca_EndUser.Background] -------------
-
-
-DO $$
-DECLARE
-    condition boolean;
-BEGIN
-    condition := (SELECT EXISTS(SELECT column_name FROM information_schema.columns WHERE table_name='ca_enduser' AND column_name='background'));
-
-    IF not condition THEN
-        ALTER TABLE ca_enduser ADD "background" varchar(256);
-    END IF;
-END $$;
-
--- [Ca_EndUser.BasicAcct] -------------
-
-
-DO $$
-DECLARE
-    condition boolean;
-BEGIN
-    condition := (SELECT EXISTS(SELECT column_name FROM information_schema.columns WHERE table_name='ca_enduser' AND column_name='basicacct'));
-
-    IF not condition THEN
-        ALTER TABLE ca_enduser ADD "basicacct" bigint;
-    END IF;
-END $$;
-
--- [Ca_EndUser.Citizen] -------------
-
-
-DO $$
-DECLARE
-    condition boolean;
-BEGIN
-    condition := (SELECT EXISTS(SELECT column_name FROM information_schema.columns WHERE table_name='ca_enduser' AND column_name='citizen'));
-
-    IF not condition THEN
-        ALTER TABLE ca_enduser ADD "citizen" bigint;
-    END IF;
-END $$;
-
--- [Ca_EndUser.Refer] -------------
-
-
-DO $$
-DECLARE
-    condition boolean;
-BEGIN
-    condition := (SELECT EXISTS(SELECT column_name FROM information_schema.columns WHERE table_name='ca_enduser' AND column_name='refer'));
-
-    IF not condition THEN
-        ALTER TABLE ca_enduser ADD "refer" varchar(9);
-    END IF;
-END $$;
-
--- [Ca_EndUser.Referer] -------------
-
-
-DO $$
-DECLARE
-    condition boolean;
-BEGIN
-    condition := (SELECT EXISTS(SELECT column_name FROM information_schema.columns WHERE table_name='ca_enduser' AND column_name='referer'));
-
-    IF not condition THEN
-        ALTER TABLE ca_enduser ADD "referer" bigint;
-    END IF;
-END $$;
-
--- [Ca_EndUser.Url] -------------
-
-
-DO $$
-DECLARE
-    condition boolean;
-BEGIN
-    condition := (SELECT EXISTS(SELECT column_name FROM information_schema.columns WHERE table_name='ca_enduser' AND column_name='url'));
-
-    IF not condition THEN
-        ALTER TABLE ca_enduser ADD "url" text;
-    END IF;
-END $$;
-
--- [Ca_EndUser.About] -------------
-
-
-DO $$
-DECLARE
-    condition boolean;
-BEGIN
-    condition := (SELECT EXISTS(SELECT column_name FROM information_schema.columns WHERE table_name='ca_enduser' AND column_name='about'));
-
-    IF not condition THEN
-        ALTER TABLE ca_enduser ADD "about" text;
-    END IF;
-END $$;
--- [Ca_SpecialItem] ----------------------
-
-DO $$
-DECLARE
-    condition boolean;
-BEGIN
-    condition := (SELECT EXISTS(SELECT * FROM information_schema.tables WHERE table_name = 'ca_specialitem'));
-
-    IF not condition THEN
-    CREATE TABLE ca_specialitem (id BIGINT NOT NULL
+    CREATE TABLE ca_file (id BIGINT NOT NULL
         ,createdat BIGINT NOT NULL
         ,updatedat BIGINT NOT NULL
         ,sort BIGINT NOT NULL
+        ,"caption" TEXT
+        ,"desc" TEXT
+        ,"suffix" VARCHAR(4)
+        ,"size" BIGINT
+        ,"thumbnail" 
+        ,"owner" BIGINT);
+
+   END IF;
+END $$;
+
+
+-- [Ca_File.Caption] -------------
+
+
+DO $$
+DECLARE
+    condition boolean;
+BEGIN
+    condition := (SELECT EXISTS(SELECT column_name FROM information_schema.columns WHERE table_name='ca_file' AND column_name='caption'));
+
+    IF not condition THEN
+        ALTER TABLE ca_file ADD "caption" text;
+    END IF;
+END $$;
+
+-- [Ca_File.Desc] -------------
+
+
+DO $$
+DECLARE
+    condition boolean;
+BEGIN
+    condition := (SELECT EXISTS(SELECT column_name FROM information_schema.columns WHERE table_name='ca_file' AND column_name='desc'));
+
+    IF not condition THEN
+        ALTER TABLE ca_file ADD "desc" text;
+    END IF;
+END $$;
+
+-- [Ca_File.Suffix] -------------
+
+
+DO $$
+DECLARE
+    condition boolean;
+BEGIN
+    condition := (SELECT EXISTS(SELECT column_name FROM information_schema.columns WHERE table_name='ca_file' AND column_name='suffix'));
+
+    IF not condition THEN
+        ALTER TABLE ca_file ADD "suffix" varchar(4);
+    END IF;
+END $$;
+
+-- [Ca_File.Size] -------------
+
+
+DO $$
+DECLARE
+    condition boolean;
+BEGIN
+    condition := (SELECT EXISTS(SELECT column_name FROM information_schema.columns WHERE table_name='ca_file' AND column_name='size'));
+
+    IF not condition THEN
+        ALTER TABLE ca_file ADD "size" bigint;
+    END IF;
+END $$;
+
+-- [Ca_File.Thumbnail] -------------
+
+
+DO $$
+DECLARE
+    condition boolean;
+BEGIN
+    condition := (SELECT EXISTS(SELECT column_name FROM information_schema.columns WHERE table_name='ca_file' AND column_name='thumbnail'));
+
+    IF not condition THEN
+        ALTER TABLE ca_file ADD "thumbnail" ;
+    END IF;
+END $$;
+
+-- [Ca_File.Owner] -------------
+
+
+DO $$
+DECLARE
+    condition boolean;
+BEGIN
+    condition := (SELECT EXISTS(SELECT column_name FROM information_schema.columns WHERE table_name='ca_file' AND column_name='owner'));
+
+    IF not condition THEN
+        ALTER TABLE ca_file ADD "owner" bigint;
+    END IF;
+END $$;
+-- [Social_FileBind] ----------------------
+
+DO $$
+DECLARE
+    condition boolean;
+BEGIN
+    condition := (SELECT EXISTS(SELECT * FROM information_schema.tables WHERE table_name = 'social_filebind'));
+
+    IF not condition THEN
+    CREATE TABLE social_filebind (id BIGINT NOT NULL
+        ,createdat BIGINT NOT NULL
+        ,updatedat BIGINT NOT NULL
+        ,sort BIGINT NOT NULL
+        ,"file" BIGINT
+        ,"moment" BIGINT
+        ,"desc" TEXT);
+
+   END IF;
+END $$;
+
+
+-- [Social_FileBind.File] -------------
+
+
+DO $$
+DECLARE
+    condition boolean;
+BEGIN
+    condition := (SELECT EXISTS(SELECT column_name FROM information_schema.columns WHERE table_name='social_filebind' AND column_name='file'));
+
+    IF not condition THEN
+        ALTER TABLE social_filebind ADD "file" bigint;
+    END IF;
+END $$;
+
+-- [Social_FileBind.Moment] -------------
+
+
+DO $$
+DECLARE
+    condition boolean;
+BEGIN
+    condition := (SELECT EXISTS(SELECT column_name FROM information_schema.columns WHERE table_name='social_filebind' AND column_name='moment'));
+
+    IF not condition THEN
+        ALTER TABLE social_filebind ADD "moment" bigint;
+    END IF;
+END $$;
+
+-- [Social_FileBind.Desc] -------------
+
+
+DO $$
+DECLARE
+    condition boolean;
+BEGIN
+    condition := (SELECT EXISTS(SELECT column_name FROM information_schema.columns WHERE table_name='social_filebind' AND column_name='desc'));
+
+    IF not condition THEN
+        ALTER TABLE social_filebind ADD "desc" text;
+    END IF;
+END $$;
+-- [Social_Moment] ----------------------
+
+DO $$
+DECLARE
+    condition boolean;
+BEGIN
+    condition := (SELECT EXISTS(SELECT * FROM information_schema.tables WHERE table_name = 'social_moment'));
+
+    IF not condition THEN
+    CREATE TABLE social_moment (id BIGINT NOT NULL
+        ,createdat BIGINT NOT NULL
+        ,updatedat BIGINT NOT NULL
+        ,sort BIGINT NOT NULL
+        ,"title" TEXT
+        ,"summary" TEXT
+        ,"fulltext" TEXT
+        ,"previewimgurl" TEXT
+        ,"link" TEXT
         ,"type" INT
-        ,"lang" BIGINT
-        ,"bind" BIGINT);
+        ,"state" INT
+        ,"mediatype" INT);
 
    END IF;
 END $$;
 
 
--- [Ca_SpecialItem.Type] -------------
+-- [Social_Moment.Title] -------------
 
 
 DO $$
 DECLARE
     condition boolean;
 BEGIN
-    condition := (SELECT EXISTS(SELECT column_name FROM information_schema.columns WHERE table_name='ca_specialitem' AND column_name='type'));
+    condition := (SELECT EXISTS(SELECT column_name FROM information_schema.columns WHERE table_name='social_moment' AND column_name='title'));
 
     IF not condition THEN
-        ALTER TABLE ca_specialitem ADD "type" int;
+        ALTER TABLE social_moment ADD "title" text;
     END IF;
 END $$;
 
--- [Ca_SpecialItem.Lang] -------------
+-- [Social_Moment.Summary] -------------
 
 
 DO $$
 DECLARE
     condition boolean;
 BEGIN
-    condition := (SELECT EXISTS(SELECT column_name FROM information_schema.columns WHERE table_name='ca_specialitem' AND column_name='lang'));
+    condition := (SELECT EXISTS(SELECT column_name FROM information_schema.columns WHERE table_name='social_moment' AND column_name='summary'));
 
     IF not condition THEN
-        ALTER TABLE ca_specialitem ADD "lang" bigint;
+        ALTER TABLE social_moment ADD "summary" text;
     END IF;
 END $$;
 
--- [Ca_SpecialItem.Bind] -------------
+-- [Social_Moment.FullText] -------------
 
 
 DO $$
 DECLARE
     condition boolean;
 BEGIN
-    condition := (SELECT EXISTS(SELECT column_name FROM information_schema.columns WHERE table_name='ca_specialitem' AND column_name='bind'));
+    condition := (SELECT EXISTS(SELECT column_name FROM information_schema.columns WHERE table_name='social_moment' AND column_name='fulltext'));
 
     IF not condition THEN
-        ALTER TABLE ca_specialitem ADD "bind" bigint;
+        ALTER TABLE social_moment ADD "fulltext" text;
     END IF;
 END $$;
--- [Ca_WebCredential] ----------------------
+
+-- [Social_Moment.PreviewImgUrl] -------------
+
 
 DO $$
 DECLARE
     condition boolean;
 BEGIN
-    condition := (SELECT EXISTS(SELECT * FROM information_schema.tables WHERE table_name = 'ca_webcredential'));
+    condition := (SELECT EXISTS(SELECT column_name FROM information_schema.columns WHERE table_name='social_moment' AND column_name='previewimgurl'));
 
     IF not condition THEN
-    CREATE TABLE ca_webcredential (id BIGINT NOT NULL
+        ALTER TABLE social_moment ADD "previewimgurl" text;
+    END IF;
+END $$;
+
+-- [Social_Moment.Link] -------------
+
+
+DO $$
+DECLARE
+    condition boolean;
+BEGIN
+    condition := (SELECT EXISTS(SELECT column_name FROM information_schema.columns WHERE table_name='social_moment' AND column_name='link'));
+
+    IF not condition THEN
+        ALTER TABLE social_moment ADD "link" text;
+    END IF;
+END $$;
+
+-- [Social_Moment.Type] -------------
+
+
+DO $$
+DECLARE
+    condition boolean;
+BEGIN
+    condition := (SELECT EXISTS(SELECT column_name FROM information_schema.columns WHERE table_name='social_moment' AND column_name='type'));
+
+    IF not condition THEN
+        ALTER TABLE social_moment ADD "type" int;
+    END IF;
+END $$;
+
+-- [Social_Moment.State] -------------
+
+
+DO $$
+DECLARE
+    condition boolean;
+BEGIN
+    condition := (SELECT EXISTS(SELECT column_name FROM information_schema.columns WHERE table_name='social_moment' AND column_name='state'));
+
+    IF not condition THEN
+        ALTER TABLE social_moment ADD "state" int;
+    END IF;
+END $$;
+
+-- [Social_Moment.MediaType] -------------
+
+
+DO $$
+DECLARE
+    condition boolean;
+BEGIN
+    condition := (SELECT EXISTS(SELECT column_name FROM information_schema.columns WHERE table_name='social_moment' AND column_name='mediatype'));
+
+    IF not condition THEN
+        ALTER TABLE social_moment ADD "mediatype" int;
+    END IF;
+END $$;
+-- [Sys_Log] ----------------------
+
+DO $$
+DECLARE
+    condition boolean;
+BEGIN
+    condition := (SELECT EXISTS(SELECT * FROM information_schema.tables WHERE table_name = 'sys_log'));
+
+    IF not condition THEN
+    CREATE TABLE sys_log (id BIGINT NOT NULL
         ,createdat BIGINT NOT NULL
         ,updatedat BIGINT NOT NULL
         ,sort BIGINT NOT NULL
-        ,"caption" VARCHAR(64)
-        ,"externalid" BIGINT
-        ,"icon" VARCHAR(256)
-        ,"eu" BIGINT
-        ,"biz" BIGINT
-        ,"json" TEXT);
+        ,"location" TEXT
+        ,"content" TEXT
+        ,"sql" TEXT);
 
    END IF;
 END $$;
 
 
--- [Ca_WebCredential.Caption] -------------
+-- [Sys_Log.Location] -------------
 
 
 DO $$
 DECLARE
     condition boolean;
 BEGIN
-    condition := (SELECT EXISTS(SELECT column_name FROM information_schema.columns WHERE table_name='ca_webcredential' AND column_name='caption'));
+    condition := (SELECT EXISTS(SELECT column_name FROM information_schema.columns WHERE table_name='sys_log' AND column_name='location'));
 
     IF not condition THEN
-        ALTER TABLE ca_webcredential ADD "caption" varchar(64);
+        ALTER TABLE sys_log ADD "location" text;
     END IF;
 END $$;
 
--- [Ca_WebCredential.ExternalId] -------------
+-- [Sys_Log.Content] -------------
 
 
 DO $$
 DECLARE
     condition boolean;
 BEGIN
-    condition := (SELECT EXISTS(SELECT column_name FROM information_schema.columns WHERE table_name='ca_webcredential' AND column_name='externalid'));
+    condition := (SELECT EXISTS(SELECT column_name FROM information_schema.columns WHERE table_name='sys_log' AND column_name='content'));
 
     IF not condition THEN
-        ALTER TABLE ca_webcredential ADD "externalid" bigint;
+        ALTER TABLE sys_log ADD "content" text;
     END IF;
 END $$;
 
--- [Ca_WebCredential.Icon] -------------
+-- [Sys_Log.Sql] -------------
 
 
 DO $$
 DECLARE
     condition boolean;
 BEGIN
-    condition := (SELECT EXISTS(SELECT column_name FROM information_schema.columns WHERE table_name='ca_webcredential' AND column_name='icon'));
+    condition := (SELECT EXISTS(SELECT column_name FROM information_schema.columns WHERE table_name='sys_log' AND column_name='sql'));
 
     IF not condition THEN
-        ALTER TABLE ca_webcredential ADD "icon" varchar(256);
+        ALTER TABLE sys_log ADD "sql" text;
+    END IF;
+END $$;
+-- [Sys_PageLog] ----------------------
+
+DO $$
+DECLARE
+    condition boolean;
+BEGIN
+    condition := (SELECT EXISTS(SELECT * FROM information_schema.tables WHERE table_name = 'sys_pagelog'));
+
+    IF not condition THEN
+    CREATE TABLE sys_pagelog (id BIGINT NOT NULL
+        ,createdat BIGINT NOT NULL
+        ,updatedat BIGINT NOT NULL
+        ,sort BIGINT NOT NULL
+        ,"ip" VARCHAR(64)
+        ,"request" TEXT);
+
+   END IF;
+END $$;
+
+
+-- [Sys_PageLog.Ip] -------------
+
+
+DO $$
+DECLARE
+    condition boolean;
+BEGIN
+    condition := (SELECT EXISTS(SELECT column_name FROM information_schema.columns WHERE table_name='sys_pagelog' AND column_name='ip'));
+
+    IF not condition THEN
+        ALTER TABLE sys_pagelog ADD "ip" varchar(64);
     END IF;
 END $$;
 
--- [Ca_WebCredential.EU] -------------
+-- [Sys_PageLog.Request] -------------
 
 
 DO $$
 DECLARE
     condition boolean;
 BEGIN
-    condition := (SELECT EXISTS(SELECT column_name FROM information_schema.columns WHERE table_name='ca_webcredential' AND column_name='eu'));
+    condition := (SELECT EXISTS(SELECT column_name FROM information_schema.columns WHERE table_name='sys_pagelog' AND column_name='request'));
 
     IF not condition THEN
-        ALTER TABLE ca_webcredential ADD "eu" bigint;
-    END IF;
-END $$;
-
--- [Ca_WebCredential.Biz] -------------
-
-
-DO $$
-DECLARE
-    condition boolean;
-BEGIN
-    condition := (SELECT EXISTS(SELECT column_name FROM information_schema.columns WHERE table_name='ca_webcredential' AND column_name='biz'));
-
-    IF not condition THEN
-        ALTER TABLE ca_webcredential ADD "biz" bigint;
-    END IF;
-END $$;
-
--- [Ca_WebCredential.Json] -------------
-
-
-DO $$
-DECLARE
-    condition boolean;
-BEGIN
-    condition := (SELECT EXISTS(SELECT column_name FROM information_schema.columns WHERE table_name='ca_webcredential' AND column_name='json'));
-
-    IF not condition THEN
-        ALTER TABLE ca_webcredential ADD "json" text;
+        ALTER TABLE sys_pagelog ADD "request" text;
     END IF;
 END $$;
 -- [Ts_Api] ----------------------

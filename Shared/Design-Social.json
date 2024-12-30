@@ -1,0 +1,69 @@
+[
+
+  {
+    "name": "Social_Moment",
+    "shorthand": "moment",
+    "id": 54864675,
+    "fields": [
+      {
+        "enum": "Text",
+        "name": "Title"
+      },
+      {
+        "enum": "Text",
+        "name": "Summary"
+      },
+      {
+        "enum": "Text",
+        "name": "FullText"
+      },
+
+      {
+        "enum": "Text",
+        "name": "PreviewImgUrl"
+      },
+      {
+        "enum": "Text",
+        "name": "Link"
+      },
+      {
+        "enum": "SelectLines",
+        "lines": "Original//原创图文视频///Repost//转发///Thread//文章///Forum//论坛///Question//问题///Answer//回答///BookmarkList//收藏夹///Poll//投票///Miles//文贵直播文字版///Dict//辞典///WebPage//页面///MediaFile//媒体文件",
+        "name": "Type"
+      },
+      {
+        "enum": "SelectLines",
+        "lines": "Normal//正常///Deleted//标记删除///Scratch//草稿",
+        "name": "State"
+      },
+      {
+        "enum": "SelectLines",
+        "lines": "None//无///Video//视频///Audio//音频",
+        "name": "MediaType"
+      }
+    ]
+  },
+
+  {
+    "name": "Social_FileBind",
+    "shorthand": "fbind",
+    "id": 54864675,
+    "fields": [
+      {
+        "enum": "FK",
+        "ref": "Ca_File",
+        "name": "File"
+      },
+      {
+        "enum": "FK",
+        "name": "Moment"
+      },
+      {
+        "enum": "Text",
+        "name": "Desc"
+      }
+    ]
+  }
+
+
+]

@@ -2,159 +2,30 @@ declare global {
 
 namespace jcs {
 
-// [Ca_Address] (ADDRESS)
+// [Ca_Book] (BOOK)
 
-
-export type pADDRESS = {
+export type pBOOK = {
 [key:string]: any
     Caption: string
-    Bind: number
-    AddressType: number
-    Line1: string
-    Line2: string
-    State: string
-    County: string
-    Town: string
-    Contact: string
-    Tel: string
     Email: string
-    Zip: string
-    City: number
-    Country: number
-    Remarks: string
+    Message: string
 }
 
-export type ADDRESS = {
+export type BOOK = {
 id:number
 createdat:Date
 updatedat:Date
 sort:number
-p:pADDRESS
-}
-
-// [Ca_Biz] (BIZ)
-
-export type pBIZ = {
-[key:string]: any
-    Code: string
-    Caption: string
-    Parent: number
-    BasicAcct: number
-    DescTxt: string
-    Website: string
-    Icon: string
-    City: number
-    Country: number
-    Lang: number
-    IsSocialPlatform: boolean
-    IsCmsSource: boolean
-    IsPayGateway: boolean
-}
-
-export type BIZ = {
-id:number
-createdat:Date
-updatedat:Date
-sort:number
-p:pBIZ
-}
-
-// [Ca_Cat] (CAT)
-
-
-export type pCAT = {
-[key:string]: any
-    Caption: string
-    Lang: number
-    Zh: number
-    Parent: number
-    CatState: number
-}
-
-export type CAT = {
-id:number
-createdat:Date
-updatedat:Date
-sort:number
-p:pCAT
-}
-
-// [Ca_City] (CITY)
-
-export type pCITY = {
-[key:string]: any
-    Fullname: string
-    MetropolitanCode3IATA: string
-    NameEn: string
-    Country: number
-    Place: number
-    Icon: string
-    Tel: string
-}
-
-export type CITY = {
-id:number
-createdat:Date
-updatedat:Date
-sort:number
-p:pCITY
-}
-
-// [Ca_Country] (CRY)
-
-export type pCRY = {
-[key:string]: any
-    Code2: string
-    Caption: string
-    Fullname: string
-    Icon: string
-    Tel: string
-    Cur: number
-    Capital: number
-    Place: number
-    Lang: number
-}
-
-export type CRY = {
-id:number
-createdat:Date
-updatedat:Date
-sort:number
-p:pCRY
+p:pBOOK
 }
 
 // [Ca_EndUser] (EU)
 
 
-
-
-
-
 export type pEU = {
 [key:string]: any
     Caption: string
-    Username: string
-    SocialAuthBiz: number
-    SocialAuthId: string
-    SocialAuthAvatar: string
-    Email: string
-    Tel: string
-    Gender: number
-    Status: number
-    Admin: number
-    BizPartner: number
-    Privilege: number
-    Verify: number
-    Pwd: string
-    Online: boolean
-    Icon: string
-    Background: string
-    BasicAcct: number
-    Citizen: number
-    Refer: string
-    Referer: number
-    Url: string
-    About: string
+    AuthType: number
 }
 
 export type EU = {
@@ -165,42 +36,99 @@ sort:number
 p:pEU
 }
 
-// [Ca_SpecialItem] (CSI)
+// [Ca_File] (FILE)
 
-
-export type pCSI = {
-[key:string]: any
-    Type: number
-    Lang: number
-    Bind: number
-}
-
-export type CSI = {
-id:number
-createdat:Date
-updatedat:Date
-sort:number
-p:pCSI
-}
-
-// [Ca_WebCredential] (CWC)
-
-export type pCWC = {
+export type pFILE = {
 [key:string]: any
     Caption: string
-    ExternalId: number
-    Icon: string
-    EU: number
-    Biz: number
-    Json: string
+    Desc: string
+    Suffix: string
+    Size: number
+    Thumbnail: array
+    Owner: number
 }
 
-export type CWC = {
+export type FILE = {
 id:number
 createdat:Date
 updatedat:Date
 sort:number
-p:pCWC
+p:pFILE
+}
+
+// [Social_FileBind] (FBIND)
+
+export type pFBIND = {
+[key:string]: any
+    File: number
+    Moment: number
+    Desc: string
+}
+
+export type FBIND = {
+id:number
+createdat:Date
+updatedat:Date
+sort:number
+p:pFBIND
+}
+
+// [Social_Moment] (MOMENT)
+
+
+
+
+export type pMOMENT = {
+[key:string]: any
+    Title: string
+    Summary: string
+    FullText: string
+    PreviewImgUrl: string
+    Link: string
+    Type: number
+    State: number
+    MediaType: number
+}
+
+export type MOMENT = {
+id:number
+createdat:Date
+updatedat:Date
+sort:number
+p:pMOMENT
+}
+
+// [Sys_Log] (LOG)
+
+export type pLOG = {
+[key:string]: any
+    Location: string
+    Content: string
+    Sql: string
+}
+
+export type LOG = {
+id:number
+createdat:Date
+updatedat:Date
+sort:number
+p:pLOG
+}
+
+// [Sys_PageLog] (PLOG)
+
+export type pPLOG = {
+[key:string]: any
+    Ip: string
+    Request: string
+}
+
+export type PLOG = {
+id:number
+createdat:Date
+updatedat:Date
+sort:number
+p:pPLOG
 }
 
 // [Ts_Api] (API)

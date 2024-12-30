@@ -8,6 +8,20 @@ export type EuComplex = {
 eu:EU
 }
 
+// [FBindComplex]
+export type FBindComplex = {
+file:FILE,
+
+fbind:FBIND
+}
+
+// [MomentComplex]
+export type MomentComplex = {
+fbxs:Array<FBindComplex>,
+
+m:MOMENT
+}
+
 // [TableComplex]
 export type TableComplex = {
 fields:{[key:string]: FIELD},
@@ -70,7 +84,13 @@ val: any
 export type RuntimeData = {
 facts:Array<Fact>,
 
-projectxs:{[key:number]: ProjectComplex}
+projectxs:{[key:number]: ProjectComplex},
+
+files:{[key:number]: FILE},
+
+mxs:{[key:number]: MomentComplex},
+
+books:Array<BOOK>
 }
 
 // [ClientRuntime]
