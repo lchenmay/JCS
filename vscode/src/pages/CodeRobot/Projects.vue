@@ -10,7 +10,7 @@
 
 <Project 
   :projectx="v" 
-  v-for="[k,v] in (Object.entries(s.data.projectxs) as [string,jcs.ProjectComplex][])" />
+  v-for="[k,v] in (Object.entries(s.projectxs) as [string,jcs.ProjectComplex][])" />
 
 </template>
 
@@ -25,15 +25,16 @@ import { ProjectComplex_empty } from '~/lib/shared/CustomMor';
 
 const s = glib.vue.reactive({
 query: useRoute().query,
+projectxs: {} as {[key:string]: jcs.ProjectComplex},
 data: runtime.data
 })
 
 glib.vue.onMounted(async () => {
   Common.loader('/api/public/reloadProjects', { 
   },(rep:any) => { 
-    s.data.projectxs = {}
+    s.projectxs = {}
     rep.list.forEach((i:jcs.ProjectComplex) => {
-      s.data.projectxs[i.project.id] = i
+      s.projectxs[i.project.id] = i
     })
   })
 })

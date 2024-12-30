@@ -73,6 +73,11 @@ facts:Array<Fact>,
 projectxs:{[key:number]: ProjectComplex}
 }
 
+// [ClientRuntime]
+export type ClientRuntime = {
+version:number
+}
+
 // [Msg]
 export type Msg = {
 e: number,

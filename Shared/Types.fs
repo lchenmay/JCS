@@ -51,6 +51,9 @@ type RuntimeData = {
 mutable facts: Fact list
 projectxs: ModDictInt64<ProjectComplex> }
 
+type ClientRuntime = {
+mutable version: int }
+
 type Msg = 
 | Heartbeat
 | ApiRequest of Json

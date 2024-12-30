@@ -288,5 +288,6 @@ let run () =
     |> Array.iter(CodeRobot.go output)
 
 run()
+BizLogics.CodeRobot.run()
 
 Util.Runtime.halt output "" ""

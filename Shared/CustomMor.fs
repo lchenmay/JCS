@@ -787,6 +787,67 @@ let RuntimeData_clone src =
     RuntimeData__bin bb src
     bin__RuntimeData (bb.bytes(),ref 0)
 
+// [ClientRuntime] Structure
+
+let ClientRuntime_empty(): ClientRuntime =
+    {
+        version = 0
+    }
+
+let ClientRuntime__bin (bb:BytesBuilder) (v:ClientRuntime) =
+
+    int32__bin bb v.version
+
+let bin__ClientRuntime (bi:BinIndexed):ClientRuntime =
+    let bin,index = bi
+
+    {
+        version = 
+            bi
+            |> bin__int32
+    }
+
+let ClientRuntime__json (v:ClientRuntime) =
+
+    [|  ("version",int32__json v.version)
+         |]
+    |> Json.Braket
+
+let ClientRuntime__jsonTbw (w:TextBlockWriter) (v:ClientRuntime) =
+    json__str w (ClientRuntime__json v)
+
+let ClientRuntime__jsonStr (v:ClientRuntime) =
+    (ClientRuntime__json v) |> json__strFinal
+
+
+let json__ClientRuntimeo (json:Json):ClientRuntime option =
+    let fields = json |> json__items
+
+    let mutable passOptions = true
+
+    let versiono =
+        match json__tryFindByName json "version" with
+        | None ->
+            passOptions <- false
+            None
+        | Some v -> 
+            match v |> json__int32o with
+            | Some res -> Some res
+            | None ->
+                passOptions <- false
+                None
+
+    if passOptions then
+        ({
+            version = versiono.Value }:ClientRuntime) |> Some
+    else
+        None
+
+let ClientRuntime_clone src =
+    let bb = new BytesBuilder()
+    ClientRuntime__bin bb src
+    bin__ClientRuntime (bb.bytes(),ref 0)
+
 // [Msg] Structure
 
 let Msg_empty(): Msg =Msg.Heartbeat

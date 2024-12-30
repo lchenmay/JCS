@@ -250,6 +250,26 @@ export const bin__RuntimeData = (bi:BinIndexed):jcs.RuntimeData => {
     }
 }
 
+// [ClientRuntime] Structure
+
+export const ClientRuntime_empty = (): jcs.ClientRuntime => { 
+    return {
+        version: 0,
+    } as jcs.ClientRuntime
+}
+
+export const ClientRuntime__bin = (bb:BytesBuilder) => (v:any) => {
+
+    marshall.int32__bin (bb) (v.version)
+}
+
+export const bin__ClientRuntime = (bi:BinIndexed):jcs.ClientRuntime => {
+
+    return {
+        version: marshall.bin__int32 (bi),
+    }
+}
+
 // [Msg] Structure
 
 export const Msg_empty = (): jcs.Msg => { 
