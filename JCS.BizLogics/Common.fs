@@ -43,7 +43,6 @@ let runtime =
 
     let h = {
         data = ()
-        zmq = false
         port = 5045
         conn = ""
         url = ""
