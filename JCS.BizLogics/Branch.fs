@@ -1,4 +1,4 @@
-﻿module BizLogics.Branch
+﻿module JCS.BizLogics.Branch
 
 open System
 open System.Text
@@ -15,10 +15,10 @@ open Util.Http
 open Util.HttpServer
 open Util.Zmq
 
-open Shared.OrmTypes
-open Shared.Types
-open Shared.OrmMor
-open Shared.CustomMor
+open JCS.Shared.OrmTypes
+open JCS.Shared.Types
+open JCS.Shared.OrmMor
+open JCS.Shared.CustomMor
 
 open UtilWebServer.Common
 open UtilWebServer.Api
@@ -27,13 +27,13 @@ open UtilWebServer.SSR
 open UtilWebServer.Server.Monitor
 open UtilWebServer.Db
 
-open Shared.OrmTypes
-open Shared.OrmMor
-open Shared.Types
-open Shared.CustomMor
+open JCS.Shared.OrmTypes
+open JCS.Shared.OrmMor
+open JCS.Shared.Types
+open JCS.Shared.CustomMor
 
-open BizLogics.Common
-open BizLogics.Db
+open JCS.BizLogics.Common
+open JCS.BizLogics.Db
 
 let branching x = 
 

@@ -1,4 +1,4 @@
-module Shared.CustomMor
+module JCS.Shared.CustomMor
 
 open LanguagePrimitives
 
@@ -24,9 +24,9 @@ open Util.Stat
 open PreOrm
 
 open Util.Bin
-open Shared.OrmTypes
-open Shared.Types
-open Shared.OrmMor
+open JCS.Shared.OrmTypes
+open JCS.Shared.Types
+open JCS.Shared.OrmMor
 
 // [EuComplex] Structure
 

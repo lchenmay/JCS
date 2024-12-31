@@ -32,7 +32,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Common\UtilWebServer\UtilWebServer.fsproj" />
     <ProjectReference Include="..\..\Common\Util\Util.fsproj" />
-    <ProjectReference Include="..\BizLogics\BizLogics.fsproj" />
+    <ProjectReference Include="..\JCS.BizLogics\JCS.BizLogics.fsproj" />
   </ItemGroup>
 
 </Project>

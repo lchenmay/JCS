@@ -1,4 +1,4 @@
-﻿module BizLogics.CodeRobot
+﻿module JCS.BizLogics.CodeRobot
 
 open System
 open System.Text
@@ -17,23 +17,18 @@ open Util.Http
 open Util.HttpServer
 open Util.Zmq
 
-open Shared.OrmTypes
-open Shared.Types
-open Shared.OrmMor
-open Shared.CustomMor
-
 open UtilWebServer.Common
 open UtilWebServer.Api
 open UtilWebServer.Json
 open UtilWebServer.SSR
 
-open Shared.OrmTypes
-open Shared.OrmMor
-open Shared.Types
-open Shared.CustomMor
+open JCS.Shared.OrmTypes
+open JCS.Shared.Types
+open JCS.Shared.OrmMor
+open JCS.Shared.CustomMor
 
-open BizLogics.Common
-open BizLogics.Branch
+open JCS.BizLogics.Common
+open JCS.BizLogics.Branch
 
 type VueFile = {
 mutable template: string[]
@@ -214,7 +209,7 @@ let runProject projectx =
 
 let run() =
 
-    BizLogics.Init.init runtime
+    JCS.BizLogics.Init.init runtime
 
     [|  
         234346L // JCS

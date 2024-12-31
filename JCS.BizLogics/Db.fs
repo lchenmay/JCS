@@ -1,4 +1,4 @@
-﻿module BizLogics.Db
+﻿module JCS.BizLogics.Db
 
 open System
 open System.IO
@@ -20,13 +20,13 @@ open UtilWebServer.DbLogger
 open UtilWebServer.Db
 open UtilWebServer.Common
 
-open Shared.OrmTypes
-open Shared.Types
-open Shared.OrmMor
-open Shared.CustomMor
-open Shared.Project
+open JCS.Shared.OrmTypes
+open JCS.Shared.Types
+open JCS.Shared.OrmMor
+open JCS.Shared.CustomMor
+open JCS.Shared.Project
 
-open BizLogics.Common
+open JCS.BizLogics.Common
 
 let creator metadata populate = 
     let p = metadata.empty__p()

@@ -1,4 +1,4 @@
-module Shared.OrmMor
+module JCS.Shared.OrmMor
 
 open LanguagePrimitives
 
@@ -26,8 +26,8 @@ open PreOrm
 open System.Data.SqlClient
 open System.Threading
 open Util.Bin
-open Shared.OrmTypes
-open Shared.Types
+open JCS.Shared.OrmTypes
+open JCS.Shared.Types
 
 // [BOOK] Structure
 

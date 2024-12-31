@@ -1,4 +1,4 @@
-﻿module Shared.Project
+﻿module JCS.Shared.Project
 
 open System
 open System.Threading
@@ -15,10 +15,10 @@ open Util.DbTx
 open Util.Orm
 open Util.Zmq
 
-open Shared.OrmTypes
-open Shared.Types
-open Shared.OrmMor
-open Shared.CustomMor
+open JCS.Shared.OrmTypes
+open JCS.Shared.Types
+open JCS.Shared.OrmMor
+open JCS.Shared.CustomMor
 
 let project__ProjectComplex project = 
     {   hostconfigs = createModDictStr 4    

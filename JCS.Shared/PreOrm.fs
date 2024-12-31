@@ -1,1 +1,1 @@
-﻿module Shared.PreOrm
+﻿module JCS.Shared.PreOrm

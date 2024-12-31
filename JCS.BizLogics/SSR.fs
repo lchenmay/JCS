@@ -1,4 +1,4 @@
-﻿module BizLogics.SSR
+﻿module JCS.BizLogics.SSR
 
 open System
 open System.IO
@@ -15,24 +15,19 @@ open Util.Http
 open Util.HttpServer
 open Util.Zmq
 
-open Shared.OrmTypes
-open Shared.Types
-open Shared.OrmMor
-open Shared.CustomMor
+open JCS.Shared.OrmTypes
+open JCS.Shared.Types
+open JCS.Shared.OrmMor
+open JCS.Shared.CustomMor
 
 open UtilWebServer.Common
 open UtilWebServer.Api
 open UtilWebServer.Json
 open UtilWebServer.SSR
 
-open Shared.OrmTypes
-open Shared.OrmMor
-open Shared.Types
-open Shared.CustomMor
-
-open BizLogics.Common
-open BizLogics.Branch
-open BizLogics.Db
+open JCS.BizLogics.Common
+open JCS.BizLogics.Branch
+open JCS.BizLogics.Db
 
 
 let hash1,hash2 = 

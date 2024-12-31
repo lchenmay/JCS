@@ -1,4 +1,4 @@
-﻿module BizLogics.Init
+﻿module JCS.BizLogics.Init
 
 open System
 open System.IO
@@ -21,14 +21,14 @@ open UtilWebServer.DbLogger
 open UtilWebServer.Init
 open UtilWebServer.FileSys
 
-open Shared.OrmTypes
-open Shared.OrmMor
-open Shared.Types
-open Shared.CustomMor
-open Shared.Project
+open JCS.Shared.OrmTypes
+open JCS.Shared.OrmMor
+open JCS.Shared.Types
+open JCS.Shared.CustomMor
+open JCS.Shared.Project
 
-open BizLogics.Common
-open BizLogics.Db
+open JCS.BizLogics.Common
+open JCS.BizLogics.Db
 
 let init (runtime:Runtime) = 
 
@@ -40,7 +40,7 @@ let init (runtime:Runtime) =
     if runtime.host.updateDatabase then
         updateDbStructure runtime conn
 
-    Shared.OrmMor.init()
+    JCS.Shared.OrmMor.init()
 
     let loader metadata = loadAll runtime.output conn metadata
 

@@ -12,6 +12,7 @@
     <Compile Include="Branch.fs" />
     <Compile Include="SSR.fs" />
     <Compile Include="CodeRobot.fs" />
+    <Compile Include="Launcher.fs" />
   </ItemGroup>
 
   <ItemGroup>

@@ -1,4 +1,4 @@
-﻿module BizLogics.Common
+﻿module JCS.BizLogics.Common
 
 open System
 open System.Collections.Generic
@@ -13,10 +13,10 @@ open Util.Zmq
 open UtilWebServer.Common
 open UtilWebServer.Db
 
-open Shared.OrmTypes
-open Shared.OrmMor
-open Shared.Types
-open Shared.CustomMor
+open JCS.Shared.OrmTypes
+open JCS.Shared.OrmMor
+open JCS.Shared.Types
+open JCS.Shared.CustomMor
 
 
 type Session = SessionTemplate<EuComplex,unit>

@@ -1,4 +1,4 @@
-module Shared.OrmTypes
+module JCS.Shared.OrmTypes
 
 open LanguagePrimitives
 

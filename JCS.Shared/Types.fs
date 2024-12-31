@@ -1,4 +1,4 @@
-﻿module Shared.Types
+﻿module JCS.Shared.Types
 
 open System
 open System.Collections.Generic
@@ -9,7 +9,7 @@ open Util.Json
 open Util.Stat
 open Util.CollectionModDict
 
-open Shared.OrmTypes
+open JCS.Shared.OrmTypes
 
 //[TypeManaged]{
 
