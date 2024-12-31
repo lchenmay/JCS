@@ -207,7 +207,7 @@ let runProject projectx =
     |> changeFile(hostconfig.p.DirVsCodeWeb + "/src/lib/glib.ts")
     
 
-let run() =
+let run exeDir =
 
     JCS.BizLogics.Init.init runtime
 

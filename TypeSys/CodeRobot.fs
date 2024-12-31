@@ -1008,7 +1008,7 @@ let prepareRobot output config=
         output = output }
 
 
-let go output config = 
+let go output exeDir config  = 
 
     let robot = prepareRobot output config
 
@@ -1097,7 +1097,7 @@ let go output config =
     save srcs
 
     let pathsrc = 
-        let di = new DirectoryInfo(Directory.GetCurrentDirectory())
+        let di = new DirectoryInfo(exeDir)
         Path.Combine(di.Parent.Parent.Parent.Parent.FullName,"VsCodeTemplate")
     let pathdst = 
         let di = new DirectoryInfo(config.JsDir)

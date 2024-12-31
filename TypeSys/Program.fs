@@ -268,7 +268,7 @@ let target__config target =
             mainDir = @"C:\Dev\JCS\BizShared"
             JsDir = @"C:\Dev\JCS\BizShared" }
 
-let run () = 
+let run exeDir = 
 
     [|  
         6 // JCS
@@ -280,9 +280,9 @@ let run () =
         //10 //Game
             |]
     |> Array.map target__config
-    |> Array.iter(CodeRobot.go output)
+    |> Array.iter(CodeRobot.go output exeDir)
 
-run()
-JCS.BizLogics.CodeRobot.run()
+Directory.GetCurrentDirectory() |> run
+Directory.GetCurrentDirectory() |> JCS.BizLogics.CodeRobot.run
 
 Util.Runtime.halt output "" ""
