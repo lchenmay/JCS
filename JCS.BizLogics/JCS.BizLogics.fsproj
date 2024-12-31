@@ -17,7 +17,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Common\UtilWebServer\UtilWebServer.fsproj" />
     <ProjectReference Include="..\..\Common\Util\Util.fsproj" />
-    <ProjectReference Include="..\Shared\Shared.fsproj" />
+    <ProjectReference Include="..\JCS.Shared\JCS.Shared.fsproj" />
   </ItemGroup>
 
 </Project>

@@ -160,36 +160,36 @@ let target__config target =
             mainDir = @"C:\Dev\J\Shared"
             JsDir = @"C:\Dev\J\vscode\src\lib\shared" }
     | 16 ->
-        {   ns = "Shared"
+        {   ns = "Studio.Shared"
             rdbms = Rdbms.SqlServer
             dbName = "Studio"
             donmainName = ""
             conn = "server=127.0.0.1; user=sa; database=Studio"
-            mainDir = @"C:\Dev\J\Shared"
+            mainDir = @"C:\Dev\Studio\Studio.Shared"
             JsDir = @"C:\Dev\Studio\vscode\src\lib\shared" }
     | 17 ->
-        {   ns = "Shared"
+        {   ns = "J.Shared"
             rdbms = Rdbms.SqlServer
             dbName = "J"
             donmainName = ""
             conn = "server=127.0.0.1; user=sa; database=J"
-            mainDir = @"C:\Dev\J\Shared"
+            mainDir = @"C:\Dev\J\J.Shared"
             JsDir = @"C:\Dev\J\vscode\src\lib\shared" }
     | 18 ->
-        {   ns = "Shared"
+        {   ns = "FA.Shared"
             rdbms = Rdbms.SqlServer
             dbName = "FA"
             donmainName = ""
             conn = "server=127.0.0.1; user=sa; database=FA"
-            mainDir = @"C:\Dev\FA\Shared"
+            mainDir = @"C:\Dev\FA\FA.Shared"
             JsDir = @"C:\Dev\FA\vscode\src\lib\shared" }
     | 19 ->
-        {   ns = "Shared"
+        {   ns = "JA.Shared"
             rdbms = Rdbms.SqlServer
             dbName = "JA"
             donmainName = ""
             conn = "server=127.0.0.1; user=sa; database=JA"
-            mainDir = @"C:\Dev\JA\Shared"
+            mainDir = @"C:\Dev\JA\JA.Shared"
             JsDir = @"C:\Dev\JA\vscode\src\lib\shared" }
     | 10 ->
         {   ns = "Shared"
@@ -227,12 +227,12 @@ let target__config target =
             mainDir = @"C:\Dev\GCHAIN2024\CrypTradeClubVsOpen\Shared"
             JsDir = @"C:\Dev\GCHAIN2024\CrypTradeClubVsOpen\vscode\src\lib\shared" }
     | 6 ->
-        {   ns = "Shared"
+        {   ns = "JCS.Shared"
             rdbms = Rdbms.SqlServer
             dbName = "JCS"
             donmainName = "jcatsys.com"
             conn = "server=127.0.0.1; user=sa; database=JCS"
-            mainDir = @"C:\Dev\JCS\Shared"
+            mainDir = @"C:\Dev\JCS\JCS.Shared"
             JsDir = @"C:\Dev\JCS\vscode\src\lib\shared" }
 
     | 8 ->
@@ -270,20 +270,15 @@ let target__config target =
 
 let run () = 
 
-    //target <- 5 // CTC Develop
-    //target <- 6 // JCS
-    //target <- 10 // Game
-    //let target = 11 // GNexts
-    //target <- 15 // J
-
-
-    [|  6 // JCS
-        7 // J-7
+    [|  
+        6 // JCS
+        //7 // J-7
         16 // studio
         17 // J
         18 // FA
         19 // JA
-        10 |] //Game
+        //10 //Game
+            |]
     |> Array.map target__config
     |> Array.iter(CodeRobot.go output)
 

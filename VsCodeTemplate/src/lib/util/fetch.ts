@@ -47,24 +47,28 @@ export const upload =
   let url = checkUrl(dst)
 
   let reader = new FileReader()
-  reader.onloadend = async() => {
-    let buffer = reader.result
-    let rep = await fetch(url,{
-      method: 'POST',
-      headers:{
-        'Content-Type': 'application/octet-stream',
-        'Filename': encodeURIComponent(file.name),
-        'Desc': encodeURIComponent(desc)
-      },
-      body: reader.result })
+  reader.onloadend = async(e) => {
 
-    if(rep.ok){
-      if(suc){
-        suc(rep)
-      }
-    }else{
-      if(fail){
-        fail(rep)
+    if(reader.error)
+      fail(null)
+    else{
+      let rep = await fetch(url,{
+        method: 'POST',
+        headers:{
+          'Content-Type': 'application/octet-stream',
+          'Filename': encodeURIComponent(file.name),
+          'Desc': encodeURIComponent(desc)
+        },
+        body: reader.result })
+
+      if(rep.ok){
+        if(suc){
+          suc(rep)
+        }
+      }else{
+        if(fail){
+          fail(rep)
+        }
       }
     }
   }

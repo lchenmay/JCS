@@ -44,13 +44,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "types", "types", "{B6CD5C54
 		vscode\src\types\main.d.ts = vscode\src\types\main.d.ts
 	EndProjectSection
 EndProject
-Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Shared", "Shared\Shared.fsproj", "{89082BFE-070D-43E6-8C07-0E67D1FFAACA}"
-EndProject
-Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "BizLogics", "BizLogics\BizLogics.fsproj", "{1E2C5CD1-19A1-4B96-BAF0-E62FE0F37068}"
-EndProject
 Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Server", "Server\Server.fsproj", "{C550455A-20BE-47E4-9C9B-0AFAA45EC8DE}"
 EndProject
 Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "UtilWebServer", "..\Common\UtilWebServer\UtilWebServer.fsproj", "{60419922-4FF9-4627-9CD5-30DFE907AFA6}"
+EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "JCS.Shared", "JCS.Shared\JCS.Shared.fsproj", "{13520A0D-66A3-47D9-9D61-E50BFDB3E0BA}"
+EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "JCS.BizLogics", "JCS.BizLogics\JCS.BizLogics.fsproj", "{C2EC4902-9217-43A9-9B2B-EA19623AFC20}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -66,14 +66,6 @@ Global
 		{D84F6A26-A6C9-456D-BAD0-39E89CA887B2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D84F6A26-A6C9-456D-BAD0-39E89CA887B2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D84F6A26-A6C9-456D-BAD0-39E89CA887B2}.Release|Any CPU.Build.0 = Release|Any CPU
-		{89082BFE-070D-43E6-8C07-0E67D1FFAACA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{89082BFE-070D-43E6-8C07-0E67D1FFAACA}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{89082BFE-070D-43E6-8C07-0E67D1FFAACA}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{89082BFE-070D-43E6-8C07-0E67D1FFAACA}.Release|Any CPU.Build.0 = Release|Any CPU
-		{1E2C5CD1-19A1-4B96-BAF0-E62FE0F37068}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1E2C5CD1-19A1-4B96-BAF0-E62FE0F37068}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1E2C5CD1-19A1-4B96-BAF0-E62FE0F37068}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1E2C5CD1-19A1-4B96-BAF0-E62FE0F37068}.Release|Any CPU.Build.0 = Release|Any CPU
 		{C550455A-20BE-47E4-9C9B-0AFAA45EC8DE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{C550455A-20BE-47E4-9C9B-0AFAA45EC8DE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C550455A-20BE-47E4-9C9B-0AFAA45EC8DE}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -82,6 +74,14 @@ Global
 		{60419922-4FF9-4627-9CD5-30DFE907AFA6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{60419922-4FF9-4627-9CD5-30DFE907AFA6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{60419922-4FF9-4627-9CD5-30DFE907AFA6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{13520A0D-66A3-47D9-9D61-E50BFDB3E0BA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{13520A0D-66A3-47D9-9D61-E50BFDB3E0BA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{13520A0D-66A3-47D9-9D61-E50BFDB3E0BA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{13520A0D-66A3-47D9-9D61-E50BFDB3E0BA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C2EC4902-9217-43A9-9B2B-EA19623AFC20}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C2EC4902-9217-43A9-9B2B-EA19623AFC20}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C2EC4902-9217-43A9-9B2B-EA19623AFC20}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C2EC4902-9217-43A9-9B2B-EA19623AFC20}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

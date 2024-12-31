@@ -278,7 +278,7 @@ export const markdown__html = (str: string) => {
         line = line.replace(s,img)        
     })
 
-    line.matchAll(/\!\[.+?\]\(.+?\)/g).forEach((item) => {
+    line.matchAll(/\!\[.*?\]\(.+?\)/g).forEach((item) => {
       let s = item + ""
       let txt = s.match(/\[.+?\]/) + ""
       if(txt.length >= 2)
@@ -320,7 +320,7 @@ export const markdown__html = (str: string) => {
     else if(line.startsWith("# "))
       html = "<div class='caption-1'>" + line.substring(2,line.length) + "</div>"
     else
-      html = "<div>" + line + "</div>"
+      html = "<p>" + line + "</p>"
 
     res += html
   }
