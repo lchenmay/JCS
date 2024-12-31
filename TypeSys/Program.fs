@@ -133,8 +133,8 @@ let target__config target =
             dbName = "J7"
             donmainName = ""
             conn = "server=127.0.0.1; user=sa; database=J7"
-            mainDir = @"C:\Dev\J-7\J7.Shared"
-            JsDir = @"C:\Dev\J-7\vscode\src\lib\shared" }
+            mainDir = @"C:\Dev\J7\J7.Shared"
+            JsDir = @"C:\Dev\J7\vscode\src\lib\shared" }
     | 9 ->
         {   ns = "Shared"
             rdbms = Rdbms.SqlServer
