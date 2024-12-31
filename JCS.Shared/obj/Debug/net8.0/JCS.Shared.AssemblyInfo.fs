@@ -10,7 +10,7 @@ open System.Reflection
 [<assembly: System.Reflection.AssemblyCompanyAttribute("JCS.Shared")>]
 [<assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")>]
 [<assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")>]
-[<assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+d2448d45f5eaafc46988decee5597dc625cf7a2c")>]
+[<assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+d9f91df0f0e5820aa19315fea706d5ad57628c9e")>]
 [<assembly: System.Reflection.AssemblyProductAttribute("JCS.Shared")>]
 [<assembly: System.Reflection.AssemblyTitleAttribute("JCS.Shared")>]
 [<assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")>]
