@@ -128,12 +128,12 @@ let target__config target =
 
     match target with
     | 7 ->
-        {   ns = "Shared"
+        {   ns = "J7.Shared"
             rdbms = Rdbms.SqlServer
             dbName = "J7"
             donmainName = ""
             conn = "server=127.0.0.1; user=sa; database=J7"
-            mainDir = @"C:\Dev\J-7\Shared"
+            mainDir = @"C:\Dev\J-7\J7.Shared"
             JsDir = @"C:\Dev\J-7\vscode\src\lib\shared" }
     | 9 ->
         {   ns = "Shared"
@@ -192,7 +192,7 @@ let target__config target =
             mainDir = @"C:\Dev\JA\JA.Shared"
             JsDir = @"C:\Dev\JA\vscode\src\lib\shared" }
     | 10 ->
-        {   ns = "Shared"
+        {   ns = "Game.Shared"
             rdbms = Rdbms.SqlServer
             dbName = "Game"
             donmainName = ""
@@ -200,9 +200,9 @@ let target__config target =
                 [|  "Host=localhost"
                     ";Username=game"
                     ";Password=" + pwd
-                    ";Database=JCS" |]
+                    ";Database=Game" |]
                 |> String.Concat
-            mainDir = @"C:\Dev\Game\Shared"
+            mainDir = @"C:\Dev\Game\Game.Shared"
             JsDir = @"C:\Dev\Game\vscode\src\lib\shared" }
 
     | 0 -> 
@@ -272,12 +272,12 @@ let run exeDir =
 
     [|  
         6 // JCS
-        //7 // J-7
+        7 // J-7
         16 // studio
         17 // J
         18 // FA
         19 // JA
-        //10 //Game
+        10 //Game
             |]
     |> Array.map target__config
     |> Array.iter(CodeRobot.go output exeDir)
