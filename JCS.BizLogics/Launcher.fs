@@ -31,29 +31,12 @@ let launch() =
 
     init runtime
 
-    runtime.echo <- echo
-    runtime.h404o <- (fun _ ->  
+    runtime.listener.echo <- echo
+    runtime.listener.h404o <- (fun _ ->  
         ssrPageHome 
         |> render (hash1,hash2) ""
         |> bin__StandardResponse "text/html") |> Some
-    runtime.wsHandler <- fun json ->
-        match
-            json
-            |> json__Msgo with
-        | Some msg ->
-            match msg with
-            | ApiRequest json ->
-
-                let service = tryFindStrByAtt "service" json
-                let api = tryFindStrByAtt "api" json
-                
-                branch service api json
-                |> Json.Braket
-                |> Some
-
-            | Heartbeat -> None
-            | _ -> Some empty
-        | None -> Some empty
+    runtime.listener.wsHandler <- fun json -> None
     
-    startEngine runtime
+    startEngine runtime.listener
 
