@@ -69,8 +69,8 @@ let runtime =
             |> String.Concat
         DiscordRedirect = ""
 
-        fsDir = @"C:/Dev/JCS/FsRoot"
-        vueDeployDir = @"C:\Dev\JCS\vscode\dist" }
+        vueDeployDir = @"C:\Dev\JCS\vscode\dist"
+        fsDir = @"C:/FsRoot/JCS" }
 
     match hostEnum with
     | HostEnum.Dev -> 
