@@ -29,11 +29,6 @@ open JCS.BizLogics.Common
 open JCS.BizLogics.Branch
 open JCS.BizLogics.Db
 
-
-let hash1,hash2 = 
-    runtime.host.vueDeployDir + "/index.html"
-    |> vueIndexFile__hashes
-
 let ssrPageHome = {
     title = "J-Cat Sys"
     desc = "Cross platform code automation solution"
@@ -135,7 +130,7 @@ let echo (req:HttpRequest) =
     match 
         { req = req; rep = None}
         |> Suc
-        |> bind (hHomepage (fun _ -> ssrPageHome |> render (hash1,hash2) ""))
+        |> bind (homepage ssrPageHome runtime.host "")
         |> bindFail echoUploadFile
         |> bindFail echoDownloadFile
         |> bindFail (hapi echoApiHandler branch) with

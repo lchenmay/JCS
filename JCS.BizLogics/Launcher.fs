@@ -32,10 +32,7 @@ let launch() =
     init runtime
 
     runtime.listener.echo <- echo
-    runtime.listener.h404o <- (fun _ ->  
-        ssrPageHome 
-        |> render (hash1,hash2) ""
-        |> bin__StandardResponse "text/html") |> Some
+    runtime.listener.h404o <- None
     runtime.listener.wsHandler <- fun json -> None
     
     startEngine runtime.listener
