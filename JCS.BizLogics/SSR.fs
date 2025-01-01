@@ -130,7 +130,7 @@ let echo (req:HttpRequest) =
         p.Request <- req.bin |> System.Text.Encoding.ASCII.GetString
         p.Ip <- ip
         UtilWebServer.Db.p__createRcd 
-            p PLOG_metadata "echo" conn |> ignore
+            p PLOG_metadata dbLoggero "echo" conn |> ignore
 
     match 
         { req = req; rep = None}

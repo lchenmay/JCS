@@ -92,7 +92,7 @@ let branching x =
                 p.Caption <- name
                 p.Email <- email
                 p.Message <- msg
-                match p__createRcd p BOOK_metadata "/api/public/msg" conn with
+                match p__createRcd p BOOK_metadata dbLoggero "/api/public/msg" conn with
                 | Some rcd -> [| ok |]
                 | None -> er Er.Internal
             else
@@ -106,7 +106,7 @@ let branching x =
             let summary = (tryFindStrByAtt "summary" x.json).Trim()
             let content = (tryFindStrByAtt "content" x.json).Trim()
             if runtime.data.mxs.ContainsKey id then
-                if updateRcd "/api/eu/moment" conn MOMENT_metadata (fun p -> 
+                if updateRcd "/api/eu/moment" conn MOMENT_metadata dbLoggero (fun p -> 
                     p.Title <- title
                     p.Summary <- summary
                     p.FullText <- content) runtime.data.mxs[id].m then
@@ -119,7 +119,7 @@ let branching x =
                 p.Summary <- summary
                 p.FullText <- content
                 p.Type <- momentTypeEnum.Original
-                match p__createRcd p MOMENT_metadata "/api/public/msg" conn with
+                match p__createRcd p MOMENT_metadata dbLoggero "/api/public/msg" conn with
                 | Some rcd -> 
                     runtime.data.mxs[rcd.ID] <- {
                         fbxs = [| |]

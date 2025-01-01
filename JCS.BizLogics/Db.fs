@@ -28,10 +28,21 @@ open JCS.Shared.Project
 
 open JCS.BizLogics.Common
 
+let dbLoggero =
+    (fun log -> 
+        let p = pLOG_empty()
+        p.Content <- log.content
+        p.Location <- log.location
+        p.Sql <- log.sql
+        p)
+    |> createDbLogger LOG_metadata conn
+    |> Some
+
+
 let creator metadata populate = 
     let p = metadata.empty__p()
     populate p
-    p__createRcd p metadata metadata.table conn
+    p__createRcd p metadata dbLoggero metadata.table conn
 
 
 let createEU caption auth = 
@@ -54,7 +65,7 @@ let createFILE id (owner,caption,suffix,desc) =
         p
         |> id__CreateTx id pretx FILE_metadata
 
-    if pretx |> loggedPipeline "BizLogics.Db" conn then
+    if pretx |> loggedPipeline dbLoggero "BizLogics.Db" conn then
         Some rcd
     else
         None
@@ -88,7 +99,7 @@ let checkFileThumbnail (file:FILE) =
                     file.p.Thumbnail <- bin
 
                     if  update 
-                            "BizLogics.Db.checkFileThumbnail" conn FILE_metadata 
+                            "BizLogics.Db.checkFileThumbnail" conn FILE_metadata dbLoggero
                             (file.ID,file.p) = false then
                         file.p.Thumbnail <- [| |]
 
@@ -128,7 +139,7 @@ let createProjectComplex ps =
 let updateProjectComplex projectx ps = 
     if 
         projectx.project
-        |> updateRcd "" conn PROJECT_metadata (fun p -> 
+        |> updateRcd "" conn PROJECT_metadata dbLoggero (fun p -> 
             p.Caption <- snd ps) then
         Some projectx
     else
