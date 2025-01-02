@@ -1104,6 +1104,9 @@ let go output exeDir config  =
         Path.Combine(di.Parent.Parent.Parent.Parent.FullName,"vscode")
 
     [|  "src/main.ts"
+        "src/comps/RichTextEditor.vue"
+        "src/comps/Uploader.vue"
+        "src/lib/bizlogics/lang.ts"
         "src/lib/store/init.ts"
         "src/lib/store/runtime.ts"
         "src/lib/store/wshandler.ts"

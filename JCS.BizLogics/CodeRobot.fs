@@ -197,6 +197,18 @@ let runProject projectx =
 
     (fun (src:string) -> 
         let mutable res = src
+        res <- res.Replace("[].MomentComplex",ns + ".MomentComplex")
+        res)
+    |> changeFile(hostconfig.p.DirVsCodeWeb + "/src/comps/RichTextEditor.vue")
+
+    (fun (src:string) -> 
+        let mutable res = src
+        res <- res.Replace("[].",ns + ".")
+        res)
+    |> changeFile(hostconfig.p.DirVsCodeWeb + "/src/comps/Uploader.vue")
+
+    (fun (src:string) -> 
+        let mutable res = src
         res <- res.Replace("JSON.parse(localUser) as [].[]","JSON.parse(localUser) as " + ns + "." + projectx.project.p.TypeSessionUser)
         res <- res.Replace("runtime.user = glib.Mor.[]_empty()","runtime.user = glib.Mor." + ns + "." + projectx.project.p.TypeSessionUser + "_empty()")
         res)

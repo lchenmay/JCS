@@ -130,7 +130,7 @@ let echo (req:HttpRequest) =
     match 
         { req = req; rep = None}
         |> Suc
-        |> bind (homepage ssrPageHome runtime.host "")
+        |> bind (homepage ssrPageHome runtime.host.vueDeployDir "")
         |> bindFail echoUploadFile
         |> bindFail echoDownloadFile
         |> bindFail (hapi echoApiHandler branch) with
