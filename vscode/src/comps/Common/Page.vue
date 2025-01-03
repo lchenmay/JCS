@@ -56,9 +56,9 @@ import * as Common from '~/lib/store/common'
 import VarType from '~/comps/Common/VarType.vue'
 import { VARTYPE_empty } from '~/lib/shared/OrmMor'
 
-const props = defineProps(['pagex','projectx'])
-props.pagex as jcs.PageComplex
+const props = defineProps(['projectx','pagex'])
 props.projectx as jcs.ProjectComplex
+props.pagex as jcs.PageComplex
 
 const s = glib.vue.reactive({
 })

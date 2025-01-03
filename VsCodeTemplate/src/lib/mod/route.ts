@@ -43,6 +43,14 @@ export const router = createRouter({
   routes
 })
 
+export const navigate = (href:string,name:string,id:number) => {
+  window.location.href = href
+  if(id == 0)
+    router.push({ name: name, params: { id: id } })
+  else
+    router.push({ name: name })
+}
+
 router.beforeEach(async (to: any, from: any, next) => {
   next()
 })

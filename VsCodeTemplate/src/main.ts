@@ -3,6 +3,7 @@ import App from './App.vue'
 import { glib } from '~/lib/glib'
 import '~/main.css'
 import { ClientRuntime_empty } from './lib/shared/CustomMor'
+import * as Route from './lib/mod/route'
 
 globalThis.host = glib.vue.reactive(glib.host.initHost())
 globalThis.clientRuntime = glib.vue.reactive(ClientRuntime_empty())
@@ -24,4 +25,4 @@ glib.notify.init()
 const app = glib.vue.createApp(App)
 app.use(runtime.router).mount('#app')
 
-incomingRoute()
+Route.incomingRoute()
