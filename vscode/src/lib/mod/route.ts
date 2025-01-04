@@ -18,3 +18,26 @@ export const router = createRouter({
   history: createMemoryHistory(),
   routes
 })
+
+export const navigate = (href:string,name:string,id:number) => {
+  console.log("href = " + href)
+  console.log("href = " + name)
+  console.log("name = " + id)
+  window.location.href = href
+  if(id != 0)
+    router.push({ name: name, params: { id: id } })
+  else
+    router.push(name)
+}
+
+export const incomingRoute = () => {
+  let path = window.location.pathname
+  console.log(path)
+  
+  if(path.startsWith("/m/")){
+    let id = path.substring(3)
+    router.push({ name: 'm', params: { id: id }})
+  }
+  else
+    router.push('/')
+}

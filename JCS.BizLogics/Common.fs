@@ -69,6 +69,7 @@ let runtime =
             |> String.Concat
         DiscordRedirect = ""
 
+        VsDirSolution = @"C:/Dev/JCS"
         vueDeployDir = @"C:\Dev\JCS\vscode\dist"
         fsDir = @"C:/FsRoot/JCS" }
 
@@ -81,7 +82,7 @@ let runtime =
         h.conn <- "Server=localhost;Username=postgres;Password=Abc123;Database=jcs;"
 
     RuntimeData_empty()
-    |> empty__Runtime<EuComplex,unit,HostData,RuntimeData> h
+    |> empty__Runtime<EuComplex,unit,HostData,RuntimeData> "JCS" h
 
 let appendFact runtime fact = 
     lock runtime.facts (fun _ ->

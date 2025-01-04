@@ -24,6 +24,7 @@ open UtilWebServer.Common
 open UtilWebServer.Api
 open UtilWebServer.Json
 open UtilWebServer.SSR
+open UtilWebServer.Server.File
 
 open JCS.BizLogics.Common
 open JCS.BizLogics.Branch
@@ -38,85 +39,62 @@ let ssrPageHome = {
 
 let r1 = str__regex @"\w+"
 
-let echoUploadFile x =
-    let req = x.req
-    if req.path.Length = 1 then
-        if req.path[0] = "upload" then
-            
-            let id = Interlocked.Increment FILE_metadata.id
+let uploader = 
+    let postCreateo = 
+        Some(fun (rcd:FILE) -> 
+        runtime.data.files[rcd.ID] <- rcd)
+    
+    let setter (p:pFILE) (owner:int64,caption:string,suffix:string,desc:string,size:int) =
+        p.Caption <- caption
+        p.Owner <- owner
+        p.Suffix <- suffix
+        p.Desc <- desc
+        p.Size <- size
 
-            let owner = 0L
-            let caption = 
-                if req.headers.ContainsKey "Filename" then
-                    req.headers["Filename"].Trim()
-                else
-                    ""
-            let suffix = 
-                let index = caption.LastIndexOf "."
-                if index > 0 then
-                    let s = caption.Substring (index + 1)
-                    if s.Length <= 4 then
-                        s.ToLower()
-                    else
-                        ""
-                else
-                    ""
-            let desc = 
-                if req.headers.ContainsKey "Desc" then
-                    req.headers["Desc"].Trim()
-                else
-                    ""
+    echoUploadFile 
+        runtime.host.fsDir conn FILE_metadata dbLoggero 
+        setter postCreateo
 
-            let suc =
-                try
-                    let filename = buildfilename id suffix
-                    System.IO.File.WriteAllBytes(filename,req.body)
-                    if System.IO.File.Exists filename then
-                        match createFILE id (owner,caption,suffix,desc) with
-                        | Some rcd -> 
-                            runtime.data.files[rcd.ID] <- rcd
-                            true
-                        | None -> false
-                    else
-                        false
-                with
-                | ex -> false
+let dnloader = 
+    echoDownloadFile runtime.host.fsDir FILE_metadata 
+        (fun rcd -> rcd.p.Suffix)
 
-            Suc x
-        else 
-            Fail((),x)
-    else
-        Fail((),x)
+let plugin = ""
 
-let echoDownloadFile x =
+let x__items x = 
+    runtime.data.mxs.Values
+    |> Array.filter(fun mx -> mx.m.p.Title.Length * mx.m.p.Summary.Length * mx.m.p.FullText.Length > 0)
+    |> Array.map(fun mx -> "https://" + x.req.domainname + "/m/" + mx.m.ID.ToString())        
+
+let hMoment vueDeployDir (x:ReqRep) =
     let req = x.req
     if req.path.Length = 2 then
-        if req.path[0] = "file" then
+        if req.path[0] = "m" then
             match 
                 req.path[1]
-                |> regex_match (str__regex "\d+")
                 |> parse_int64
-                |> id__FILEo with
-            | Some file -> 
-                try 
-                    let filename = buildfilename file.ID file.p.Suffix
-                    x.rep <-
-                        if File.Exists filename then
-                            File.ReadAllBytes filename
-                        else
-                            [| |]
-                        |> bin__StandardResponse ""
-                        |> Some
-                with
-                | ex -> ()
-            | None -> ()
-
-            Suc x
-        else 
+                |> runtime.data.mxs.TryGet with
+            | Some mx -> 
+                x.rep <-
+                    {
+                        title = "J-CAT SYS LLC - " + mx.m.p.Title 
+                        desc = mx.m.p.Summary
+                        image = 
+                            if mx.m.p.PreviewImgUrl.Length > 0 then
+                                mx.m.p.PreviewImgUrl
+                            else
+                                "https://" + req.domainname + "/file/35461232.png"
+                        url = "https://" + req.domainname + "/m/" + mx.m.ID.ToString()
+                        noscript = "" }
+                    |> render (vueIndexFile__hashes(vueDeployDir + "/index.html")) plugin
+                    |> bin__StandardResponse "text/html"
+                    |> Some
+                Suc x
+            | None -> Fail((),x)
+        else
             Fail((),x)
     else
         Fail((),x)
-
 
 let echo (req:HttpRequest) = 
     let ip = req |> remote_ip
@@ -131,8 +109,10 @@ let echo (req:HttpRequest) =
         { req = req; rep = None}
         |> Suc
         |> bind (homepage ssrPageHome runtime.host.vueDeployDir "")
-        |> bindFail echoUploadFile
-        |> bindFail echoDownloadFile
+        |> bindFail (hMoment runtime.host.vueDeployDir)
+        |> bindFail (hSEO x__items)
+        |> bindFail uploader
+        |> bindFail dnloader
         |> bindFail (hapi echoApiHandler branch) with
     | Suc x -> x.rep
     | Fail(x,e) -> None

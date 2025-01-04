@@ -71,46 +71,6 @@ let createFILE id (owner,caption,suffix,desc) =
         None
 
 
-let buildfilename id (suffix:string) =
-    let f = 
-        if suffix.Length > 0 then
-            id.ToString() + "." + suffix
-        else
-            id.ToString()
-    Path.Combine(runtime.host.fsDir,"managed",f)
-
-
-let w = 100
-let h = 100
-
-let checkFileThumbnail (file:FILE) = 
-
-    if file.p.Thumbnail.Length = 0 then
-        match file.p.Suffix with
-        | "jpg" | "jpeg" | "png" ->
-            
-            let filename = buildfilename file.ID file.p.Suffix
-            if File.Exists filename then
-                try
-                    let bin = 
-                        File.ReadAllBytes filename
-                        |> Util.SixLaborsImageSharp.generateThumbnail (w,h)
-
-                    file.p.Thumbnail <- bin
-
-                    if  update 
-                            "BizLogics.Db.checkFileThumbnail" conn FILE_metadata dbLoggero
-                            (file.ID,file.p) = false then
-                        file.p.Thumbnail <- [| |]
-
-                with
-                | ex -> ()
-
-        | _ -> ()
-    file
-
-
-
 let tryCU localizor creator updator ps = 
     match localizor ps with
     | Some v -> updator v ps

@@ -17,6 +17,7 @@
       <div class="menu"><a href="#ia">Immutable Architecture</a></div>
       <div class="menu"><a href="#cat">Category Theory</a></div>
       <div class="menu"><a href="#service"></a>Service</div>
+      <div class="menu"><router-link to="/moments">Articles</router-link></div>
       <div class="menu"><a href="#contact">Contact</a></div>
     </div></div>
   

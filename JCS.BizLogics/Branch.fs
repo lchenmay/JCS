@@ -2,6 +2,7 @@
 
 open System
 open System.Text
+open System.IO
 open System.Collections.Generic
 open System.Threading
 
@@ -25,6 +26,7 @@ open UtilWebServer.Api
 open UtilWebServer.Json
 open UtilWebServer.SSR
 open UtilWebServer.Server.Monitor
+open UtilWebServer.Server.File
 open UtilWebServer.Db
 
 open JCS.Shared.OrmTypes
@@ -83,6 +85,18 @@ let branching x =
             runtime.data.mxs.Values
             |> Array.map MomentComplex__json
             |> wrapOkAry) |> bindx
+        | "homepage" -> (fun x -> 
+            let map id = runtime.data.mxs[id] |> MomentComplex__json
+            [|  ok
+                "home",map 54864677L
+                "FP", [| 
+                    map 54864678L |] |> Json.Ary
+                "IA", [| 
+                    map 54864679L |] |> Json.Ary
+                "CAT", [| 
+                    map 54864680L |] |> Json.Ary
+                "Service", [| 
+                    map 54864678L |] |> Json.Ary |]) |> bindx
         | "msg" -> (fun x -> 
             let name = (tryFindStrByAtt "name" x.json).Trim()
             let email = (tryFindStrByAtt "email" x.json).Trim()
@@ -100,60 +114,65 @@ let branching x =
         | _ -> Fail(Er.ApiNotExists,x)
     | "eu" -> 
         match x.api with
-        | "moment" -> (fun x -> 
-            let id = (tryFindNumByAtt "id" x.json).Trim() |> parse_int64
-            let title = (tryFindStrByAtt "title" x.json).Trim()
-            let summary = (tryFindStrByAtt "summary" x.json).Trim()
-            let content = (tryFindStrByAtt "content" x.json).Trim()
-            if runtime.data.mxs.ContainsKey id then
-                if updateRcd "/api/eu/moment" conn MOMENT_metadata dbLoggero (fun p -> 
-                    p.Title <- title
-                    p.Summary <- summary
-                    p.FullText <- content) runtime.data.mxs[id].m then
-                    [| ok |]
-                else
-                    er Er.Internal
-            else
-                let p = pMOMENT_empty()
-                p.Title <- title
-                p.Summary <- summary
-                p.FullText <- content
-                p.Type <- momentTypeEnum.Original
-                match p__createRcd p MOMENT_metadata dbLoggero "/api/public/msg" conn with
-                | Some rcd -> 
-                    runtime.data.mxs[rcd.ID] <- {
-                        fbxs = [| |]
-                        m = rcd }
-                    [| ok |]
-                | None -> er Er.Internal) |> bindx
+        | "moment" -> 
+            createUpdateDelete "/api/eu/moment" conn MOMENT_metadata dbLoggero Er.Internal runtime.data.mxs.TryGet (fun mx -> mx.m) json__pMOMENTo
+                (fun p pIncoming -> 
+                    p.Title <- pIncoming.Title
+                    p.Summary <- pIncoming.Summary
+                    p.PreviewImgUrl <- pIncoming.PreviewImgUrl
+                    p.FullText <- pIncoming.FullText)
+                None 
+                (Some(fun p pIncoming -> 
+                    p.Title <- pIncoming.Title
+                    p.Summary <- pIncoming.Summary
+                    p.PreviewImgUrl <- pIncoming.PreviewImgUrl
+                    p.FullText <- pIncoming.FullText
+                    p.Type <- momentTypeEnum.Original))
+                (Some(fun rcd -> runtime.data.mxs[rcd.ID] <- { fbxs = [| |]; m = rcd }))
+                |> bindx
+        | "file" ->
+            createUpdateDelete "/api/eu/file" conn FILE_metadata dbLoggero Er.Internal runtime.data.files.TryGet (fun i -> i) json__pFILEo
+                (fun p pIncoming -> 
+                    p.Caption <- pIncoming.Caption
+                    p.Desc <- pIncoming.Desc)
+                (Some(fun file -> 
+                    try 
+                        let filename = buildfilename runtime.host.fsDir file.ID file.p.Suffix
+                        if File.Exists filename then
+                            File.Delete filename
+                    with
+                    | ex -> ()
+                    runtime.data.files.Remove file.ID))
+                (Some(fun p pIncoming -> 
+                    p.Caption <- pIncoming.Caption
+                    p.Desc <- pIncoming.Desc))
+                (Some(fun rcd -> runtime.data.files[rcd.ID] <- rcd ))
+                |> bindx
         | "files" -> (fun x -> 
             let items = runtime.data.files.Values
             if items.Length > 200 then
                 Array.sub items 0 200
             else
                 items 
-            |> Array.map checkFileThumbnail
+            |> Array.sortByDescending(fun i -> i.ID)
+            |> Array.map (checkFileThumbnail conn runtime.host.fsDir FILE_metadata dbLoggero
+                            (fun rcd -> rcd.p.Thumbnail,rcd.p.Suffix,rcd.p.Size)
+                            (fun file size -> file.p.Size <- size)
+                            (fun file thumbnail -> file.p.Thumbnail <- thumbnail))
             |> Array.map FILE__json
             |> wrapOkAry) |> bindx
+        | _ -> Fail(Er.ApiNotExists,x)
         | _ -> Fail(Er.ApiNotExists,x)
     | "admin" -> 
         match x.api with
         | "plogs" -> (fun x -> 
             let metadata = PLOG_metadata
-            match 
-                "ORDER BY ID DESC"
-                |> Util.Orm.loadall conn
-                    (metadata.table,metadata.fieldorders(),metadata.db__rcd) with
+            match "ORDER BY ID DESC" |> Util.Orm.loadall conn (metadata.table,metadata.fieldorders(),metadata.db__rcd) with
             | Some items ->
-                if items.Length > 200 then
-                    Array.sub items 0 200
-                else
-                    items 
-                |> Array.map(fun rcd -> 
-                    let clone = PLOG_clone rcd
-                    clone.p.Request <- clone.p.Request.Replace(crlf,"<br>")
-                    clone)
-                |> Array.map PLOG__json
+                items
+                |> Array.filter(fun i -> (UtilWebServer.PageLog.req__fromo i.p.Request).IsSome)
+                |> (fun items -> if items.Length > 200 then Array.sub items 0 200 else items)
+                |> Array.map(fun rcd -> UtilWebServer.PageLog.req__json (rcd.p.Ip,rcd.Createdat,rcd.p.Request))
             | None -> [| |]
             |> wrapOkAry) |> bindx
         | "books" -> (fun x -> 

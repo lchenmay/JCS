@@ -309,7 +309,9 @@ export const markdown__html = (str: string) => {
       line = line.replace(s,b)        
     })
   
-    if(line.startsWith("##### "))
+    if(line.startsWith("---"))
+      html = "<hr>"
+    else if(line.startsWith("##### "))
       html = "<div class='caption-5'>" + line.substring(6,line.length) + "</div>"
     else if(line.startsWith("#### "))
       html = "<div class='caption-4'>" + line.substring(5,line.length) + "</div>"

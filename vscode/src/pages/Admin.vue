@@ -17,15 +17,18 @@
         </div>
       </div>
       
+
       <div class="card">
-        <div class="card-caption">Page Logs</div>
-        <div v-for="plog in s.plogs">
-          <div>{{ plog.createdat }}</div>
-          <div>{{ plog.p.Ip }}</div>
-          <div v-html="plog.p.Request" />
-          <hr class="mt-3">
-        </div>
+      <div class="card-caption">Page Log</div>
+      <div v-for="plog in s.plogs">
+        <div>{{ plog.time }}</div>
+        <div>{{ plog.ip }}</div>
+        <div>{{ plog.pathline }}</div>
+        <div>{{ plog.from }}</div>
+        <hr class="mt-3">
       </div>
+    </div>
+
 
 </div></div>
   
@@ -38,7 +41,7 @@ import * as Common from '~/lib/store/common'
   
 const s = glib.vue.reactive({
 books: [] as jcs.BOOK[],
-plogs: [] as jcs.PLOG[]
+plogs: [] as any[]
 })
   
 glib.vue.onMounted(async () => {
@@ -47,7 +50,7 @@ glib.vue.onMounted(async () => {
     s.books = rep.list as jcs.BOOK[]
   })  
   Common.loader('/api/admin/plogs', {},(rep:any) => {
-    s.plogs = rep.list as jcs.PLOG[]
+    s.plogs = rep.list 
   })  
 })
   

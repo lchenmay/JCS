@@ -1,61 +1,33 @@
-import * as runtime from '~/lib/store/runtime'
-import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
-import * as hosts from '~/lib/store/host'
-import originalRoutes from '~/generatedRoutes'
+import { createMemoryHistory, createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
 
-export const addTrailingSlash = () => {
-  const currentPath = window.location.pathname;
-  if (!currentPath.endsWith('/')) {
-    const newPath = currentPath + '/';
-    history.pushState(null, '', newPath);
-  }
-}
+import Index from '~/pages/[].vue'
 
-
-const updateRouteb = (originalRoutes: RouteRecordRaw[]) => (routeToUpdate: string): RouteRecordRaw[] => {
-  const regex = new RegExp(`^/${routeToUpdate}(\/|$)`);
-  const newRouteArray = originalRoutes.map((item: any) => ({ ...item }));
-  for (let i = 0; i < newRouteArray.length; i++) {
-    if (regex.test(newRouteArray[i].path)) {
-      newRouteArray[i].path = newRouteArray[i].path.replace(regex, '/');
-    }
-  }
-  return newRouteArray;
-}
-
-const updateRoute = updateRouteb(originalRoutes)
-
-
-const initRoutes = (): RouteRecordRaw[] => {
-  switch (true) {
-    default:
-      return updateRoute('jcs')
-  }
-}
-
-const routes = initRoutes()
+const routes = [
+  { path: '/', component: Index },
+]
 
 export const router = createRouter({
-  history: createWebHistory('/'),
-  scrollBehavior: (to, from, savePosition) => {
-    if (savePosition) { return savePosition } else { return { top: 0 } }
-  },
+  history: createMemoryHistory(),
   routes
 })
 
 export const navigate = (href:string,name:string,id:number) => {
   window.location.href = href
-  if(id == 0)
+  if(id != 0)
     router.push({ name: name, params: { id: id } })
   else
-    router.push({ name: name })
+    router.push(name)
 }
 
-router.beforeEach(async (to: any, from: any, next) => {
-  next()
-})
 
-router.afterEach((to, from) => {
-  // console.log(to)
-})
-
+export const incomingRoute = () => {
+  let path = window.location.pathname
+  console.log(path)
+  
+  if(path.startsWith("/m/")){
+    let id = path.substring(3)
+    router.push({ name: 'm', params: { id: id }})
+  }
+  else
+    router.push('/')
+}
