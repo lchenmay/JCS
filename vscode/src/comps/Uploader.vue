@@ -20,7 +20,7 @@
     </div>
     <div v-if="s.expand" class="flex flex-row flex-wrap">
       <div v-for="i in s.files" class="shadow-xl rounded-lg m-1 p-2 w-[370px]">
-        <div v-if="i.p.Suffix == 'jpg' || i.p.Suffix == 'jpeg' || i.p.Suffix == 'png' || i.p.Suffix == 'gif' || i.p.Suffix == 'bmp' || i.p.Suffix == 'svg'"
+        <div v-if="i.p.Suffix == 'jpg' || i.p.Suffix == 'jpeg' || i.p.Suffix == 'png' || i.p.Suffix == 'gif' || i.p.Suffix == 'bmp' || i.p.Suffix == 'svg' || i.p.Suffix == 'webp'"
           class="h-[100px] m-2"><img :src="'data:image/png;base64,' + i.p.Thumbnail">
         </div>
         <div v-if="i.p.Suffix == 'mp3'">

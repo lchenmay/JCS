@@ -50,27 +50,25 @@ let runtime =
         updateDatabase = true
 
         DiscordAppId = 
-            [|  "1254790111"
-                "913181274" |]
+            [|  "129810910"
+                "2488158259" |]
             |> String.Concat
         DiscordPubKey = 
-            [|  "e0300e71e2dc"
-                "94ec42425c"
-                "eea8faed6b6"
-                "172158dbbc1"
-                "b882fa2750f"
-                "b55dec22a" |]
+            [|  "d172c3fd453"
+                "a101e18078f"
+                "e35908a2a75"
+                "8403a6a57b3"
+                "b74925ded0c"
+                "5734c7668" |]
             |> String.Concat
         DiscordSecret = 
-            [|  "YwZeJGUrR"
-                "JwL3E7V"
-                "cwlgtvJ_"
-                "oeT01nom" |]
+            [|  "ZyLGxD37M9Z"
+                "IbjBOENj4-y"
+                "PJr03SGgib" |]
             |> String.Concat
-        DiscordRedirect = ""
 
         VsDirSolution = @"C:/Dev/JCS"
-        vueDeployDir = @"C:\Dev\JCS\vscode\dist"
+        req__vueDeployDir = (fun _ -> @"C:/Dev/JCS/vscode/dist")
         fsDir = @"C:/FsRoot/JCS" }
 
     match hostEnum with

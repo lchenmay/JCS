@@ -7,7 +7,7 @@
   
     <div v-if="s.showMomentEdit">
       <button @click="onClickCollapse">收起</button>
-      <RichTextEditor v-if="s.user.eu.p.AuthType == 2" :mx="s.mx" lang="en" />
+      <RichTextEditor v-if="s.user.eu.p.AuthType == 2" :mx="s.mx" :domainname="props.domainname" lang="en" />
     </div>
   
     <div v-if="s.showMomentView">

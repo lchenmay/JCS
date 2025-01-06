@@ -105,11 +105,13 @@ let echo (req:HttpRequest) =
         UtilWebServer.Db.p__createRcd 
             p PLOG_metadata dbLoggero "echo" conn |> ignore
 
+    let vueDeployDir = runtime.host.req__vueDeployDir req
+
     match 
         { req = req; rep = None}
         |> Suc
-        |> bind (homepage ssrPageHome runtime.host.vueDeployDir "")
-        |> bindFail (hMoment runtime.host.vueDeployDir)
+        |> bind (homepage ssrPageHome vueDeployDir "")
+        |> bindFail (hMoment vueDeployDir)
         |> bindFail (hSEO x__items)
         |> bindFail uploader
         |> bindFail dnloader
