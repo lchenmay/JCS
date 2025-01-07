@@ -110,7 +110,7 @@ let echo (req:HttpRequest) =
     match 
         { req = req; rep = None}
         |> Suc
-        |> bind (homepage ssrPageHome vueDeployDir "")
+        |> bind (homepage runtime.langs ssrPageHome vueDeployDir "")
         |> bindFail (hMoment vueDeployDir)
         |> bindFail (hSEO x__items)
         |> bindFail uploader

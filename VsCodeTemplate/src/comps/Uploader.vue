@@ -14,9 +14,9 @@
   <hr>
   <div>
     <button v-if="s.expand" 
-      @click="toggle">{{ translate(props.lang)('Collapse') }}</button>
+      @click="toggle">{{ __s('{ "zh":"收起", "en":"Collapse"}') }}</button>
     <button v-else   
-      @click="toggle">{{ translate(props.lang)('Expand') }}</button>
+      @click="toggle">{{ __s('{ "zh":"展开", "en":"Expand"}') }}</button>
   </div>
   <div v-if="s.expand" class="flex flex-row flex-wrap">
     <div v-for="i in s.files" class="shadow-xl rounded-lg m-1 p-2 w-[370px]">
@@ -35,7 +35,7 @@
         <div><textarea v-model="i.p.Desc" @change="update(i)" type="text" class="w-[350px] h-[80px]"></textarea></div>  
         <div>
           <button class="button-small">[+/-]</button>
-          <button @click="remove(i)" class="button-small">{{ translate(props.lang)('Remove') }}</button>
+          <button @click="remove(i)" class="button-small">{{ __s('{ "zh":"删除", "en":"Remove"}') }}</button>
         </div>
       </div>
     </div>
@@ -47,28 +47,26 @@
 
 <script setup lang="ts">
 
-import { translate } from '~/lib/bizLogics/lang'
 import { glib } from '~/lib/glib'
 import * as Common from '~/lib/store/common'
 import { upload,checkUrl }  from '~/lib/util/fetch'
 
-const props = defineProps(['domainname','lang'])
+const props = defineProps(['domainname'])
 props.domainname as string
-props.lang as string
 
 const s = glib.vue.reactive({
 fileName: "",
 fileContent: "",
 desc: "",
 res: " - ",
-files: [] as [].FILE[],
-selected: [] as [].FBIND[],
+files: [] as fa.FILE[],
+selected: [] as fa.FBIND[],
 expand: false
 })
 
 const reload = () => {
   Common.loader('/api/eu/files', { },(rep:any) => {
-      s.files = rep.list as [].FILE[]
+      s.files = rep.list as fa.FILE[]
     })
 }
 
@@ -86,7 +84,7 @@ const onFileChange = async (e:any) => {
   }
 }
 
-const update = (file:[].FILE) => {
+const update = (file:fa.FILE) => {
   Common.loader('/api/eu/file', { 
     act: 'update', 
     p: file.p,
@@ -94,7 +92,7 @@ const update = (file:[].FILE) => {
   })
 }
 
-const remove = (file:[].FILE) => {
+const remove = (file:fa.FILE) => {
   Common.loader('/api/eu/file', { 
     act: 'remove', 
     id: Number(file.id)},(rep:any) => {
@@ -107,6 +105,12 @@ const toggle = () => {
   if(s.expand){
     reload()
   }
+}
+
+// {{ __s('{ "zh":"", "en":""}') }}
+const __s = (s:string) => {
+  let items = JSON.parse(s)
+  return items[runtime.lang] 
 }
 
 glib.vue.onMounted(async () => {

@@ -22,7 +22,6 @@ export const navigate = (href:string,name:string,id:number) => {
 
 export const incomingRoute = () => {
   let path = window.location.pathname
-  console.log(path)
   
   if(path.startsWith("/m/")){
     let id = path.substring(3)
