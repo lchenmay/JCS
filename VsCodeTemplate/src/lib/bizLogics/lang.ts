@@ -3,8 +3,11 @@ import * as GraphicsImpl from '~/lib/util/graphicsH5'
 import * as types from '~/lib/bizLogics/types'
 import { drawLine, fillRect } from '../util/graphicsPixi'
 
+export const langs = ['en','zh']
+
 const data = {
     en: {
+        'Language':'Language',
         'Expand':'Expand',
         'Collapse':'Collapse',
         'New':'New',
@@ -16,6 +19,7 @@ const data = {
         'Poster':'Poster'
     },
     zh: {
+        'Language':'语言',
         'Expand':'展开',
         'Collapse':'收起',
         'New':'新建',

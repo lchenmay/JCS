@@ -10,6 +10,7 @@ globalThis.clientRuntime = glib.vue.reactive(ClientRuntime_empty())
 globalThis.runtime = glib.vue.reactive(glib.runtime.prepRuntime())
 runtime.host = host
 
+runtime.lang = "" + localStorage.getItem("runtime.lang")
 runtime.session = "" + localStorage.getItem("runtime.session")
 let localUser = localStorage.getItem("runtime.user")
 if(localUser)
