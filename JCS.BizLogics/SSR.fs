@@ -61,7 +61,7 @@ let dnloader =
 
 let plugin = ""
 
-let x__items x = 
+let x__items (x:ReqRep) = 
     runtime.data.mxs.Values
     |> Array.filter(fun mx -> mx.m.p.Title.Length * mx.m.p.Summary.Length * mx.m.p.FullText.Length > 0)
     |> Array.map(fun mx -> "https://" + x.req.domainname + "/m/" + mx.m.ID.ToString())        
@@ -96,6 +96,9 @@ let hMoment vueDeployDir (x:ReqRep) =
     else
         Fail((),x)
 
+let pages = [|
+    "admin" |]
+
 let echo (req:HttpRequest) = 
     let ip = req |> remote_ip
     if ip.StartsWith "127.0.0.1" = false then
@@ -110,12 +113,12 @@ let echo (req:HttpRequest) =
     match 
         { req = req; rep = None}
         |> Suc
-        |> bind (homepage runtime.langs ssrPageHome vueDeployDir "")
+        |> bind (homepage runtime.langs pages ssrPageHome vueDeployDir "")
         |> bindFail (hMoment vueDeployDir)
         |> bindFail (hSEO x__items)
         |> bindFail uploader
         |> bindFail dnloader
-        |> bindFail (hapi echoApiHandler branch) with
+        |> bindFail (hapi echoApiHandler (branch req)) with
     | Suc x -> x.rep
     | Fail(x,e) -> None
 

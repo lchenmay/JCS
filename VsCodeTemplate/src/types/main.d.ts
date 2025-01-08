@@ -17,6 +17,7 @@ declare global {
         router: Router
         session: string
 
+        domainname: string
         lang: string
         user: [].[]
         data: [].ClientRuntime

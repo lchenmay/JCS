@@ -12,7 +12,21 @@ export const router = createRouter({
 })
 
 export const navigate = (href:string,name:string,id:number) => {
-  window.location.href = href
+
+  let url = href
+
+  if(url.indexOf('/zh/') > 0){
+    runtime.lang = 'zh'
+    localStorage.setItem("runtime.lang",runtime.lang)
+    url = url.replace('/zh/','/')
+  }
+  if(url.indexOf('/en/') > 0){
+    runtime.lang = 'en'
+    localStorage.setItem("runtime.lang",runtime.lang)
+    url = url.replace('/en/','/')
+  }
+
+  window.location.href = url
   if(id != 0)
     router.push({ name: name, params: { id: id } })
   else

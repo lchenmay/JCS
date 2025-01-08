@@ -274,7 +274,9 @@ export const markdown__html = (str: string) => {
     line.matchAll(/\$.+?\$/g).forEach((item) => {
         let s = item + ""
         let tex = encodeURI(s.substring(1,s.length - 1))
-        let img = "<img class='img-inline' src='http://latex.codecogs.com/gif.latex?" + tex +"'>"
+        let alt = s.substring(1,s.length - 1).replaceAll('"'," ").replaceAll("'"," ").replaceAll('<'," ").replaceAll(">"," ")
+        let img = 
+          "<img class='img-inline' src='http://latex.codecogs.com/gif.latex?" + tex +"' alt='" + alt + "'>"
         line = line.replace(s,img)        
     })
 
@@ -286,8 +288,10 @@ export const markdown__html = (str: string) => {
       let src = s.match(/\(.+?\)/) + ""
       if(src.length >= 2)
         src = src.substring(1,src.length - 1)
-      let img = "<br><img src='" + src + "' alt='" + txt + "'><br>"
-      line = line.replace(s,img)        
+      let media = "<br><img src='" + src + "' alt='" + txt + "'><br>"
+      if(src.endsWith(".mp3"))
+        media = "<br><audio controls><source src='" + src + "' type='audio/mp3'></audio><br>" 
+      line = line.replace(s,media)        
     })
 
     line.matchAll(/\[.+?\]\(.+?\)/g).forEach((item) => {

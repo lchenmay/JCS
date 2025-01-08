@@ -30,4 +30,8 @@ glib.notify.init()
 const app = glib.vue.createApp(App)
 app.use(runtime.router).mount('#app')
 
+if(!runtime.domainname){
+  runtime.domainname = window.location.host
+}
+
 Route.incomingRoute()
