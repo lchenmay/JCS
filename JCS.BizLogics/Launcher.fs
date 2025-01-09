@@ -12,7 +12,6 @@ open Util.Json
 open Util.Http
 open Util.HttpServer
 open Util.Zmq
-open Util.WebServer
 
 open UtilWebServer.Common
 open UtilWebServer.SSR
@@ -29,7 +28,7 @@ open JCS.BizLogics.SSR
 
 let launch() =
 
-    init runtime
+    init runtime |> ignore
 
     runtime.listener.echo <- echo
     runtime.listener.h404o <- None
