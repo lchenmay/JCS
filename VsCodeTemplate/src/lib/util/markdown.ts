@@ -326,7 +326,7 @@ export const markdown__html = (str: string) => {
     else if(line.startsWith("# "))
       html = "<div class='caption-1'>" + line.substring(2,line.length) + "</div>"
     else
-      html = "<p>" + line + "</p>"
+      html = "<p>" + line + "&nbsp;</p>"
 
     res += html
   }

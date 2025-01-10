@@ -121,7 +121,8 @@ let branching x =
                     p.Title <- pIncoming.Title
                     p.Summary <- pIncoming.Summary
                     p.PreviewImgUrl <- pIncoming.PreviewImgUrl
-                    p.FullText <- pIncoming.FullText)
+                    p.FullText <- pIncoming.FullText
+                    true)
                 None 
                 (Some(fun p pIncoming -> 
                     p.Title <- pIncoming.Title
@@ -136,7 +137,8 @@ let branching x =
                 runtime.data.files.TryGet None (fun i -> i) json__pFILEo
                 (fun p pIncoming -> 
                     p.Caption <- pIncoming.Caption
-                    p.Desc <- pIncoming.Desc)
+                    p.Desc <- pIncoming.Desc
+                    true)
                 (Some(fun file -> 
                     try 
                         let filename = buildfilename runtime.host.fsDir file.ID file.p.Suffix

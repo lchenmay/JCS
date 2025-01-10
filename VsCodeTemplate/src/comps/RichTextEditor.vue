@@ -10,12 +10,12 @@
 
       <div v-if="s.mx.m.p.Parent > 0">
         <div>{{ __s('{ "zh":"上级文档", "en":"Superior document"}') }}</div>
-        <MomentCard :id="s.mx.m.p.Parent" :domainname="props.domainname" title="true" />
+        <MomentCard :id="s.mx.m.p.Parent" mode="0" />
       </div>
 
       <div v-if="s.mx.offsprings.length > 0">
         <div>{{ __s('{ "zh":"下级文档", "en":"Subordinate documents"}') }}</div>
-        <MomentCard v-for="id in s.mx.offsprings" :id="id" :domainname="props.domainname" lang="true" title="true" />
+        <MomentCard v-for="id in s.mx.offsprings" :id="id" mode="0" />
         <button @click="addMultilingual">{{ __s('{ "zh":"添加语言版本", "en":"Add language version"}') }}</button>
       </div>
     </div>
@@ -28,12 +28,12 @@
 
       <div v-if="s.mx.m.p.MultiLingualMaster > 0">
         <div>{{ __s('{ "zh":"多语言主文档", "en":"Multilingual master document"}') }}</div>
-        <MomentCard :id="s.mx.m.p.MultiLingualMaster" :domainname="props.domainname" title="true" />
+        <MomentCard :id="s.mx.m.p.MultiLingualMaster" mode="0" />
       </div>
 
       <div v-if="s.mx.multilinguals.length > 0">
         <div>{{ __s('{ "zh":"各语言版本", "en":"Various language versions"}') }}</div>
-        <MomentCard v-for="id in s.mx.multilinguals" :id="id" :domainname="props.domainname" lang="true" title="true" />
+        <MomentCard v-for="id in s.mx.multilinguals" :id="id" mode="0" />
         <button @click="addMultilingual">{{ __s('{ "zh":"添加语言版本", "en":"Add language version"}') }}</button>
       </div>
     </div>
@@ -71,7 +71,8 @@
     </div>
   
     <div class="m-3 p-3">
-      <Uploader :domainname="props.domainname" />
+      <Uploader />
+      <DocManager />
       <button v-if="s.mx.m.id == 0" @click="editMoment">{{ __s('{ "zh":"创建", "en":"Create"}') }}</button>
       <button v-else @click="editMoment">{{ __s('{ "zh":"修改", "en":"Edit"}') }}</button>
     </div>
@@ -87,12 +88,12 @@ import { getCurrentInstance, toRefs, watch } from 'vue'
 import { glib } from '~/lib/glib'
 import * as Common from '~/lib/store/common'
 import Uploader from '~/comps/Uploader.vue'
+import DocManager from '~/comps/DocManager.vue'
 import MomentCard from '~/comps/MomentCard.vue'
 import { markdown__html } from '~/lib/util/markdown'
   
-const props = defineProps(['mx','domainname'])
+const props = defineProps(['mx'])
 props.mx as fa.MomentComplex
-props.domainname as string
   
   watch(() => props.mx,(newValue, oldValue) => {
     s.mx = props.mx,

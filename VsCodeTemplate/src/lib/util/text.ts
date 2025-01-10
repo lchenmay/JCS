@@ -14,3 +14,7 @@ else
   return ""
 }
 
+export const __s = (str:string) => {
+  let items = JSON.parse(str)
+  return items[runtime.lang]
+}

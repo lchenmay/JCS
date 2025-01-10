@@ -100,7 +100,8 @@ let updateProjectComplex projectx ps =
     if 
         projectx.project
         |> updateRcd "" conn PROJECT_metadata dbLoggero (fun p -> 
-            p.Caption <- snd ps) then
+            p.Caption <- snd ps
+            true) then
         Some projectx
     else
         None
