@@ -267,9 +267,41 @@ export const markdown__html = (str: string) => {
   let res = ""
 
   let lines = str.split(/\r?\n/)
+  let state = ""
+  let buffer = []
   for (let i = 0, len = lines.length; i < len; i++) {
     let line = lines[i]
     let html = ""
+
+    if(state == "" && line.startsWith("$$")){
+      state = "$$"
+      continue
+    }
+    else if(state == "$$" && line.startsWith("$$")){
+
+      let s = buffer.join("")
+
+      console.log(s)
+
+      let tex = encodeURI(s)
+
+      console.log(tex)
+
+      let alt = s.replaceAll('"'," ").replaceAll("'"," ").replaceAll('<'," ").replaceAll(">"," ")
+      let img = 
+        "<img class='img-inline' src='http://latex.codecogs.com/gif.latex?" + tex +"' alt='" + alt + "'>"
+      let p = "<p>" + img + "&nbsp;</p>"
+
+      res += p
+
+      buffer = []
+      state = ""
+      continue
+    }
+    else if(state == "$$"){
+      buffer.push(line)
+      continue
+    }
 
     line.matchAll(/\$.+?\$/g).forEach((item) => {
         let s = item + ""
