@@ -324,11 +324,14 @@ let rec str__type tc s =
                     custom =  false
                     src = [| |] }
             else if s.Contains "*" then
+                let mutable ss = s.Trim()
+                if ss.StartsWith "(" && ss.EndsWith ")" then
+                    ss <- s.Substring(1,ss.Length - 2)
                 { 
-                    name = s 
+                    name = ss 
                     sort = 0
                     tEnum = 
-                        split "*" s
+                        split "*" ss
                         |> Array.map(fun i -> i.Trim())
                         |> Array.filter(fun i -> i.Length > 0)
                         |> Array.map(str__type tc)
