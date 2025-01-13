@@ -1119,6 +1119,8 @@ let go output exeDir config  =
         "src/lib/util/graphics.ts"
         "src/lib/util/graphicsH5.ts"
         "src/lib/util/graphicsPixi.ts"
+        "src/lib/util/text.ts"
+        "src/lib/util/markdown.ts"
         //"src/types/main.d.ts"  
                                 |]
     |> Array.iter(fun f -> 
