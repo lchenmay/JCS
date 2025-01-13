@@ -60,3 +60,5 @@
 /JCS.Shared/obj/Debug/net8.0/JCS.Shared.fsproj.Up2Date
 /JCS.Shared/obj/Debug/net8.0/ref/JCS.Shared.dll
 /JCS.BizLogics/obj/Debug/net8.0/ref/JCS.BizLogics.dll
+/JCS.BizLogics/obj/Release/net8.0
+/JCS.Shared/obj/Release/net8.0
