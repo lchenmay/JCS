@@ -329,9 +329,12 @@ export const markdown__html = (str: string) => {
     line.matchAll(/\[.+?\]\(.+?\)/g).forEach((item) => {
       let s = item + ""
       let txt = s.match(/\[.+?\]/) + ""
-      if(txt.length >= 2)
+      let s1 = s
+      if(txt.length >= 2){
         txt = txt.substring(1,txt.length - 1)
-      let src = s.match(/\(.+?\)/) + ""
+        s1 = s.substring(txt.length + 2)
+      }
+      let src = s1.match(/\(.+?\)/) + ""
       if(src.length >= 2)
         src = src.substring(1,src.length - 1)
       let a = "<a href='" + src + "' target='_blank'>" + txt + "</a>"
