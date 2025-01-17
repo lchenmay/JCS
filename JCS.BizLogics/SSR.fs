@@ -39,6 +39,8 @@ let ssrPageHome = {
 
 let r1 = str__regex @"\w+"
 
+let uploadBuffer = new Dictionary<int64,BytesBuilder>()
+
 let uploader = 
     let postCreateo = 
         Some(fun (rcd:FILE) -> 
@@ -52,6 +54,8 @@ let uploader =
         p.Size <- size
 
     echoUploadFile 
+        uploadBuffer runtime.data.files.TryGet
+        (fun rcd -> rcd.p.Suffix)
         runtime.host.fsDir conn FILE_metadata dbLoggero 
         setter postCreateo
 
@@ -109,7 +113,7 @@ let echo (req:HttpRequest) =
             p PLOG_metadata dbLoggero "echo" conn |> ignore
 
     let vueDeployDir = runtime.host.req__vueDeployDir req
-
+    
     match 
         { req = req; rep = None}
         |> Suc
