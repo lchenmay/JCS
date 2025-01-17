@@ -8,6 +8,14 @@ export const loader = async (url:string,post:any,h:Function) => {
     h(rep)
 }
 
+export const asyncPost = async (url:string,post:any) => {
+  post.session = runtime.session
+  post.lang = runtime.lang
+  let rep = glib.post(url, post)
+  return rep
+}
+
+
 export const apiCheck = (api:string,params:string,gameCode:string) => {
     let host = "https://api-external.oddsjam.com/api/v2/"    
     let key = "0329d593-ffb6-4782-b855-0f010ba2915f"    
