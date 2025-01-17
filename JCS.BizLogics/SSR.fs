@@ -39,7 +39,7 @@ let ssrPageHome = {
 
 let r1 = str__regex @"\w+"
 
-let uploadBuffer = new Dictionary<int64,BytesBuilder>()
+let uploadBuffer = new Dictionary<int64,SortedDictionary<int,byte[]>>()
 
 let uploader = 
     let postCreateo = 
