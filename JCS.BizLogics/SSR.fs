@@ -41,7 +41,7 @@ let r1 = str__regex @"\w+"
 
 let uploadBuffer = new Dictionary<int64,SortedDictionary<int,byte[]>>()
 
-let uploader = 
+let uploader (x:ReqRep) = 
     let postCreateo = 
         Some(fun (rcd:FILE) -> 
         runtime.data.files[rcd.ID] <- rcd)
@@ -53,11 +53,18 @@ let uploader =
         p.Desc <- desc
         p.Size <- size
 
-    echoUploadFile 
-        uploadBuffer runtime.data.files.TryGet
-        (fun rcd -> rcd.p.Suffix)
-        runtime.host.fsDir conn FILE_metadata dbLoggero 
-        setter postCreateo
+    let req = x.req
+    if req.path.Length = 1 then
+        if req.path[0] = "upload" then
+            echoUploadFile 
+                uploadBuffer runtime.data.files.TryGet
+                (fun rcd -> rcd.p.Suffix)
+                runtime.host.fsDir conn FILE_metadata dbLoggero 
+                setter postCreateo x
+        else
+            Fail((),x)
+    else
+        Fail((),x)
 
 let dnloader = 
     echoDownloadFile runtime.host.fsDir FILE_metadata 
