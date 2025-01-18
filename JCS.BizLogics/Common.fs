@@ -32,20 +32,16 @@ type CtxWrappedX = CtxWrapper<X,Er>
 
 type HostEnum = 
 | Dev
-| Prod
+| Kamatera
 
 let runtime = 
-
-    let hostEnum = 
-        match Environment.MachineName with
-        | "MAIN" -> HostEnum.Dev
-        | _ -> HostEnum.Prod
 
     let h = {
         data = ()
         port = 5045
         conn = ""
-        url = ""
+        url = "server=.; database=JCS; Trusted_Connection=True;"
+
 
         updateDatabase = true
 
@@ -71,13 +67,17 @@ let runtime =
         req__vueDeployDir = (fun _ -> @"C:/Dev/JCS/vscode/dist")
         fsDir = @"C:/FsRoot/JCS" }
 
+    let hostEnum = 
+        let machinename = Environment.MachineName
+        match Environment.MachineName with
+        | "MAIN" -> HostEnum.Dev
+        | "PTNHKDIE15IJZN" -> HostEnum.Kamatera
+        | _ -> HostEnum.Dev
+
     match hostEnum with
-    | HostEnum.Dev -> 
-        Util.Db.rdbms <- Rdbms.SqlServer
-        h.conn <- "server=.; database=JCS; Trusted_Connection=True;"
-    | HostEnum.Prod ->
-        Util.Db.rdbms <- Rdbms.PostgreSql
-        h.conn <- "Server=localhost;Username=postgres;Password=Abc123;Database=jcs;"
+    | HostEnum.Kamatera -> 
+        h.conn <- "server=localhost\MSSQLSERVER01; database=JCS; Trusted_Connection=True;"
+    | _ -> ()
 
     RuntimeData_empty()
     |> empty__Runtime<EuComplex,unit,HostData,RuntimeData> "JCS" h
