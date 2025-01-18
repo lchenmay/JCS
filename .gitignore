@@ -195,3 +195,5 @@ JCS.BizLogics/bin/Debug/net8.0/zh-Hant/System.Private.ServiceModel.resources.dll
 /JCS.Shared/obj/JCS.Shared.fsproj.nuget.g.props
 /JCS.Shared/obj/project.assets.json
 /JCS.Shared/obj/project.nuget.cache
+/JCS.Shared/bin/Debug/net8.0/JCS.Shared.deps.json
+/JCS.Shared/obj/Debug/net8.0/JCS.Shared.fsproj.CoreCompileInputs.cache
