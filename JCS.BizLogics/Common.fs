@@ -39,8 +39,8 @@ let runtime =
     let h = {
         data = ()
         port = 5045
-        conn = ""
-        url = "server=.; database=JCS; Trusted_Connection=True;"
+        conn = "server=.; database=JCS; Trusted_Connection=True;"
+        url = ""
 
 
         updateDatabase = true
