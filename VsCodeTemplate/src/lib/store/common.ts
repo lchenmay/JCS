@@ -8,9 +8,10 @@ export const loader = async (url:string,post:any,h:Function) => {
   if(rep?.Er == 'OK')
     h(rep)
 
-  runtime.session = rep.session
+  runtime.session = rep?.session
   localStorage.setItem("runtime.session",runtime.session)
-  if(rep.session == "")
+  if(rep?.session == ""){
     runtime.user = EuComplex_empty()
-
+    localStorage.setItem("runtime.user",JSON.stringify(runtime.user))
+  }
 }
