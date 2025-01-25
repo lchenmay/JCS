@@ -4,28 +4,27 @@
     <div class="text-xl flex m-5">
       <p>J-Category Systems</p>
     </div>
-    <MomentCard :domainname="s.domainname" create="true" />
-    <MomentCard :mx="s.mxHome" :domainname="s.domainname" summary="true" />
+    <div v-html="markdown__html(s.mxHome.m.p.FullText)" class="card" />
   </div></div>
 
   <div id="fp" class="flex justify-center"><div class="hor-range">
     <div class="caption-1">Functional Programming</div>
-    <MomentCard v-for="mx in s.mxsFP" :mx="mx" :domainname="s.domainname" title="true" summary="true" />
+    <MomentCard v-for="mx in s.mxsFP" :mx="mx" mode="1" />
   </div></div>
 
   <div id="ia" class="flex justify-center"><div class="hor-range">
     <div class="caption-1">Immutable Architecture</div>
-    <MomentCard v-for="mx in s.mxsIA" :mx="mx" :domainname="s.domainname" title="true" summary="true" />
+    <MomentCard v-for="mx in s.mxsIA" :mx="mx" mode="1" />
   </div></div>
 
   <div id="cat" class="flex justify-center"><div class="hor-range">
     <div  class="caption-1">Category Theory</div>
-    <MomentCard v-for="mx in s.mxsCAT" :mx="mx" :domainname="s.domainname" title="true" summary="true" />
+    <MomentCard v-for="mx in s.mxsCAT" :mx="mx" mode="1" />
   </div></div>
 
   <div id="service" class="flex justify-center"><div class="hor-range">
     <div  class="caption-1">Service</div>
-    <MomentCard v-for="mx in s.mxsService" :mx="mx" :domainname="s.domainname" title="true" summary="true" />
+    <MomentCard v-for="mx in s.mxsService" :mx="mx" mode="1" />
   </div></div>
 
   <div id="contact" class="flex justify-center"><div class="hor-range">
@@ -43,6 +42,7 @@
 
 import { glib } from '~/lib/glib'
 import * as Common from '~/lib/store/common'
+import { markdown__html } from '~/lib/util/markdown'
 
 import MomentCard from '~/comps/MomentCard.vue'
 import Contact from '~/comps/Contact.vue'

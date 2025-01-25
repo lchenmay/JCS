@@ -2,8 +2,7 @@
 
   <div class="flex justify-center"><div class="hor-range">
   
-  <MomentCard :id="s.id" :domainname="s.domainname" 
-    title="true" summary="true" fulltext="true" link="true" preview="true" />
+  <MomentCard :id="s.id" mode="2" />
   
   </div></div>
   
@@ -19,8 +18,7 @@
   
   const s = glib.vue.reactive({
   router: useRouter(),
-  id: 0,
-  domainname: "jcatsys.com"
+  id: 0
   })
   
   glib.vue.onMounted(async () => {

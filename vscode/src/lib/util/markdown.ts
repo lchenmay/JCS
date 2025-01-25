@@ -267,14 +267,48 @@ export const markdown__html = (str: string) => {
   let res = ""
 
   let lines = str.split(/\r?\n/)
+  let state = ""
+  let buffer = []
   for (let i = 0, len = lines.length; i < len; i++) {
     let line = lines[i]
     let html = ""
 
+    if(state == "" && line.startsWith("$$")){
+      state = "$$"
+      continue
+    }
+    else if(state == "$$" && line.startsWith("$$")){
+
+      let s = buffer.join("")
+
+      console.log(s)
+
+      let tex = encodeURI(s)
+
+      console.log(tex)
+
+      let alt = s.replaceAll('"'," ").replaceAll("'"," ").replaceAll('<'," ").replaceAll(">"," ")
+      let img = 
+        "<img class='img-inline' src='http://latex.codecogs.com/gif.latex?" + tex +"' alt='" + alt + "'>"
+      let p = "<p>" + img + "&nbsp;</p>"
+
+      res += p
+
+      buffer = []
+      state = ""
+      continue
+    }
+    else if(state == "$$"){
+      buffer.push(line)
+      continue
+    }
+
     line.matchAll(/\$.+?\$/g).forEach((item) => {
         let s = item + ""
         let tex = encodeURI(s.substring(1,s.length - 1))
-        let img = "<img class='img-inline' src='http://latex.codecogs.com/gif.latex?" + tex +"'>"
+        let alt = s.substring(1,s.length - 1).replaceAll('"'," ").replaceAll("'"," ").replaceAll('<'," ").replaceAll(">"," ")
+        let img = 
+          "<img class='img-inline' src='http://latex.codecogs.com/gif.latex?" + tex +"' alt='" + alt + "'>"
         line = line.replace(s,img)        
     })
 
@@ -295,9 +329,12 @@ export const markdown__html = (str: string) => {
     line.matchAll(/\[.+?\]\(.+?\)/g).forEach((item) => {
       let s = item + ""
       let txt = s.match(/\[.+?\]/) + ""
-      if(txt.length >= 2)
+      let s1 = s
+      if(txt.length >= 2){
         txt = txt.substring(1,txt.length - 1)
-      let src = s.match(/\(.+?\)/) + ""
+        s1 = s.substring(txt.length + 2)
+      }
+      let src = s1.match(/\(.+?\)/) + ""
       if(src.length >= 2)
         src = src.substring(1,src.length - 1)
       let a = "<a href='" + src + "' target='_blank'>" + txt + "</a>"
@@ -311,7 +348,9 @@ export const markdown__html = (str: string) => {
       line = line.replace(s,b)        
     })
   
-    if(line.startsWith("##### "))
+    if(line.startsWith("---"))
+      html = "<hr>"
+    else if(line.startsWith("##### "))
       html = "<div class='caption-5'>" + line.substring(6,line.length) + "</div>"
     else if(line.startsWith("#### "))
       html = "<div class='caption-4'>" + line.substring(5,line.length) + "</div>"
@@ -322,7 +361,7 @@ export const markdown__html = (str: string) => {
     else if(line.startsWith("# "))
       html = "<div class='caption-1'>" + line.substring(2,line.length) + "</div>"
     else
-      html = "<p>" + line + "</p>"
+      html = "<p>" + line + "&nbsp;</p>"
 
     res += html
   }

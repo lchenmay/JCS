@@ -12,12 +12,12 @@
     </div>
   
     <div class="flex justify-center p-3"><div class="flex hor-range">
-      <div class="menu"><router-link to="/">Home</router-link></div>
-      <div class="menu"><a href="#fp">Functional Programming</a></div>
-      <div class="menu"><a href="#ia">Immutable Architecture</a></div>
-      <div class="menu"><a href="#cat">Category Theory</a></div>
-      <div class="menu"><a href="#service"></a>Service</div>
-      <div class="menu"><router-link to="/moments">Articles</router-link></div>
+      <div class="menu"><a href="/">Home</a></div>
+      <div class="menu"><a href="/moments/fp">Functional Programming</a></div>
+      <div class="menu"><a href="/moments/ia">Immutable Architecture</a></div>
+      <div class="menu"><a href="/moments/cat">Category Theory</a></div>
+      <div class="menu"><a href="/moments/service"></a>Service</div>
+      <div class="menu"><a href="/moments">Articles</a></div>
       <div class="menu"><a href="#contact">Contact</a></div>
     </div></div>
   

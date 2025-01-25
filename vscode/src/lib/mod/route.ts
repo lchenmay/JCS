@@ -9,7 +9,7 @@ import Admin from '~/pages/Admin.vue'
 const routes = [
   { path: '/', component: Index },
   { path: '/moments', component: Moments },
-  { path: '/m/:id', component: Moment },
+  { name:'m', path: '/m/:id', component: Moment },
 
   { path: '/admin', component: Admin }
 ]
@@ -20,24 +20,37 @@ export const router = createRouter({
 })
 
 export const navigate = (href:string,name:string,id:number) => {
-  console.log("href = " + href)
-  console.log("href = " + name)
-  console.log("name = " + id)
-  window.location.href = href
+
+  let url = href
+
+  window.location.href = url
   if(id != 0)
     router.push({ name: name, params: { id: id } })
   else
     router.push(name)
 }
 
+const pages = ['m','doc']
+
 export const incomingRoute = () => {
   let path = window.location.pathname
-  console.log(path)
-  
-  if(path.startsWith("/m/")){
-    let id = path.substring(3)
-    router.push({ name: 'm', params: { id: id }})
+
+  let hit = false
+  pages.forEach((page:string) => {
+    let pattern = "/" + page + "/"
+    if(path.startsWith(pattern)){
+      hit = true
+      let id = path.substring(pattern.length)
+      router.push({ name: page, params: { id: id }})
+    }
+  })
+
+  if(hit == false){
+    if(path.startsWith("/moments"))
+      router.push('/moments')
+    else if(path.startsWith("/admin"))
+      router.push('/admin')
+    else
+      router.push('/')
   }
-  else
-    router.push('/')
 }

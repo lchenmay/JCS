@@ -17,6 +17,10 @@
         "enum": "Text",
         "name": "FullText"
       },
+      {
+        "enum": "Text",
+        "name": "Tags"
+      },
 
       {
         "enum": "Text",

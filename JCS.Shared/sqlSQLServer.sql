@@ -552,6 +552,7 @@ BEGIN
         [Title] NVARCHAR(MAX)
         ,[Summary] NVARCHAR(MAX)
         ,[FullText] NVARCHAR(MAX)
+        ,[Tags] NVARCHAR(MAX)
         ,[PreviewImgUrl] NVARCHAR(MAX)
         ,[Link] NVARCHAR(MAX)
         ,[Type] INT
@@ -564,7 +565,7 @@ END
 -- Dropping obsolete fields -----------
 DECLARE @name_Social_Moment NVARCHAR(64)
 DECLARE cursor_Social_Moment CURSOR FOR 
-    SELECT name FROM SYSCOLUMNS WHERE id=object_id('Social_Moment') AND (name NOT IN ('ID','Createdat','Updatedat','Sort','Title','Summary','FullText','PreviewImgUrl','Link','Type','State','MediaType'))
+    SELECT name FROM SYSCOLUMNS WHERE id=object_id('Social_Moment') AND (name NOT IN ('ID','Createdat','Updatedat','Sort','Title','Summary','FullText','Tags','PreviewImgUrl','Link','Type','State','MediaType'))
 
 OPEN cursor_Social_Moment
 FETCH NEXT FROM cursor_Social_Moment INTO @name_Social_Moment
@@ -664,6 +665,33 @@ IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Social_Mo
 IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Social_MomentFullText')
     BEGIN
     ALTER TABLE Social_Moment DROP  CONSTRAINT [UniqueNonclustered_Social_MomentFullText]
+    END
+
+-- [Social_Moment.Tags] -------------
+
+
+-- [Social_Moment.Tags] -------------
+
+IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Social_Moment') AND name='Tags')
+    BEGIN
+     ALTER TABLE Social_Moment ALTER COLUMN [Tags] NVARCHAR(MAX)
+    END
+ELSE
+    BEGIN
+    DECLARE @sql_add_Social_Moment_Tags NVARCHAR(MAX);
+    SET @sql_add_Social_Moment_Tags = 'ALTER TABLE Social_Moment ADD [Tags] NVARCHAR(MAX)'
+    EXEC sp_executesql @sql_add_Social_Moment_Tags
+    END
+
+
+IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Social_MomentTags')
+    BEGIN
+    ALTER TABLE Social_Moment DROP  CONSTRAINT [Constraint_Social_MomentTags]
+    END
+
+IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Social_MomentTags')
+    BEGIN
+    ALTER TABLE Social_Moment DROP  CONSTRAINT [UniqueNonclustered_Social_MomentTags]
     END
 
 -- [Social_Moment.PreviewImgUrl] -------------

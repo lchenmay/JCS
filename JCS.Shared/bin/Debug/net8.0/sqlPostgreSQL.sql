@@ -292,6 +292,7 @@ BEGIN
         ,"title" TEXT
         ,"summary" TEXT
         ,"fulltext" TEXT
+        ,"tags" TEXT
         ,"previewimgurl" TEXT
         ,"link" TEXT
         ,"type" INT
@@ -341,6 +342,20 @@ BEGIN
 
     IF not condition THEN
         ALTER TABLE social_moment ADD "fulltext" text;
+    END IF;
+END $$;
+
+-- [Social_Moment.Tags] -------------
+
+
+DO $$
+DECLARE
+    condition boolean;
+BEGIN
+    condition := (SELECT EXISTS(SELECT column_name FROM information_schema.columns WHERE table_name='social_moment' AND column_name='tags'));
+
+    IF not condition THEN
+        ALTER TABLE social_moment ADD "tags" text;
     END IF;
 END $$;
 

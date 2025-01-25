@@ -82,7 +82,17 @@ let branching x =
             else
                 er Er.InvalideParameter) |> bindx
         | "moments" -> (fun x -> 
-            runtime.data.mxs.Values
+            let mutable items = 
+                let items = runtime.data.mxs.Values
+                let tag = (tryFindStrByAtt "tag" x.json).Trim().ToLower()
+                if tag.Length > 0 then
+                    match tag with
+                    | _ -> items |> Array.filter(fun i -> i.m.p.Tags.ToLower().Contains tag)
+                else
+                    items
+
+            items
+            |> Array.sortByDescending(fun i -> i.m.Updatedat)
             |> Array.map MomentComplex__json
             |> wrapOkAry) |> bindx
         | "homepage" -> (fun x -> 
@@ -90,10 +100,17 @@ let branching x =
             [|  ok
                 "home",map 54864677L
                 "FP", [| 
-                    map 54864678L |] |> Json.Ary
+                    map 54864683L |] |> Json.Ary
                 "IA", [| 
                     map 54864679L |] |> Json.Ary
                 "CAT", [| 
+                    map 54864684L
+                    map 54864685L
+                    map 54864686L
+                    map 54864687L
+                    map 54864688L
+                    map 54864689L
+                    map 54864690L
                     map 54864680L |] |> Json.Ary
                 "Service", [| 
                     map 54864678L |] |> Json.Ary |]) |> bindx

@@ -74,7 +74,6 @@ let plugin = ""
 
 let x__items (x:ReqRep) = 
     runtime.data.mxs.Values
-    |> Array.filter(fun mx -> mx.m.p.Title.Length * mx.m.p.Summary.Length * mx.m.p.FullText.Length > 0)
     |> Array.map(fun mx -> "https://" + x.req.domainname + "/m/" + mx.m.ID.ToString())        
 
 let hMoment vueDeployDir (x:ReqRep) =
@@ -108,7 +107,9 @@ let hMoment vueDeployDir (x:ReqRep) =
         Fail((),x)
 
 let pages = [|
-    "admin" |]
+    "/m"
+    "/moments"
+    "/admin" |]
 
 let echo (req:HttpRequest) = 
     let ip = req |> remote_ip
@@ -126,7 +127,7 @@ let echo (req:HttpRequest) =
         |> Suc
         |> bind (homepage runtime.langs pages ssrPageHome vueDeployDir "")
         |> bindFail (hMoment vueDeployDir)
-        |> bindFail (hSEO x__items)
+        |> bindFail (hSEO x__items "")
         |> bindFail uploader
         |> bindFail dnloader
         |> bindFail (hapi echoApiHandler (branch req)) with

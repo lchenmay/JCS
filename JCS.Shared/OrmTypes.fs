@@ -391,6 +391,7 @@ type pMOMENT = {
 mutable Title: Text
 mutable Summary: Text
 mutable FullText: Text
+mutable Tags: Text
 mutable PreviewImgUrl: Text
 mutable Link: Text
 mutable Type: momentTypeEnum
@@ -403,14 +404,15 @@ type MOMENT = Rcd<pMOMENT>
 let MOMENT_fieldorders() =
     match rdbms with
     | Rdbms.SqlServer ->
-        "[ID],[Createdat],[Updatedat],[Sort],[Title],[Summary],[FullText],[PreviewImgUrl],[Link],[Type],[State],[MediaType]"
+        "[ID],[Createdat],[Updatedat],[Sort],[Title],[Summary],[FullText],[Tags],[PreviewImgUrl],[Link],[Type],[State],[MediaType]"
     | Rdbms.PostgreSql ->
-        $""" "id","createdat","updatedat","sort", "title","summary","fulltext","previewimgurl","link","type","state","mediatype" """
+        $""" "id","createdat","updatedat","sort", "title","summary","fulltext","tags","previewimgurl","link","type","state","mediatype" """
 
 let pMOMENT_fieldordersArray = [|
     "Title"
     "Summary"
     "FullText"
+    "Tags"
     "PreviewImgUrl"
     "Link"
     "Type"
@@ -419,8 +421,8 @@ let pMOMENT_fieldordersArray = [|
 
 let MOMENT_sql_update() =
     match rdbms with
-    | Rdbms.SqlServer -> "[Title]=@Title,[Summary]=@Summary,[FullText]=@FullText,[PreviewImgUrl]=@PreviewImgUrl,[Link]=@Link,[Type]=@Type,[State]=@State,[MediaType]=@MediaType"
-    | Rdbms.PostgreSql -> "title=@title,summary=@summary,fulltext=@fulltext,previewimgurl=@previewimgurl,link=@link,type=@type,state=@state,mediatype=@mediatype"
+    | Rdbms.SqlServer -> "[Title]=@Title,[Summary]=@Summary,[FullText]=@FullText,[Tags]=@Tags,[PreviewImgUrl]=@PreviewImgUrl,[Link]=@Link,[Type]=@Type,[State]=@State,[MediaType]=@MediaType"
+    | Rdbms.PostgreSql -> "title=@title,summary=@summary,fulltext=@fulltext,tags=@tags,previewimgurl=@previewimgurl,link=@link,type=@type,state=@state,mediatype=@mediatype"
 
 let pMOMENT_fields() =
     match rdbms with
@@ -429,6 +431,7 @@ let pMOMENT_fields() =
             Text("Title")
             Text("Summary")
             Text("FullText")
+            Text("Tags")
             Text("PreviewImgUrl")
             Text("Link")
             SelectLines("Type", [| ("Original","原创图文视频");("Repost","转发");("Thread","文章");("Forum","论坛");("Question","问题");("Answer","回答");("BookmarkList","收藏夹");("Poll","投票");("Miles","文贵直播文字版");("Dict","辞典");("WebPage","页面");("MediaFile","媒体文件") |])
@@ -439,6 +442,7 @@ let pMOMENT_fields() =
             Text("title")
             Text("summary")
             Text("fulltext")
+            Text("tags")
             Text("previewimgurl")
             Text("link")
             SelectLines("type", [| ("Original","原创图文视频");("Repost","转发");("Thread","文章");("Forum","论坛");("Question","问题");("Answer","回答");("BookmarkList","收藏夹");("Poll","投票");("Miles","文贵直播文字版");("Dict","辞典");("WebPage","页面");("MediaFile","媒体文件") |])
@@ -449,6 +453,7 @@ let pMOMENT_empty(): pMOMENT = {
     Title = ""
     Summary = ""
     FullText = ""
+    Tags = ""
     PreviewImgUrl = ""
     Link = ""
     Type = EnumOfValue 0

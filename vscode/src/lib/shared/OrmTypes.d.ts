@@ -83,6 +83,7 @@ export type pMOMENT = {
     Title: string
     Summary: string
     FullText: string
+    Tags: string
     PreviewImgUrl: string
     Link: string
     Type: number

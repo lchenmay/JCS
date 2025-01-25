@@ -608,6 +608,10 @@ let pMOMENT__bin (bb:BytesBuilder) (p:pMOMENT) =
     binFullText.Length |> BitConverter.GetBytes |> bb.append
     binFullText |> bb.append
     
+    let binTags = p.Tags |> Encoding.UTF8.GetBytes
+    binTags.Length |> BitConverter.GetBytes |> bb.append
+    binTags |> bb.append
+    
     let binPreviewImgUrl = p.PreviewImgUrl |> Encoding.UTF8.GetBytes
     binPreviewImgUrl.Length |> BitConverter.GetBytes |> bb.append
     binPreviewImgUrl |> bb.append
@@ -649,6 +653,11 @@ let bin__pMOMENT (bi:BinIndexed):pMOMENT =
     index.Value <- index.Value + 4
     p.FullText <- Encoding.UTF8.GetString(bin,index.Value,count_FullText)
     index.Value <- index.Value + count_FullText
+    
+    let count_Tags = BitConverter.ToInt32(bin,index.Value)
+    index.Value <- index.Value + 4
+    p.Tags <- Encoding.UTF8.GetString(bin,index.Value,count_Tags)
+    index.Value <- index.Value + count_Tags
     
     let count_PreviewImgUrl = BitConverter.ToInt32(bin,index.Value)
     index.Value <- index.Value + 4
@@ -697,6 +706,7 @@ let pMOMENT__json (p:pMOMENT) =
         ("Title",p.Title |> Json.Str)
         ("Summary",p.Summary |> Json.Str)
         ("FullText",p.FullText |> Json.Str)
+        ("Tags",p.Tags |> Json.Str)
         ("PreviewImgUrl",p.PreviewImgUrl |> Json.Str)
         ("Link",p.Link |> Json.Str)
         ("Type",(p.Type |> EnumToValue).ToString() |> Json.Num)
@@ -732,6 +742,8 @@ let json__pMOMENTo (json:Json):pMOMENT option =
     p.Summary <- checkfield fields "Summary"
     
     p.FullText <- checkfield fields "FullText"
+    
+    p.Tags <- checkfield fields "Tags"
     
     p.PreviewImgUrl <- checkfield fields "PreviewImgUrl"
     
@@ -2852,11 +2864,12 @@ let db__pMOMENT(line:Object[]): pMOMENT =
     p.Title <- string(line[4]).TrimEnd()
     p.Summary <- string(line[5]).TrimEnd()
     p.FullText <- string(line[6]).TrimEnd()
-    p.PreviewImgUrl <- string(line[7]).TrimEnd()
-    p.Link <- string(line[8]).TrimEnd()
-    p.Type <- EnumOfValue(if Convert.IsDBNull(line[9]) then 0 else line[9] :?> int)
-    p.State <- EnumOfValue(if Convert.IsDBNull(line[10]) then 0 else line[10] :?> int)
-    p.MediaType <- EnumOfValue(if Convert.IsDBNull(line[11]) then 0 else line[11] :?> int)
+    p.Tags <- string(line[7]).TrimEnd()
+    p.PreviewImgUrl <- string(line[8]).TrimEnd()
+    p.Link <- string(line[9]).TrimEnd()
+    p.Type <- EnumOfValue(if Convert.IsDBNull(line[10]) then 0 else line[10] :?> int)
+    p.State <- EnumOfValue(if Convert.IsDBNull(line[11]) then 0 else line[11] :?> int)
+    p.MediaType <- EnumOfValue(if Convert.IsDBNull(line[12]) then 0 else line[12] :?> int)
 
     p
 
@@ -2867,6 +2880,7 @@ let pMOMENT__sps (p:pMOMENT) =
             ("Title", p.Title) |> kvp__sqlparam
             ("Summary", p.Summary) |> kvp__sqlparam
             ("FullText", p.FullText) |> kvp__sqlparam
+            ("Tags", p.Tags) |> kvp__sqlparam
             ("PreviewImgUrl", p.PreviewImgUrl) |> kvp__sqlparam
             ("Link", p.Link) |> kvp__sqlparam
             ("Type", p.Type) |> kvp__sqlparam
@@ -2877,6 +2891,7 @@ let pMOMENT__sps (p:pMOMENT) =
             ("title", p.Title) |> kvp__sqlparam
             ("summary", p.Summary) |> kvp__sqlparam
             ("fulltext", p.FullText) |> kvp__sqlparam
+            ("tags", p.Tags) |> kvp__sqlparam
             ("previewimgurl", p.PreviewImgUrl) |> kvp__sqlparam
             ("link", p.Link) |> kvp__sqlparam
             ("type", p.Type) |> kvp__sqlparam
@@ -2893,6 +2908,7 @@ let pMOMENT_clone (p:pMOMENT): pMOMENT = {
     Title = p.Title
     Summary = p.Summary
     FullText = p.FullText
+    Tags = p.Tags
     PreviewImgUrl = p.PreviewImgUrl
     Link = p.Link
     Type = p.Type
@@ -2964,6 +2980,7 @@ let MOMENTTxSqlServer =
     ,[Title]
     ,[Summary]
     ,[FullText]
+    ,[Tags]
     ,[PreviewImgUrl]
     ,[Link]
     ,[Type]

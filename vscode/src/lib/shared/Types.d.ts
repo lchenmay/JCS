@@ -17,7 +17,7 @@ fbind:FBIND
 
 // [MomentComplex]
 export type MomentComplex = {
-fbxs:Array<FBindComplex>,
+fbxs:FBindComplex[],
 
 m:MOMENT
 }
@@ -82,7 +82,7 @@ val: any
 
 // [RuntimeData]
 export type RuntimeData = {
-facts:Array<Fact>,
+facts:Fact[],
 
 projectxs:{[key:number]: ProjectComplex},
 
@@ -90,7 +90,7 @@ files:{[key:number]: FILE},
 
 mxs:{[key:number]: MomentComplex},
 
-books:Array<BOOK>
+books:BOOK[]
 }
 
 // [ClientRuntime]

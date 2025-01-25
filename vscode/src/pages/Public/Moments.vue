@@ -2,9 +2,11 @@
 
   <div id="home" class="flex justify-center"><div class="hor-range">
   
-    <MomentCard :domainname="s.domainname" create="true" />
+    <div class="card">
+      <a href="/m/0">Create</a>
+    </div>
   
-    <MomentCard v-for="mx in s.mxs" :mx="mx" :domainname="s.domainname" title="true" summary="true" />
+    <MomentCard v-for="mx in s.mxs" :mx="mx" mode="1" />
   
   </div></div>
   
@@ -21,7 +23,6 @@
   const s = glib.vue.reactive({
     user: runtime.user,
     mxs: [] as jcs.MomentComplex[],
-    domainname: "jcatsys.com"
   })
   
   glib.vue.onMounted(async () => {

@@ -223,6 +223,8 @@ export const pMOMENT__bin = (bb:BytesBuilder) => (p:jcs.pMOMENT) => {
     
     marshall.str__bin (bb) (p.FullText)
     
+    marshall.str__bin (bb) (p.Tags)
+    
     marshall.str__bin (bb) (p.PreviewImgUrl)
     
     marshall.str__bin (bb) (p.Link)
@@ -249,6 +251,7 @@ export const bin__pMOMENT = (bi:BinIndexed):jcs.pMOMENT => {
     p.Title = marshall.bin__str (bi)
     p.Summary = marshall.bin__str (bi)
     p.FullText = marshall.bin__str (bi)
+    p.Tags = marshall.bin__str (bi)
     p.PreviewImgUrl = marshall.bin__str (bi)
     p.Link = marshall.bin__str (bi)
     p.Type = marshall.bin__int32 (bi)
@@ -951,6 +954,7 @@ export const pMOMENT_empty = (): jcs.pMOMENT => {
         Title: "",
         Summary: "",
         FullText: "",
+        Tags: "",
         PreviewImgUrl: "",
         Link: "",
         Type: 0,
