@@ -107,13 +107,15 @@ let rec t__binImpl (w:TextBlockWriter) indent t =
     | TypeEnum.ConcurrentDictionary (kType,vType) -> ()
     | TypeEnum.ModDictInt64 v -> ()
     | TypeEnum.ModDictStr v -> ()
-    | TypeEnum.Fun (src,dst) -> ()
+    | TypeEnum.Fun (src,dst) -> 
+        ()
 
 and t__binCall w indent t = 
     
     match t.tEnum with
     | TypeEnum.Primitive -> 
         match t.name with
+        | "unit" -> "unit__bin"
         | "string" -> "str__bin"
         | "int" -> "int32__bin"
         | "Boolean" -> "bool__bin"
@@ -288,12 +290,15 @@ let rec bin__tImpl (w:TextBlockWriter) indent t =
     | TypeEnum.ConcurrentDictionary(kType,vType) -> ()
     | TypeEnum.ModDictInt64 tt -> ()
     | TypeEnum.ModDictStr tt -> ()
+    | TypeEnum.Fun (src,dst) -> 
+        ()
 
 and bin__tCall w indent t = 
 
     match t.tEnum with
     | TypeEnum.Primitive ->
         match t.name with
+        | "unit" -> "bin__unit"
         | "string" -> "bin__str"
         | "int" -> "bin__int32"
         | "Boolean" -> "bin__bool"
@@ -419,12 +424,15 @@ and t__emptyImpl (w:TextBlockWriter) indent t =
     | TypeEnum.ConcurrentDictionary (kType,vType) -> ()
     | TypeEnum.ModDictInt64 tt -> ()
     | TypeEnum.ModDictStr tt -> ()
+    | TypeEnum.Fun (src,dst) -> 
+        ()
 
 and t__emptyCall w indent t = 
 
     match t.tEnum with
     | TypeEnum.Primitive ->
         match t.name with
+        | "unit" -> "()"
         | "string" -> "\"\""
         | "float" -> "0.0"
         | "int" -> "0"
@@ -574,7 +582,8 @@ let rec t__jsonImpl (w:TextBlockWriter) indent t =
 
         " |]" |> w.appendEnd
         "|> Json.Braket" |> w.newlineIndent (indent + 1)
-
+    | TypeEnum.Fun (src,dst) -> 
+        ()
     | _ -> ()
 
 and t__jsonCall w indent t = 
@@ -582,6 +591,7 @@ and t__jsonCall w indent t =
     match t.tEnum with
     | TypeEnum.Primitive -> 
         match t.name with
+        | "unit" -> "unit__json"
         | "string" -> "str__json"
         | "int" -> "int32__json"
         | "Boolean" -> "bool__json"
@@ -806,12 +816,15 @@ let rec json__tImpl (w:TextBlockWriter) indent t =
     | TypeEnum.SortedDictionary (kType,vType) -> ()
     | TypeEnum.ModDictInt64 tt -> ()
     | TypeEnum.ModDictStr tt -> ()
+    | TypeEnum.Fun (src,dst) -> 
+        ()
 
 and json__tCall (w:TextBlockWriter)indent t = 
 
     match t.tEnum with
     | TypeEnum.Primitive ->
         match t.name with
+        | "unit" -> "json__unito"
         | "string" -> "json__stro"
         | "int" -> "json__int32o"
         | "Boolean" -> "json__boolo"

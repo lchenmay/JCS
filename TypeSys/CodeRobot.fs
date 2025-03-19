@@ -842,6 +842,7 @@ let buildType ns src t =
     match src.lang with
     | ProgrammingLang.FSharp -> 
         CodeRobotIIFs.t__binImpl tbw 0 t
+        "()" |> tbw.newline
     | ProgrammingLang.TypeScript -> 
         CodeRobotIITs.t__binImpl ns tbw 0 t
         "}" |> tbw.newline
