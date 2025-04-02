@@ -75,6 +75,29 @@ export const drawPath =
   }
 }
 
+export const fillPath = 
+    (g:CanvasRenderingContext2D) => 
+    (color:string) => 
+    (points:Graphics.Vct2[]) => {
+
+  if(points.length > 1){
+    g.fillStyle = color
+ 
+    let pt = points[0]
+
+    g.beginPath()
+    g.moveTo(pt.x,pt.y)
+
+    for(let i = 1; i < points.length; i++){
+        pt = points[i]
+        g.lineTo(pt.x,pt.y)
+    }
+
+    g.closePath()
+    g.fill()
+  }
+}
+
 export const drawRect = 
     (g:CanvasRenderingContext2D) => 
     (color:string) => 
