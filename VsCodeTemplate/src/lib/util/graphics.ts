@@ -62,6 +62,12 @@ export const p__d =
     return coord.dinf + (coord.dsup - coord.dinf) * (p - coord.pinf) / (coord.psup - coord.pinf);
 }
 
+export const d__p = 
+    (coord:Coord) => 
+    (d:number) => {
+    return coord.pinf + (coord.psup - coord.pinf) * (d - coord.dinf) / (coord.dsup - coord.dinf);
+}
+
 export const pp__dd = 
     (coordx:Coord,coordy:Coord) => 
     (px:number,py:number): Vct2 => {

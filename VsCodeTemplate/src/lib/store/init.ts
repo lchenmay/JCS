@@ -1,10 +1,12 @@
 import { glib } from '~/lib/glib'
 import { watch } from 'vue'
-import { MsgEnum, RuntimeData_empty } from '../shared/CustomMor'
+import { MsgEnum } from '../shared/CustomMor'
 import { initHost } from './host'
+import { stringify } from 'postcss'
 
 let wsOnOpen = (runtime: Runtime) => (event: any) => {
     console.log('WebSocket connected')
+    runtime.wsctx.ws.send("Incoming")
 }
 
 let wsOnClose = (runtime: Runtime) => (event: any) => {
@@ -16,10 +18,10 @@ let wsOnError = (runtime: Runtime) => (event: any) => {
 }
 
 let wsOnMsg = (runtime: Runtime) => (event: any) => {
-    let msg = event.data as jcs.Msg
+    let msg = event.data as j7.Msg
+    console.log(msg)
     switch (msg.e as MsgEnum) {
         case MsgEnum.ApiResponse:
-            console.log(msg.val)
             break
     }
 }

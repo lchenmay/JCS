@@ -9,17 +9,19 @@ open TypeSys.MetaType
 open TypeSys.Common
 open TypeSys.CodeRobotI
 
+let primitiveTypeConvert name = 
+    match name with
+    | "int64"
+    | "int"
+    | "float"
+    | "float32" -> "number"
+    | "bool" -> "boolean"
+    | "DateTime" -> "Date"
+    | _ -> name
+
 let rec type__annotation tc t = 
     match t.tEnum with
-    | TypeEnum.Primitive ->
-        match t.name with
-        | "int64"
-        | "int"
-        | "float"
-        | "float32" -> "number"
-        | "bool" -> "boolean"
-        | "DateTime" -> "Date"
-        | _ -> t.name
+    | TypeEnum.Primitive -> primitiveTypeConvert t.name
     | TypeEnum.OrmRcd v -> t.name
     | TypeEnum.Product items -> "any"
     | TypeEnum.Ary tt -> (tt |> type__annotation tc) + "[]" // "Array<" + v.name + ">" 
@@ -29,7 +31,8 @@ let rec type__annotation tc t =
     | TypeEnum.SortedDictionary (k,v)
     | TypeEnum.ConcurrentDictionary (k,v) -> 
         //"Dict<" + k.name + "," + v.name + ">"
-        "{[key:" + k.name + "]: " + v.name + "}"
+        let n = primitiveTypeConvert k.name
+        "{[key:" + n + "]: " + v.name + "}"
     | TypeEnum.ModDictInt64 v -> 
         "{[key:number]: " + v.name + "}"
     | TypeEnum.ModDictStr v -> 
