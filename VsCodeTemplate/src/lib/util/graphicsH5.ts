@@ -143,3 +143,24 @@ export function getMousePosition(canvas:any,event: MouseEvent): Graphics.Vct2 {
     const y = event.clientY - rect.top
     return { x, y }
 }
+
+export const drawText = 
+    (g:CanvasRenderingContext2D) => 
+    (color:string,bkcolor:string,px:number,py:number) => 
+    (text:string,x:number,y:number) => {
+    
+    const metrics = g.measureText(text)
+    const width = metrics.width
+    const height = metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent
+
+    g.fillStyle = bkcolor
+    g.fillRect(
+        x - px,
+        y - py - metrics.actualBoundingBoxAscent, 
+        width + px + px, 
+        height + py + py)
+
+    g.fillStyle = color
+    g.fillText(text, x, y)
+
+}
