@@ -271,13 +271,13 @@ let target__config target =
 let runMultiple exeDir = 
 
     [|  
-        6 // JCS
+        //6 // JCS
         7 // J-7
-        16 // studio
-        17 // J
-        18 // FA
-        19 // JA
-        10 //Game
+        //16 // studio
+        //17 // J
+        //18 // FA
+        //19 // JA
+        //10 //Game
             |]
     |> Array.map target__config
     |> Array.iter(CodeRobot.go output exeDir)

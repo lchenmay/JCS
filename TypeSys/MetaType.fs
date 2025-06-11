@@ -350,28 +350,44 @@ let rec str__type tc s =
             tc.types.Add(s,t)
         t
 
-let parseCustomTypes (lines:string[]) = 
+let parseCustomTypes 
+    (modulenames:List<string>)
+    (lines:string[]) = 
 
-    let rx = str__regex @"(?<=type\s+)\w+"
+    let rx1 = str__regex @"(?<=type\s+)\w+"
+    let rx2 = str__regex @"(?<=module\s+?)\w+(?=\s*?=)"
 
-    let buffer = new List<string * List<string>>()
+    let buffer = new List<string * string * List<string>>()
+
+    let mutable modulename = ""
 
     [| 0 .. lines.Length - 1 |]
     |> Array.iter(fun i -> 
         let line = lines[i]
-        let m = regex_match rx line
+
+        let mn = regex_match rx2 line
+        if mn.Length > 0 then
+            modulename <- mn
+            modulenames.Add modulename
+
+        let m = regex_match rx1 line
         if m.Length > 0 then
-            let l = new List<string>()
-            l.Add line
-            buffer.Add(m,l)
+            let srcLines = new List<string>()
+            srcLines.Add line
+            let fullname = 
+                if line.StartsWith tab then
+                    modulename + "." + m
+                else
+                    m
+            buffer.Add(m,fullname,srcLines)
         else
             if buffer.Count > 0 then
-                let m,l = buffer[buffer.Count - 1]
-                l.Add line)
+                let m,fullname,srcLines = buffer[buffer.Count - 1]
+                srcLines.Add line)
 
     [| 0.. buffer.Count - 1 |]
     |> Array.map(fun i -> 
-        let name,src = buffer[i]
+        let name,fullname,src = buffer[i]
         let lines = src.ToArray() |> Array.filter(fun i -> i.Length > 0)
 
         let mutable s  = src.ToArray() |> String.concat crlf

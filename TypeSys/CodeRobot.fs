@@ -269,6 +269,7 @@ let load robot =
 
         ())
 
+    let modulenames = new List<string>()
     let cTypes = 
         let dict = new Dictionary<string,Type>()
         robot.config.mainDir + @"\Types.fs"
@@ -280,11 +281,11 @@ let load robot =
                 line.Substring(0,index)
             else
                 line)
-        |> parseCustomTypes 
+        |> parseCustomTypes modulenames
         |> Array.iter(fun i -> dict.Add(i.name,i))
         dict
 
-    cTypes,buildTypeCat robot.output tables cTypes,tableArray
+    modulenames.ToArray(),cTypes,buildTypeCat robot.output tables cTypes,tableArray
 
 let save srcs = 
     srcs
@@ -1017,7 +1018,7 @@ let go output exeDir config  =
 
     let robot = prepareRobot output config
 
-    let cTypes,tc,tables  = load robot
+    let modulenames,cTypes,tc,tables = load robot
 
     let srcs,sqlSQLServer,sqlPostgreSQL,ot,otTypeScript,om,omTypeScript,cm,typeTypeScript,cmTypeScript =
         robot__srcs robot
@@ -1048,17 +1049,27 @@ let go output exeDir config  =
     |> otTypeScript.w.multiLine
     
     fSharpHeader ot (config.ns + ".OrmTypes") [||]
+    
     [|  "open System.Data.SqlClient"
         "open System.Threading"
         "open Util.Bin"
         "open " + config.ns + ".OrmTypes"
         "open " + config.ns + ".Types" |]
     |> fSharpHeader om (config.ns + ".OrmMor")
+    modulenames
+    |> Array.map(fun n -> 
+        "open " + config.ns + ".Types." + n)
+    |> om.w.multiLine
+
     [|  "open Util.Bin"
         "open " + config.ns + ".OrmTypes"
         "open " + config.ns + ".Types"
         "open " + config.ns + ".OrmMor" |]
     |> fSharpHeader cm (config.ns + ".CustomMor")
+    modulenames
+    |> Array.map(fun n -> 
+        "open " + config.ns + ".Types." + n)
+    |> cm.w.multiLine
 
     //let rdbms = 
     //    match config.rdbms with
