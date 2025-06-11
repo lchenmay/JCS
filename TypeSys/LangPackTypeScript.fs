@@ -31,8 +31,9 @@ let rec type__annotation tc t =
     | TypeEnum.SortedDictionary (k,v)
     | TypeEnum.ConcurrentDictionary (k,v) -> 
         //"Dict<" + k.name + "," + v.name + ">"
-        let n = primitiveTypeConvert k.name
-        "{[key:" + n + "]: " + v.name + "}"
+        let nk = primitiveTypeConvert k.name
+        let nv = type__annotation tc v
+        "{[key:" + nk + "]: " + nv + "}"
     | TypeEnum.ModDictInt64 v -> 
         "{[key:number]: " + v.name + "}"
     | TypeEnum.ModDictStr v -> 
