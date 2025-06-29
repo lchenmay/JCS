@@ -504,6 +504,7 @@ and t__emptyCall (w:TextBlockWriter) indent t =
         match t.name with
         | "string" -> "\"\""
         | "float" -> "0.0"
+        | "float32" -> "0.0f"
         | "int" -> "0"
         | "int64" -> "0"
         | "bool"
