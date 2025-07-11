@@ -435,6 +435,7 @@ and t__emptyCall w indent t =
         | "unit" -> "()"
         | "string" -> "\"\""
         | "float" -> "0.0"
+        | "float32" -> "0f"
         | "int" -> "0"
         | "int32" -> "0"
         | "int64" -> "0L"
