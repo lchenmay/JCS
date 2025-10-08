@@ -444,6 +444,7 @@ and t__emptyCall w indent t =
         | "Json" -> "bin__json"
         | "Stat" -> "Stat_empty()"
         | "SpotInStat" -> "SpotInStat_empty()"
+        | "IncrementalMA" -> "IncrementalMA_empty()"
         | _ -> "bin__" + t.name
         |> w.appendEnd
     | TypeEnum.Structure items -> t.name + "_empty()" |> w.appendEnd
