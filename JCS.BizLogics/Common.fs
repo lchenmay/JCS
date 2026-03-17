@@ -39,6 +39,7 @@ let runtime =
     let h = {
         data = ()
         port = 5045
+        rdbms = Util.Db.Rdbms.SqlServer
         conn = "server=.; database=JCS; Trusted_Connection=True;"
         url = ""
 

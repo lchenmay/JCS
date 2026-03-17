@@ -169,7 +169,7 @@ let buildPages projectx (hostconfig:HOSTCONFIG) =
 
         ())
 
-let changeFile path changer = 
+let changeFile path (changer:string -> string) = 
     if File.Exists path then
         let txt = 
             File.ReadAllText path
