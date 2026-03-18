@@ -623,6 +623,7 @@ let buildTableMor om (t:Table) (fieldNames:string[],fields) =
         let sort,name,def,json = t.fields[i]
         "(\"" + name + "\", " |> om.w.newlineIndent 3
         match def with
+        | FieldDef.SelectLines items -> "EnumToValue p." + name
         | FieldDef.Timestamp -> "p." + name + ".Ticks"
         | _ -> "p." + name 
         |> om.w.appendEnd
@@ -635,6 +636,7 @@ let buildTableMor om (t:Table) (fieldNames:string[],fields) =
         let sort,name,def,json = t.fields[i]
         "(\"" + name.ToLower() + "\", " |> om.w.newlineIndent 3
         match def with
+        | FieldDef.SelectLines items -> "EnumToValue p." + name
         | FieldDef.Timestamp -> "p." + name + ".Ticks"
         | _ -> "p." + name 
         |> om.w.appendEnd

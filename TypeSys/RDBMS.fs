@@ -56,6 +56,7 @@ let sqlField rdbms f =
             | FieldDef.Boolean -> "BOOLEAN"//"BIT"
             | FieldDef.SelectLines v -> "INT"
             | FieldDef.TimeSeries -> "VARBINARY(MAX)"
+            | FieldDef.Bin -> "BYTEA"
             | _ -> ""
 
         "\"" + n.ToLower() + "\" " + s
