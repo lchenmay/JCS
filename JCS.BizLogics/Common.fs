@@ -42,6 +42,8 @@ let runtime =
         rdbms = Util.Db.Rdbms.SqlServer
         conn = "server=.; database=JCS; Trusted_Connection=True;"
         url = ""
+        cert = ""
+        certpwd = ""
 
 
         updateDatabase = true
