@@ -67,7 +67,7 @@ let runtime =
             |> String.Concat
 
         VsDirSolution = @"C:/Dev/JCS"
-        req__vueDeployDir = (fun _ -> @"C:/Dev/JCS/vscode/dist")
+        req__vueDeployDir = @"C:/Dev/JCS/vscode/dist"
         fsDir = @"C:/FsRoot/JCS" }
 
     let hostEnum = 

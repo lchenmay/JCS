@@ -30,12 +30,12 @@ let launch() =
 
     init runtime |> ignore
 
-    runtime.listener.echo <- echo
-    runtime.listener.h404o <- Some(fun _ -> 
-        "404"
-        |> System.Text.Encoding.ASCII.GetBytes
-        |> bin__StandardResponse "text/html")
-    runtime.listener.wsHandler <- fun json -> None
+    //runtime.listener.echo <- echo
+    //runtime.listener.h404o <- Some(fun _ -> 
+    //    "404"
+    //    |> System.Text.Encoding.ASCII.GetBytes
+    //    |> bin__StandardResponse "text/html")
+    //runtime.listener.wsHandler <- fun json -> None
     
-    startEngine runtime.listener
+    //startEngine runtime.listener
 

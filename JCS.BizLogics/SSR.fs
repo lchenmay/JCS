@@ -6,6 +6,9 @@ open System.Text
 open System.Collections.Generic
 open System.Threading
 
+open Microsoft.AspNetCore
+open Microsoft.AspNetCore.Http
+
 open Util.Cat
 open Util.Text
 open Util.Bin
@@ -111,28 +114,29 @@ let pages = [|
     "/moments"
     "/admin" |]
 
-let echo (req:HttpRequest) = 
-    let ip = req |> remote_ip
-    if ip.StartsWith "127.0.0.1" = false then
-        let p = pPLOG_empty()
-        p.Request <- req.bin |> System.Text.Encoding.ASCII.GetString
-        p.Ip <- ip
-        UtilWebServer.Db.p__createRcd 
-            p PLOG_metadata dbLoggero "echo" conn |> ignore
-
-    let vueDeployDir = runtime.host.req__vueDeployDir req
+let echo (scheme,api,reqBodyBin): byte[] = [||]
+//let echo (hx:HttpContext) = 
+//    let ip = req |> remote_ip
+//    if ip.StartsWith "127.0.0.1" = false then
+//        let p = pPLOG_empty()
+//        p.Request <- req.bin |> System.Text.Encoding.ASCII.GetString
+//        p.Ip <- ip
+//        UtilWebServer.Db.p__createRcd 
+//            p PLOG_metadata dbLoggero "echo" conn |> ignore
     
-    match 
-        { req = req; rep = None}
-        |> Suc
-        |> bind (homepage runtime.langs pages ssrPageHome vueDeployDir "")
-        |> bindFail (hMoment vueDeployDir)
-        |> bindFail (hSEO x__items "")
-        |> bindFail uploader
-        |> bindFail dnloader
-        |> bindFail (hapi echoApiHandler (branch req)) with
-    | Suc x -> x.rep
-    | Fail(x,e) -> None
+//    let vueDeployDir = runtime.host.req__vueDeployDir req
+    
+//    match 
+//        { req = req; rep = None}
+//        |> Suc
+//        |> bind (homepage runtime.langs pages ssrPageHome vueDeployDir "")
+//        |> bindFail (hMoment vueDeployDir)
+//        |> bindFail (hSEO x__items "")
+//        |> bindFail uploader
+//        |> bindFail dnloader
+//        |> bindFail (hapi echoApiHandler (branch req)) with
+//    | Suc x -> x.rep
+//    | Fail(x,e) -> None
 
 
 
