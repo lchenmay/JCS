@@ -15,12 +15,11 @@ open Util.Json
 open Util.FileSys
 open Util.Http
 open Util.HttpServer
-open Util.Zmq
 
-open UtilWebServer.Common
-open UtilWebServer.Api
-open UtilWebServer.Json
-open UtilWebServer.SSR
+open UtilKestrel.Common
+open UtilKestrel.Api
+open UtilKestrel.Json
+open UtilKestrel.SSR
 
 open JCS.Shared.OrmTypes
 open JCS.Shared.Types

@@ -9,9 +9,10 @@ open Util.Db
 open Util.DbTx
 open Util.Orm
 
-open UtilWebServer.Common
-open UtilWebServer.Db
-open UtilWebServer.Runtime
+open UtilKestrel.Types
+open UtilKestrel.Ctx
+open UtilKestrel.DbLogger
+open UtilKestrel.Runtime
 
 open JCS.Shared.OrmTypes
 open JCS.Shared.OrmMor
@@ -26,9 +27,8 @@ type HostData = unit
 
 type Runtime = RuntimeTemplate<EuComplex,unit,RuntimeData,HostData>
 
-type X = UtilWebServer.Api.ApiCtx<Runtime,Session,Er>
-
-type CtxWrappedX = CtxWrapper<X,Er>
+type X = EchoCtx<Runtime,Session,Er>
+type WrapX = CtxWrapper<X,Er>
 
 type HostEnum = 
 | Dev
@@ -45,26 +45,7 @@ let runtime =
         cert = ""
         certpwd = ""
 
-
         updateDatabase = true
-
-        DiscordAppId = 
-            [|  "129810910"
-                "2488158259" |]
-            |> String.Concat
-        DiscordPubKey = 
-            [|  "d172c3fd453"
-                "a101e18078f"
-                "e35908a2a75"
-                "8403a6a57b3"
-                "b74925ded0c"
-                "5734c7668" |]
-            |> String.Concat
-        DiscordSecret = 
-            [|  "ZyLGxD37M9Z"
-                "IbjBOENj4-y"
-                "PJr03SGgib" |]
-            |> String.Concat
 
         VsDirSolution = @"C:/Dev/JCS"
         req__vueDeployDir = @"C:/Dev/JCS/vscode/dist"

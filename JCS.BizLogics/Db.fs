@@ -14,11 +14,10 @@ open Util.CollectionModDict
 open Util.Db
 open Util.DbTx
 open Util.Orm
-open Util.Zmq
 
-open UtilWebServer.DbLogger
-open UtilWebServer.Db
-open UtilWebServer.Common
+open UtilKestrel.DbLogger
+open UtilKestrel.Db
+open UtilKestrel.Common
 
 open JCS.Shared.OrmTypes
 open JCS.Shared.Types

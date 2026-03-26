@@ -13,13 +13,12 @@ open Util.Json
 open Util.Db
 open Util.DbTx
 open Util.Orm
-open Util.Zmq
 
-open UtilWebServer.Constants
-open UtilWebServer.Db
-open UtilWebServer.DbLogger
-open UtilWebServer.Init
-open UtilWebServer.FileSys
+open UtilKestrel.Constants
+open UtilKestrel.Db
+open UtilKestrel.DbLogger
+open UtilKestrel.Init
+open UtilKestrel.FileSys
 
 open JCS.Shared.OrmTypes
 open JCS.Shared.OrmMor

@@ -13,7 +13,6 @@ open Util.CollectionModDict
 open Util.Db
 open Util.DbTx
 open Util.Orm
-open Util.Zmq
 
 open JCS.Shared.OrmTypes
 open JCS.Shared.Types
