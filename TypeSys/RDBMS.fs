@@ -174,7 +174,34 @@ let tableDropUndefinedColumnsSQLServer (w:TextBlockWriter) tname fns =
     |> w.multiLine
 
 let tableDropUndefinedColumnsPostgreSQL (w:TextBlockWriter) tname fns = 
-    [|  "" |] |> w.multiLine
+    // 1. 将保留字段与传入的业务字段合并
+    let reserved = [| "id"; "createdat"; "updatedat"; "sort" |]
+    let allKeepFiles = Array.append reserved fns
+    
+    // 2. 格式化为 PostgreSQL 数组字符串
+    let excludedCols = allKeepFiles |> Array.map (sprintf "'%s'") |> String.concat ", "
+    let excludesArray = "ARRAY[" + excludedCols + "]"
+
+    [|  ""
+        "-- PostgreSQL: Dropping obsolete fields (Safety Guard Active) -----------"
+        "DO $$ "
+        "DECLARE"
+        "    row record;"
+        "BEGIN"
+        "    FOR row IN "
+        "        SELECT column_name "
+        "        FROM information_schema.columns "
+        "        WHERE table_name = '" + tname + "' "
+        "          AND table_schema = 'public' "
+        "          -- 核心过滤：排除保留字段及传入的业务字段"
+        "          AND column_name <> ALL(" + excludesArray + ")"
+        "    LOOP"
+        "        RAISE NOTICE 'Dropping column %% from table %%', row.column_name, '" + tname + "';"
+        "        EXECUTE format('ALTER TABLE %%I DROP COLUMN IF EXISTS %%I CASCADE', '" + tname + "', row.column_name);"
+        "    END LOOP;"
+        "END $$;"
+        "" |]
+    |> w.multiLine
 
 let tableProcessColumn 
     (wSQLServer:TextBlockWriter,wPostgreSQL:TextBlockWriter)
