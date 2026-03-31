@@ -95,33 +95,48 @@ let tableCheckExistOrCreateSQLServer (w:TextBlockWriter) table tname =
         "" |]
     |> w.multiLine
 
-let tableCheckExistOrCreatePostegreSQL (w:TextBlockWriter) table (tname:string) = 
+let tableCheckExistOrCreatePostgreSQL (w:TextBlockWriter) table tname = 
+    let pkName = "pk_" + tname
+    // 获取所有合法字段名列表，用于 ARRAY[...] 过滤
+    let fieldNames = 
+        table.fields.Values 
+        |> Seq.map (fun (_, fname, _, _) -> "'" + fname.ToLower() + "'")
+        |> String.concat ", "
+    let allValidFields = "'id', 'createdat', 'updatedat', 'sort', " + fieldNames
+
     [|  ""
+        "-- [" + tname + "] ----------------------"
+        ""
         "DO $$"
         "DECLARE"
         "    condition boolean;"
         "BEGIN"
-        "    condition := (SELECT EXISTS(SELECT * FROM information_schema.tables WHERE table_name = '" + tname.ToLower() + "'));"
+        "    condition := (SELECT EXISTS("
+        "        SELECT 1 FROM information_schema.tables "
+        "        WHERE table_name = '" + tname + "' "
+        "          AND table_schema = 'public'"
+        "    ));"
         ""
         "    IF not condition THEN"
-        "    CREATE TABLE " + tname.ToLower() + " (id BIGINT NOT NULL"
-        "        ,createdat BIGINT NOT NULL"
-        "        ,updatedat BIGINT NOT NULL"
-        "        ,sort BIGINT NOT NULL"
-        "        ," |]
+        //"        RAISE NOTICE 'Creating table %...', '" + tname + "';"
+        "        CREATE TABLE \"" + tname + "\" ("
+        "            id BIGINT NOT NULL"
+        "            ,createdat BIGINT NOT NULL"
+        "            ,updatedat BIGINT NOT NULL"
+        "            ,sort BIGINT NOT NULL" |]
     |> w.multiLine
 
+    // 1. 动态生成建表字段
     table.fields.Values
     |> Seq.toArray
     |> Array.map (sqlField Rdbms.PostgreSql)
-    |> String.concat(crlf + tab + tab + ",")
-    |> w.appendEnd
+    |> Array.iter (fun s -> w.newline ("            ," + s))
 
-    ");" |> w.appendEnd
-
-    [|  ""
-        "   END IF;"
-        "END $$;" |]
+    [|  "            ,CONSTRAINT \"" + pkName + "\" PRIMARY KEY (id)"
+        "        );"
+        "    END IF;"
+        "END $$;"
+        "" |]
     |> w.multiLine
 
 let checkNotIn rdbms tname fns = 
@@ -174,30 +189,31 @@ let tableDropUndefinedColumnsSQLServer (w:TextBlockWriter) tname fns =
     |> w.multiLine
 
 let tableDropUndefinedColumnsPostgreSQL (w:TextBlockWriter) tname fns = 
-    // 1. 将保留字段与传入的业务字段合并
-    let reserved = [| "id"; "createdat"; "updatedat"; "sort" |]
-    let allKeepFiles = Array.append reserved fns
-    
-    // 2. 格式化为 PostgreSQL 数组字符串
-    let excludedCols = allKeepFiles |> Array.map (sprintf "'%s'") |> String.concat ", "
-    let excludesArray = "ARRAY[" + excludedCols + "]"
+    // 1. 将输入的 fns 转换为 PostgreSQL 的字符串数组格式
+    let excludesArray = 
+        fns 
+        |> Array.map (sprintf "'%s'") 
+        |> String.concat ", "
+        |> sprintf "ARRAY[%s]"
 
     [|  ""
-        "-- PostgreSQL: Dropping obsolete fields (Safety Guard Active) -----------"
+        "-- PostgreSQL: Dropping obsolete fields -----------"
         "DO $$ "
         "DECLARE"
-        "    row record;"
+        "    fn TEXT;"
         "BEGIN"
-        "    FOR row IN "
+        "    FOR fn IN "
         "        SELECT column_name "
         "        FROM information_schema.columns "
         "        WHERE table_name = '" + tname + "' "
         "          AND table_schema = 'public' "
-        "          -- 核心过滤：排除保留字段及传入的业务字段"
         "          AND column_name <> ALL(" + excludesArray + ")"
         "    LOOP"
-        "        RAISE NOTICE 'Dropping column %% from table %%', row.column_name, '" + tname + "';"
-        "        EXECUTE format('ALTER TABLE %%I DROP COLUMN IF EXISTS %%I CASCADE', '" + tname + "', row.column_name);"
+        "        -- 对应 PRINT 'Dropping ' + @tname + '.' + @fn"
+        //"        RAISE NOTICE 'Dropping %.%%', '" + tname + "', fn;"
+        "        "
+        "        -- 对应 EXEC sp_executesql @sql (format %I 对应 QUOTENAME)"
+        "        EXECUTE format('ALTER TABLE %I DROP COLUMN %I', '" + tname + "', fn);"
         "    END LOOP;"
         "END $$;"
         "" |]
@@ -297,7 +313,7 @@ let table__sql rdbms
     "-- [" + tname + "] ----------------------" |> wPostgreSQL.newline
 
     tableCheckExistOrCreateSQLServer wSQLServer table tname
-    tableCheckExistOrCreatePostegreSQL wPostgreSQL table tname
+    tableCheckExistOrCreatePostgreSQL wPostgreSQL table tname
 
     [|  [|  "ID"; "Createdat"; "Updatedat"; "Sort" |]
         table.fields.Values
@@ -308,7 +324,7 @@ let table__sql rdbms
     |> Array.concat
     |> tableDropUndefinedColumnsSQLServer wSQLServer tname
 
-    [|  [|  "ID"; "Createdat"; "Updatedat"; "Sort" |]
+    [|  [|  "id"; "createdat"; "updatedat"; "sort" |]
         table.fields.Values
         |> Seq.toArray
         |> Array.map(fun f ->
