@@ -502,6 +502,4 @@ let updateDatabase output rdbms (conn:string) tables =
 
     | _ -> ()
 
-    sqls
-
     ()

@@ -109,6 +109,7 @@ let rec t__binImpl (w:TextBlockWriter) indent t =
     | TypeEnum.ModDictStr v -> ()
     | TypeEnum.Fun (src,dst) -> 
         ()
+    | _ -> ()
 
 and t__binCall w indent t = 
     
@@ -292,6 +293,7 @@ let rec bin__tImpl (w:TextBlockWriter) indent t =
     | TypeEnum.ModDictStr tt -> ()
     | TypeEnum.Fun (src,dst) -> 
         ()
+    | _ -> ()
 
 and bin__tCall w indent t = 
 
@@ -426,6 +428,7 @@ and t__emptyImpl (w:TextBlockWriter) indent t =
     | TypeEnum.ModDictStr tt -> ()
     | TypeEnum.Fun (src,dst) -> 
         ()
+    | _ -> ()
 
 and t__emptyCall w indent t = 
 
@@ -820,6 +823,7 @@ let rec json__tImpl (w:TextBlockWriter) indent t =
     | TypeEnum.ModDictStr tt -> ()
     | TypeEnum.Fun (src,dst) -> 
         ()
+    | _ -> ()
 
 and json__tCall (w:TextBlockWriter)indent t = 
 

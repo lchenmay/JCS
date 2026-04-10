@@ -103,6 +103,7 @@ let rec t__binImpl ns (w:TextBlockWriter) indent t =
     | TypeEnum.Dictionary (kType,vType) -> ()
     | TypeEnum.SortedDictionary (kType,vType) -> ()
     | TypeEnum.ConcurrentDictionary (kType,vType) -> ()
+    | _ -> ()
 
 and t__binCall w indent t = 
     
@@ -309,6 +310,7 @@ let rec bin__tImpl ns (w:TextBlockWriter) indent t =
     | TypeEnum.Dictionary (kType,vType) -> ()
     | TypeEnum.SortedDictionary (kType,vType) -> ()
     | TypeEnum.ConcurrentDictionary (kType,vType) -> ()
+    | _ -> ()
 
 and bin__tCall w indent t = 
     
@@ -487,6 +489,7 @@ let rec t__emptyImpl ns (w:TextBlockWriter) indent t =
     | TypeEnum.ConcurrentDictionary (kType,vType) -> ()
     | TypeEnum.ModDictInt64 tt -> ()
     | TypeEnum.ModDictStr tt -> ()
+    | _ -> ()
 
     "} as " + ns + "." + t.name |> w.newlineIndent 1
     "}" |> w.newline
@@ -849,6 +852,7 @@ let rec json__tImpl (w:TextBlockWriter) indent t =
     | TypeEnum.Dictionary (kType,vType)
     | TypeEnum.SortedDictionary (kType,vType)
     | TypeEnum.ConcurrentDictionary (kType,vType) -> ()
+    | _ -> ()
 
 and json__tCall (w:TextBlockWriter)indent t = 
 
@@ -939,4 +943,4 @@ and json__tCall (w:TextBlockWriter)indent t =
         "json__ModDictStro (json__stro) (" |> w.appendEnd
         json__tCall w (indent) tt
         ") (new Dictionary<int64," + tt.name + ">()) json)" |> w.appendEnd
-
+    | _ -> ()
