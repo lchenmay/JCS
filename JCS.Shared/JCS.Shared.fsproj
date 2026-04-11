@@ -2,7 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
-    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+	  <DisableImplicitFSharpCoreReference>true</DisableImplicitFSharpCoreReference>
+	  <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
@@ -12,7 +13,8 @@
     <None Include="sqlSQLServer.sql">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <Content Include="Design.json" />
+	  <PackageReference Include="FSharp.Core" Version="10.1.201" />
+	  <Content Include="Design.json" />
     <Content Include="Design-Ca.json" />
     <Content Include="Design-Social.json" />
     <Content Include="Design-Sys.json" />
