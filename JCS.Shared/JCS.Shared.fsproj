@@ -13,7 +13,6 @@
     <None Include="sqlSQLServer.sql">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-	  <PackageReference Include="FSharp.Core" Version="10.1.201" />
 	  <Content Include="Design.json" />
     <Content Include="Design-Ca.json" />
     <Content Include="Design-Social.json" />

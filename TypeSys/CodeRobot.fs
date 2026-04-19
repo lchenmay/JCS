@@ -1115,39 +1115,39 @@ let go output exeDir config  =
 
     save srcs
 
-    let pathsrc = 
-        let di = new DirectoryInfo(exeDir)
-        Path.Combine(di.Parent.Parent.Parent.Parent.FullName,"VsCodeTemplate")
-    let pathdst = 
-        let di = new DirectoryInfo(config.JsDir)
-        Path.Combine(di.Parent.Parent.Parent.Parent.FullName,"vscode")
+    if Directory.Exists config.JsDir then
+        let pathsrc = 
+            let di = new DirectoryInfo(exeDir)
+            Path.Combine(di.Parent.Parent.Parent.Parent.FullName,"VsCodeTemplate")
+        let pathdst = 
+            let di = new DirectoryInfo(config.JsDir)
+            Path.Combine(di.Parent.Parent.Parent.Parent.FullName,"vscode")
+        [|  
+            //"src/main.ts"
+            //"src/comps/RichTextEditor.vue"
+            //"src/comps/Uploader.vue"
+            //"src/lib/bizlogics/lang.ts"
+            //"src/lib/store/init.ts"
+            //"src/lib/store/runtime.ts"
+            //"src/lib/store/wshandler.ts"
+            "src/lib/util/bin.ts"
+            "src/lib/util/graphics.ts"
+            "src/lib/util/graphicsH5.ts"
+            "src/lib/util/graphicsPixi.ts"
+            "src/lib/util/text.ts"
+            "src/lib/util/markdown.ts"
+            //"src/types/main.d.ts"  
+                                    |]
+        |> Array.iter(fun f -> 
+            try
+                File.Copy(
+                Path.Combine(pathsrc,f),
+                Path.Combine(pathdst,f),true)
+            with 
+            | _ -> ())
 
-    [|  
-        //"src/main.ts"
-        //"src/comps/RichTextEditor.vue"
-        //"src/comps/Uploader.vue"
-        //"src/lib/bizlogics/lang.ts"
-        //"src/lib/store/init.ts"
-        //"src/lib/store/runtime.ts"
-        //"src/lib/store/wshandler.ts"
-        "src/lib/util/bin.ts"
-        "src/lib/util/graphics.ts"
-        "src/lib/util/graphicsH5.ts"
-        "src/lib/util/graphicsPixi.ts"
-        "src/lib/util/text.ts"
-        "src/lib/util/markdown.ts"
-        //"src/types/main.d.ts"  
-                                |]
-    |> Array.iter(fun f -> 
-        try
-            File.Copy(
-            Path.Combine(pathsrc,f),
-            Path.Combine(pathdst,f),true)
-        with 
-        | _ -> ())
-
-    config.JsDir.Replace("\src\lib\shared","")
-    |> FrontendPackVue.build robot.config.mainDir
+        config.JsDir.Replace("\src\lib\shared","")
+        |> FrontendPackVue.build robot.config.mainDir
 
     "Done" |> output
         

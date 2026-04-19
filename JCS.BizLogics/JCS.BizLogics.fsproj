@@ -7,7 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-	  <PackageReference Include="FSharp.Core" Version="10.1.201" />
 	  <FrameworkReference Include="Microsoft.AspNetCore.App" />	  
     <Compile Include="Common.fs" />
     <Compile Include="Db.fs" />
