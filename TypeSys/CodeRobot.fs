@@ -376,12 +376,12 @@ let buildTableEnums robot (t:Table) (name,lines:(string * string)[]) =
     "| _ -> None" |> ot.w.newlineIndent 1
 
     ot.w.newlineBlank()
-    "let str__" + enumName + " s =" |> ot.w.newline
-    "match s with" |> ot.w.newlineIndent 1
+    "let str__" + enumName + " (s:string) =" |> ot.w.newline
+    "match s.ToLower() with" |> ot.w.newlineIndent 1
     [| 0 .. lines.Length - 1 |]
     |> Array.map(fun i -> 
         let a,b = lines[i]
-        "| \"" + a + "\" -> Some " + enumName + "." + a)
+        "| \"" + a.ToLower() + "\" -> Some " + enumName + "." + a)
     |> Array.iter (ot.w.newlineIndent 1)
     "| _ -> None" |> ot.w.newlineIndent 1
 
