@@ -4,7 +4,7 @@
     <TargetFramework>net10.0</TargetFramework>
 	  <DisableImplicitFSharpCoreReference>true</DisableImplicitFSharpCoreReference>
 	  <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <OutputType>Exe</OutputType>
+	  <OutputType>Library</OutputType>
   </PropertyGroup>
 
   <ItemGroup>
