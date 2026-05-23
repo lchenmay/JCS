@@ -363,7 +363,7 @@ let parseCustomTypes
 
     [| 0 .. lines.Length - 1 |]
     |> Array.iter(fun i -> 
-        let line = lines[i]
+        let line = lines[i].TrimEnd()
 
         let mn = regex_match rx2 line
         if mn.Length > 0 then
@@ -385,9 +385,29 @@ let parseCustomTypes
                 let m,fullname,srcLines = buffer[buffer.Count - 1]
                 srcLines.Add line)
 
+    let trimWith (src:List<string>) = 
+
+        let mutable index = -1
+
+        [| 0.. src.Count - 1 |]
+        |> Array.iter(fun i -> 
+            let s = src[i]
+            if index = -1 then
+                let i1 = s.LastIndexOf "with"
+                let i2 = s.LastIndexOf "}"
+                if i2 < i1 then
+                    index <- i
+                    src[i] <- s.Substring(0,i2 + 1))
+
+        if index > 0 then
+            src.RemoveRange(index + 1,src.Count - index - 1)
+
     [| 0.. buffer.Count - 1 |]
     |> Array.map(fun i -> 
         let name,fullname,src = buffer[i]
+
+        trimWith src
+
         let lines = src.ToArray() |> Array.filter(fun i -> i.Length > 0)
 
         let mutable s  = src.ToArray() |> String.concat crlf
