@@ -700,6 +700,26 @@ let buildTableMor om (t:Table) (fieldNames:string[],fields) =
     "let id__" + t.typeName + "o id: " + t.typeName + " option = id__rcd(conn," + t.typeName + "_fieldorders()," + t.typeName + "_table,db__" + t.typeName + ") id" |> om.w.newline
 
     om.w.newlineBlank()
+    "let p" + t.typeName + "_marshall = {" |> om.w.newline
+    "clone = p" + t.typeName + "_clone" |> om.w.newlineIndent 1
+    "empty__data = p" + t.typeName + "_empty" |> om.w.newlineIndent 1
+    "data__bin = p" + t.typeName + "__bin" |> om.w.newlineIndent 1
+    "bin__data = bin__p" + t.typeName |> om.w.newlineIndent 1
+    "data__json = p" + t.typeName + "__json" |> om.w.newlineIndent 1
+    "json__datao = json__p" + t.typeName + "o" |> om.w.newlineIndent 1
+    " }" |> om.w.appendEnd
+
+    om.w.newlineBlank()
+    "let " + t.typeName + "_marshall = {" |> om.w.newline
+    "clone = " + t.typeName + "_clone" |> om.w.newlineIndent 1
+    "empty__data = (fun _ -> " + t.typeName + "_wrapper((0L,DateTime.MinValue,DateTime.MinValue,0L),p" + t.typeName + "_empty()))" |> om.w.newlineIndent 1
+    "data__bin = " + t.typeName + "__bin" |> om.w.newlineIndent 1
+    "bin__data = bin__" + t.typeName |> om.w.newlineIndent 1
+    "data__json = " + t.typeName + "__json" |> om.w.newlineIndent 1
+    "json__datao = json__" + t.typeName + "o" |> om.w.newlineIndent 1
+    " }" |> om.w.appendEnd
+
+    om.w.newlineBlank()
     "let " + t.typeName + "_metadata = {" |> om.w.newline
     "fieldorders = " + t.typeName + "_fieldorders" |> om.w.newlineIndent 1
     "db__rcd = db__" + t.typeName + " " |> om.w.newlineIndent 1
@@ -936,6 +956,28 @@ let buildType ns src t =
     | ProgrammingLang.TypeScript -> 
         ()
     | _ -> ()
+
+    match t.tEnum with
+    | TypeEnum.OrmRcd table -> ()
+    | _ ->
+        match src.lang with
+        | ProgrammingLang.FSharp -> 
+
+            tbw.newlineBlank()
+            "let " + t.name + "_marshall = {" |> tbw.newline
+            "clone = " + t.name + "_clone" |> tbw.newlineIndent 1
+            "empty__data = " + t.name + "_empty" |> tbw.newlineIndent 1
+            "data__bin = " + t.name + "__bin" |> tbw.newlineIndent 1
+            "bin__data = bin__" + t.name |> tbw.newlineIndent 1
+            "data__json = " + t.name + "__json" |> tbw.newlineIndent 1
+            "json__datao = json__" + t.name + "o" |> tbw.newlineIndent 1
+            " }" |> tbw.appendEnd
+
+        | ProgrammingLang.TypeScript -> 
+            ()
+        | _ -> ()
+
+
 
 let buildCustomTypes config tc src srcTypeScript (cTypes:Dictionary<string,Type>) = 
 
