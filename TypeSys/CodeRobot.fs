@@ -691,7 +691,9 @@ let buildTableMor om (t:Table) (fieldNames:string[],fields) =
 
     om.w.newlineBlank()
     "let " + t.typeName + "_create output p =" |> om.w.newline
-    t.typeName + "_create_incremental_transaction output ((fun rcd -> ()),(fun (eso,ctx) -> ())) p" |> om.w.newlineIndent 1
+    t.typeName + "_create_incremental_transaction output (" |> om.w.newlineIndent 1
+    tab + "(fun rcd -> Some rcd)," |> om.w.newlineIndent 1
+    tab + "(fun (eso,ctx) -> None)) p" |> om.w.newlineIndent 1
     "" |> om.w.newlineIndent 1
 
     om.w.newlineBlank()
