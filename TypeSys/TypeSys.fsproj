@@ -8,6 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+	  <None Include="mem.md" />
 	  <Compile Include="FSharp.fs" />
     <Compile Include="MetaType.fs" />
     <Compile Include="Common.fs" />
@@ -24,6 +25,8 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
+
+  <ItemGroup />
 
   <ItemGroup>
     <PackageReference Include="Npgsql" Version="10.0.2" />
