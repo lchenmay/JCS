@@ -679,7 +679,11 @@ let buildTableMor om (t:Table) (fieldNames:string[],fields) =
     om.w.newlineBlank()
     "let " + t.typeName + "_update output (rcd:" + t.typeName + ") =" |> om.w.newline
     "rcd" |> om.w.newlineIndent 1
-    "|> " + t.typeName + "_update_transaction output ((fun p -> ()),(fun (ctime,ctx) -> ()),(fun dte -> ()))" |> om.w.newlineIndent 1
+    "|> " + t.typeName + "_update_transaction output (" |> om.w.newlineIndent 1
+    tab + "(fun p -> ())," |> om.w.newlineIndent 1
+    tab + "(fun (ctime,ctx) -> Some rcd)," |> om.w.newlineIndent 1
+    tab + "(fun dte -> None))" |> om.w.newlineIndent 1
+    "" |> om.w.newlineIndent 1
 
     om.w.newlineBlank()
     "let " + t.typeName + "_create_incremental_transaction output (suc,fail) p =" |> om.w.newline
@@ -735,6 +739,7 @@ let buildTableMor om (t:Table) (fieldNames:string[],fields) =
     "json__po = json__p" + t.typeName + "o" |> om.w.newlineIndent 1
     "rcd__json = " + t.typeName + "__json" |> om.w.newlineIndent 1
     "json__rcdo = json__" + t.typeName + "o" |> om.w.newlineIndent 1
+    "p_create = " + t.typeName + "_create" |> om.w.newlineIndent 1
     "sql_update = " + t.typeName + "_sql_update" |> om.w.newlineIndent 1
     "rcd_update = " + t.typeName + "_update" |> om.w.newlineIndent 1
     "table = " + t.typeName + "_table" |> om.w.newlineIndent 1

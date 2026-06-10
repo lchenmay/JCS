@@ -283,6 +283,6 @@ let runMultiple exeDir =
     |> Array.iter(CodeRobot.go output exeDir)
 
 Directory.GetCurrentDirectory() |> runMultiple
-Directory.GetCurrentDirectory() |> JCS.BizLogics.CodeRobot.runAll
+//Directory.GetCurrentDirectory() |> JCS.BizLogics.CodeRobot.runAll
 
 Util.Runtime.halt output "" ""
