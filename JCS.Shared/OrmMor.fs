@@ -19,6 +19,7 @@ open Util.Bin
 open Util.Text
 open Util.Json
 open Util.Orm
+open Util.Math
 open Util.Stat
 
 open PreOrm
@@ -54,6 +55,7 @@ let BOOK__bin (bb:BytesBuilder) (v:BOOK) =
     DateTime__bin bb v.Updatedat
     
     pBOOK__bin bb v.p
+    ()
 
 let bin__pBOOK (bi:BinIndexed):pBOOK =
     let bin,index = bi
@@ -188,6 +190,7 @@ let EU__bin (bb:BytesBuilder) (v:EU) =
     DateTime__bin bb v.Updatedat
     
     pEU__bin bb v.p
+    ()
 
 let bin__pEU (bi:BinIndexed):pEU =
     let bin,index = bi
@@ -325,6 +328,7 @@ let FILE__bin (bb:BytesBuilder) (v:FILE) =
     DateTime__bin bb v.Updatedat
     
     pFILE__bin bb v.p
+    ()
 
 let bin__pFILE (bi:BinIndexed):pFILE =
     let bin,index = bi
@@ -479,6 +483,7 @@ let FBIND__bin (bb:BytesBuilder) (v:FBIND) =
     DateTime__bin bb v.Updatedat
     
     pFBIND__bin bb v.p
+    ()
 
 let bin__pFBIND (bi:BinIndexed):pFBIND =
     let bin,index = bi
@@ -633,6 +638,7 @@ let MOMENT__bin (bb:BytesBuilder) (v:MOMENT) =
     DateTime__bin bb v.Updatedat
     
     pMOMENT__bin bb v.p
+    ()
 
 let bin__pMOMENT (bi:BinIndexed):pMOMENT =
     let bin,index = bi
@@ -815,6 +821,7 @@ let LOG__bin (bb:BytesBuilder) (v:LOG) =
     DateTime__bin bb v.Updatedat
     
     pLOG__bin bb v.p
+    ()
 
 let bin__pLOG (bi:BinIndexed):pLOG =
     let bin,index = bi
@@ -951,6 +958,7 @@ let PLOG__bin (bb:BytesBuilder) (v:PLOG) =
     DateTime__bin bb v.Updatedat
     
     pPLOG__bin bb v.p
+    ()
 
 let bin__pPLOG (bi:BinIndexed):pPLOG =
     let bin,index = bi
@@ -1077,6 +1085,7 @@ let API__bin (bb:BytesBuilder) (v:API) =
     DateTime__bin bb v.Updatedat
     
     pAPI__bin bb v.p
+    ()
 
 let bin__pAPI (bi:BinIndexed):pAPI =
     let bin,index = bi
@@ -1215,6 +1224,7 @@ let FIELD__bin (bb:BytesBuilder) (v:FIELD) =
     DateTime__bin bb v.Updatedat
     
     pFIELD__bin bb v.p
+    ()
 
 let bin__pFIELD (bi:BinIndexed):pFIELD =
     let bin,index = bi
@@ -1391,6 +1401,7 @@ let HOSTCONFIG__bin (bb:BytesBuilder) (v:HOSTCONFIG) =
     DateTime__bin bb v.Updatedat
     
     pHOSTCONFIG__bin bb v.p
+    ()
 
 let bin__pHOSTCONFIG (bi:BinIndexed):pHOSTCONFIG =
     let bin,index = bi
@@ -1559,6 +1570,7 @@ let PROJECT__bin (bb:BytesBuilder) (v:PROJECT) =
     DateTime__bin bb v.Updatedat
     
     pPROJECT__bin bb v.p
+    ()
 
 let bin__pPROJECT (bi:BinIndexed):pPROJECT =
     let bin,index = bi
@@ -1697,6 +1709,7 @@ let TABLE__bin (bb:BytesBuilder) (v:TABLE) =
     DateTime__bin bb v.Updatedat
     
     pTABLE__bin bb v.p
+    ()
 
 let bin__pTABLE (bi:BinIndexed):pTABLE =
     let bin,index = bi
@@ -1833,6 +1846,7 @@ let COMP__bin (bb:BytesBuilder) (v:COMP) =
     DateTime__bin bb v.Updatedat
     
     pCOMP__bin bb v.p
+    ()
 
 let bin__pCOMP (bi:BinIndexed):pCOMP =
     let bin,index = bi
@@ -1987,6 +2001,7 @@ let PAGE__bin (bb:BytesBuilder) (v:PAGE) =
     DateTime__bin bb v.Updatedat
     
     pPAGE__bin bb v.p
+    ()
 
 let bin__pPAGE (bi:BinIndexed):pPAGE =
     let bin,index = bi
@@ -2161,6 +2176,7 @@ let TEMPLATE__bin (bb:BytesBuilder) (v:TEMPLATE) =
     DateTime__bin bb v.Updatedat
     
     pTEMPLATE__bin bb v.p
+    ()
 
 let bin__pTEMPLATE (bi:BinIndexed):pTEMPLATE =
     let bin,index = bi
@@ -2305,6 +2321,7 @@ let VARTYPE__bin (bb:BytesBuilder) (v:VARTYPE) =
     DateTime__bin bb v.Updatedat
     
     pVARTYPE__bin bb v.p
+    ()
 
 let bin__pVARTYPE (bi:BinIndexed):pVARTYPE =
     let bin,index = bi
@@ -2491,7 +2508,11 @@ let BOOK_update_transaction output (updater,suc,fail) (rcd:BOOK) =
 
 let BOOK_update output (rcd:BOOK) =
     rcd
-    |> BOOK_update_transaction output ((fun p -> ()),(fun (ctime,ctx) -> ()),(fun dte -> ()))
+    |> BOOK_update_transaction output (
+        (fun p -> ()),
+        (fun (ctime,ctx) -> Some rcd),
+        (fun dte -> None))
+    
 
 let BOOK_create_incremental_transaction output (suc,fail) p =
     let cid = Interlocked.Increment BOOK_id
@@ -2501,10 +2522,28 @@ let BOOK_create_incremental_transaction output (suc,fail) p =
     | Fail(eso,ctx) -> fail(eso,ctx)
 
 let BOOK_create output p =
-    BOOK_create_incremental_transaction output ((fun rcd -> ()),(fun (eso,ctx) -> ())) p
+    BOOK_create_incremental_transaction output (
+        (fun rcd -> Some rcd),
+        (fun (eso,ctx) -> None)) p
     
 
 let id__BOOKo id: BOOK option = id__rcd(conn,BOOK_fieldorders(),BOOK_table,db__BOOK) id
+
+let pBOOK_marshall = {
+    clone = pBOOK_clone
+    empty__data = pBOOK_empty
+    data__bin = pBOOK__bin
+    bin__data = bin__pBOOK
+    data__json = pBOOK__json
+    json__datao = json__pBOOKo }
+
+let BOOK_marshall = {
+    clone = BOOK_clone
+    empty__data = (fun _ -> BOOK_wrapper((0L,DateTime.MinValue,DateTime.MinValue,0L),pBOOK_empty()))
+    data__bin = BOOK__bin
+    bin__data = bin__BOOK
+    data__json = BOOK__json
+    json__datao = json__BOOKo }
 
 let BOOK_metadata = {
     fieldorders = BOOK_fieldorders
@@ -2521,6 +2560,7 @@ let BOOK_metadata = {
     json__po = json__pBOOKo
     rcd__json = BOOK__json
     json__rcdo = json__BOOKo
+    p_create = BOOK_create
     sql_update = BOOK_sql_update
     rcd_update = BOOK_update
     table = BOOK_table
@@ -2555,11 +2595,11 @@ let pEU__sps (p:pEU) =
     | Rdbms.SqlServer ->
         [|
             ("Caption", p.Caption) |> kvp__sqlparam
-            ("AuthType", p.AuthType) |> kvp__sqlparam |]
+            ("AuthType", EnumToValue p.AuthType) |> kvp__sqlparam |]
     | Rdbms.PostgreSql ->
         [|
             ("caption", p.Caption) |> kvp__sqlparam
-            ("authtype", p.AuthType) |> kvp__sqlparam |]
+            ("authtype", EnumToValue p.AuthType) |> kvp__sqlparam |]
 
 let db__EU = db__Rcd db__pEU
 
@@ -2589,7 +2629,11 @@ let EU_update_transaction output (updater,suc,fail) (rcd:EU) =
 
 let EU_update output (rcd:EU) =
     rcd
-    |> EU_update_transaction output ((fun p -> ()),(fun (ctime,ctx) -> ()),(fun dte -> ()))
+    |> EU_update_transaction output (
+        (fun p -> ()),
+        (fun (ctime,ctx) -> Some rcd),
+        (fun dte -> None))
+    
 
 let EU_create_incremental_transaction output (suc,fail) p =
     let cid = Interlocked.Increment EU_id
@@ -2599,10 +2643,28 @@ let EU_create_incremental_transaction output (suc,fail) p =
     | Fail(eso,ctx) -> fail(eso,ctx)
 
 let EU_create output p =
-    EU_create_incremental_transaction output ((fun rcd -> ()),(fun (eso,ctx) -> ())) p
+    EU_create_incremental_transaction output (
+        (fun rcd -> Some rcd),
+        (fun (eso,ctx) -> None)) p
     
 
 let id__EUo id: EU option = id__rcd(conn,EU_fieldorders(),EU_table,db__EU) id
+
+let pEU_marshall = {
+    clone = pEU_clone
+    empty__data = pEU_empty
+    data__bin = pEU__bin
+    bin__data = bin__pEU
+    data__json = pEU__json
+    json__datao = json__pEUo }
+
+let EU_marshall = {
+    clone = EU_clone
+    empty__data = (fun _ -> EU_wrapper((0L,DateTime.MinValue,DateTime.MinValue,0L),pEU_empty()))
+    data__bin = EU__bin
+    bin__data = bin__EU
+    data__json = EU__json
+    json__datao = json__EUo }
 
 let EU_metadata = {
     fieldorders = EU_fieldorders
@@ -2619,6 +2681,7 @@ let EU_metadata = {
     json__po = json__pEUo
     rcd__json = EU__json
     json__rcdo = json__EUo
+    p_create = EU_create
     sql_update = EU_sql_update
     rcd_update = EU_update
     table = EU_table
@@ -2702,7 +2765,11 @@ let FILE_update_transaction output (updater,suc,fail) (rcd:FILE) =
 
 let FILE_update output (rcd:FILE) =
     rcd
-    |> FILE_update_transaction output ((fun p -> ()),(fun (ctime,ctx) -> ()),(fun dte -> ()))
+    |> FILE_update_transaction output (
+        (fun p -> ()),
+        (fun (ctime,ctx) -> Some rcd),
+        (fun dte -> None))
+    
 
 let FILE_create_incremental_transaction output (suc,fail) p =
     let cid = Interlocked.Increment FILE_id
@@ -2712,10 +2779,28 @@ let FILE_create_incremental_transaction output (suc,fail) p =
     | Fail(eso,ctx) -> fail(eso,ctx)
 
 let FILE_create output p =
-    FILE_create_incremental_transaction output ((fun rcd -> ()),(fun (eso,ctx) -> ())) p
+    FILE_create_incremental_transaction output (
+        (fun rcd -> Some rcd),
+        (fun (eso,ctx) -> None)) p
     
 
 let id__FILEo id: FILE option = id__rcd(conn,FILE_fieldorders(),FILE_table,db__FILE) id
+
+let pFILE_marshall = {
+    clone = pFILE_clone
+    empty__data = pFILE_empty
+    data__bin = pFILE__bin
+    bin__data = bin__pFILE
+    data__json = pFILE__json
+    json__datao = json__pFILEo }
+
+let FILE_marshall = {
+    clone = FILE_clone
+    empty__data = (fun _ -> FILE_wrapper((0L,DateTime.MinValue,DateTime.MinValue,0L),pFILE_empty()))
+    data__bin = FILE__bin
+    bin__data = bin__FILE
+    data__json = FILE__json
+    json__datao = json__FILEo }
 
 let FILE_metadata = {
     fieldorders = FILE_fieldorders
@@ -2732,6 +2817,7 @@ let FILE_metadata = {
     json__po = json__pFILEo
     rcd__json = FILE__json
     json__rcdo = json__FILEo
+    p_create = FILE_create
     sql_update = FILE_sql_update
     rcd_update = FILE_update
     table = FILE_table
@@ -2807,7 +2893,11 @@ let FBIND_update_transaction output (updater,suc,fail) (rcd:FBIND) =
 
 let FBIND_update output (rcd:FBIND) =
     rcd
-    |> FBIND_update_transaction output ((fun p -> ()),(fun (ctime,ctx) -> ()),(fun dte -> ()))
+    |> FBIND_update_transaction output (
+        (fun p -> ()),
+        (fun (ctime,ctx) -> Some rcd),
+        (fun dte -> None))
+    
 
 let FBIND_create_incremental_transaction output (suc,fail) p =
     let cid = Interlocked.Increment FBIND_id
@@ -2817,10 +2907,28 @@ let FBIND_create_incremental_transaction output (suc,fail) p =
     | Fail(eso,ctx) -> fail(eso,ctx)
 
 let FBIND_create output p =
-    FBIND_create_incremental_transaction output ((fun rcd -> ()),(fun (eso,ctx) -> ())) p
+    FBIND_create_incremental_transaction output (
+        (fun rcd -> Some rcd),
+        (fun (eso,ctx) -> None)) p
     
 
 let id__FBINDo id: FBIND option = id__rcd(conn,FBIND_fieldorders(),FBIND_table,db__FBIND) id
+
+let pFBIND_marshall = {
+    clone = pFBIND_clone
+    empty__data = pFBIND_empty
+    data__bin = pFBIND__bin
+    bin__data = bin__pFBIND
+    data__json = pFBIND__json
+    json__datao = json__pFBINDo }
+
+let FBIND_marshall = {
+    clone = FBIND_clone
+    empty__data = (fun _ -> FBIND_wrapper((0L,DateTime.MinValue,DateTime.MinValue,0L),pFBIND_empty()))
+    data__bin = FBIND__bin
+    bin__data = bin__FBIND
+    data__json = FBIND__json
+    json__datao = json__FBINDo }
 
 let FBIND_metadata = {
     fieldorders = FBIND_fieldorders
@@ -2837,6 +2945,7 @@ let FBIND_metadata = {
     json__po = json__pFBINDo
     rcd__json = FBIND__json
     json__rcdo = json__FBINDo
+    p_create = FBIND_create
     sql_update = FBIND_sql_update
     rcd_update = FBIND_update
     table = FBIND_table
@@ -2883,9 +2992,9 @@ let pMOMENT__sps (p:pMOMENT) =
             ("Tags", p.Tags) |> kvp__sqlparam
             ("PreviewImgUrl", p.PreviewImgUrl) |> kvp__sqlparam
             ("Link", p.Link) |> kvp__sqlparam
-            ("Type", p.Type) |> kvp__sqlparam
-            ("State", p.State) |> kvp__sqlparam
-            ("MediaType", p.MediaType) |> kvp__sqlparam |]
+            ("Type", EnumToValue p.Type) |> kvp__sqlparam
+            ("State", EnumToValue p.State) |> kvp__sqlparam
+            ("MediaType", EnumToValue p.MediaType) |> kvp__sqlparam |]
     | Rdbms.PostgreSql ->
         [|
             ("title", p.Title) |> kvp__sqlparam
@@ -2894,9 +3003,9 @@ let pMOMENT__sps (p:pMOMENT) =
             ("tags", p.Tags) |> kvp__sqlparam
             ("previewimgurl", p.PreviewImgUrl) |> kvp__sqlparam
             ("link", p.Link) |> kvp__sqlparam
-            ("type", p.Type) |> kvp__sqlparam
-            ("state", p.State) |> kvp__sqlparam
-            ("mediatype", p.MediaType) |> kvp__sqlparam |]
+            ("type", EnumToValue p.Type) |> kvp__sqlparam
+            ("state", EnumToValue p.State) |> kvp__sqlparam
+            ("mediatype", EnumToValue p.MediaType) |> kvp__sqlparam |]
 
 let db__MOMENT = db__Rcd db__pMOMENT
 
@@ -2933,7 +3042,11 @@ let MOMENT_update_transaction output (updater,suc,fail) (rcd:MOMENT) =
 
 let MOMENT_update output (rcd:MOMENT) =
     rcd
-    |> MOMENT_update_transaction output ((fun p -> ()),(fun (ctime,ctx) -> ()),(fun dte -> ()))
+    |> MOMENT_update_transaction output (
+        (fun p -> ()),
+        (fun (ctime,ctx) -> Some rcd),
+        (fun dte -> None))
+    
 
 let MOMENT_create_incremental_transaction output (suc,fail) p =
     let cid = Interlocked.Increment MOMENT_id
@@ -2943,10 +3056,28 @@ let MOMENT_create_incremental_transaction output (suc,fail) p =
     | Fail(eso,ctx) -> fail(eso,ctx)
 
 let MOMENT_create output p =
-    MOMENT_create_incremental_transaction output ((fun rcd -> ()),(fun (eso,ctx) -> ())) p
+    MOMENT_create_incremental_transaction output (
+        (fun rcd -> Some rcd),
+        (fun (eso,ctx) -> None)) p
     
 
 let id__MOMENTo id: MOMENT option = id__rcd(conn,MOMENT_fieldorders(),MOMENT_table,db__MOMENT) id
+
+let pMOMENT_marshall = {
+    clone = pMOMENT_clone
+    empty__data = pMOMENT_empty
+    data__bin = pMOMENT__bin
+    bin__data = bin__pMOMENT
+    data__json = pMOMENT__json
+    json__datao = json__pMOMENTo }
+
+let MOMENT_marshall = {
+    clone = MOMENT_clone
+    empty__data = (fun _ -> MOMENT_wrapper((0L,DateTime.MinValue,DateTime.MinValue,0L),pMOMENT_empty()))
+    data__bin = MOMENT__bin
+    bin__data = bin__MOMENT
+    data__json = MOMENT__json
+    json__datao = json__MOMENTo }
 
 let MOMENT_metadata = {
     fieldorders = MOMENT_fieldorders
@@ -2963,6 +3094,7 @@ let MOMENT_metadata = {
     json__po = json__pMOMENTo
     rcd__json = MOMENT__json
     json__rcdo = json__MOMENTo
+    p_create = MOMENT_create
     sql_update = MOMENT_sql_update
     rcd_update = MOMENT_update
     table = MOMENT_table
@@ -3041,7 +3173,11 @@ let LOG_update_transaction output (updater,suc,fail) (rcd:LOG) =
 
 let LOG_update output (rcd:LOG) =
     rcd
-    |> LOG_update_transaction output ((fun p -> ()),(fun (ctime,ctx) -> ()),(fun dte -> ()))
+    |> LOG_update_transaction output (
+        (fun p -> ()),
+        (fun (ctime,ctx) -> Some rcd),
+        (fun dte -> None))
+    
 
 let LOG_create_incremental_transaction output (suc,fail) p =
     let cid = Interlocked.Increment LOG_id
@@ -3051,10 +3187,28 @@ let LOG_create_incremental_transaction output (suc,fail) p =
     | Fail(eso,ctx) -> fail(eso,ctx)
 
 let LOG_create output p =
-    LOG_create_incremental_transaction output ((fun rcd -> ()),(fun (eso,ctx) -> ())) p
+    LOG_create_incremental_transaction output (
+        (fun rcd -> Some rcd),
+        (fun (eso,ctx) -> None)) p
     
 
 let id__LOGo id: LOG option = id__rcd(conn,LOG_fieldorders(),LOG_table,db__LOG) id
+
+let pLOG_marshall = {
+    clone = pLOG_clone
+    empty__data = pLOG_empty
+    data__bin = pLOG__bin
+    bin__data = bin__pLOG
+    data__json = pLOG__json
+    json__datao = json__pLOGo }
+
+let LOG_marshall = {
+    clone = LOG_clone
+    empty__data = (fun _ -> LOG_wrapper((0L,DateTime.MinValue,DateTime.MinValue,0L),pLOG_empty()))
+    data__bin = LOG__bin
+    bin__data = bin__LOG
+    data__json = LOG__json
+    json__datao = json__LOGo }
 
 let LOG_metadata = {
     fieldorders = LOG_fieldorders
@@ -3071,6 +3225,7 @@ let LOG_metadata = {
     json__po = json__pLOGo
     rcd__json = LOG__json
     json__rcdo = json__LOGo
+    p_create = LOG_create
     sql_update = LOG_sql_update
     rcd_update = LOG_update
     table = LOG_table
@@ -3139,7 +3294,11 @@ let PLOG_update_transaction output (updater,suc,fail) (rcd:PLOG) =
 
 let PLOG_update output (rcd:PLOG) =
     rcd
-    |> PLOG_update_transaction output ((fun p -> ()),(fun (ctime,ctx) -> ()),(fun dte -> ()))
+    |> PLOG_update_transaction output (
+        (fun p -> ()),
+        (fun (ctime,ctx) -> Some rcd),
+        (fun dte -> None))
+    
 
 let PLOG_create_incremental_transaction output (suc,fail) p =
     let cid = Interlocked.Increment PLOG_id
@@ -3149,10 +3308,28 @@ let PLOG_create_incremental_transaction output (suc,fail) p =
     | Fail(eso,ctx) -> fail(eso,ctx)
 
 let PLOG_create output p =
-    PLOG_create_incremental_transaction output ((fun rcd -> ()),(fun (eso,ctx) -> ())) p
+    PLOG_create_incremental_transaction output (
+        (fun rcd -> Some rcd),
+        (fun (eso,ctx) -> None)) p
     
 
 let id__PLOGo id: PLOG option = id__rcd(conn,PLOG_fieldorders(),PLOG_table,db__PLOG) id
+
+let pPLOG_marshall = {
+    clone = pPLOG_clone
+    empty__data = pPLOG_empty
+    data__bin = pPLOG__bin
+    bin__data = bin__pPLOG
+    data__json = pPLOG__json
+    json__datao = json__pPLOGo }
+
+let PLOG_marshall = {
+    clone = PLOG_clone
+    empty__data = (fun _ -> PLOG_wrapper((0L,DateTime.MinValue,DateTime.MinValue,0L),pPLOG_empty()))
+    data__bin = PLOG__bin
+    bin__data = bin__PLOG
+    data__json = PLOG__json
+    json__datao = json__PLOGo }
 
 let PLOG_metadata = {
     fieldorders = PLOG_fieldorders
@@ -3169,6 +3346,7 @@ let PLOG_metadata = {
     json__po = json__pPLOGo
     rcd__json = PLOG__json
     json__rcdo = json__PLOGo
+    p_create = PLOG_create
     sql_update = PLOG_sql_update
     rcd_update = PLOG_update
     table = PLOG_table
@@ -3236,7 +3414,11 @@ let API_update_transaction output (updater,suc,fail) (rcd:API) =
 
 let API_update output (rcd:API) =
     rcd
-    |> API_update_transaction output ((fun p -> ()),(fun (ctime,ctx) -> ()),(fun dte -> ()))
+    |> API_update_transaction output (
+        (fun p -> ()),
+        (fun (ctime,ctx) -> Some rcd),
+        (fun dte -> None))
+    
 
 let API_create_incremental_transaction output (suc,fail) p =
     let cid = Interlocked.Increment API_id
@@ -3246,10 +3428,28 @@ let API_create_incremental_transaction output (suc,fail) p =
     | Fail(eso,ctx) -> fail(eso,ctx)
 
 let API_create output p =
-    API_create_incremental_transaction output ((fun rcd -> ()),(fun (eso,ctx) -> ())) p
+    API_create_incremental_transaction output (
+        (fun rcd -> Some rcd),
+        (fun (eso,ctx) -> None)) p
     
 
 let id__APIo id: API option = id__rcd(conn,API_fieldorders(),API_table,db__API) id
+
+let pAPI_marshall = {
+    clone = pAPI_clone
+    empty__data = pAPI_empty
+    data__bin = pAPI__bin
+    bin__data = bin__pAPI
+    data__json = pAPI__json
+    json__datao = json__pAPIo }
+
+let API_marshall = {
+    clone = API_clone
+    empty__data = (fun _ -> API_wrapper((0L,DateTime.MinValue,DateTime.MinValue,0L),pAPI_empty()))
+    data__bin = API__bin
+    bin__data = bin__API
+    data__json = API__json
+    json__datao = json__APIo }
 
 let API_metadata = {
     fieldorders = API_fieldorders
@@ -3266,6 +3466,7 @@ let API_metadata = {
     json__po = json__pAPIo
     rcd__json = API__json
     json__rcdo = json__APIo
+    p_create = API_create
     sql_update = API_sql_update
     rcd_update = API_update
     table = API_table
@@ -3305,7 +3506,7 @@ let pFIELD__sps (p:pFIELD) =
         [|
             ("Name", p.Name) |> kvp__sqlparam
             ("Desc", p.Desc) |> kvp__sqlparam
-            ("FieldType", p.FieldType) |> kvp__sqlparam
+            ("FieldType", EnumToValue p.FieldType) |> kvp__sqlparam
             ("Length", p.Length) |> kvp__sqlparam
             ("SelectLines", p.SelectLines) |> kvp__sqlparam
             ("Project", p.Project) |> kvp__sqlparam
@@ -3314,7 +3515,7 @@ let pFIELD__sps (p:pFIELD) =
         [|
             ("name", p.Name) |> kvp__sqlparam
             ("desc", p.Desc) |> kvp__sqlparam
-            ("fieldtype", p.FieldType) |> kvp__sqlparam
+            ("fieldtype", EnumToValue p.FieldType) |> kvp__sqlparam
             ("length", p.Length) |> kvp__sqlparam
             ("selectlines", p.SelectLines) |> kvp__sqlparam
             ("project", p.Project) |> kvp__sqlparam
@@ -3353,7 +3554,11 @@ let FIELD_update_transaction output (updater,suc,fail) (rcd:FIELD) =
 
 let FIELD_update output (rcd:FIELD) =
     rcd
-    |> FIELD_update_transaction output ((fun p -> ()),(fun (ctime,ctx) -> ()),(fun dte -> ()))
+    |> FIELD_update_transaction output (
+        (fun p -> ()),
+        (fun (ctime,ctx) -> Some rcd),
+        (fun dte -> None))
+    
 
 let FIELD_create_incremental_transaction output (suc,fail) p =
     let cid = Interlocked.Increment FIELD_id
@@ -3363,10 +3568,28 @@ let FIELD_create_incremental_transaction output (suc,fail) p =
     | Fail(eso,ctx) -> fail(eso,ctx)
 
 let FIELD_create output p =
-    FIELD_create_incremental_transaction output ((fun rcd -> ()),(fun (eso,ctx) -> ())) p
+    FIELD_create_incremental_transaction output (
+        (fun rcd -> Some rcd),
+        (fun (eso,ctx) -> None)) p
     
 
 let id__FIELDo id: FIELD option = id__rcd(conn,FIELD_fieldorders(),FIELD_table,db__FIELD) id
+
+let pFIELD_marshall = {
+    clone = pFIELD_clone
+    empty__data = pFIELD_empty
+    data__bin = pFIELD__bin
+    bin__data = bin__pFIELD
+    data__json = pFIELD__json
+    json__datao = json__pFIELDo }
+
+let FIELD_marshall = {
+    clone = FIELD_clone
+    empty__data = (fun _ -> FIELD_wrapper((0L,DateTime.MinValue,DateTime.MinValue,0L),pFIELD_empty()))
+    data__bin = FIELD__bin
+    bin__data = bin__FIELD
+    data__json = FIELD__json
+    json__datao = json__FIELDo }
 
 let FIELD_metadata = {
     fieldorders = FIELD_fieldorders
@@ -3383,6 +3606,7 @@ let FIELD_metadata = {
     json__po = json__pFIELDo
     rcd__json = FIELD__json
     json__rcdo = json__FIELDo
+    p_create = FIELD_create
     sql_update = FIELD_sql_update
     rcd_update = FIELD_update
     table = FIELD_table
@@ -3426,7 +3650,7 @@ let pHOSTCONFIG__sps (p:pHOSTCONFIG) =
     | Rdbms.SqlServer ->
         [|
             ("Hostname", p.Hostname) |> kvp__sqlparam
-            ("Database", p.Database) |> kvp__sqlparam
+            ("Database", EnumToValue p.Database) |> kvp__sqlparam
             ("DatabaseName", p.DatabaseName) |> kvp__sqlparam
             ("DatabaseConn", p.DatabaseConn) |> kvp__sqlparam
             ("DirVs", p.DirVs) |> kvp__sqlparam
@@ -3435,7 +3659,7 @@ let pHOSTCONFIG__sps (p:pHOSTCONFIG) =
     | Rdbms.PostgreSql ->
         [|
             ("hostname", p.Hostname) |> kvp__sqlparam
-            ("database", p.Database) |> kvp__sqlparam
+            ("database", EnumToValue p.Database) |> kvp__sqlparam
             ("databasename", p.DatabaseName) |> kvp__sqlparam
             ("databaseconn", p.DatabaseConn) |> kvp__sqlparam
             ("dirvs", p.DirVs) |> kvp__sqlparam
@@ -3475,7 +3699,11 @@ let HOSTCONFIG_update_transaction output (updater,suc,fail) (rcd:HOSTCONFIG) =
 
 let HOSTCONFIG_update output (rcd:HOSTCONFIG) =
     rcd
-    |> HOSTCONFIG_update_transaction output ((fun p -> ()),(fun (ctime,ctx) -> ()),(fun dte -> ()))
+    |> HOSTCONFIG_update_transaction output (
+        (fun p -> ()),
+        (fun (ctime,ctx) -> Some rcd),
+        (fun dte -> None))
+    
 
 let HOSTCONFIG_create_incremental_transaction output (suc,fail) p =
     let cid = Interlocked.Increment HOSTCONFIG_id
@@ -3485,10 +3713,28 @@ let HOSTCONFIG_create_incremental_transaction output (suc,fail) p =
     | Fail(eso,ctx) -> fail(eso,ctx)
 
 let HOSTCONFIG_create output p =
-    HOSTCONFIG_create_incremental_transaction output ((fun rcd -> ()),(fun (eso,ctx) -> ())) p
+    HOSTCONFIG_create_incremental_transaction output (
+        (fun rcd -> Some rcd),
+        (fun (eso,ctx) -> None)) p
     
 
 let id__HOSTCONFIGo id: HOSTCONFIG option = id__rcd(conn,HOSTCONFIG_fieldorders(),HOSTCONFIG_table,db__HOSTCONFIG) id
+
+let pHOSTCONFIG_marshall = {
+    clone = pHOSTCONFIG_clone
+    empty__data = pHOSTCONFIG_empty
+    data__bin = pHOSTCONFIG__bin
+    bin__data = bin__pHOSTCONFIG
+    data__json = pHOSTCONFIG__json
+    json__datao = json__pHOSTCONFIGo }
+
+let HOSTCONFIG_marshall = {
+    clone = HOSTCONFIG_clone
+    empty__data = (fun _ -> HOSTCONFIG_wrapper((0L,DateTime.MinValue,DateTime.MinValue,0L),pHOSTCONFIG_empty()))
+    data__bin = HOSTCONFIG__bin
+    bin__data = bin__HOSTCONFIG
+    data__json = HOSTCONFIG__json
+    json__datao = json__HOSTCONFIGo }
 
 let HOSTCONFIG_metadata = {
     fieldorders = HOSTCONFIG_fieldorders
@@ -3505,6 +3751,7 @@ let HOSTCONFIG_metadata = {
     json__po = json__pHOSTCONFIGo
     rcd__json = HOSTCONFIG__json
     json__rcdo = json__HOSTCONFIGo
+    p_create = HOSTCONFIG_create
     sql_update = HOSTCONFIG_sql_update
     rcd_update = HOSTCONFIG_update
     table = HOSTCONFIG_table
@@ -3581,7 +3828,11 @@ let PROJECT_update_transaction output (updater,suc,fail) (rcd:PROJECT) =
 
 let PROJECT_update output (rcd:PROJECT) =
     rcd
-    |> PROJECT_update_transaction output ((fun p -> ()),(fun (ctime,ctx) -> ()),(fun dte -> ()))
+    |> PROJECT_update_transaction output (
+        (fun p -> ()),
+        (fun (ctime,ctx) -> Some rcd),
+        (fun dte -> None))
+    
 
 let PROJECT_create_incremental_transaction output (suc,fail) p =
     let cid = Interlocked.Increment PROJECT_id
@@ -3591,10 +3842,28 @@ let PROJECT_create_incremental_transaction output (suc,fail) p =
     | Fail(eso,ctx) -> fail(eso,ctx)
 
 let PROJECT_create output p =
-    PROJECT_create_incremental_transaction output ((fun rcd -> ()),(fun (eso,ctx) -> ())) p
+    PROJECT_create_incremental_transaction output (
+        (fun rcd -> Some rcd),
+        (fun (eso,ctx) -> None)) p
     
 
 let id__PROJECTo id: PROJECT option = id__rcd(conn,PROJECT_fieldorders(),PROJECT_table,db__PROJECT) id
+
+let pPROJECT_marshall = {
+    clone = pPROJECT_clone
+    empty__data = pPROJECT_empty
+    data__bin = pPROJECT__bin
+    bin__data = bin__pPROJECT
+    data__json = pPROJECT__json
+    json__datao = json__pPROJECTo }
+
+let PROJECT_marshall = {
+    clone = PROJECT_clone
+    empty__data = (fun _ -> PROJECT_wrapper((0L,DateTime.MinValue,DateTime.MinValue,0L),pPROJECT_empty()))
+    data__bin = PROJECT__bin
+    bin__data = bin__PROJECT
+    data__json = PROJECT__json
+    json__datao = json__PROJECTo }
 
 let PROJECT_metadata = {
     fieldorders = PROJECT_fieldorders
@@ -3611,6 +3880,7 @@ let PROJECT_metadata = {
     json__po = json__pPROJECTo
     rcd__json = PROJECT__json
     json__rcdo = json__PROJECTo
+    p_create = PROJECT_create
     sql_update = PROJECT_sql_update
     rcd_update = PROJECT_update
     table = PROJECT_table
@@ -3683,7 +3953,11 @@ let TABLE_update_transaction output (updater,suc,fail) (rcd:TABLE) =
 
 let TABLE_update output (rcd:TABLE) =
     rcd
-    |> TABLE_update_transaction output ((fun p -> ()),(fun (ctime,ctx) -> ()),(fun dte -> ()))
+    |> TABLE_update_transaction output (
+        (fun p -> ()),
+        (fun (ctime,ctx) -> Some rcd),
+        (fun dte -> None))
+    
 
 let TABLE_create_incremental_transaction output (suc,fail) p =
     let cid = Interlocked.Increment TABLE_id
@@ -3693,10 +3967,28 @@ let TABLE_create_incremental_transaction output (suc,fail) p =
     | Fail(eso,ctx) -> fail(eso,ctx)
 
 let TABLE_create output p =
-    TABLE_create_incremental_transaction output ((fun rcd -> ()),(fun (eso,ctx) -> ())) p
+    TABLE_create_incremental_transaction output (
+        (fun rcd -> Some rcd),
+        (fun (eso,ctx) -> None)) p
     
 
 let id__TABLEo id: TABLE option = id__rcd(conn,TABLE_fieldorders(),TABLE_table,db__TABLE) id
+
+let pTABLE_marshall = {
+    clone = pTABLE_clone
+    empty__data = pTABLE_empty
+    data__bin = pTABLE__bin
+    bin__data = bin__pTABLE
+    data__json = pTABLE__json
+    json__datao = json__pTABLEo }
+
+let TABLE_marshall = {
+    clone = TABLE_clone
+    empty__data = (fun _ -> TABLE_wrapper((0L,DateTime.MinValue,DateTime.MinValue,0L),pTABLE_empty()))
+    data__bin = TABLE__bin
+    bin__data = bin__TABLE
+    data__json = TABLE__json
+    json__datao = json__TABLEo }
 
 let TABLE_metadata = {
     fieldorders = TABLE_fieldorders
@@ -3713,6 +4005,7 @@ let TABLE_metadata = {
     json__po = json__pTABLEo
     rcd__json = TABLE__json
     json__rcdo = json__TABLEo
+    p_create = TABLE_create
     sql_update = TABLE_sql_update
     rcd_update = TABLE_update
     table = TABLE_table
@@ -3785,7 +4078,11 @@ let COMP_update_transaction output (updater,suc,fail) (rcd:COMP) =
 
 let COMP_update output (rcd:COMP) =
     rcd
-    |> COMP_update_transaction output ((fun p -> ()),(fun (ctime,ctx) -> ()),(fun dte -> ()))
+    |> COMP_update_transaction output (
+        (fun p -> ()),
+        (fun (ctime,ctx) -> Some rcd),
+        (fun dte -> None))
+    
 
 let COMP_create_incremental_transaction output (suc,fail) p =
     let cid = Interlocked.Increment COMP_id
@@ -3795,10 +4092,28 @@ let COMP_create_incremental_transaction output (suc,fail) p =
     | Fail(eso,ctx) -> fail(eso,ctx)
 
 let COMP_create output p =
-    COMP_create_incremental_transaction output ((fun rcd -> ()),(fun (eso,ctx) -> ())) p
+    COMP_create_incremental_transaction output (
+        (fun rcd -> Some rcd),
+        (fun (eso,ctx) -> None)) p
     
 
 let id__COMPo id: COMP option = id__rcd(conn,COMP_fieldorders(),COMP_table,db__COMP) id
+
+let pCOMP_marshall = {
+    clone = pCOMP_clone
+    empty__data = pCOMP_empty
+    data__bin = pCOMP__bin
+    bin__data = bin__pCOMP
+    data__json = pCOMP__json
+    json__datao = json__pCOMPo }
+
+let COMP_marshall = {
+    clone = COMP_clone
+    empty__data = (fun _ -> COMP_wrapper((0L,DateTime.MinValue,DateTime.MinValue,0L),pCOMP_empty()))
+    data__bin = COMP__bin
+    bin__data = bin__COMP
+    data__json = COMP__json
+    json__datao = json__COMPo }
 
 let COMP_metadata = {
     fieldorders = COMP_fieldorders
@@ -3815,6 +4130,7 @@ let COMP_metadata = {
     json__po = json__pCOMPo
     rcd__json = COMP__json
     json__rcdo = json__COMPo
+    p_create = COMP_create
     sql_update = COMP_sql_update
     rcd_update = COMP_update
     table = COMP_table
@@ -3907,7 +4223,11 @@ let PAGE_update_transaction output (updater,suc,fail) (rcd:PAGE) =
 
 let PAGE_update output (rcd:PAGE) =
     rcd
-    |> PAGE_update_transaction output ((fun p -> ()),(fun (ctime,ctx) -> ()),(fun dte -> ()))
+    |> PAGE_update_transaction output (
+        (fun p -> ()),
+        (fun (ctime,ctx) -> Some rcd),
+        (fun dte -> None))
+    
 
 let PAGE_create_incremental_transaction output (suc,fail) p =
     let cid = Interlocked.Increment PAGE_id
@@ -3917,10 +4237,28 @@ let PAGE_create_incremental_transaction output (suc,fail) p =
     | Fail(eso,ctx) -> fail(eso,ctx)
 
 let PAGE_create output p =
-    PAGE_create_incremental_transaction output ((fun rcd -> ()),(fun (eso,ctx) -> ())) p
+    PAGE_create_incremental_transaction output (
+        (fun rcd -> Some rcd),
+        (fun (eso,ctx) -> None)) p
     
 
 let id__PAGEo id: PAGE option = id__rcd(conn,PAGE_fieldorders(),PAGE_table,db__PAGE) id
+
+let pPAGE_marshall = {
+    clone = pPAGE_clone
+    empty__data = pPAGE_empty
+    data__bin = pPAGE__bin
+    bin__data = bin__pPAGE
+    data__json = pPAGE__json
+    json__datao = json__pPAGEo }
+
+let PAGE_marshall = {
+    clone = PAGE_clone
+    empty__data = (fun _ -> PAGE_wrapper((0L,DateTime.MinValue,DateTime.MinValue,0L),pPAGE_empty()))
+    data__bin = PAGE__bin
+    bin__data = bin__PAGE
+    data__json = PAGE__json
+    json__datao = json__PAGEo }
 
 let PAGE_metadata = {
     fieldorders = PAGE_fieldorders
@@ -3937,6 +4275,7 @@ let PAGE_metadata = {
     json__po = json__pPAGEo
     rcd__json = PAGE__json
     json__rcdo = json__PAGEo
+    p_create = PAGE_create
     sql_update = PAGE_sql_update
     rcd_update = PAGE_update
     table = PAGE_table
@@ -4014,7 +4353,11 @@ let TEMPLATE_update_transaction output (updater,suc,fail) (rcd:TEMPLATE) =
 
 let TEMPLATE_update output (rcd:TEMPLATE) =
     rcd
-    |> TEMPLATE_update_transaction output ((fun p -> ()),(fun (ctime,ctx) -> ()),(fun dte -> ()))
+    |> TEMPLATE_update_transaction output (
+        (fun p -> ()),
+        (fun (ctime,ctx) -> Some rcd),
+        (fun dte -> None))
+    
 
 let TEMPLATE_create_incremental_transaction output (suc,fail) p =
     let cid = Interlocked.Increment TEMPLATE_id
@@ -4024,10 +4367,28 @@ let TEMPLATE_create_incremental_transaction output (suc,fail) p =
     | Fail(eso,ctx) -> fail(eso,ctx)
 
 let TEMPLATE_create output p =
-    TEMPLATE_create_incremental_transaction output ((fun rcd -> ()),(fun (eso,ctx) -> ())) p
+    TEMPLATE_create_incremental_transaction output (
+        (fun rcd -> Some rcd),
+        (fun (eso,ctx) -> None)) p
     
 
 let id__TEMPLATEo id: TEMPLATE option = id__rcd(conn,TEMPLATE_fieldorders(),TEMPLATE_table,db__TEMPLATE) id
+
+let pTEMPLATE_marshall = {
+    clone = pTEMPLATE_clone
+    empty__data = pTEMPLATE_empty
+    data__bin = pTEMPLATE__bin
+    bin__data = bin__pTEMPLATE
+    data__json = pTEMPLATE__json
+    json__datao = json__pTEMPLATEo }
+
+let TEMPLATE_marshall = {
+    clone = TEMPLATE_clone
+    empty__data = (fun _ -> TEMPLATE_wrapper((0L,DateTime.MinValue,DateTime.MinValue,0L),pTEMPLATE_empty()))
+    data__bin = TEMPLATE__bin
+    bin__data = bin__TEMPLATE
+    data__json = TEMPLATE__json
+    json__datao = json__TEMPLATEo }
 
 let TEMPLATE_metadata = {
     fieldorders = TEMPLATE_fieldorders
@@ -4044,6 +4405,7 @@ let TEMPLATE_metadata = {
     json__po = json__pTEMPLATEo
     rcd__json = TEMPLATE__json
     json__rcdo = json__TEMPLATEo
+    p_create = TEMPLATE_create
     sql_update = TEMPLATE_sql_update
     rcd_update = TEMPLATE_update
     table = TEMPLATE_table
@@ -4084,7 +4446,7 @@ let pVARTYPE__sps (p:pVARTYPE) =
             ("Name", p.Name) |> kvp__sqlparam
             ("Type", p.Type) |> kvp__sqlparam
             ("Val", p.Val) |> kvp__sqlparam
-            ("BindType", p.BindType) |> kvp__sqlparam
+            ("BindType", EnumToValue p.BindType) |> kvp__sqlparam
             ("Bind", p.Bind) |> kvp__sqlparam
             ("Project", p.Project) |> kvp__sqlparam |]
     | Rdbms.PostgreSql ->
@@ -4092,7 +4454,7 @@ let pVARTYPE__sps (p:pVARTYPE) =
             ("name", p.Name) |> kvp__sqlparam
             ("type", p.Type) |> kvp__sqlparam
             ("val", p.Val) |> kvp__sqlparam
-            ("bindtype", p.BindType) |> kvp__sqlparam
+            ("bindtype", EnumToValue p.BindType) |> kvp__sqlparam
             ("bind", p.Bind) |> kvp__sqlparam
             ("project", p.Project) |> kvp__sqlparam |]
 
@@ -4128,7 +4490,11 @@ let VARTYPE_update_transaction output (updater,suc,fail) (rcd:VARTYPE) =
 
 let VARTYPE_update output (rcd:VARTYPE) =
     rcd
-    |> VARTYPE_update_transaction output ((fun p -> ()),(fun (ctime,ctx) -> ()),(fun dte -> ()))
+    |> VARTYPE_update_transaction output (
+        (fun p -> ()),
+        (fun (ctime,ctx) -> Some rcd),
+        (fun dte -> None))
+    
 
 let VARTYPE_create_incremental_transaction output (suc,fail) p =
     let cid = Interlocked.Increment VARTYPE_id
@@ -4138,10 +4504,28 @@ let VARTYPE_create_incremental_transaction output (suc,fail) p =
     | Fail(eso,ctx) -> fail(eso,ctx)
 
 let VARTYPE_create output p =
-    VARTYPE_create_incremental_transaction output ((fun rcd -> ()),(fun (eso,ctx) -> ())) p
+    VARTYPE_create_incremental_transaction output (
+        (fun rcd -> Some rcd),
+        (fun (eso,ctx) -> None)) p
     
 
 let id__VARTYPEo id: VARTYPE option = id__rcd(conn,VARTYPE_fieldorders(),VARTYPE_table,db__VARTYPE) id
+
+let pVARTYPE_marshall = {
+    clone = pVARTYPE_clone
+    empty__data = pVARTYPE_empty
+    data__bin = pVARTYPE__bin
+    bin__data = bin__pVARTYPE
+    data__json = pVARTYPE__json
+    json__datao = json__pVARTYPEo }
+
+let VARTYPE_marshall = {
+    clone = VARTYPE_clone
+    empty__data = (fun _ -> VARTYPE_wrapper((0L,DateTime.MinValue,DateTime.MinValue,0L),pVARTYPE_empty()))
+    data__bin = VARTYPE__bin
+    bin__data = bin__VARTYPE
+    data__json = VARTYPE__json
+    json__datao = json__VARTYPEo }
 
 let VARTYPE_metadata = {
     fieldorders = VARTYPE_fieldorders
@@ -4158,6 +4542,7 @@ let VARTYPE_metadata = {
     json__po = json__pVARTYPEo
     rcd__json = VARTYPE__json
     json__rcdo = json__VARTYPEo
+    p_create = VARTYPE_create
     sql_update = VARTYPE_sql_update
     rcd_update = VARTYPE_update
     table = VARTYPE_table

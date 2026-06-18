@@ -19,6 +19,7 @@ open Util.Bin
 open Util.Text
 open Util.Json
 open Util.Orm
+open Util.Math
 open Util.Stat
 
 open PreOrm
@@ -38,6 +39,7 @@ let EuComplex_empty(): EuComplex =
 let EuComplex__bin (bb:BytesBuilder) (v:EuComplex) =
 
     EU__bin bb v.eu
+    ()
 
 let bin__EuComplex (bi:BinIndexed):EuComplex =
     let bin,index = bi
@@ -89,6 +91,14 @@ let EuComplex_clone src =
     EuComplex__bin bb src
     bin__EuComplex (bb.bytes(),ref 0)
 
+let EuComplex_marshall = {
+    clone = EuComplex_clone
+    empty__data = EuComplex_empty
+    data__bin = EuComplex__bin
+    bin__data = bin__EuComplex
+    data__json = EuComplex__json
+    json__datao = json__EuComplexo }
+
 // [FBindComplex] Structure
 
 let FBindComplex_empty(): FBindComplex =
@@ -101,6 +111,7 @@ let FBindComplex__bin (bb:BytesBuilder) (v:FBindComplex) =
 
     FILE__bin bb v.file
     FBIND__bin bb v.fbind
+    ()
 
 let bin__FBindComplex (bi:BinIndexed):FBindComplex =
     let bin,index = bi
@@ -169,6 +180,14 @@ let FBindComplex_clone src =
     FBindComplex__bin bb src
     bin__FBindComplex (bb.bytes(),ref 0)
 
+let FBindComplex_marshall = {
+    clone = FBindComplex_clone
+    empty__data = FBindComplex_empty
+    data__bin = FBindComplex__bin
+    bin__data = bin__FBindComplex
+    data__json = FBindComplex__json
+    json__datao = json__FBindComplexo }
+
 // [MomentComplex] Structure
 
 let MomentComplex_empty(): MomentComplex =
@@ -182,6 +201,7 @@ let MomentComplex__bin (bb:BytesBuilder) (v:MomentComplex) =
     
     array__bin (FBindComplex__bin) bb v.fbxs
     MOMENT__bin bb v.m
+    ()
 
 let bin__MomentComplex (bi:BinIndexed):MomentComplex =
     let bin,index = bi
@@ -250,6 +270,14 @@ let MomentComplex_clone src =
     MomentComplex__bin bb src
     bin__MomentComplex (bb.bytes(),ref 0)
 
+let MomentComplex_marshall = {
+    clone = MomentComplex_clone
+    empty__data = MomentComplex_empty
+    data__bin = MomentComplex__bin
+    bin__data = bin__MomentComplex
+    data__json = MomentComplex__json
+    json__datao = json__MomentComplexo }
+
 // [TableComplex] Structure
 
 let TableComplex_empty(): TableComplex =
@@ -263,6 +291,7 @@ let TableComplex__bin (bb:BytesBuilder) (v:TableComplex) =
     
     ModDictStr__bin (FIELD__bin) bb v.fields
     TABLE__bin bb v.table
+    ()
 
 let bin__TableComplex (bi:BinIndexed):TableComplex =
     let bin,index = bi
@@ -331,6 +360,14 @@ let TableComplex_clone src =
     TableComplex__bin bb src
     bin__TableComplex (bb.bytes(),ref 0)
 
+let TableComplex_marshall = {
+    clone = TableComplex_clone
+    empty__data = TableComplex_empty
+    data__bin = TableComplex__bin
+    bin__data = bin__TableComplex
+    data__json = TableComplex__json
+    json__datao = json__TableComplexo }
+
 // [CompComplex] Structure
 
 let CompComplex_empty(): CompComplex =
@@ -347,6 +384,7 @@ let CompComplex__bin (bb:BytesBuilder) (v:CompComplex) =
     
     ModDictStr__bin (VARTYPE__bin) bb v.props
     COMP__bin bb v.comp
+    ()
 
 let bin__CompComplex (bi:BinIndexed):CompComplex =
     let bin,index = bi
@@ -432,6 +470,14 @@ let CompComplex_clone src =
     CompComplex__bin bb src
     bin__CompComplex (bb.bytes(),ref 0)
 
+let CompComplex_marshall = {
+    clone = CompComplex_clone
+    empty__data = CompComplex_empty
+    data__bin = CompComplex__bin
+    bin__data = bin__CompComplex
+    data__json = CompComplex__json
+    json__datao = json__CompComplexo }
+
 // [PageComplex] Structure
 
 let PageComplex_empty(): PageComplex =
@@ -448,6 +494,7 @@ let PageComplex__bin (bb:BytesBuilder) (v:PageComplex) =
     
     ModDictStr__bin (VARTYPE__bin) bb v.props
     PAGE__bin bb v.page
+    ()
 
 let bin__PageComplex (bi:BinIndexed):PageComplex =
     let bin,index = bi
@@ -533,6 +580,14 @@ let PageComplex_clone src =
     PageComplex__bin bb src
     bin__PageComplex (bb.bytes(),ref 0)
 
+let PageComplex_marshall = {
+    clone = PageComplex_clone
+    empty__data = PageComplex_empty
+    data__bin = PageComplex__bin
+    bin__data = bin__PageComplex
+    data__json = PageComplex__json
+    json__datao = json__PageComplexo }
+
 // [ApiComplex] Structure
 
 let ApiComplex_empty(): ApiComplex =
@@ -549,6 +604,7 @@ let ApiComplex__bin (bb:BytesBuilder) (v:ApiComplex) =
     
     ModDictStr__bin (VARTYPE__bin) bb v.reps
     API__bin bb v.api
+    ()
 
 let bin__ApiComplex (bi:BinIndexed):ApiComplex =
     let bin,index = bi
@@ -634,6 +690,14 @@ let ApiComplex_clone src =
     ApiComplex__bin bb src
     bin__ApiComplex (bb.bytes(),ref 0)
 
+let ApiComplex_marshall = {
+    clone = ApiComplex_clone
+    empty__data = ApiComplex_empty
+    data__bin = ApiComplex__bin
+    bin__data = bin__ApiComplex
+    data__json = ApiComplex__json
+    json__datao = json__ApiComplexo }
+
 // [ProjectComplex] Structure
 
 let ProjectComplex_empty(): ProjectComplex =
@@ -662,6 +726,7 @@ let ProjectComplex__bin (bb:BytesBuilder) (v:ProjectComplex) =
     
     ModDictStr__bin (ApiComplex__bin) bb v.apixs
     PROJECT__bin bb v.project
+    ()
 
 let bin__ProjectComplex (bi:BinIndexed):ProjectComplex =
     let bin,index = bi
@@ -815,6 +880,14 @@ let ProjectComplex_clone src =
     ProjectComplex__bin bb src
     bin__ProjectComplex (bb.bytes(),ref 0)
 
+let ProjectComplex_marshall = {
+    clone = ProjectComplex_clone
+    empty__data = ProjectComplex_empty
+    data__bin = ProjectComplex__bin
+    bin__data = bin__ProjectComplex
+    data__json = ProjectComplex__json
+    json__datao = json__ProjectComplexo }
+
 // [Fact] Structure
 
 let Fact_empty(): Fact =Fact.Undefined
@@ -824,6 +897,7 @@ let Fact__bin (bb:BytesBuilder) (v:Fact) =
     match v with
     | Fact.Undefined ->
         int32__bin bb 0
+    ()
 
 let bin__Fact (bi:BinIndexed):Fact =
     let bin,index = bi
@@ -866,6 +940,14 @@ let Fact_clone src =
     Fact__bin bb src
     bin__Fact (bb.bytes(),ref 0)
 
+let Fact_marshall = {
+    clone = Fact_clone
+    empty__data = Fact_empty
+    data__bin = Fact__bin
+    bin__data = bin__Fact
+    data__json = Fact__json
+    json__datao = json__Facto }
+
 // [RuntimeData] Structure
 
 let RuntimeData_empty(): RuntimeData =
@@ -889,6 +971,7 @@ let RuntimeData__bin (bb:BytesBuilder) (v:RuntimeData) =
     ModDictInt64__bin (MomentComplex__bin) bb v.mxs
     
     List__bin (BOOK__bin) bb v.books
+    ()
 
 let bin__RuntimeData (bi:BinIndexed):RuntimeData =
     let bin,index = bi
@@ -1008,6 +1091,14 @@ let RuntimeData_clone src =
     RuntimeData__bin bb src
     bin__RuntimeData (bb.bytes(),ref 0)
 
+let RuntimeData_marshall = {
+    clone = RuntimeData_clone
+    empty__data = RuntimeData_empty
+    data__bin = RuntimeData__bin
+    bin__data = bin__RuntimeData
+    data__json = RuntimeData__json
+    json__datao = json__RuntimeDatao }
+
 // [ClientRuntime] Structure
 
 let ClientRuntime_empty(): ClientRuntime =
@@ -1018,6 +1109,7 @@ let ClientRuntime_empty(): ClientRuntime =
 let ClientRuntime__bin (bb:BytesBuilder) (v:ClientRuntime) =
 
     int32__bin bb v.version
+    ()
 
 let bin__ClientRuntime (bi:BinIndexed):ClientRuntime =
     let bin,index = bi
@@ -1069,6 +1161,14 @@ let ClientRuntime_clone src =
     ClientRuntime__bin bb src
     bin__ClientRuntime (bb.bytes(),ref 0)
 
+let ClientRuntime_marshall = {
+    clone = ClientRuntime_clone
+    empty__data = ClientRuntime_empty
+    data__bin = ClientRuntime__bin
+    bin__data = bin__ClientRuntime
+    data__json = ClientRuntime__json
+    json__datao = json__ClientRuntimeo }
+
 // [Msg] Structure
 
 let Msg_empty(): Msg =Msg.Heartbeat
@@ -1091,6 +1191,7 @@ let Msg__bin (bb:BytesBuilder) (v:Msg) =
         int32__bin bb 4
         
         array__bin (Fact__bin) bb v
+    ()
 
 let bin__Msg (bi:BinIndexed):Msg =
     let bin,index = bi
@@ -1177,6 +1278,14 @@ let Msg_clone src =
     Msg__bin bb src
     bin__Msg (bb.bytes(),ref 0)
 
+let Msg_marshall = {
+    clone = Msg_clone
+    empty__data = Msg_empty
+    data__bin = Msg__bin
+    bin__data = bin__Msg
+    data__json = Msg__json
+    json__datao = json__Msgo }
+
 // [Er] Structure
 
 let Er_empty(): Er =Er.ApiNotExists
@@ -1194,6 +1303,7 @@ let Er__bin (bb:BytesBuilder) (v:Er) =
         int32__bin bb 3
     | Er.Internal ->
         int32__bin bb 4
+    ()
 
 let bin__Er (bi:BinIndexed):Er =
     let bin,index = bi
@@ -1251,3 +1361,11 @@ let Er_clone src =
     let bb = new BytesBuilder()
     Er__bin bb src
     bin__Er (bb.bytes(),ref 0)
+
+let Er_marshall = {
+    clone = Er_clone
+    empty__data = Er_empty
+    data__bin = Er__bin
+    bin__data = bin__Er
+    data__json = Er__json
+    json__datao = json__Ero }

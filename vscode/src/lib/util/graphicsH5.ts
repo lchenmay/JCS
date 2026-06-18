@@ -75,6 +75,29 @@ export const drawPath =
   }
 }
 
+export const fillPath = 
+    (g:CanvasRenderingContext2D) => 
+    (color:string) => 
+    (points:Graphics.Vct2[]) => {
+
+  if(points.length > 1){
+    g.fillStyle = color
+ 
+    let pt = points[0]
+
+    g.beginPath()
+    g.moveTo(pt.x,pt.y)
+
+    for(let i = 1; i < points.length; i++){
+        pt = points[i]
+        g.lineTo(pt.x,pt.y)
+    }
+
+    g.closePath()
+    g.fill()
+  }
+}
+
 export const drawRect = 
     (g:CanvasRenderingContext2D) => 
     (color:string) => 
@@ -119,4 +142,25 @@ export function getMousePosition(canvas:any,event: MouseEvent): Graphics.Vct2 {
     const x = event.clientX - rect.left
     const y = event.clientY - rect.top
     return { x, y }
+}
+
+export const drawText = 
+    (g:CanvasRenderingContext2D) => 
+    (color:string,bkcolor:string,px:number,py:number) => 
+    (text:string,x:number,y:number) => {
+    
+    const metrics = g.measureText(text)
+    const width = metrics.width
+    const height = metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent
+
+    g.fillStyle = bkcolor
+    g.fillRect(
+        x - px,
+        y - py - metrics.actualBoundingBoxAscent, 
+        width + px + px, 
+        height + py + py)
+
+    g.fillStyle = color
+    g.fillText(text, x, y)
+
 }

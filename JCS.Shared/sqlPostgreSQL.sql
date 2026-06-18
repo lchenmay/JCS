@@ -1,25 +1,53 @@
--- [Ca_Book] ----------------------
+-- [ca_book] ----------------------
+
+-- [ca_book] ----------------------
 
 DO $$
 DECLARE
     condition boolean;
 BEGIN
-    condition := (SELECT EXISTS(SELECT * FROM information_schema.tables WHERE table_name = 'ca_book'));
+    condition := (SELECT EXISTS(
+        SELECT 1 FROM information_schema.tables 
+        WHERE table_name = 'ca_book' 
+          AND table_schema = 'public'
+    ));
 
     IF not condition THEN
-    CREATE TABLE ca_book (id BIGINT NOT NULL
-        ,createdat BIGINT NOT NULL
-        ,updatedat BIGINT NOT NULL
-        ,sort BIGINT NOT NULL
-        ,"caption" VARCHAR(64)
-        ,"email" VARCHAR(64)
-        ,"message" TEXT);
-
-   END IF;
+        CREATE TABLE "ca_book" (
+            id BIGINT NOT NULL
+            ,createdat BIGINT NOT NULL
+            ,updatedat BIGINT NOT NULL
+            ,sort BIGINT NOT NULL
+            ,"caption" VARCHAR(64)
+            ,"email" VARCHAR(64)
+            ,"message" TEXT
+            ,CONSTRAINT "pk_ca_book" PRIMARY KEY (id)
+        );
+    END IF;
 END $$;
 
 
--- [Ca_Book.Caption] -------------
+-- PostgreSQL: Dropping obsolete fields -----------
+DO $$ 
+DECLARE
+    fn TEXT;
+BEGIN
+    FOR fn IN 
+        SELECT column_name 
+        FROM information_schema.columns 
+        WHERE table_name = 'ca_book' 
+          AND table_schema = 'public' 
+          AND column_name <> ALL(ARRAY['id', 'createdat', 'updatedat', 'sort', 'caption', 'email', 'message'])
+    LOOP
+        -- 对应 PRINT 'Dropping ' + @tname + '.' + @fn
+        
+        -- 对应 EXEC sp_executesql @sql (format %I 对应 QUOTENAME)
+        EXECUTE format('ALTER TABLE %I DROP COLUMN %I', 'ca_book', fn);
+    END LOOP;
+END $$;
+
+
+-- [ca_book.Caption] -------------
 
 
 DO $$
@@ -33,7 +61,7 @@ BEGIN
     END IF;
 END $$;
 
--- [Ca_Book.Email] -------------
+-- [ca_book.Email] -------------
 
 
 DO $$
@@ -47,7 +75,7 @@ BEGIN
     END IF;
 END $$;
 
--- [Ca_Book.Message] -------------
+-- [ca_book.Message] -------------
 
 
 DO $$
@@ -60,27 +88,55 @@ BEGIN
         ALTER TABLE ca_book ADD "message" text;
     END IF;
 END $$;
--- [Ca_EndUser] ----------------------
+-- [ca_enduser] ----------------------
+
+-- [ca_enduser] ----------------------
 
 DO $$
 DECLARE
     condition boolean;
 BEGIN
-    condition := (SELECT EXISTS(SELECT * FROM information_schema.tables WHERE table_name = 'ca_enduser'));
+    condition := (SELECT EXISTS(
+        SELECT 1 FROM information_schema.tables 
+        WHERE table_name = 'ca_enduser' 
+          AND table_schema = 'public'
+    ));
 
     IF not condition THEN
-    CREATE TABLE ca_enduser (id BIGINT NOT NULL
-        ,createdat BIGINT NOT NULL
-        ,updatedat BIGINT NOT NULL
-        ,sort BIGINT NOT NULL
-        ,"caption" VARCHAR(64)
-        ,"authtype" INT);
-
-   END IF;
+        CREATE TABLE "ca_enduser" (
+            id BIGINT NOT NULL
+            ,createdat BIGINT NOT NULL
+            ,updatedat BIGINT NOT NULL
+            ,sort BIGINT NOT NULL
+            ,"caption" VARCHAR(64)
+            ,"authtype" INT
+            ,CONSTRAINT "pk_ca_enduser" PRIMARY KEY (id)
+        );
+    END IF;
 END $$;
 
 
--- [Ca_EndUser.Caption] -------------
+-- PostgreSQL: Dropping obsolete fields -----------
+DO $$ 
+DECLARE
+    fn TEXT;
+BEGIN
+    FOR fn IN 
+        SELECT column_name 
+        FROM information_schema.columns 
+        WHERE table_name = 'ca_enduser' 
+          AND table_schema = 'public' 
+          AND column_name <> ALL(ARRAY['id', 'createdat', 'updatedat', 'sort', 'caption', 'authtype'])
+    LOOP
+        -- 对应 PRINT 'Dropping ' + @tname + '.' + @fn
+        
+        -- 对应 EXEC sp_executesql @sql (format %I 对应 QUOTENAME)
+        EXECUTE format('ALTER TABLE %I DROP COLUMN %I', 'ca_enduser', fn);
+    END LOOP;
+END $$;
+
+
+-- [ca_enduser.Caption] -------------
 
 
 DO $$
@@ -94,7 +150,7 @@ BEGIN
     END IF;
 END $$;
 
--- [Ca_EndUser.AuthType] -------------
+-- [ca_enduser.AuthType] -------------
 
 
 DO $$
@@ -107,31 +163,59 @@ BEGIN
         ALTER TABLE ca_enduser ADD "authtype" int;
     END IF;
 END $$;
--- [Ca_File] ----------------------
+-- [ca_file] ----------------------
+
+-- [ca_file] ----------------------
 
 DO $$
 DECLARE
     condition boolean;
 BEGIN
-    condition := (SELECT EXISTS(SELECT * FROM information_schema.tables WHERE table_name = 'ca_file'));
+    condition := (SELECT EXISTS(
+        SELECT 1 FROM information_schema.tables 
+        WHERE table_name = 'ca_file' 
+          AND table_schema = 'public'
+    ));
 
     IF not condition THEN
-    CREATE TABLE ca_file (id BIGINT NOT NULL
-        ,createdat BIGINT NOT NULL
-        ,updatedat BIGINT NOT NULL
-        ,sort BIGINT NOT NULL
-        ,"caption" TEXT
-        ,"desc" TEXT
-        ,"suffix" VARCHAR(4)
-        ,"size" BIGINT
-        ,"thumbnail" 
-        ,"owner" BIGINT);
-
-   END IF;
+        CREATE TABLE "ca_file" (
+            id BIGINT NOT NULL
+            ,createdat BIGINT NOT NULL
+            ,updatedat BIGINT NOT NULL
+            ,sort BIGINT NOT NULL
+            ,"caption" TEXT
+            ,"desc" TEXT
+            ,"suffix" VARCHAR(4)
+            ,"size" BIGINT
+            ,"thumbnail" BYTEA
+            ,"owner" BIGINT
+            ,CONSTRAINT "pk_ca_file" PRIMARY KEY (id)
+        );
+    END IF;
 END $$;
 
 
--- [Ca_File.Caption] -------------
+-- PostgreSQL: Dropping obsolete fields -----------
+DO $$ 
+DECLARE
+    fn TEXT;
+BEGIN
+    FOR fn IN 
+        SELECT column_name 
+        FROM information_schema.columns 
+        WHERE table_name = 'ca_file' 
+          AND table_schema = 'public' 
+          AND column_name <> ALL(ARRAY['id', 'createdat', 'updatedat', 'sort', 'caption', 'desc', 'suffix', 'size', 'thumbnail', 'owner'])
+    LOOP
+        -- 对应 PRINT 'Dropping ' + @tname + '.' + @fn
+        
+        -- 对应 EXEC sp_executesql @sql (format %I 对应 QUOTENAME)
+        EXECUTE format('ALTER TABLE %I DROP COLUMN %I', 'ca_file', fn);
+    END LOOP;
+END $$;
+
+
+-- [ca_file.Caption] -------------
 
 
 DO $$
@@ -145,7 +229,7 @@ BEGIN
     END IF;
 END $$;
 
--- [Ca_File.Desc] -------------
+-- [ca_file.Desc] -------------
 
 
 DO $$
@@ -159,7 +243,7 @@ BEGIN
     END IF;
 END $$;
 
--- [Ca_File.Suffix] -------------
+-- [ca_file.Suffix] -------------
 
 
 DO $$
@@ -173,7 +257,7 @@ BEGIN
     END IF;
 END $$;
 
--- [Ca_File.Size] -------------
+-- [ca_file.Size] -------------
 
 
 DO $$
@@ -187,7 +271,7 @@ BEGIN
     END IF;
 END $$;
 
--- [Ca_File.Thumbnail] -------------
+-- [ca_file.Thumbnail] -------------
 
 
 DO $$
@@ -197,11 +281,11 @@ BEGIN
     condition := (SELECT EXISTS(SELECT column_name FROM information_schema.columns WHERE table_name='ca_file' AND column_name='thumbnail'));
 
     IF not condition THEN
-        ALTER TABLE ca_file ADD "thumbnail" ;
+        ALTER TABLE ca_file ADD "thumbnail" bytea;
     END IF;
 END $$;
 
--- [Ca_File.Owner] -------------
+-- [ca_file.Owner] -------------
 
 
 DO $$
@@ -214,28 +298,56 @@ BEGIN
         ALTER TABLE ca_file ADD "owner" bigint;
     END IF;
 END $$;
--- [Social_FileBind] ----------------------
+-- [social_filebind] ----------------------
+
+-- [social_filebind] ----------------------
 
 DO $$
 DECLARE
     condition boolean;
 BEGIN
-    condition := (SELECT EXISTS(SELECT * FROM information_schema.tables WHERE table_name = 'social_filebind'));
+    condition := (SELECT EXISTS(
+        SELECT 1 FROM information_schema.tables 
+        WHERE table_name = 'social_filebind' 
+          AND table_schema = 'public'
+    ));
 
     IF not condition THEN
-    CREATE TABLE social_filebind (id BIGINT NOT NULL
-        ,createdat BIGINT NOT NULL
-        ,updatedat BIGINT NOT NULL
-        ,sort BIGINT NOT NULL
-        ,"file" BIGINT
-        ,"moment" BIGINT
-        ,"desc" TEXT);
-
-   END IF;
+        CREATE TABLE "social_filebind" (
+            id BIGINT NOT NULL
+            ,createdat BIGINT NOT NULL
+            ,updatedat BIGINT NOT NULL
+            ,sort BIGINT NOT NULL
+            ,"file" BIGINT
+            ,"moment" BIGINT
+            ,"desc" TEXT
+            ,CONSTRAINT "pk_social_filebind" PRIMARY KEY (id)
+        );
+    END IF;
 END $$;
 
 
--- [Social_FileBind.File] -------------
+-- PostgreSQL: Dropping obsolete fields -----------
+DO $$ 
+DECLARE
+    fn TEXT;
+BEGIN
+    FOR fn IN 
+        SELECT column_name 
+        FROM information_schema.columns 
+        WHERE table_name = 'social_filebind' 
+          AND table_schema = 'public' 
+          AND column_name <> ALL(ARRAY['id', 'createdat', 'updatedat', 'sort', 'file', 'moment', 'desc'])
+    LOOP
+        -- 对应 PRINT 'Dropping ' + @tname + '.' + @fn
+        
+        -- 对应 EXEC sp_executesql @sql (format %I 对应 QUOTENAME)
+        EXECUTE format('ALTER TABLE %I DROP COLUMN %I', 'social_filebind', fn);
+    END LOOP;
+END $$;
+
+
+-- [social_filebind.File] -------------
 
 
 DO $$
@@ -249,7 +361,7 @@ BEGIN
     END IF;
 END $$;
 
--- [Social_FileBind.Moment] -------------
+-- [social_filebind.Moment] -------------
 
 
 DO $$
@@ -263,7 +375,7 @@ BEGIN
     END IF;
 END $$;
 
--- [Social_FileBind.Desc] -------------
+-- [social_filebind.Desc] -------------
 
 
 DO $$
@@ -276,34 +388,62 @@ BEGIN
         ALTER TABLE social_filebind ADD "desc" text;
     END IF;
 END $$;
--- [Social_Moment] ----------------------
+-- [social_moment] ----------------------
+
+-- [social_moment] ----------------------
 
 DO $$
 DECLARE
     condition boolean;
 BEGIN
-    condition := (SELECT EXISTS(SELECT * FROM information_schema.tables WHERE table_name = 'social_moment'));
+    condition := (SELECT EXISTS(
+        SELECT 1 FROM information_schema.tables 
+        WHERE table_name = 'social_moment' 
+          AND table_schema = 'public'
+    ));
 
     IF not condition THEN
-    CREATE TABLE social_moment (id BIGINT NOT NULL
-        ,createdat BIGINT NOT NULL
-        ,updatedat BIGINT NOT NULL
-        ,sort BIGINT NOT NULL
-        ,"title" TEXT
-        ,"summary" TEXT
-        ,"fulltext" TEXT
-        ,"tags" TEXT
-        ,"previewimgurl" TEXT
-        ,"link" TEXT
-        ,"type" INT
-        ,"state" INT
-        ,"mediatype" INT);
-
-   END IF;
+        CREATE TABLE "social_moment" (
+            id BIGINT NOT NULL
+            ,createdat BIGINT NOT NULL
+            ,updatedat BIGINT NOT NULL
+            ,sort BIGINT NOT NULL
+            ,"title" TEXT
+            ,"summary" TEXT
+            ,"fulltext" TEXT
+            ,"tags" TEXT
+            ,"previewimgurl" TEXT
+            ,"link" TEXT
+            ,"type" INT
+            ,"state" INT
+            ,"mediatype" INT
+            ,CONSTRAINT "pk_social_moment" PRIMARY KEY (id)
+        );
+    END IF;
 END $$;
 
 
--- [Social_Moment.Title] -------------
+-- PostgreSQL: Dropping obsolete fields -----------
+DO $$ 
+DECLARE
+    fn TEXT;
+BEGIN
+    FOR fn IN 
+        SELECT column_name 
+        FROM information_schema.columns 
+        WHERE table_name = 'social_moment' 
+          AND table_schema = 'public' 
+          AND column_name <> ALL(ARRAY['id', 'createdat', 'updatedat', 'sort', 'title', 'summary', 'fulltext', 'tags', 'previewimgurl', 'link', 'type', 'state', 'mediatype'])
+    LOOP
+        -- 对应 PRINT 'Dropping ' + @tname + '.' + @fn
+        
+        -- 对应 EXEC sp_executesql @sql (format %I 对应 QUOTENAME)
+        EXECUTE format('ALTER TABLE %I DROP COLUMN %I', 'social_moment', fn);
+    END LOOP;
+END $$;
+
+
+-- [social_moment.Title] -------------
 
 
 DO $$
@@ -317,7 +457,7 @@ BEGIN
     END IF;
 END $$;
 
--- [Social_Moment.Summary] -------------
+-- [social_moment.Summary] -------------
 
 
 DO $$
@@ -331,7 +471,7 @@ BEGIN
     END IF;
 END $$;
 
--- [Social_Moment.FullText] -------------
+-- [social_moment.FullText] -------------
 
 
 DO $$
@@ -345,7 +485,7 @@ BEGIN
     END IF;
 END $$;
 
--- [Social_Moment.Tags] -------------
+-- [social_moment.Tags] -------------
 
 
 DO $$
@@ -359,7 +499,7 @@ BEGIN
     END IF;
 END $$;
 
--- [Social_Moment.PreviewImgUrl] -------------
+-- [social_moment.PreviewImgUrl] -------------
 
 
 DO $$
@@ -373,7 +513,7 @@ BEGIN
     END IF;
 END $$;
 
--- [Social_Moment.Link] -------------
+-- [social_moment.Link] -------------
 
 
 DO $$
@@ -387,7 +527,7 @@ BEGIN
     END IF;
 END $$;
 
--- [Social_Moment.Type] -------------
+-- [social_moment.Type] -------------
 
 
 DO $$
@@ -401,7 +541,7 @@ BEGIN
     END IF;
 END $$;
 
--- [Social_Moment.State] -------------
+-- [social_moment.State] -------------
 
 
 DO $$
@@ -415,7 +555,7 @@ BEGIN
     END IF;
 END $$;
 
--- [Social_Moment.MediaType] -------------
+-- [social_moment.MediaType] -------------
 
 
 DO $$
@@ -428,28 +568,56 @@ BEGIN
         ALTER TABLE social_moment ADD "mediatype" int;
     END IF;
 END $$;
--- [Sys_Log] ----------------------
+-- [sys_log] ----------------------
+
+-- [sys_log] ----------------------
 
 DO $$
 DECLARE
     condition boolean;
 BEGIN
-    condition := (SELECT EXISTS(SELECT * FROM information_schema.tables WHERE table_name = 'sys_log'));
+    condition := (SELECT EXISTS(
+        SELECT 1 FROM information_schema.tables 
+        WHERE table_name = 'sys_log' 
+          AND table_schema = 'public'
+    ));
 
     IF not condition THEN
-    CREATE TABLE sys_log (id BIGINT NOT NULL
-        ,createdat BIGINT NOT NULL
-        ,updatedat BIGINT NOT NULL
-        ,sort BIGINT NOT NULL
-        ,"location" TEXT
-        ,"content" TEXT
-        ,"sql" TEXT);
-
-   END IF;
+        CREATE TABLE "sys_log" (
+            id BIGINT NOT NULL
+            ,createdat BIGINT NOT NULL
+            ,updatedat BIGINT NOT NULL
+            ,sort BIGINT NOT NULL
+            ,"location" TEXT
+            ,"content" TEXT
+            ,"sql" TEXT
+            ,CONSTRAINT "pk_sys_log" PRIMARY KEY (id)
+        );
+    END IF;
 END $$;
 
 
--- [Sys_Log.Location] -------------
+-- PostgreSQL: Dropping obsolete fields -----------
+DO $$ 
+DECLARE
+    fn TEXT;
+BEGIN
+    FOR fn IN 
+        SELECT column_name 
+        FROM information_schema.columns 
+        WHERE table_name = 'sys_log' 
+          AND table_schema = 'public' 
+          AND column_name <> ALL(ARRAY['id', 'createdat', 'updatedat', 'sort', 'location', 'content', 'sql'])
+    LOOP
+        -- 对应 PRINT 'Dropping ' + @tname + '.' + @fn
+        
+        -- 对应 EXEC sp_executesql @sql (format %I 对应 QUOTENAME)
+        EXECUTE format('ALTER TABLE %I DROP COLUMN %I', 'sys_log', fn);
+    END LOOP;
+END $$;
+
+
+-- [sys_log.Location] -------------
 
 
 DO $$
@@ -463,7 +631,7 @@ BEGIN
     END IF;
 END $$;
 
--- [Sys_Log.Content] -------------
+-- [sys_log.Content] -------------
 
 
 DO $$
@@ -477,7 +645,7 @@ BEGIN
     END IF;
 END $$;
 
--- [Sys_Log.Sql] -------------
+-- [sys_log.Sql] -------------
 
 
 DO $$
@@ -490,27 +658,55 @@ BEGIN
         ALTER TABLE sys_log ADD "sql" text;
     END IF;
 END $$;
--- [Sys_PageLog] ----------------------
+-- [sys_pagelog] ----------------------
+
+-- [sys_pagelog] ----------------------
 
 DO $$
 DECLARE
     condition boolean;
 BEGIN
-    condition := (SELECT EXISTS(SELECT * FROM information_schema.tables WHERE table_name = 'sys_pagelog'));
+    condition := (SELECT EXISTS(
+        SELECT 1 FROM information_schema.tables 
+        WHERE table_name = 'sys_pagelog' 
+          AND table_schema = 'public'
+    ));
 
     IF not condition THEN
-    CREATE TABLE sys_pagelog (id BIGINT NOT NULL
-        ,createdat BIGINT NOT NULL
-        ,updatedat BIGINT NOT NULL
-        ,sort BIGINT NOT NULL
-        ,"ip" VARCHAR(64)
-        ,"request" TEXT);
-
-   END IF;
+        CREATE TABLE "sys_pagelog" (
+            id BIGINT NOT NULL
+            ,createdat BIGINT NOT NULL
+            ,updatedat BIGINT NOT NULL
+            ,sort BIGINT NOT NULL
+            ,"ip" VARCHAR(64)
+            ,"request" TEXT
+            ,CONSTRAINT "pk_sys_pagelog" PRIMARY KEY (id)
+        );
+    END IF;
 END $$;
 
 
--- [Sys_PageLog.Ip] -------------
+-- PostgreSQL: Dropping obsolete fields -----------
+DO $$ 
+DECLARE
+    fn TEXT;
+BEGIN
+    FOR fn IN 
+        SELECT column_name 
+        FROM information_schema.columns 
+        WHERE table_name = 'sys_pagelog' 
+          AND table_schema = 'public' 
+          AND column_name <> ALL(ARRAY['id', 'createdat', 'updatedat', 'sort', 'ip', 'request'])
+    LOOP
+        -- 对应 PRINT 'Dropping ' + @tname + '.' + @fn
+        
+        -- 对应 EXEC sp_executesql @sql (format %I 对应 QUOTENAME)
+        EXECUTE format('ALTER TABLE %I DROP COLUMN %I', 'sys_pagelog', fn);
+    END LOOP;
+END $$;
+
+
+-- [sys_pagelog.Ip] -------------
 
 
 DO $$
@@ -524,7 +720,7 @@ BEGIN
     END IF;
 END $$;
 
--- [Sys_PageLog.Request] -------------
+-- [sys_pagelog.Request] -------------
 
 
 DO $$
@@ -537,27 +733,55 @@ BEGIN
         ALTER TABLE sys_pagelog ADD "request" text;
     END IF;
 END $$;
--- [Ts_Api] ----------------------
+-- [ts_api] ----------------------
+
+-- [ts_api] ----------------------
 
 DO $$
 DECLARE
     condition boolean;
 BEGIN
-    condition := (SELECT EXISTS(SELECT * FROM information_schema.tables WHERE table_name = 'ts_api'));
+    condition := (SELECT EXISTS(
+        SELECT 1 FROM information_schema.tables 
+        WHERE table_name = 'ts_api' 
+          AND table_schema = 'public'
+    ));
 
     IF not condition THEN
-    CREATE TABLE ts_api (id BIGINT NOT NULL
-        ,createdat BIGINT NOT NULL
-        ,updatedat BIGINT NOT NULL
-        ,sort BIGINT NOT NULL
-        ,"name" VARCHAR(64)
-        ,"project" BIGINT);
-
-   END IF;
+        CREATE TABLE "ts_api" (
+            id BIGINT NOT NULL
+            ,createdat BIGINT NOT NULL
+            ,updatedat BIGINT NOT NULL
+            ,sort BIGINT NOT NULL
+            ,"name" VARCHAR(64)
+            ,"project" BIGINT
+            ,CONSTRAINT "pk_ts_api" PRIMARY KEY (id)
+        );
+    END IF;
 END $$;
 
 
--- [Ts_Api.Name] -------------
+-- PostgreSQL: Dropping obsolete fields -----------
+DO $$ 
+DECLARE
+    fn TEXT;
+BEGIN
+    FOR fn IN 
+        SELECT column_name 
+        FROM information_schema.columns 
+        WHERE table_name = 'ts_api' 
+          AND table_schema = 'public' 
+          AND column_name <> ALL(ARRAY['id', 'createdat', 'updatedat', 'sort', 'name', 'project'])
+    LOOP
+        -- 对应 PRINT 'Dropping ' + @tname + '.' + @fn
+        
+        -- 对应 EXEC sp_executesql @sql (format %I 对应 QUOTENAME)
+        EXECUTE format('ALTER TABLE %I DROP COLUMN %I', 'ts_api', fn);
+    END LOOP;
+END $$;
+
+
+-- [ts_api.Name] -------------
 
 
 DO $$
@@ -571,7 +795,7 @@ BEGIN
     END IF;
 END $$;
 
--- [Ts_Api.Project] -------------
+-- [ts_api.Project] -------------
 
 
 DO $$
@@ -584,32 +808,60 @@ BEGIN
         ALTER TABLE ts_api ADD "project" bigint;
     END IF;
 END $$;
--- [Ts_Field] ----------------------
+-- [ts_field] ----------------------
+
+-- [ts_field] ----------------------
 
 DO $$
 DECLARE
     condition boolean;
 BEGIN
-    condition := (SELECT EXISTS(SELECT * FROM information_schema.tables WHERE table_name = 'ts_field'));
+    condition := (SELECT EXISTS(
+        SELECT 1 FROM information_schema.tables 
+        WHERE table_name = 'ts_field' 
+          AND table_schema = 'public'
+    ));
 
     IF not condition THEN
-    CREATE TABLE ts_field (id BIGINT NOT NULL
-        ,createdat BIGINT NOT NULL
-        ,updatedat BIGINT NOT NULL
-        ,sort BIGINT NOT NULL
-        ,"name" VARCHAR(64)
-        ,"desc" TEXT
-        ,"fieldtype" INT
-        ,"length" BIGINT
-        ,"selectlines" TEXT
-        ,"project" BIGINT
-        ,"table" BIGINT);
-
-   END IF;
+        CREATE TABLE "ts_field" (
+            id BIGINT NOT NULL
+            ,createdat BIGINT NOT NULL
+            ,updatedat BIGINT NOT NULL
+            ,sort BIGINT NOT NULL
+            ,"name" VARCHAR(64)
+            ,"desc" TEXT
+            ,"fieldtype" INT
+            ,"length" BIGINT
+            ,"selectlines" TEXT
+            ,"project" BIGINT
+            ,"table" BIGINT
+            ,CONSTRAINT "pk_ts_field" PRIMARY KEY (id)
+        );
+    END IF;
 END $$;
 
 
--- [Ts_Field.Name] -------------
+-- PostgreSQL: Dropping obsolete fields -----------
+DO $$ 
+DECLARE
+    fn TEXT;
+BEGIN
+    FOR fn IN 
+        SELECT column_name 
+        FROM information_schema.columns 
+        WHERE table_name = 'ts_field' 
+          AND table_schema = 'public' 
+          AND column_name <> ALL(ARRAY['id', 'createdat', 'updatedat', 'sort', 'name', 'desc', 'fieldtype', 'length', 'selectlines', 'project', 'table'])
+    LOOP
+        -- 对应 PRINT 'Dropping ' + @tname + '.' + @fn
+        
+        -- 对应 EXEC sp_executesql @sql (format %I 对应 QUOTENAME)
+        EXECUTE format('ALTER TABLE %I DROP COLUMN %I', 'ts_field', fn);
+    END LOOP;
+END $$;
+
+
+-- [ts_field.Name] -------------
 
 
 DO $$
@@ -623,7 +875,7 @@ BEGIN
     END IF;
 END $$;
 
--- [Ts_Field.Desc] -------------
+-- [ts_field.Desc] -------------
 
 
 DO $$
@@ -637,7 +889,7 @@ BEGIN
     END IF;
 END $$;
 
--- [Ts_Field.FieldType] -------------
+-- [ts_field.FieldType] -------------
 
 
 DO $$
@@ -651,7 +903,7 @@ BEGIN
     END IF;
 END $$;
 
--- [Ts_Field.Length] -------------
+-- [ts_field.Length] -------------
 
 
 DO $$
@@ -665,7 +917,7 @@ BEGIN
     END IF;
 END $$;
 
--- [Ts_Field.SelectLines] -------------
+-- [ts_field.SelectLines] -------------
 
 
 DO $$
@@ -679,7 +931,7 @@ BEGIN
     END IF;
 END $$;
 
--- [Ts_Field.Project] -------------
+-- [ts_field.Project] -------------
 
 
 DO $$
@@ -693,7 +945,7 @@ BEGIN
     END IF;
 END $$;
 
--- [Ts_Field.Table] -------------
+-- [ts_field.Table] -------------
 
 
 DO $$
@@ -706,32 +958,60 @@ BEGIN
         ALTER TABLE ts_field ADD "table" bigint;
     END IF;
 END $$;
--- [Ts_HostConfig] ----------------------
+-- [ts_hostconfig] ----------------------
+
+-- [ts_hostconfig] ----------------------
 
 DO $$
 DECLARE
     condition boolean;
 BEGIN
-    condition := (SELECT EXISTS(SELECT * FROM information_schema.tables WHERE table_name = 'ts_hostconfig'));
+    condition := (SELECT EXISTS(
+        SELECT 1 FROM information_schema.tables 
+        WHERE table_name = 'ts_hostconfig' 
+          AND table_schema = 'public'
+    ));
 
     IF not condition THEN
-    CREATE TABLE ts_hostconfig (id BIGINT NOT NULL
-        ,createdat BIGINT NOT NULL
-        ,updatedat BIGINT NOT NULL
-        ,sort BIGINT NOT NULL
-        ,"hostname" VARCHAR(64)
-        ,"database" INT
-        ,"databasename" VARCHAR(64)
-        ,"databaseconn" VARCHAR(64)
-        ,"dirvs" VARCHAR(64)
-        ,"dirvscodeweb" VARCHAR(64)
-        ,"project" BIGINT);
-
-   END IF;
+        CREATE TABLE "ts_hostconfig" (
+            id BIGINT NOT NULL
+            ,createdat BIGINT NOT NULL
+            ,updatedat BIGINT NOT NULL
+            ,sort BIGINT NOT NULL
+            ,"hostname" VARCHAR(64)
+            ,"database" INT
+            ,"databasename" VARCHAR(64)
+            ,"databaseconn" VARCHAR(64)
+            ,"dirvs" VARCHAR(64)
+            ,"dirvscodeweb" VARCHAR(64)
+            ,"project" BIGINT
+            ,CONSTRAINT "pk_ts_hostconfig" PRIMARY KEY (id)
+        );
+    END IF;
 END $$;
 
 
--- [Ts_HostConfig.Hostname] -------------
+-- PostgreSQL: Dropping obsolete fields -----------
+DO $$ 
+DECLARE
+    fn TEXT;
+BEGIN
+    FOR fn IN 
+        SELECT column_name 
+        FROM information_schema.columns 
+        WHERE table_name = 'ts_hostconfig' 
+          AND table_schema = 'public' 
+          AND column_name <> ALL(ARRAY['id', 'createdat', 'updatedat', 'sort', 'hostname', 'database', 'databasename', 'databaseconn', 'dirvs', 'dirvscodeweb', 'project'])
+    LOOP
+        -- 对应 PRINT 'Dropping ' + @tname + '.' + @fn
+        
+        -- 对应 EXEC sp_executesql @sql (format %I 对应 QUOTENAME)
+        EXECUTE format('ALTER TABLE %I DROP COLUMN %I', 'ts_hostconfig', fn);
+    END LOOP;
+END $$;
+
+
+-- [ts_hostconfig.Hostname] -------------
 
 
 DO $$
@@ -745,7 +1025,7 @@ BEGIN
     END IF;
 END $$;
 
--- [Ts_HostConfig.Database] -------------
+-- [ts_hostconfig.Database] -------------
 
 
 DO $$
@@ -759,7 +1039,7 @@ BEGIN
     END IF;
 END $$;
 
--- [Ts_HostConfig.DatabaseName] -------------
+-- [ts_hostconfig.DatabaseName] -------------
 
 
 DO $$
@@ -773,7 +1053,7 @@ BEGIN
     END IF;
 END $$;
 
--- [Ts_HostConfig.DatabaseConn] -------------
+-- [ts_hostconfig.DatabaseConn] -------------
 
 
 DO $$
@@ -787,7 +1067,7 @@ BEGIN
     END IF;
 END $$;
 
--- [Ts_HostConfig.DirVs] -------------
+-- [ts_hostconfig.DirVs] -------------
 
 
 DO $$
@@ -801,7 +1081,7 @@ BEGIN
     END IF;
 END $$;
 
--- [Ts_HostConfig.DirVsCodeWeb] -------------
+-- [ts_hostconfig.DirVsCodeWeb] -------------
 
 
 DO $$
@@ -815,7 +1095,7 @@ BEGIN
     END IF;
 END $$;
 
--- [Ts_HostConfig.Project] -------------
+-- [ts_hostconfig.Project] -------------
 
 
 DO $$
@@ -828,28 +1108,56 @@ BEGIN
         ALTER TABLE ts_hostconfig ADD "project" bigint;
     END IF;
 END $$;
--- [Ts_Project] ----------------------
+-- [ts_project] ----------------------
+
+-- [ts_project] ----------------------
 
 DO $$
 DECLARE
     condition boolean;
 BEGIN
-    condition := (SELECT EXISTS(SELECT * FROM information_schema.tables WHERE table_name = 'ts_project'));
+    condition := (SELECT EXISTS(
+        SELECT 1 FROM information_schema.tables 
+        WHERE table_name = 'ts_project' 
+          AND table_schema = 'public'
+    ));
 
     IF not condition THEN
-    CREATE TABLE ts_project (id BIGINT NOT NULL
-        ,createdat BIGINT NOT NULL
-        ,updatedat BIGINT NOT NULL
-        ,sort BIGINT NOT NULL
-        ,"code" VARCHAR(64)
-        ,"caption" VARCHAR(256)
-        ,"typesessionuser" VARCHAR(64));
-
-   END IF;
+        CREATE TABLE "ts_project" (
+            id BIGINT NOT NULL
+            ,createdat BIGINT NOT NULL
+            ,updatedat BIGINT NOT NULL
+            ,sort BIGINT NOT NULL
+            ,"code" VARCHAR(64)
+            ,"caption" VARCHAR(256)
+            ,"typesessionuser" VARCHAR(64)
+            ,CONSTRAINT "pk_ts_project" PRIMARY KEY (id)
+        );
+    END IF;
 END $$;
 
 
--- [Ts_Project.Code] -------------
+-- PostgreSQL: Dropping obsolete fields -----------
+DO $$ 
+DECLARE
+    fn TEXT;
+BEGIN
+    FOR fn IN 
+        SELECT column_name 
+        FROM information_schema.columns 
+        WHERE table_name = 'ts_project' 
+          AND table_schema = 'public' 
+          AND column_name <> ALL(ARRAY['id', 'createdat', 'updatedat', 'sort', 'code', 'caption', 'typesessionuser'])
+    LOOP
+        -- 对应 PRINT 'Dropping ' + @tname + '.' + @fn
+        
+        -- 对应 EXEC sp_executesql @sql (format %I 对应 QUOTENAME)
+        EXECUTE format('ALTER TABLE %I DROP COLUMN %I', 'ts_project', fn);
+    END LOOP;
+END $$;
+
+
+-- [ts_project.Code] -------------
 
 
 DO $$
@@ -863,7 +1171,7 @@ BEGIN
     END IF;
 END $$;
 
--- [Ts_Project.Caption] -------------
+-- [ts_project.Caption] -------------
 
 
 DO $$
@@ -877,7 +1185,7 @@ BEGIN
     END IF;
 END $$;
 
--- [Ts_Project.TypeSessionUser] -------------
+-- [ts_project.TypeSessionUser] -------------
 
 
 DO $$
@@ -890,28 +1198,56 @@ BEGIN
         ALTER TABLE ts_project ADD "typesessionuser" varchar(64);
     END IF;
 END $$;
--- [Ts_Table] ----------------------
+-- [ts_table] ----------------------
+
+-- [ts_table] ----------------------
 
 DO $$
 DECLARE
     condition boolean;
 BEGIN
-    condition := (SELECT EXISTS(SELECT * FROM information_schema.tables WHERE table_name = 'ts_table'));
+    condition := (SELECT EXISTS(
+        SELECT 1 FROM information_schema.tables 
+        WHERE table_name = 'ts_table' 
+          AND table_schema = 'public'
+    ));
 
     IF not condition THEN
-    CREATE TABLE ts_table (id BIGINT NOT NULL
-        ,createdat BIGINT NOT NULL
-        ,updatedat BIGINT NOT NULL
-        ,sort BIGINT NOT NULL
-        ,"name" VARCHAR(64)
-        ,"desc" TEXT
-        ,"project" BIGINT);
-
-   END IF;
+        CREATE TABLE "ts_table" (
+            id BIGINT NOT NULL
+            ,createdat BIGINT NOT NULL
+            ,updatedat BIGINT NOT NULL
+            ,sort BIGINT NOT NULL
+            ,"name" VARCHAR(64)
+            ,"desc" TEXT
+            ,"project" BIGINT
+            ,CONSTRAINT "pk_ts_table" PRIMARY KEY (id)
+        );
+    END IF;
 END $$;
 
 
--- [Ts_Table.Name] -------------
+-- PostgreSQL: Dropping obsolete fields -----------
+DO $$ 
+DECLARE
+    fn TEXT;
+BEGIN
+    FOR fn IN 
+        SELECT column_name 
+        FROM information_schema.columns 
+        WHERE table_name = 'ts_table' 
+          AND table_schema = 'public' 
+          AND column_name <> ALL(ARRAY['id', 'createdat', 'updatedat', 'sort', 'name', 'desc', 'project'])
+    LOOP
+        -- 对应 PRINT 'Dropping ' + @tname + '.' + @fn
+        
+        -- 对应 EXEC sp_executesql @sql (format %I 对应 QUOTENAME)
+        EXECUTE format('ALTER TABLE %I DROP COLUMN %I', 'ts_table', fn);
+    END LOOP;
+END $$;
+
+
+-- [ts_table.Name] -------------
 
 
 DO $$
@@ -925,7 +1261,7 @@ BEGIN
     END IF;
 END $$;
 
--- [Ts_Table.Desc] -------------
+-- [ts_table.Desc] -------------
 
 
 DO $$
@@ -939,7 +1275,7 @@ BEGIN
     END IF;
 END $$;
 
--- [Ts_Table.Project] -------------
+-- [ts_table.Project] -------------
 
 
 DO $$
@@ -952,28 +1288,56 @@ BEGIN
         ALTER TABLE ts_table ADD "project" bigint;
     END IF;
 END $$;
--- [Ts_UiComponent] ----------------------
+-- [ts_uicomponent] ----------------------
+
+-- [ts_uicomponent] ----------------------
 
 DO $$
 DECLARE
     condition boolean;
 BEGIN
-    condition := (SELECT EXISTS(SELECT * FROM information_schema.tables WHERE table_name = 'ts_uicomponent'));
+    condition := (SELECT EXISTS(
+        SELECT 1 FROM information_schema.tables 
+        WHERE table_name = 'ts_uicomponent' 
+          AND table_schema = 'public'
+    ));
 
     IF not condition THEN
-    CREATE TABLE ts_uicomponent (id BIGINT NOT NULL
-        ,createdat BIGINT NOT NULL
-        ,updatedat BIGINT NOT NULL
-        ,sort BIGINT NOT NULL
-        ,"name" VARCHAR(64)
-        ,"caption" VARCHAR(256)
-        ,"project" BIGINT);
-
-   END IF;
+        CREATE TABLE "ts_uicomponent" (
+            id BIGINT NOT NULL
+            ,createdat BIGINT NOT NULL
+            ,updatedat BIGINT NOT NULL
+            ,sort BIGINT NOT NULL
+            ,"name" VARCHAR(64)
+            ,"caption" VARCHAR(256)
+            ,"project" BIGINT
+            ,CONSTRAINT "pk_ts_uicomponent" PRIMARY KEY (id)
+        );
+    END IF;
 END $$;
 
 
--- [Ts_UiComponent.Name] -------------
+-- PostgreSQL: Dropping obsolete fields -----------
+DO $$ 
+DECLARE
+    fn TEXT;
+BEGIN
+    FOR fn IN 
+        SELECT column_name 
+        FROM information_schema.columns 
+        WHERE table_name = 'ts_uicomponent' 
+          AND table_schema = 'public' 
+          AND column_name <> ALL(ARRAY['id', 'createdat', 'updatedat', 'sort', 'name', 'caption', 'project'])
+    LOOP
+        -- 对应 PRINT 'Dropping ' + @tname + '.' + @fn
+        
+        -- 对应 EXEC sp_executesql @sql (format %I 对应 QUOTENAME)
+        EXECUTE format('ALTER TABLE %I DROP COLUMN %I', 'ts_uicomponent', fn);
+    END LOOP;
+END $$;
+
+
+-- [ts_uicomponent.Name] -------------
 
 
 DO $$
@@ -987,7 +1351,7 @@ BEGIN
     END IF;
 END $$;
 
--- [Ts_UiComponent.Caption] -------------
+-- [ts_uicomponent.Caption] -------------
 
 
 DO $$
@@ -1001,7 +1365,7 @@ BEGIN
     END IF;
 END $$;
 
--- [Ts_UiComponent.Project] -------------
+-- [ts_uicomponent.Project] -------------
 
 
 DO $$
@@ -1014,33 +1378,61 @@ BEGIN
         ALTER TABLE ts_uicomponent ADD "project" bigint;
     END IF;
 END $$;
--- [Ts_UiPage] ----------------------
+-- [ts_uipage] ----------------------
+
+-- [ts_uipage] ----------------------
 
 DO $$
 DECLARE
     condition boolean;
 BEGIN
-    condition := (SELECT EXISTS(SELECT * FROM information_schema.tables WHERE table_name = 'ts_uipage'));
+    condition := (SELECT EXISTS(
+        SELECT 1 FROM information_schema.tables 
+        WHERE table_name = 'ts_uipage' 
+          AND table_schema = 'public'
+    ));
 
     IF not condition THEN
-    CREATE TABLE ts_uipage (id BIGINT NOT NULL
-        ,createdat BIGINT NOT NULL
-        ,updatedat BIGINT NOT NULL
-        ,sort BIGINT NOT NULL
-        ,"name" VARCHAR(64)
-        ,"caption" VARCHAR(256)
-        ,"route" TEXT
-        ,"ogtitle" TEXT
-        ,"ogdesc" TEXT
-        ,"ogimage" TEXT
-        ,"template" BIGINT
-        ,"project" BIGINT);
-
-   END IF;
+        CREATE TABLE "ts_uipage" (
+            id BIGINT NOT NULL
+            ,createdat BIGINT NOT NULL
+            ,updatedat BIGINT NOT NULL
+            ,sort BIGINT NOT NULL
+            ,"name" VARCHAR(64)
+            ,"caption" VARCHAR(256)
+            ,"route" TEXT
+            ,"ogtitle" TEXT
+            ,"ogdesc" TEXT
+            ,"ogimage" TEXT
+            ,"template" BIGINT
+            ,"project" BIGINT
+            ,CONSTRAINT "pk_ts_uipage" PRIMARY KEY (id)
+        );
+    END IF;
 END $$;
 
 
--- [Ts_UiPage.Name] -------------
+-- PostgreSQL: Dropping obsolete fields -----------
+DO $$ 
+DECLARE
+    fn TEXT;
+BEGIN
+    FOR fn IN 
+        SELECT column_name 
+        FROM information_schema.columns 
+        WHERE table_name = 'ts_uipage' 
+          AND table_schema = 'public' 
+          AND column_name <> ALL(ARRAY['id', 'createdat', 'updatedat', 'sort', 'name', 'caption', 'route', 'ogtitle', 'ogdesc', 'ogimage', 'template', 'project'])
+    LOOP
+        -- 对应 PRINT 'Dropping ' + @tname + '.' + @fn
+        
+        -- 对应 EXEC sp_executesql @sql (format %I 对应 QUOTENAME)
+        EXECUTE format('ALTER TABLE %I DROP COLUMN %I', 'ts_uipage', fn);
+    END LOOP;
+END $$;
+
+
+-- [ts_uipage.Name] -------------
 
 
 DO $$
@@ -1054,7 +1446,7 @@ BEGIN
     END IF;
 END $$;
 
--- [Ts_UiPage.Caption] -------------
+-- [ts_uipage.Caption] -------------
 
 
 DO $$
@@ -1068,7 +1460,7 @@ BEGIN
     END IF;
 END $$;
 
--- [Ts_UiPage.Route] -------------
+-- [ts_uipage.Route] -------------
 
 
 DO $$
@@ -1082,7 +1474,7 @@ BEGIN
     END IF;
 END $$;
 
--- [Ts_UiPage.OgTitle] -------------
+-- [ts_uipage.OgTitle] -------------
 
 
 DO $$
@@ -1096,7 +1488,7 @@ BEGIN
     END IF;
 END $$;
 
--- [Ts_UiPage.OgDesc] -------------
+-- [ts_uipage.OgDesc] -------------
 
 
 DO $$
@@ -1110,7 +1502,7 @@ BEGIN
     END IF;
 END $$;
 
--- [Ts_UiPage.OgImage] -------------
+-- [ts_uipage.OgImage] -------------
 
 
 DO $$
@@ -1124,7 +1516,7 @@ BEGIN
     END IF;
 END $$;
 
--- [Ts_UiPage.Template] -------------
+-- [ts_uipage.Template] -------------
 
 
 DO $$
@@ -1138,7 +1530,7 @@ BEGIN
     END IF;
 END $$;
 
--- [Ts_UiPage.Project] -------------
+-- [ts_uipage.Project] -------------
 
 
 DO $$
@@ -1151,28 +1543,56 @@ BEGIN
         ALTER TABLE ts_uipage ADD "project" bigint;
     END IF;
 END $$;
--- [Ts_UiTemplate] ----------------------
+-- [ts_uitemplate] ----------------------
+
+-- [ts_uitemplate] ----------------------
 
 DO $$
 DECLARE
     condition boolean;
 BEGIN
-    condition := (SELECT EXISTS(SELECT * FROM information_schema.tables WHERE table_name = 'ts_uitemplate'));
+    condition := (SELECT EXISTS(
+        SELECT 1 FROM information_schema.tables 
+        WHERE table_name = 'ts_uitemplate' 
+          AND table_schema = 'public'
+    ));
 
     IF not condition THEN
-    CREATE TABLE ts_uitemplate (id BIGINT NOT NULL
-        ,createdat BIGINT NOT NULL
-        ,updatedat BIGINT NOT NULL
-        ,sort BIGINT NOT NULL
-        ,"name" VARCHAR(64)
-        ,"caption" VARCHAR(256)
-        ,"project" BIGINT);
-
-   END IF;
+        CREATE TABLE "ts_uitemplate" (
+            id BIGINT NOT NULL
+            ,createdat BIGINT NOT NULL
+            ,updatedat BIGINT NOT NULL
+            ,sort BIGINT NOT NULL
+            ,"name" VARCHAR(64)
+            ,"caption" VARCHAR(256)
+            ,"project" BIGINT
+            ,CONSTRAINT "pk_ts_uitemplate" PRIMARY KEY (id)
+        );
+    END IF;
 END $$;
 
 
--- [Ts_UiTemplate.Name] -------------
+-- PostgreSQL: Dropping obsolete fields -----------
+DO $$ 
+DECLARE
+    fn TEXT;
+BEGIN
+    FOR fn IN 
+        SELECT column_name 
+        FROM information_schema.columns 
+        WHERE table_name = 'ts_uitemplate' 
+          AND table_schema = 'public' 
+          AND column_name <> ALL(ARRAY['id', 'createdat', 'updatedat', 'sort', 'name', 'caption', 'project'])
+    LOOP
+        -- 对应 PRINT 'Dropping ' + @tname + '.' + @fn
+        
+        -- 对应 EXEC sp_executesql @sql (format %I 对应 QUOTENAME)
+        EXECUTE format('ALTER TABLE %I DROP COLUMN %I', 'ts_uitemplate', fn);
+    END LOOP;
+END $$;
+
+
+-- [ts_uitemplate.Name] -------------
 
 
 DO $$
@@ -1186,7 +1606,7 @@ BEGIN
     END IF;
 END $$;
 
--- [Ts_UiTemplate.Caption] -------------
+-- [ts_uitemplate.Caption] -------------
 
 
 DO $$
@@ -1200,7 +1620,7 @@ BEGIN
     END IF;
 END $$;
 
--- [Ts_UiTemplate.Project] -------------
+-- [ts_uitemplate.Project] -------------
 
 
 DO $$
@@ -1213,31 +1633,59 @@ BEGIN
         ALTER TABLE ts_uitemplate ADD "project" bigint;
     END IF;
 END $$;
--- [Ts_VarType] ----------------------
+-- [ts_vartype] ----------------------
+
+-- [ts_vartype] ----------------------
 
 DO $$
 DECLARE
     condition boolean;
 BEGIN
-    condition := (SELECT EXISTS(SELECT * FROM information_schema.tables WHERE table_name = 'ts_vartype'));
+    condition := (SELECT EXISTS(
+        SELECT 1 FROM information_schema.tables 
+        WHERE table_name = 'ts_vartype' 
+          AND table_schema = 'public'
+    ));
 
     IF not condition THEN
-    CREATE TABLE ts_vartype (id BIGINT NOT NULL
-        ,createdat BIGINT NOT NULL
-        ,updatedat BIGINT NOT NULL
-        ,sort BIGINT NOT NULL
-        ,"name" VARCHAR(64)
-        ,"type" VARCHAR(64)
-        ,"val" TEXT
-        ,"bindtype" INT
-        ,"bind" BIGINT
-        ,"project" BIGINT);
-
-   END IF;
+        CREATE TABLE "ts_vartype" (
+            id BIGINT NOT NULL
+            ,createdat BIGINT NOT NULL
+            ,updatedat BIGINT NOT NULL
+            ,sort BIGINT NOT NULL
+            ,"name" VARCHAR(64)
+            ,"type" VARCHAR(64)
+            ,"val" TEXT
+            ,"bindtype" INT
+            ,"bind" BIGINT
+            ,"project" BIGINT
+            ,CONSTRAINT "pk_ts_vartype" PRIMARY KEY (id)
+        );
+    END IF;
 END $$;
 
 
--- [Ts_VarType.Name] -------------
+-- PostgreSQL: Dropping obsolete fields -----------
+DO $$ 
+DECLARE
+    fn TEXT;
+BEGIN
+    FOR fn IN 
+        SELECT column_name 
+        FROM information_schema.columns 
+        WHERE table_name = 'ts_vartype' 
+          AND table_schema = 'public' 
+          AND column_name <> ALL(ARRAY['id', 'createdat', 'updatedat', 'sort', 'name', 'type', 'val', 'bindtype', 'bind', 'project'])
+    LOOP
+        -- 对应 PRINT 'Dropping ' + @tname + '.' + @fn
+        
+        -- 对应 EXEC sp_executesql @sql (format %I 对应 QUOTENAME)
+        EXECUTE format('ALTER TABLE %I DROP COLUMN %I', 'ts_vartype', fn);
+    END LOOP;
+END $$;
+
+
+-- [ts_vartype.Name] -------------
 
 
 DO $$
@@ -1251,7 +1699,7 @@ BEGIN
     END IF;
 END $$;
 
--- [Ts_VarType.Type] -------------
+-- [ts_vartype.Type] -------------
 
 
 DO $$
@@ -1265,7 +1713,7 @@ BEGIN
     END IF;
 END $$;
 
--- [Ts_VarType.Val] -------------
+-- [ts_vartype.Val] -------------
 
 
 DO $$
@@ -1279,7 +1727,7 @@ BEGIN
     END IF;
 END $$;
 
--- [Ts_VarType.BindType] -------------
+-- [ts_vartype.BindType] -------------
 
 
 DO $$
@@ -1293,7 +1741,7 @@ BEGIN
     END IF;
 END $$;
 
--- [Ts_VarType.Bind] -------------
+-- [ts_vartype.Bind] -------------
 
 
 DO $$
@@ -1307,7 +1755,7 @@ BEGIN
     END IF;
 END $$;
 
--- [Ts_VarType.Project] -------------
+-- [ts_vartype.Project] -------------
 
 
 DO $$

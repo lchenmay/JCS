@@ -19,6 +19,7 @@ open Util.Bin
 open Util.Text
 open Util.Json
 open Util.Orm
+open Util.Math
 open Util.Stat
 
 open PreOrm
@@ -90,11 +91,11 @@ let int__euAuthTypeEnum v =
     | 2 -> Some euAuthTypeEnum.Admin
     | _ -> None
 
-let str__euAuthTypeEnum s =
-    match s with
-    | "Normal" -> Some euAuthTypeEnum.Normal
-    | "Authorized" -> Some euAuthTypeEnum.Authorized
-    | "Admin" -> Some euAuthTypeEnum.Admin
+let str__euAuthTypeEnum (s:string) =
+    match s.ToLower() with
+    | "normal" -> Some euAuthTypeEnum.Normal
+    | "authorized" -> Some euAuthTypeEnum.Authorized
+    | "admin" -> Some euAuthTypeEnum.Admin
     | _ -> None
 
 let euAuthTypeEnum__caption e =
@@ -295,20 +296,20 @@ let int__momentTypeEnum v =
     | 11 -> Some momentTypeEnum.MediaFile
     | _ -> None
 
-let str__momentTypeEnum s =
-    match s with
-    | "Original" -> Some momentTypeEnum.Original
-    | "Repost" -> Some momentTypeEnum.Repost
-    | "Thread" -> Some momentTypeEnum.Thread
-    | "Forum" -> Some momentTypeEnum.Forum
-    | "Question" -> Some momentTypeEnum.Question
-    | "Answer" -> Some momentTypeEnum.Answer
-    | "BookmarkList" -> Some momentTypeEnum.BookmarkList
-    | "Poll" -> Some momentTypeEnum.Poll
-    | "Miles" -> Some momentTypeEnum.Miles
-    | "Dict" -> Some momentTypeEnum.Dict
-    | "WebPage" -> Some momentTypeEnum.WebPage
-    | "MediaFile" -> Some momentTypeEnum.MediaFile
+let str__momentTypeEnum (s:string) =
+    match s.ToLower() with
+    | "original" -> Some momentTypeEnum.Original
+    | "repost" -> Some momentTypeEnum.Repost
+    | "thread" -> Some momentTypeEnum.Thread
+    | "forum" -> Some momentTypeEnum.Forum
+    | "question" -> Some momentTypeEnum.Question
+    | "answer" -> Some momentTypeEnum.Answer
+    | "bookmarklist" -> Some momentTypeEnum.BookmarkList
+    | "poll" -> Some momentTypeEnum.Poll
+    | "miles" -> Some momentTypeEnum.Miles
+    | "dict" -> Some momentTypeEnum.Dict
+    | "webpage" -> Some momentTypeEnum.WebPage
+    | "mediafile" -> Some momentTypeEnum.MediaFile
     | _ -> None
 
 let momentTypeEnum__caption e =
@@ -343,11 +344,11 @@ let int__momentStateEnum v =
     | 2 -> Some momentStateEnum.Scratch
     | _ -> None
 
-let str__momentStateEnum s =
-    match s with
-    | "Normal" -> Some momentStateEnum.Normal
-    | "Deleted" -> Some momentStateEnum.Deleted
-    | "Scratch" -> Some momentStateEnum.Scratch
+let str__momentStateEnum (s:string) =
+    match s.ToLower() with
+    | "normal" -> Some momentStateEnum.Normal
+    | "deleted" -> Some momentStateEnum.Deleted
+    | "scratch" -> Some momentStateEnum.Scratch
     | _ -> None
 
 let momentStateEnum__caption e =
@@ -373,11 +374,11 @@ let int__momentMediaTypeEnum v =
     | 2 -> Some momentMediaTypeEnum.Audio
     | _ -> None
 
-let str__momentMediaTypeEnum s =
-    match s with
-    | "None" -> Some momentMediaTypeEnum.None
-    | "Video" -> Some momentMediaTypeEnum.Video
-    | "Audio" -> Some momentMediaTypeEnum.Audio
+let str__momentMediaTypeEnum (s:string) =
+    match s.ToLower() with
+    | "none" -> Some momentMediaTypeEnum.None
+    | "video" -> Some momentMediaTypeEnum.Video
+    | "audio" -> Some momentMediaTypeEnum.Audio
     | _ -> None
 
 let momentMediaTypeEnum__caption e =
@@ -639,21 +640,21 @@ let int__fieldFieldTypeEnum v =
     | 12 -> Some fieldFieldTypeEnum.TimeSeries
     | _ -> None
 
-let str__fieldFieldTypeEnum s =
-    match s with
-    | "Undefined" -> Some fieldFieldTypeEnum.Undefined
-    | "FK" -> Some fieldFieldTypeEnum.FK
-    | "Caption" -> Some fieldFieldTypeEnum.Caption
-    | "Chars" -> Some fieldFieldTypeEnum.Chars
-    | "Link" -> Some fieldFieldTypeEnum.Link
-    | "Text" -> Some fieldFieldTypeEnum.Text
-    | "Bin" -> Some fieldFieldTypeEnum.Bin
-    | "Integer" -> Some fieldFieldTypeEnum.Integer
-    | "Float" -> Some fieldFieldTypeEnum.Float
-    | "Boolean" -> Some fieldFieldTypeEnum.Boolean
-    | "SelectLines" -> Some fieldFieldTypeEnum.SelectLines
-    | "Timestamp" -> Some fieldFieldTypeEnum.Timestamp
-    | "TimeSeries" -> Some fieldFieldTypeEnum.TimeSeries
+let str__fieldFieldTypeEnum (s:string) =
+    match s.ToLower() with
+    | "undefined" -> Some fieldFieldTypeEnum.Undefined
+    | "fk" -> Some fieldFieldTypeEnum.FK
+    | "caption" -> Some fieldFieldTypeEnum.Caption
+    | "chars" -> Some fieldFieldTypeEnum.Chars
+    | "link" -> Some fieldFieldTypeEnum.Link
+    | "text" -> Some fieldFieldTypeEnum.Text
+    | "bin" -> Some fieldFieldTypeEnum.Bin
+    | "integer" -> Some fieldFieldTypeEnum.Integer
+    | "float" -> Some fieldFieldTypeEnum.Float
+    | "boolean" -> Some fieldFieldTypeEnum.Boolean
+    | "selectlines" -> Some fieldFieldTypeEnum.SelectLines
+    | "timestamp" -> Some fieldFieldTypeEnum.Timestamp
+    | "timeseries" -> Some fieldFieldTypeEnum.TimeSeries
     | _ -> None
 
 let fieldFieldTypeEnum__caption e =
@@ -756,10 +757,10 @@ let int__hostconfigDatabaseEnum v =
     | 1 -> Some hostconfigDatabaseEnum.PostgreSQL
     | _ -> None
 
-let str__hostconfigDatabaseEnum s =
-    match s with
-    | "SQLSERVER" -> Some hostconfigDatabaseEnum.SQLSERVER
-    | "PostgreSQL" -> Some hostconfigDatabaseEnum.PostgreSQL
+let str__hostconfigDatabaseEnum (s:string) =
+    match s.ToLower() with
+    | "sqlserver" -> Some hostconfigDatabaseEnum.SQLSERVER
+    | "postgresql" -> Some hostconfigDatabaseEnum.PostgreSQL
     | _ -> None
 
 let hostconfigDatabaseEnum__caption e =
@@ -1129,14 +1130,14 @@ let int__vartypeBindTypeEnum v =
     | 5 -> Some vartypeBindTypeEnum.PageProps
     | _ -> None
 
-let str__vartypeBindTypeEnum s =
-    match s with
-    | "ApiRequest" -> Some vartypeBindTypeEnum.ApiRequest
-    | "ApiResponse" -> Some vartypeBindTypeEnum.ApiResponse
-    | "CompState" -> Some vartypeBindTypeEnum.CompState
-    | "CompProps" -> Some vartypeBindTypeEnum.CompProps
-    | "PageState" -> Some vartypeBindTypeEnum.PageState
-    | "PageProps" -> Some vartypeBindTypeEnum.PageProps
+let str__vartypeBindTypeEnum (s:string) =
+    match s.ToLower() with
+    | "apirequest" -> Some vartypeBindTypeEnum.ApiRequest
+    | "apiresponse" -> Some vartypeBindTypeEnum.ApiResponse
+    | "compstate" -> Some vartypeBindTypeEnum.CompState
+    | "compprops" -> Some vartypeBindTypeEnum.CompProps
+    | "pagestate" -> Some vartypeBindTypeEnum.PageState
+    | "pageprops" -> Some vartypeBindTypeEnum.PageProps
     | _ -> None
 
 let vartypeBindTypeEnum__caption e =

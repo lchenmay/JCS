@@ -1200,3 +1200,15 @@ let go output exeDir config  =
 
     "Done" |> output
         
+let short output code deployHost = 
+    go 
+        output 
+        @"C:\Dev\JCS\TypeSys\bin\Debug\net10.0"
+        {
+            ns = code + ".Shared"
+            rdbms = Util.Db.Rdbms.PostgreSql
+            dbName = code.ToLower()
+            donmainName = ""
+            conn = @"Host=" + deployHost + ";Port=5432;Database=" + code.ToLower() + ";Username=" + code.ToLower() + ";Password=e2TpqcaTEYLfkvFMkc"
+            mainDir = @"C:/Dev/" + code + "/" + code + ".Shared"
+            JsDir = @"C:/Dev/" + code + "/vscode/src/lib/shared" }

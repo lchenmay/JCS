@@ -1,225 +1,225 @@
-USE [JCS]
--- [Ca_Book] ----------------------
+USE [jcs]
+-- [ca_book] ----------------------
 
-IF NOT EXISTS(SELECT * FROM sysobjects WHERE [name]='Ca_Book' AND xtype='U')
+IF NOT EXISTS(SELECT * FROM sysobjects WHERE [name]='ca_book' AND xtype='U')
 
 BEGIN
 
-    CREATE TABLE Ca_Book ([ID] BIGINT NOT NULL
+    CREATE TABLE ca_book ([ID] BIGINT NOT NULL
         ,[Createdat] BIGINT NOT NULL
         ,[Updatedat] BIGINT NOT NULL
         ,[Sort] BIGINT NOT NULL,
         [Caption] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS
         ,[Email] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS
         ,[Message] NVARCHAR(MAX)
-, CONSTRAINT [PK_Ca_Book] PRIMARY KEY CLUSTERED ([ID] ASC)) ON [PRIMARY]
+, CONSTRAINT [PK_ca_book] PRIMARY KEY CLUSTERED ([ID] ASC)) ON [PRIMARY]
 END
 
 
 -- Dropping obsolete fields -----------
-DECLARE @name_Ca_Book NVARCHAR(64)
-DECLARE cursor_Ca_Book CURSOR FOR 
-    SELECT name FROM SYSCOLUMNS WHERE id=object_id('Ca_Book') AND (name NOT IN ('ID','Createdat','Updatedat','Sort','Caption','Email','Message'))
+DECLARE @name_ca_book NVARCHAR(64)
+DECLARE cursor_ca_book CURSOR FOR 
+    SELECT name FROM SYSCOLUMNS WHERE id=object_id('ca_book') AND (name NOT IN ('ID','Createdat','Updatedat','Sort','Caption','Email','Message'))
 
-OPEN cursor_Ca_Book
-FETCH NEXT FROM cursor_Ca_Book INTO @name_Ca_Book
+OPEN cursor_ca_book
+FETCH NEXT FROM cursor_ca_book INTO @name_ca_book
 
 WHILE @@FETCH_STATUS = 0
 BEGIN
-    PRINT 'Dropping Ca_Book.' + @name_Ca_Book;
+    PRINT 'Dropping ca_book.' + @name_ca_book;
     
-    DECLARE @sql_Ca_Book NVARCHAR(MAX);
-    SET @sql_Ca_Book = 'ALTER TABLE Ca_Book DROP COLUMN ' + QUOTENAME(@name_Ca_Book)
-    EXEC sp_executesql @sql_Ca_Book
+    DECLARE @sql_ca_book NVARCHAR(MAX);
+    SET @sql_ca_book = 'ALTER TABLE ca_book DROP COLUMN ' + QUOTENAME(@name_ca_book)
+    EXEC sp_executesql @sql_ca_book
     
     
-    FETCH NEXT FROM cursor_Ca_Book INTO @name_Ca_Book
+    FETCH NEXT FROM cursor_ca_book INTO @name_ca_book
 END
 
-CLOSE cursor_Ca_Book;
-DEALLOCATE cursor_Ca_Book;
+CLOSE cursor_ca_book;
+DEALLOCATE cursor_ca_book;
 
 
--- [Ca_Book.Caption] -------------
+-- [ca_book.Caption] -------------
 
 
--- [Ca_Book.Caption] -------------
+-- [ca_book.Caption] -------------
 
-IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ca_Book') AND name='Caption')
+IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('ca_book') AND name='Caption')
     BEGIN
-     ALTER TABLE Ca_Book ALTER COLUMN [Caption] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS
+     ALTER TABLE ca_book ALTER COLUMN [Caption] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS
     END
 ELSE
     BEGIN
-    DECLARE @sql_add_Ca_Book_Caption NVARCHAR(MAX);
-    SET @sql_add_Ca_Book_Caption = 'ALTER TABLE Ca_Book ADD [Caption] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS'
-    EXEC sp_executesql @sql_add_Ca_Book_Caption
+    DECLARE @sql_add_ca_book_Caption NVARCHAR(MAX);
+    SET @sql_add_ca_book_Caption = 'ALTER TABLE ca_book ADD [Caption] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS'
+    EXEC sp_executesql @sql_add_ca_book_Caption
     END
 
 
-IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ca_BookCaption')
+IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_ca_bookCaption')
     BEGIN
-    ALTER TABLE Ca_Book DROP  CONSTRAINT [Constraint_Ca_BookCaption]
+    ALTER TABLE ca_book DROP  CONSTRAINT [Constraint_ca_bookCaption]
     END
 
-IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ca_BookCaption')
+IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_ca_bookCaption')
     BEGIN
-    ALTER TABLE Ca_Book DROP  CONSTRAINT [UniqueNonclustered_Ca_BookCaption]
+    ALTER TABLE ca_book DROP  CONSTRAINT [UniqueNonclustered_ca_bookCaption]
     END
 
--- [Ca_Book.Email] -------------
+-- [ca_book.Email] -------------
 
 
--- [Ca_Book.Email] -------------
+-- [ca_book.Email] -------------
 
-IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ca_Book') AND name='Email')
+IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('ca_book') AND name='Email')
     BEGIN
-     ALTER TABLE Ca_Book ALTER COLUMN [Email] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS
+     ALTER TABLE ca_book ALTER COLUMN [Email] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS
     END
 ELSE
     BEGIN
-    DECLARE @sql_add_Ca_Book_Email NVARCHAR(MAX);
-    SET @sql_add_Ca_Book_Email = 'ALTER TABLE Ca_Book ADD [Email] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS'
-    EXEC sp_executesql @sql_add_Ca_Book_Email
+    DECLARE @sql_add_ca_book_Email NVARCHAR(MAX);
+    SET @sql_add_ca_book_Email = 'ALTER TABLE ca_book ADD [Email] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS'
+    EXEC sp_executesql @sql_add_ca_book_Email
     END
 
 
-IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ca_BookEmail')
+IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_ca_bookEmail')
     BEGIN
-    ALTER TABLE Ca_Book DROP  CONSTRAINT [Constraint_Ca_BookEmail]
+    ALTER TABLE ca_book DROP  CONSTRAINT [Constraint_ca_bookEmail]
     END
 
-IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ca_BookEmail')
+IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_ca_bookEmail')
     BEGIN
-    ALTER TABLE Ca_Book DROP  CONSTRAINT [UniqueNonclustered_Ca_BookEmail]
+    ALTER TABLE ca_book DROP  CONSTRAINT [UniqueNonclustered_ca_bookEmail]
     END
 
--- [Ca_Book.Message] -------------
+-- [ca_book.Message] -------------
 
 
--- [Ca_Book.Message] -------------
+-- [ca_book.Message] -------------
 
-IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ca_Book') AND name='Message')
+IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('ca_book') AND name='Message')
     BEGIN
-     ALTER TABLE Ca_Book ALTER COLUMN [Message] NVARCHAR(MAX)
+     ALTER TABLE ca_book ALTER COLUMN [Message] NVARCHAR(MAX)
     END
 ELSE
     BEGIN
-    DECLARE @sql_add_Ca_Book_Message NVARCHAR(MAX);
-    SET @sql_add_Ca_Book_Message = 'ALTER TABLE Ca_Book ADD [Message] NVARCHAR(MAX)'
-    EXEC sp_executesql @sql_add_Ca_Book_Message
+    DECLARE @sql_add_ca_book_Message NVARCHAR(MAX);
+    SET @sql_add_ca_book_Message = 'ALTER TABLE ca_book ADD [Message] NVARCHAR(MAX)'
+    EXEC sp_executesql @sql_add_ca_book_Message
     END
 
 
-IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ca_BookMessage')
+IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_ca_bookMessage')
     BEGIN
-    ALTER TABLE Ca_Book DROP  CONSTRAINT [Constraint_Ca_BookMessage]
+    ALTER TABLE ca_book DROP  CONSTRAINT [Constraint_ca_bookMessage]
     END
 
-IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ca_BookMessage')
+IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_ca_bookMessage')
     BEGIN
-    ALTER TABLE Ca_Book DROP  CONSTRAINT [UniqueNonclustered_Ca_BookMessage]
+    ALTER TABLE ca_book DROP  CONSTRAINT [UniqueNonclustered_ca_bookMessage]
     END
--- [Ca_EndUser] ----------------------
+-- [ca_enduser] ----------------------
 
-IF NOT EXISTS(SELECT * FROM sysobjects WHERE [name]='Ca_EndUser' AND xtype='U')
+IF NOT EXISTS(SELECT * FROM sysobjects WHERE [name]='ca_enduser' AND xtype='U')
 
 BEGIN
 
-    CREATE TABLE Ca_EndUser ([ID] BIGINT NOT NULL
+    CREATE TABLE ca_enduser ([ID] BIGINT NOT NULL
         ,[Createdat] BIGINT NOT NULL
         ,[Updatedat] BIGINT NOT NULL
         ,[Sort] BIGINT NOT NULL,
         [Caption] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS
         ,[AuthType] INT
-, CONSTRAINT [PK_Ca_EndUser] PRIMARY KEY CLUSTERED ([ID] ASC)) ON [PRIMARY]
+, CONSTRAINT [PK_ca_enduser] PRIMARY KEY CLUSTERED ([ID] ASC)) ON [PRIMARY]
 END
 
 
 -- Dropping obsolete fields -----------
-DECLARE @name_Ca_EndUser NVARCHAR(64)
-DECLARE cursor_Ca_EndUser CURSOR FOR 
-    SELECT name FROM SYSCOLUMNS WHERE id=object_id('Ca_EndUser') AND (name NOT IN ('ID','Createdat','Updatedat','Sort','Caption','AuthType'))
+DECLARE @name_ca_enduser NVARCHAR(64)
+DECLARE cursor_ca_enduser CURSOR FOR 
+    SELECT name FROM SYSCOLUMNS WHERE id=object_id('ca_enduser') AND (name NOT IN ('ID','Createdat','Updatedat','Sort','Caption','AuthType'))
 
-OPEN cursor_Ca_EndUser
-FETCH NEXT FROM cursor_Ca_EndUser INTO @name_Ca_EndUser
+OPEN cursor_ca_enduser
+FETCH NEXT FROM cursor_ca_enduser INTO @name_ca_enduser
 
 WHILE @@FETCH_STATUS = 0
 BEGIN
-    PRINT 'Dropping Ca_EndUser.' + @name_Ca_EndUser;
+    PRINT 'Dropping ca_enduser.' + @name_ca_enduser;
     
-    DECLARE @sql_Ca_EndUser NVARCHAR(MAX);
-    SET @sql_Ca_EndUser = 'ALTER TABLE Ca_EndUser DROP COLUMN ' + QUOTENAME(@name_Ca_EndUser)
-    EXEC sp_executesql @sql_Ca_EndUser
+    DECLARE @sql_ca_enduser NVARCHAR(MAX);
+    SET @sql_ca_enduser = 'ALTER TABLE ca_enduser DROP COLUMN ' + QUOTENAME(@name_ca_enduser)
+    EXEC sp_executesql @sql_ca_enduser
     
     
-    FETCH NEXT FROM cursor_Ca_EndUser INTO @name_Ca_EndUser
+    FETCH NEXT FROM cursor_ca_enduser INTO @name_ca_enduser
 END
 
-CLOSE cursor_Ca_EndUser;
-DEALLOCATE cursor_Ca_EndUser;
+CLOSE cursor_ca_enduser;
+DEALLOCATE cursor_ca_enduser;
 
 
--- [Ca_EndUser.Caption] -------------
+-- [ca_enduser.Caption] -------------
 
 
--- [Ca_EndUser.Caption] -------------
+-- [ca_enduser.Caption] -------------
 
-IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ca_EndUser') AND name='Caption')
+IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('ca_enduser') AND name='Caption')
     BEGIN
-     ALTER TABLE Ca_EndUser ALTER COLUMN [Caption] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS
+     ALTER TABLE ca_enduser ALTER COLUMN [Caption] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS
     END
 ELSE
     BEGIN
-    DECLARE @sql_add_Ca_EndUser_Caption NVARCHAR(MAX);
-    SET @sql_add_Ca_EndUser_Caption = 'ALTER TABLE Ca_EndUser ADD [Caption] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS'
-    EXEC sp_executesql @sql_add_Ca_EndUser_Caption
+    DECLARE @sql_add_ca_enduser_Caption NVARCHAR(MAX);
+    SET @sql_add_ca_enduser_Caption = 'ALTER TABLE ca_enduser ADD [Caption] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS'
+    EXEC sp_executesql @sql_add_ca_enduser_Caption
     END
 
 
-IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ca_EndUserCaption')
+IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_ca_enduserCaption')
     BEGIN
-    ALTER TABLE Ca_EndUser DROP  CONSTRAINT [Constraint_Ca_EndUserCaption]
+    ALTER TABLE ca_enduser DROP  CONSTRAINT [Constraint_ca_enduserCaption]
     END
 
-IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ca_EndUserCaption')
+IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_ca_enduserCaption')
     BEGIN
-    ALTER TABLE Ca_EndUser DROP  CONSTRAINT [UniqueNonclustered_Ca_EndUserCaption]
+    ALTER TABLE ca_enduser DROP  CONSTRAINT [UniqueNonclustered_ca_enduserCaption]
     END
 
--- [Ca_EndUser.AuthType] -------------
+-- [ca_enduser.AuthType] -------------
 
 
--- [Ca_EndUser.AuthType] -------------
+-- [ca_enduser.AuthType] -------------
 
-IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ca_EndUser') AND name='AuthType')
+IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('ca_enduser') AND name='AuthType')
     BEGIN
-     ALTER TABLE Ca_EndUser ALTER COLUMN [AuthType] INT
+     ALTER TABLE ca_enduser ALTER COLUMN [AuthType] INT
     END
 ELSE
     BEGIN
-    DECLARE @sql_add_Ca_EndUser_AuthType NVARCHAR(MAX);
-    SET @sql_add_Ca_EndUser_AuthType = 'ALTER TABLE Ca_EndUser ADD [AuthType] INT'
-    EXEC sp_executesql @sql_add_Ca_EndUser_AuthType
+    DECLARE @sql_add_ca_enduser_AuthType NVARCHAR(MAX);
+    SET @sql_add_ca_enduser_AuthType = 'ALTER TABLE ca_enduser ADD [AuthType] INT'
+    EXEC sp_executesql @sql_add_ca_enduser_AuthType
     END
 
 
-IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ca_EndUserAuthType')
+IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_ca_enduserAuthType')
     BEGIN
-    ALTER TABLE Ca_EndUser DROP  CONSTRAINT [Constraint_Ca_EndUserAuthType]
+    ALTER TABLE ca_enduser DROP  CONSTRAINT [Constraint_ca_enduserAuthType]
     END
 
-IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ca_EndUserAuthType')
+IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_ca_enduserAuthType')
     BEGIN
-    ALTER TABLE Ca_EndUser DROP  CONSTRAINT [UniqueNonclustered_Ca_EndUserAuthType]
+    ALTER TABLE ca_enduser DROP  CONSTRAINT [UniqueNonclustered_ca_enduserAuthType]
     END
--- [Ca_File] ----------------------
+-- [ca_file] ----------------------
 
-IF NOT EXISTS(SELECT * FROM sysobjects WHERE [name]='Ca_File' AND xtype='U')
+IF NOT EXISTS(SELECT * FROM sysobjects WHERE [name]='ca_file' AND xtype='U')
 
 BEGIN
 
-    CREATE TABLE Ca_File ([ID] BIGINT NOT NULL
+    CREATE TABLE ca_file ([ID] BIGINT NOT NULL
         ,[Createdat] BIGINT NOT NULL
         ,[Updatedat] BIGINT NOT NULL
         ,[Sort] BIGINT NOT NULL,
@@ -229,323 +229,323 @@ BEGIN
         ,[Size] BIGINT
         ,[Thumbnail] VARBINARY(MAX)
         ,[Owner] BIGINT
-, CONSTRAINT [PK_Ca_File] PRIMARY KEY CLUSTERED ([ID] ASC)) ON [PRIMARY]
+, CONSTRAINT [PK_ca_file] PRIMARY KEY CLUSTERED ([ID] ASC)) ON [PRIMARY]
 END
 
 
 -- Dropping obsolete fields -----------
-DECLARE @name_Ca_File NVARCHAR(64)
-DECLARE cursor_Ca_File CURSOR FOR 
-    SELECT name FROM SYSCOLUMNS WHERE id=object_id('Ca_File') AND (name NOT IN ('ID','Createdat','Updatedat','Sort','Caption','Desc','Suffix','Size','Thumbnail','Owner'))
+DECLARE @name_ca_file NVARCHAR(64)
+DECLARE cursor_ca_file CURSOR FOR 
+    SELECT name FROM SYSCOLUMNS WHERE id=object_id('ca_file') AND (name NOT IN ('ID','Createdat','Updatedat','Sort','Caption','Desc','Suffix','Size','Thumbnail','Owner'))
 
-OPEN cursor_Ca_File
-FETCH NEXT FROM cursor_Ca_File INTO @name_Ca_File
+OPEN cursor_ca_file
+FETCH NEXT FROM cursor_ca_file INTO @name_ca_file
 
 WHILE @@FETCH_STATUS = 0
 BEGIN
-    PRINT 'Dropping Ca_File.' + @name_Ca_File;
+    PRINT 'Dropping ca_file.' + @name_ca_file;
     
-    DECLARE @sql_Ca_File NVARCHAR(MAX);
-    SET @sql_Ca_File = 'ALTER TABLE Ca_File DROP COLUMN ' + QUOTENAME(@name_Ca_File)
-    EXEC sp_executesql @sql_Ca_File
+    DECLARE @sql_ca_file NVARCHAR(MAX);
+    SET @sql_ca_file = 'ALTER TABLE ca_file DROP COLUMN ' + QUOTENAME(@name_ca_file)
+    EXEC sp_executesql @sql_ca_file
     
     
-    FETCH NEXT FROM cursor_Ca_File INTO @name_Ca_File
+    FETCH NEXT FROM cursor_ca_file INTO @name_ca_file
 END
 
-CLOSE cursor_Ca_File;
-DEALLOCATE cursor_Ca_File;
+CLOSE cursor_ca_file;
+DEALLOCATE cursor_ca_file;
 
 
--- [Ca_File.Caption] -------------
+-- [ca_file.Caption] -------------
 
 
--- [Ca_File.Caption] -------------
+-- [ca_file.Caption] -------------
 
-IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ca_File') AND name='Caption')
+IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('ca_file') AND name='Caption')
     BEGIN
-     ALTER TABLE Ca_File ALTER COLUMN [Caption] NVARCHAR(MAX)
+     ALTER TABLE ca_file ALTER COLUMN [Caption] NVARCHAR(MAX)
     END
 ELSE
     BEGIN
-    DECLARE @sql_add_Ca_File_Caption NVARCHAR(MAX);
-    SET @sql_add_Ca_File_Caption = 'ALTER TABLE Ca_File ADD [Caption] NVARCHAR(MAX)'
-    EXEC sp_executesql @sql_add_Ca_File_Caption
+    DECLARE @sql_add_ca_file_Caption NVARCHAR(MAX);
+    SET @sql_add_ca_file_Caption = 'ALTER TABLE ca_file ADD [Caption] NVARCHAR(MAX)'
+    EXEC sp_executesql @sql_add_ca_file_Caption
     END
 
 
-IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ca_FileCaption')
+IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_ca_fileCaption')
     BEGIN
-    ALTER TABLE Ca_File DROP  CONSTRAINT [Constraint_Ca_FileCaption]
+    ALTER TABLE ca_file DROP  CONSTRAINT [Constraint_ca_fileCaption]
     END
 
-IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ca_FileCaption')
+IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_ca_fileCaption')
     BEGIN
-    ALTER TABLE Ca_File DROP  CONSTRAINT [UniqueNonclustered_Ca_FileCaption]
+    ALTER TABLE ca_file DROP  CONSTRAINT [UniqueNonclustered_ca_fileCaption]
     END
 
--- [Ca_File.Desc] -------------
+-- [ca_file.Desc] -------------
 
 
--- [Ca_File.Desc] -------------
+-- [ca_file.Desc] -------------
 
-IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ca_File') AND name='Desc')
+IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('ca_file') AND name='Desc')
     BEGIN
-     ALTER TABLE Ca_File ALTER COLUMN [Desc] NVARCHAR(MAX)
+     ALTER TABLE ca_file ALTER COLUMN [Desc] NVARCHAR(MAX)
     END
 ELSE
     BEGIN
-    DECLARE @sql_add_Ca_File_Desc NVARCHAR(MAX);
-    SET @sql_add_Ca_File_Desc = 'ALTER TABLE Ca_File ADD [Desc] NVARCHAR(MAX)'
-    EXEC sp_executesql @sql_add_Ca_File_Desc
+    DECLARE @sql_add_ca_file_Desc NVARCHAR(MAX);
+    SET @sql_add_ca_file_Desc = 'ALTER TABLE ca_file ADD [Desc] NVARCHAR(MAX)'
+    EXEC sp_executesql @sql_add_ca_file_Desc
     END
 
 
-IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ca_FileDesc')
+IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_ca_fileDesc')
     BEGIN
-    ALTER TABLE Ca_File DROP  CONSTRAINT [Constraint_Ca_FileDesc]
+    ALTER TABLE ca_file DROP  CONSTRAINT [Constraint_ca_fileDesc]
     END
 
-IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ca_FileDesc')
+IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_ca_fileDesc')
     BEGIN
-    ALTER TABLE Ca_File DROP  CONSTRAINT [UniqueNonclustered_Ca_FileDesc]
+    ALTER TABLE ca_file DROP  CONSTRAINT [UniqueNonclustered_ca_fileDesc]
     END
 
--- [Ca_File.Suffix] -------------
+-- [ca_file.Suffix] -------------
 
 
--- [Ca_File.Suffix] -------------
+-- [ca_file.Suffix] -------------
 
-IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ca_File') AND name='Suffix')
+IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('ca_file') AND name='Suffix')
     BEGIN
-     ALTER TABLE Ca_File ALTER COLUMN [Suffix] NVARCHAR(4) COLLATE Chinese_PRC_CI_AS
+     ALTER TABLE ca_file ALTER COLUMN [Suffix] NVARCHAR(4) COLLATE Chinese_PRC_CI_AS
     END
 ELSE
     BEGIN
-    DECLARE @sql_add_Ca_File_Suffix NVARCHAR(MAX);
-    SET @sql_add_Ca_File_Suffix = 'ALTER TABLE Ca_File ADD [Suffix] NVARCHAR(4) COLLATE Chinese_PRC_CI_AS'
-    EXEC sp_executesql @sql_add_Ca_File_Suffix
+    DECLARE @sql_add_ca_file_Suffix NVARCHAR(MAX);
+    SET @sql_add_ca_file_Suffix = 'ALTER TABLE ca_file ADD [Suffix] NVARCHAR(4) COLLATE Chinese_PRC_CI_AS'
+    EXEC sp_executesql @sql_add_ca_file_Suffix
     END
 
 
-IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ca_FileSuffix')
+IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_ca_fileSuffix')
     BEGIN
-    ALTER TABLE Ca_File DROP  CONSTRAINT [Constraint_Ca_FileSuffix]
+    ALTER TABLE ca_file DROP  CONSTRAINT [Constraint_ca_fileSuffix]
     END
 
-IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ca_FileSuffix')
+IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_ca_fileSuffix')
     BEGIN
-    ALTER TABLE Ca_File DROP  CONSTRAINT [UniqueNonclustered_Ca_FileSuffix]
+    ALTER TABLE ca_file DROP  CONSTRAINT [UniqueNonclustered_ca_fileSuffix]
     END
 
--- [Ca_File.Size] -------------
+-- [ca_file.Size] -------------
 
 
--- [Ca_File.Size] -------------
+-- [ca_file.Size] -------------
 
-IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ca_File') AND name='Size')
+IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('ca_file') AND name='Size')
     BEGIN
-     ALTER TABLE Ca_File ALTER COLUMN [Size] BIGINT
+     ALTER TABLE ca_file ALTER COLUMN [Size] BIGINT
     END
 ELSE
     BEGIN
-    DECLARE @sql_add_Ca_File_Size NVARCHAR(MAX);
-    SET @sql_add_Ca_File_Size = 'ALTER TABLE Ca_File ADD [Size] BIGINT'
-    EXEC sp_executesql @sql_add_Ca_File_Size
+    DECLARE @sql_add_ca_file_Size NVARCHAR(MAX);
+    SET @sql_add_ca_file_Size = 'ALTER TABLE ca_file ADD [Size] BIGINT'
+    EXEC sp_executesql @sql_add_ca_file_Size
     END
 
 
-IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ca_FileSize')
+IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_ca_fileSize')
     BEGIN
-    ALTER TABLE Ca_File DROP  CONSTRAINT [Constraint_Ca_FileSize]
+    ALTER TABLE ca_file DROP  CONSTRAINT [Constraint_ca_fileSize]
     END
 
-IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ca_FileSize')
+IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_ca_fileSize')
     BEGIN
-    ALTER TABLE Ca_File DROP  CONSTRAINT [UniqueNonclustered_Ca_FileSize]
+    ALTER TABLE ca_file DROP  CONSTRAINT [UniqueNonclustered_ca_fileSize]
     END
 
--- [Ca_File.Thumbnail] -------------
+-- [ca_file.Thumbnail] -------------
 
 
--- [Ca_File.Thumbnail] -------------
+-- [ca_file.Thumbnail] -------------
 
-IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ca_File') AND name='Thumbnail')
+IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('ca_file') AND name='Thumbnail')
     BEGIN
-     ALTER TABLE Ca_File ALTER COLUMN [Thumbnail] VARBINARY(MAX)
+     ALTER TABLE ca_file ALTER COLUMN [Thumbnail] VARBINARY(MAX)
     END
 ELSE
     BEGIN
-    DECLARE @sql_add_Ca_File_Thumbnail NVARCHAR(MAX);
-    SET @sql_add_Ca_File_Thumbnail = 'ALTER TABLE Ca_File ADD [Thumbnail] VARBINARY(MAX)'
-    EXEC sp_executesql @sql_add_Ca_File_Thumbnail
+    DECLARE @sql_add_ca_file_Thumbnail NVARCHAR(MAX);
+    SET @sql_add_ca_file_Thumbnail = 'ALTER TABLE ca_file ADD [Thumbnail] VARBINARY(MAX)'
+    EXEC sp_executesql @sql_add_ca_file_Thumbnail
     END
 
 
-IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ca_FileThumbnail')
+IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_ca_fileThumbnail')
     BEGIN
-    ALTER TABLE Ca_File DROP  CONSTRAINT [Constraint_Ca_FileThumbnail]
+    ALTER TABLE ca_file DROP  CONSTRAINT [Constraint_ca_fileThumbnail]
     END
 
-IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ca_FileThumbnail')
+IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_ca_fileThumbnail')
     BEGIN
-    ALTER TABLE Ca_File DROP  CONSTRAINT [UniqueNonclustered_Ca_FileThumbnail]
+    ALTER TABLE ca_file DROP  CONSTRAINT [UniqueNonclustered_ca_fileThumbnail]
     END
 
--- [Ca_File.Owner] -------------
+-- [ca_file.Owner] -------------
 
 
--- [Ca_File.Owner] -------------
+-- [ca_file.Owner] -------------
 
-IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ca_File') AND name='Owner')
+IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('ca_file') AND name='Owner')
     BEGIN
-     ALTER TABLE Ca_File ALTER COLUMN [Owner] BIGINT
+     ALTER TABLE ca_file ALTER COLUMN [Owner] BIGINT
     END
 ELSE
     BEGIN
-    DECLARE @sql_add_Ca_File_Owner NVARCHAR(MAX);
-    SET @sql_add_Ca_File_Owner = 'ALTER TABLE Ca_File ADD [Owner] BIGINT'
-    EXEC sp_executesql @sql_add_Ca_File_Owner
+    DECLARE @sql_add_ca_file_Owner NVARCHAR(MAX);
+    SET @sql_add_ca_file_Owner = 'ALTER TABLE ca_file ADD [Owner] BIGINT'
+    EXEC sp_executesql @sql_add_ca_file_Owner
     END
 
 
-IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ca_FileOwner')
+IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_ca_fileOwner')
     BEGIN
-    ALTER TABLE Ca_File DROP  CONSTRAINT [Constraint_Ca_FileOwner]
+    ALTER TABLE ca_file DROP  CONSTRAINT [Constraint_ca_fileOwner]
     END
 
-IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ca_FileOwner')
+IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_ca_fileOwner')
     BEGIN
-    ALTER TABLE Ca_File DROP  CONSTRAINT [UniqueNonclustered_Ca_FileOwner]
+    ALTER TABLE ca_file DROP  CONSTRAINT [UniqueNonclustered_ca_fileOwner]
     END
--- [Social_FileBind] ----------------------
+-- [social_filebind] ----------------------
 
-IF NOT EXISTS(SELECT * FROM sysobjects WHERE [name]='Social_FileBind' AND xtype='U')
+IF NOT EXISTS(SELECT * FROM sysobjects WHERE [name]='social_filebind' AND xtype='U')
 
 BEGIN
 
-    CREATE TABLE Social_FileBind ([ID] BIGINT NOT NULL
+    CREATE TABLE social_filebind ([ID] BIGINT NOT NULL
         ,[Createdat] BIGINT NOT NULL
         ,[Updatedat] BIGINT NOT NULL
         ,[Sort] BIGINT NOT NULL,
         [File] BIGINT
         ,[Moment] BIGINT
         ,[Desc] NVARCHAR(MAX)
-, CONSTRAINT [PK_Social_FileBind] PRIMARY KEY CLUSTERED ([ID] ASC)) ON [PRIMARY]
+, CONSTRAINT [PK_social_filebind] PRIMARY KEY CLUSTERED ([ID] ASC)) ON [PRIMARY]
 END
 
 
 -- Dropping obsolete fields -----------
-DECLARE @name_Social_FileBind NVARCHAR(64)
-DECLARE cursor_Social_FileBind CURSOR FOR 
-    SELECT name FROM SYSCOLUMNS WHERE id=object_id('Social_FileBind') AND (name NOT IN ('ID','Createdat','Updatedat','Sort','File','Moment','Desc'))
+DECLARE @name_social_filebind NVARCHAR(64)
+DECLARE cursor_social_filebind CURSOR FOR 
+    SELECT name FROM SYSCOLUMNS WHERE id=object_id('social_filebind') AND (name NOT IN ('ID','Createdat','Updatedat','Sort','File','Moment','Desc'))
 
-OPEN cursor_Social_FileBind
-FETCH NEXT FROM cursor_Social_FileBind INTO @name_Social_FileBind
+OPEN cursor_social_filebind
+FETCH NEXT FROM cursor_social_filebind INTO @name_social_filebind
 
 WHILE @@FETCH_STATUS = 0
 BEGIN
-    PRINT 'Dropping Social_FileBind.' + @name_Social_FileBind;
+    PRINT 'Dropping social_filebind.' + @name_social_filebind;
     
-    DECLARE @sql_Social_FileBind NVARCHAR(MAX);
-    SET @sql_Social_FileBind = 'ALTER TABLE Social_FileBind DROP COLUMN ' + QUOTENAME(@name_Social_FileBind)
-    EXEC sp_executesql @sql_Social_FileBind
+    DECLARE @sql_social_filebind NVARCHAR(MAX);
+    SET @sql_social_filebind = 'ALTER TABLE social_filebind DROP COLUMN ' + QUOTENAME(@name_social_filebind)
+    EXEC sp_executesql @sql_social_filebind
     
     
-    FETCH NEXT FROM cursor_Social_FileBind INTO @name_Social_FileBind
+    FETCH NEXT FROM cursor_social_filebind INTO @name_social_filebind
 END
 
-CLOSE cursor_Social_FileBind;
-DEALLOCATE cursor_Social_FileBind;
+CLOSE cursor_social_filebind;
+DEALLOCATE cursor_social_filebind;
 
 
--- [Social_FileBind.File] -------------
+-- [social_filebind.File] -------------
 
 
--- [Social_FileBind.File] -------------
+-- [social_filebind.File] -------------
 
-IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Social_FileBind') AND name='File')
+IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('social_filebind') AND name='File')
     BEGIN
-     ALTER TABLE Social_FileBind ALTER COLUMN [File] BIGINT
+     ALTER TABLE social_filebind ALTER COLUMN [File] BIGINT
     END
 ELSE
     BEGIN
-    DECLARE @sql_add_Social_FileBind_File NVARCHAR(MAX);
-    SET @sql_add_Social_FileBind_File = 'ALTER TABLE Social_FileBind ADD [File] BIGINT'
-    EXEC sp_executesql @sql_add_Social_FileBind_File
+    DECLARE @sql_add_social_filebind_File NVARCHAR(MAX);
+    SET @sql_add_social_filebind_File = 'ALTER TABLE social_filebind ADD [File] BIGINT'
+    EXEC sp_executesql @sql_add_social_filebind_File
     END
 
 
-IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Social_FileBindFile')
+IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_social_filebindFile')
     BEGIN
-    ALTER TABLE Social_FileBind DROP  CONSTRAINT [Constraint_Social_FileBindFile]
+    ALTER TABLE social_filebind DROP  CONSTRAINT [Constraint_social_filebindFile]
     END
 
-IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Social_FileBindFile')
+IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_social_filebindFile')
     BEGIN
-    ALTER TABLE Social_FileBind DROP  CONSTRAINT [UniqueNonclustered_Social_FileBindFile]
+    ALTER TABLE social_filebind DROP  CONSTRAINT [UniqueNonclustered_social_filebindFile]
     END
 
--- [Social_FileBind.Moment] -------------
+-- [social_filebind.Moment] -------------
 
 
--- [Social_FileBind.Moment] -------------
+-- [social_filebind.Moment] -------------
 
-IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Social_FileBind') AND name='Moment')
+IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('social_filebind') AND name='Moment')
     BEGIN
-     ALTER TABLE Social_FileBind ALTER COLUMN [Moment] BIGINT
+     ALTER TABLE social_filebind ALTER COLUMN [Moment] BIGINT
     END
 ELSE
     BEGIN
-    DECLARE @sql_add_Social_FileBind_Moment NVARCHAR(MAX);
-    SET @sql_add_Social_FileBind_Moment = 'ALTER TABLE Social_FileBind ADD [Moment] BIGINT'
-    EXEC sp_executesql @sql_add_Social_FileBind_Moment
+    DECLARE @sql_add_social_filebind_Moment NVARCHAR(MAX);
+    SET @sql_add_social_filebind_Moment = 'ALTER TABLE social_filebind ADD [Moment] BIGINT'
+    EXEC sp_executesql @sql_add_social_filebind_Moment
     END
 
 
-IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Social_FileBindMoment')
+IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_social_filebindMoment')
     BEGIN
-    ALTER TABLE Social_FileBind DROP  CONSTRAINT [Constraint_Social_FileBindMoment]
+    ALTER TABLE social_filebind DROP  CONSTRAINT [Constraint_social_filebindMoment]
     END
 
-IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Social_FileBindMoment')
+IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_social_filebindMoment')
     BEGIN
-    ALTER TABLE Social_FileBind DROP  CONSTRAINT [UniqueNonclustered_Social_FileBindMoment]
+    ALTER TABLE social_filebind DROP  CONSTRAINT [UniqueNonclustered_social_filebindMoment]
     END
 
--- [Social_FileBind.Desc] -------------
+-- [social_filebind.Desc] -------------
 
 
--- [Social_FileBind.Desc] -------------
+-- [social_filebind.Desc] -------------
 
-IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Social_FileBind') AND name='Desc')
+IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('social_filebind') AND name='Desc')
     BEGIN
-     ALTER TABLE Social_FileBind ALTER COLUMN [Desc] NVARCHAR(MAX)
+     ALTER TABLE social_filebind ALTER COLUMN [Desc] NVARCHAR(MAX)
     END
 ELSE
     BEGIN
-    DECLARE @sql_add_Social_FileBind_Desc NVARCHAR(MAX);
-    SET @sql_add_Social_FileBind_Desc = 'ALTER TABLE Social_FileBind ADD [Desc] NVARCHAR(MAX)'
-    EXEC sp_executesql @sql_add_Social_FileBind_Desc
+    DECLARE @sql_add_social_filebind_Desc NVARCHAR(MAX);
+    SET @sql_add_social_filebind_Desc = 'ALTER TABLE social_filebind ADD [Desc] NVARCHAR(MAX)'
+    EXEC sp_executesql @sql_add_social_filebind_Desc
     END
 
 
-IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Social_FileBindDesc')
+IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_social_filebindDesc')
     BEGIN
-    ALTER TABLE Social_FileBind DROP  CONSTRAINT [Constraint_Social_FileBindDesc]
+    ALTER TABLE social_filebind DROP  CONSTRAINT [Constraint_social_filebindDesc]
     END
 
-IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Social_FileBindDesc')
+IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_social_filebindDesc')
     BEGIN
-    ALTER TABLE Social_FileBind DROP  CONSTRAINT [UniqueNonclustered_Social_FileBindDesc]
+    ALTER TABLE social_filebind DROP  CONSTRAINT [UniqueNonclustered_social_filebindDesc]
     END
--- [Social_Moment] ----------------------
+-- [social_moment] ----------------------
 
-IF NOT EXISTS(SELECT * FROM sysobjects WHERE [name]='Social_Moment' AND xtype='U')
+IF NOT EXISTS(SELECT * FROM sysobjects WHERE [name]='social_moment' AND xtype='U')
 
 BEGIN
 
-    CREATE TABLE Social_Moment ([ID] BIGINT NOT NULL
+    CREATE TABLE social_moment ([ID] BIGINT NOT NULL
         ,[Createdat] BIGINT NOT NULL
         ,[Updatedat] BIGINT NOT NULL
         ,[Sort] BIGINT NOT NULL,
@@ -558,590 +558,590 @@ BEGIN
         ,[Type] INT
         ,[State] INT
         ,[MediaType] INT
-, CONSTRAINT [PK_Social_Moment] PRIMARY KEY CLUSTERED ([ID] ASC)) ON [PRIMARY]
+, CONSTRAINT [PK_social_moment] PRIMARY KEY CLUSTERED ([ID] ASC)) ON [PRIMARY]
 END
 
 
 -- Dropping obsolete fields -----------
-DECLARE @name_Social_Moment NVARCHAR(64)
-DECLARE cursor_Social_Moment CURSOR FOR 
-    SELECT name FROM SYSCOLUMNS WHERE id=object_id('Social_Moment') AND (name NOT IN ('ID','Createdat','Updatedat','Sort','Title','Summary','FullText','Tags','PreviewImgUrl','Link','Type','State','MediaType'))
+DECLARE @name_social_moment NVARCHAR(64)
+DECLARE cursor_social_moment CURSOR FOR 
+    SELECT name FROM SYSCOLUMNS WHERE id=object_id('social_moment') AND (name NOT IN ('ID','Createdat','Updatedat','Sort','Title','Summary','FullText','Tags','PreviewImgUrl','Link','Type','State','MediaType'))
 
-OPEN cursor_Social_Moment
-FETCH NEXT FROM cursor_Social_Moment INTO @name_Social_Moment
+OPEN cursor_social_moment
+FETCH NEXT FROM cursor_social_moment INTO @name_social_moment
 
 WHILE @@FETCH_STATUS = 0
 BEGIN
-    PRINT 'Dropping Social_Moment.' + @name_Social_Moment;
+    PRINT 'Dropping social_moment.' + @name_social_moment;
     
-    DECLARE @sql_Social_Moment NVARCHAR(MAX);
-    SET @sql_Social_Moment = 'ALTER TABLE Social_Moment DROP COLUMN ' + QUOTENAME(@name_Social_Moment)
-    EXEC sp_executesql @sql_Social_Moment
+    DECLARE @sql_social_moment NVARCHAR(MAX);
+    SET @sql_social_moment = 'ALTER TABLE social_moment DROP COLUMN ' + QUOTENAME(@name_social_moment)
+    EXEC sp_executesql @sql_social_moment
     
     
-    FETCH NEXT FROM cursor_Social_Moment INTO @name_Social_Moment
+    FETCH NEXT FROM cursor_social_moment INTO @name_social_moment
 END
 
-CLOSE cursor_Social_Moment;
-DEALLOCATE cursor_Social_Moment;
+CLOSE cursor_social_moment;
+DEALLOCATE cursor_social_moment;
 
 
--- [Social_Moment.Title] -------------
+-- [social_moment.Title] -------------
 
 
--- [Social_Moment.Title] -------------
+-- [social_moment.Title] -------------
 
-IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Social_Moment') AND name='Title')
+IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('social_moment') AND name='Title')
     BEGIN
-     ALTER TABLE Social_Moment ALTER COLUMN [Title] NVARCHAR(MAX)
+     ALTER TABLE social_moment ALTER COLUMN [Title] NVARCHAR(MAX)
     END
 ELSE
     BEGIN
-    DECLARE @sql_add_Social_Moment_Title NVARCHAR(MAX);
-    SET @sql_add_Social_Moment_Title = 'ALTER TABLE Social_Moment ADD [Title] NVARCHAR(MAX)'
-    EXEC sp_executesql @sql_add_Social_Moment_Title
+    DECLARE @sql_add_social_moment_Title NVARCHAR(MAX);
+    SET @sql_add_social_moment_Title = 'ALTER TABLE social_moment ADD [Title] NVARCHAR(MAX)'
+    EXEC sp_executesql @sql_add_social_moment_Title
     END
 
 
-IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Social_MomentTitle')
+IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_social_momentTitle')
     BEGIN
-    ALTER TABLE Social_Moment DROP  CONSTRAINT [Constraint_Social_MomentTitle]
+    ALTER TABLE social_moment DROP  CONSTRAINT [Constraint_social_momentTitle]
     END
 
-IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Social_MomentTitle')
+IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_social_momentTitle')
     BEGIN
-    ALTER TABLE Social_Moment DROP  CONSTRAINT [UniqueNonclustered_Social_MomentTitle]
+    ALTER TABLE social_moment DROP  CONSTRAINT [UniqueNonclustered_social_momentTitle]
     END
 
--- [Social_Moment.Summary] -------------
+-- [social_moment.Summary] -------------
 
 
--- [Social_Moment.Summary] -------------
+-- [social_moment.Summary] -------------
 
-IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Social_Moment') AND name='Summary')
+IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('social_moment') AND name='Summary')
     BEGIN
-     ALTER TABLE Social_Moment ALTER COLUMN [Summary] NVARCHAR(MAX)
+     ALTER TABLE social_moment ALTER COLUMN [Summary] NVARCHAR(MAX)
     END
 ELSE
     BEGIN
-    DECLARE @sql_add_Social_Moment_Summary NVARCHAR(MAX);
-    SET @sql_add_Social_Moment_Summary = 'ALTER TABLE Social_Moment ADD [Summary] NVARCHAR(MAX)'
-    EXEC sp_executesql @sql_add_Social_Moment_Summary
+    DECLARE @sql_add_social_moment_Summary NVARCHAR(MAX);
+    SET @sql_add_social_moment_Summary = 'ALTER TABLE social_moment ADD [Summary] NVARCHAR(MAX)'
+    EXEC sp_executesql @sql_add_social_moment_Summary
     END
 
 
-IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Social_MomentSummary')
+IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_social_momentSummary')
     BEGIN
-    ALTER TABLE Social_Moment DROP  CONSTRAINT [Constraint_Social_MomentSummary]
+    ALTER TABLE social_moment DROP  CONSTRAINT [Constraint_social_momentSummary]
     END
 
-IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Social_MomentSummary')
+IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_social_momentSummary')
     BEGIN
-    ALTER TABLE Social_Moment DROP  CONSTRAINT [UniqueNonclustered_Social_MomentSummary]
+    ALTER TABLE social_moment DROP  CONSTRAINT [UniqueNonclustered_social_momentSummary]
     END
 
--- [Social_Moment.FullText] -------------
+-- [social_moment.FullText] -------------
 
 
--- [Social_Moment.FullText] -------------
+-- [social_moment.FullText] -------------
 
-IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Social_Moment') AND name='FullText')
+IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('social_moment') AND name='FullText')
     BEGIN
-     ALTER TABLE Social_Moment ALTER COLUMN [FullText] NVARCHAR(MAX)
+     ALTER TABLE social_moment ALTER COLUMN [FullText] NVARCHAR(MAX)
     END
 ELSE
     BEGIN
-    DECLARE @sql_add_Social_Moment_FullText NVARCHAR(MAX);
-    SET @sql_add_Social_Moment_FullText = 'ALTER TABLE Social_Moment ADD [FullText] NVARCHAR(MAX)'
-    EXEC sp_executesql @sql_add_Social_Moment_FullText
+    DECLARE @sql_add_social_moment_FullText NVARCHAR(MAX);
+    SET @sql_add_social_moment_FullText = 'ALTER TABLE social_moment ADD [FullText] NVARCHAR(MAX)'
+    EXEC sp_executesql @sql_add_social_moment_FullText
     END
 
 
-IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Social_MomentFullText')
+IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_social_momentFullText')
     BEGIN
-    ALTER TABLE Social_Moment DROP  CONSTRAINT [Constraint_Social_MomentFullText]
+    ALTER TABLE social_moment DROP  CONSTRAINT [Constraint_social_momentFullText]
     END
 
-IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Social_MomentFullText')
+IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_social_momentFullText')
     BEGIN
-    ALTER TABLE Social_Moment DROP  CONSTRAINT [UniqueNonclustered_Social_MomentFullText]
+    ALTER TABLE social_moment DROP  CONSTRAINT [UniqueNonclustered_social_momentFullText]
     END
 
--- [Social_Moment.Tags] -------------
+-- [social_moment.Tags] -------------
 
 
--- [Social_Moment.Tags] -------------
+-- [social_moment.Tags] -------------
 
-IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Social_Moment') AND name='Tags')
+IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('social_moment') AND name='Tags')
     BEGIN
-     ALTER TABLE Social_Moment ALTER COLUMN [Tags] NVARCHAR(MAX)
+     ALTER TABLE social_moment ALTER COLUMN [Tags] NVARCHAR(MAX)
     END
 ELSE
     BEGIN
-    DECLARE @sql_add_Social_Moment_Tags NVARCHAR(MAX);
-    SET @sql_add_Social_Moment_Tags = 'ALTER TABLE Social_Moment ADD [Tags] NVARCHAR(MAX)'
-    EXEC sp_executesql @sql_add_Social_Moment_Tags
+    DECLARE @sql_add_social_moment_Tags NVARCHAR(MAX);
+    SET @sql_add_social_moment_Tags = 'ALTER TABLE social_moment ADD [Tags] NVARCHAR(MAX)'
+    EXEC sp_executesql @sql_add_social_moment_Tags
     END
 
 
-IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Social_MomentTags')
+IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_social_momentTags')
     BEGIN
-    ALTER TABLE Social_Moment DROP  CONSTRAINT [Constraint_Social_MomentTags]
+    ALTER TABLE social_moment DROP  CONSTRAINT [Constraint_social_momentTags]
     END
 
-IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Social_MomentTags')
+IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_social_momentTags')
     BEGIN
-    ALTER TABLE Social_Moment DROP  CONSTRAINT [UniqueNonclustered_Social_MomentTags]
+    ALTER TABLE social_moment DROP  CONSTRAINT [UniqueNonclustered_social_momentTags]
     END
 
--- [Social_Moment.PreviewImgUrl] -------------
+-- [social_moment.PreviewImgUrl] -------------
 
 
--- [Social_Moment.PreviewImgUrl] -------------
+-- [social_moment.PreviewImgUrl] -------------
 
-IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Social_Moment') AND name='PreviewImgUrl')
+IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('social_moment') AND name='PreviewImgUrl')
     BEGIN
-     ALTER TABLE Social_Moment ALTER COLUMN [PreviewImgUrl] NVARCHAR(MAX)
+     ALTER TABLE social_moment ALTER COLUMN [PreviewImgUrl] NVARCHAR(MAX)
     END
 ELSE
     BEGIN
-    DECLARE @sql_add_Social_Moment_PreviewImgUrl NVARCHAR(MAX);
-    SET @sql_add_Social_Moment_PreviewImgUrl = 'ALTER TABLE Social_Moment ADD [PreviewImgUrl] NVARCHAR(MAX)'
-    EXEC sp_executesql @sql_add_Social_Moment_PreviewImgUrl
+    DECLARE @sql_add_social_moment_PreviewImgUrl NVARCHAR(MAX);
+    SET @sql_add_social_moment_PreviewImgUrl = 'ALTER TABLE social_moment ADD [PreviewImgUrl] NVARCHAR(MAX)'
+    EXEC sp_executesql @sql_add_social_moment_PreviewImgUrl
     END
 
 
-IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Social_MomentPreviewImgUrl')
+IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_social_momentPreviewImgUrl')
     BEGIN
-    ALTER TABLE Social_Moment DROP  CONSTRAINT [Constraint_Social_MomentPreviewImgUrl]
+    ALTER TABLE social_moment DROP  CONSTRAINT [Constraint_social_momentPreviewImgUrl]
     END
 
-IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Social_MomentPreviewImgUrl')
+IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_social_momentPreviewImgUrl')
     BEGIN
-    ALTER TABLE Social_Moment DROP  CONSTRAINT [UniqueNonclustered_Social_MomentPreviewImgUrl]
+    ALTER TABLE social_moment DROP  CONSTRAINT [UniqueNonclustered_social_momentPreviewImgUrl]
     END
 
--- [Social_Moment.Link] -------------
+-- [social_moment.Link] -------------
 
 
--- [Social_Moment.Link] -------------
+-- [social_moment.Link] -------------
 
-IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Social_Moment') AND name='Link')
+IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('social_moment') AND name='Link')
     BEGIN
-     ALTER TABLE Social_Moment ALTER COLUMN [Link] NVARCHAR(MAX)
+     ALTER TABLE social_moment ALTER COLUMN [Link] NVARCHAR(MAX)
     END
 ELSE
     BEGIN
-    DECLARE @sql_add_Social_Moment_Link NVARCHAR(MAX);
-    SET @sql_add_Social_Moment_Link = 'ALTER TABLE Social_Moment ADD [Link] NVARCHAR(MAX)'
-    EXEC sp_executesql @sql_add_Social_Moment_Link
+    DECLARE @sql_add_social_moment_Link NVARCHAR(MAX);
+    SET @sql_add_social_moment_Link = 'ALTER TABLE social_moment ADD [Link] NVARCHAR(MAX)'
+    EXEC sp_executesql @sql_add_social_moment_Link
     END
 
 
-IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Social_MomentLink')
+IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_social_momentLink')
     BEGIN
-    ALTER TABLE Social_Moment DROP  CONSTRAINT [Constraint_Social_MomentLink]
+    ALTER TABLE social_moment DROP  CONSTRAINT [Constraint_social_momentLink]
     END
 
-IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Social_MomentLink')
+IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_social_momentLink')
     BEGIN
-    ALTER TABLE Social_Moment DROP  CONSTRAINT [UniqueNonclustered_Social_MomentLink]
+    ALTER TABLE social_moment DROP  CONSTRAINT [UniqueNonclustered_social_momentLink]
     END
 
--- [Social_Moment.Type] -------------
+-- [social_moment.Type] -------------
 
 
--- [Social_Moment.Type] -------------
+-- [social_moment.Type] -------------
 
-IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Social_Moment') AND name='Type')
+IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('social_moment') AND name='Type')
     BEGIN
-     ALTER TABLE Social_Moment ALTER COLUMN [Type] INT
+     ALTER TABLE social_moment ALTER COLUMN [Type] INT
     END
 ELSE
     BEGIN
-    DECLARE @sql_add_Social_Moment_Type NVARCHAR(MAX);
-    SET @sql_add_Social_Moment_Type = 'ALTER TABLE Social_Moment ADD [Type] INT'
-    EXEC sp_executesql @sql_add_Social_Moment_Type
+    DECLARE @sql_add_social_moment_Type NVARCHAR(MAX);
+    SET @sql_add_social_moment_Type = 'ALTER TABLE social_moment ADD [Type] INT'
+    EXEC sp_executesql @sql_add_social_moment_Type
     END
 
 
-IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Social_MomentType')
+IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_social_momentType')
     BEGIN
-    ALTER TABLE Social_Moment DROP  CONSTRAINT [Constraint_Social_MomentType]
+    ALTER TABLE social_moment DROP  CONSTRAINT [Constraint_social_momentType]
     END
 
-IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Social_MomentType')
+IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_social_momentType')
     BEGIN
-    ALTER TABLE Social_Moment DROP  CONSTRAINT [UniqueNonclustered_Social_MomentType]
+    ALTER TABLE social_moment DROP  CONSTRAINT [UniqueNonclustered_social_momentType]
     END
 
--- [Social_Moment.State] -------------
+-- [social_moment.State] -------------
 
 
--- [Social_Moment.State] -------------
+-- [social_moment.State] -------------
 
-IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Social_Moment') AND name='State')
+IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('social_moment') AND name='State')
     BEGIN
-     ALTER TABLE Social_Moment ALTER COLUMN [State] INT
+     ALTER TABLE social_moment ALTER COLUMN [State] INT
     END
 ELSE
     BEGIN
-    DECLARE @sql_add_Social_Moment_State NVARCHAR(MAX);
-    SET @sql_add_Social_Moment_State = 'ALTER TABLE Social_Moment ADD [State] INT'
-    EXEC sp_executesql @sql_add_Social_Moment_State
+    DECLARE @sql_add_social_moment_State NVARCHAR(MAX);
+    SET @sql_add_social_moment_State = 'ALTER TABLE social_moment ADD [State] INT'
+    EXEC sp_executesql @sql_add_social_moment_State
     END
 
 
-IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Social_MomentState')
+IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_social_momentState')
     BEGIN
-    ALTER TABLE Social_Moment DROP  CONSTRAINT [Constraint_Social_MomentState]
+    ALTER TABLE social_moment DROP  CONSTRAINT [Constraint_social_momentState]
     END
 
-IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Social_MomentState')
+IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_social_momentState')
     BEGIN
-    ALTER TABLE Social_Moment DROP  CONSTRAINT [UniqueNonclustered_Social_MomentState]
+    ALTER TABLE social_moment DROP  CONSTRAINT [UniqueNonclustered_social_momentState]
     END
 
--- [Social_Moment.MediaType] -------------
+-- [social_moment.MediaType] -------------
 
 
--- [Social_Moment.MediaType] -------------
+-- [social_moment.MediaType] -------------
 
-IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Social_Moment') AND name='MediaType')
+IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('social_moment') AND name='MediaType')
     BEGIN
-     ALTER TABLE Social_Moment ALTER COLUMN [MediaType] INT
+     ALTER TABLE social_moment ALTER COLUMN [MediaType] INT
     END
 ELSE
     BEGIN
-    DECLARE @sql_add_Social_Moment_MediaType NVARCHAR(MAX);
-    SET @sql_add_Social_Moment_MediaType = 'ALTER TABLE Social_Moment ADD [MediaType] INT'
-    EXEC sp_executesql @sql_add_Social_Moment_MediaType
+    DECLARE @sql_add_social_moment_MediaType NVARCHAR(MAX);
+    SET @sql_add_social_moment_MediaType = 'ALTER TABLE social_moment ADD [MediaType] INT'
+    EXEC sp_executesql @sql_add_social_moment_MediaType
     END
 
 
-IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Social_MomentMediaType')
+IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_social_momentMediaType')
     BEGIN
-    ALTER TABLE Social_Moment DROP  CONSTRAINT [Constraint_Social_MomentMediaType]
+    ALTER TABLE social_moment DROP  CONSTRAINT [Constraint_social_momentMediaType]
     END
 
-IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Social_MomentMediaType')
+IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_social_momentMediaType')
     BEGIN
-    ALTER TABLE Social_Moment DROP  CONSTRAINT [UniqueNonclustered_Social_MomentMediaType]
+    ALTER TABLE social_moment DROP  CONSTRAINT [UniqueNonclustered_social_momentMediaType]
     END
--- [Sys_Log] ----------------------
+-- [sys_log] ----------------------
 
-IF NOT EXISTS(SELECT * FROM sysobjects WHERE [name]='Sys_Log' AND xtype='U')
+IF NOT EXISTS(SELECT * FROM sysobjects WHERE [name]='sys_log' AND xtype='U')
 
 BEGIN
 
-    CREATE TABLE Sys_Log ([ID] BIGINT NOT NULL
+    CREATE TABLE sys_log ([ID] BIGINT NOT NULL
         ,[Createdat] BIGINT NOT NULL
         ,[Updatedat] BIGINT NOT NULL
         ,[Sort] BIGINT NOT NULL,
         [Location] NVARCHAR(MAX)
         ,[Content] NVARCHAR(MAX)
         ,[Sql] NVARCHAR(MAX)
-, CONSTRAINT [PK_Sys_Log] PRIMARY KEY CLUSTERED ([ID] ASC)) ON [PRIMARY]
+, CONSTRAINT [PK_sys_log] PRIMARY KEY CLUSTERED ([ID] ASC)) ON [PRIMARY]
 END
 
 
 -- Dropping obsolete fields -----------
-DECLARE @name_Sys_Log NVARCHAR(64)
-DECLARE cursor_Sys_Log CURSOR FOR 
-    SELECT name FROM SYSCOLUMNS WHERE id=object_id('Sys_Log') AND (name NOT IN ('ID','Createdat','Updatedat','Sort','Location','Content','Sql'))
+DECLARE @name_sys_log NVARCHAR(64)
+DECLARE cursor_sys_log CURSOR FOR 
+    SELECT name FROM SYSCOLUMNS WHERE id=object_id('sys_log') AND (name NOT IN ('ID','Createdat','Updatedat','Sort','Location','Content','Sql'))
 
-OPEN cursor_Sys_Log
-FETCH NEXT FROM cursor_Sys_Log INTO @name_Sys_Log
+OPEN cursor_sys_log
+FETCH NEXT FROM cursor_sys_log INTO @name_sys_log
 
 WHILE @@FETCH_STATUS = 0
 BEGIN
-    PRINT 'Dropping Sys_Log.' + @name_Sys_Log;
+    PRINT 'Dropping sys_log.' + @name_sys_log;
     
-    DECLARE @sql_Sys_Log NVARCHAR(MAX);
-    SET @sql_Sys_Log = 'ALTER TABLE Sys_Log DROP COLUMN ' + QUOTENAME(@name_Sys_Log)
-    EXEC sp_executesql @sql_Sys_Log
+    DECLARE @sql_sys_log NVARCHAR(MAX);
+    SET @sql_sys_log = 'ALTER TABLE sys_log DROP COLUMN ' + QUOTENAME(@name_sys_log)
+    EXEC sp_executesql @sql_sys_log
     
     
-    FETCH NEXT FROM cursor_Sys_Log INTO @name_Sys_Log
+    FETCH NEXT FROM cursor_sys_log INTO @name_sys_log
 END
 
-CLOSE cursor_Sys_Log;
-DEALLOCATE cursor_Sys_Log;
+CLOSE cursor_sys_log;
+DEALLOCATE cursor_sys_log;
 
 
--- [Sys_Log.Location] -------------
+-- [sys_log.Location] -------------
 
 
--- [Sys_Log.Location] -------------
+-- [sys_log.Location] -------------
 
-IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Sys_Log') AND name='Location')
+IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('sys_log') AND name='Location')
     BEGIN
-     ALTER TABLE Sys_Log ALTER COLUMN [Location] NVARCHAR(MAX)
+     ALTER TABLE sys_log ALTER COLUMN [Location] NVARCHAR(MAX)
     END
 ELSE
     BEGIN
-    DECLARE @sql_add_Sys_Log_Location NVARCHAR(MAX);
-    SET @sql_add_Sys_Log_Location = 'ALTER TABLE Sys_Log ADD [Location] NVARCHAR(MAX)'
-    EXEC sp_executesql @sql_add_Sys_Log_Location
+    DECLARE @sql_add_sys_log_Location NVARCHAR(MAX);
+    SET @sql_add_sys_log_Location = 'ALTER TABLE sys_log ADD [Location] NVARCHAR(MAX)'
+    EXEC sp_executesql @sql_add_sys_log_Location
     END
 
 
-IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Sys_LogLocation')
+IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_sys_logLocation')
     BEGIN
-    ALTER TABLE Sys_Log DROP  CONSTRAINT [Constraint_Sys_LogLocation]
+    ALTER TABLE sys_log DROP  CONSTRAINT [Constraint_sys_logLocation]
     END
 
-IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Sys_LogLocation')
+IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_sys_logLocation')
     BEGIN
-    ALTER TABLE Sys_Log DROP  CONSTRAINT [UniqueNonclustered_Sys_LogLocation]
+    ALTER TABLE sys_log DROP  CONSTRAINT [UniqueNonclustered_sys_logLocation]
     END
 
--- [Sys_Log.Content] -------------
+-- [sys_log.Content] -------------
 
 
--- [Sys_Log.Content] -------------
+-- [sys_log.Content] -------------
 
-IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Sys_Log') AND name='Content')
+IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('sys_log') AND name='Content')
     BEGIN
-     ALTER TABLE Sys_Log ALTER COLUMN [Content] NVARCHAR(MAX)
+     ALTER TABLE sys_log ALTER COLUMN [Content] NVARCHAR(MAX)
     END
 ELSE
     BEGIN
-    DECLARE @sql_add_Sys_Log_Content NVARCHAR(MAX);
-    SET @sql_add_Sys_Log_Content = 'ALTER TABLE Sys_Log ADD [Content] NVARCHAR(MAX)'
-    EXEC sp_executesql @sql_add_Sys_Log_Content
+    DECLARE @sql_add_sys_log_Content NVARCHAR(MAX);
+    SET @sql_add_sys_log_Content = 'ALTER TABLE sys_log ADD [Content] NVARCHAR(MAX)'
+    EXEC sp_executesql @sql_add_sys_log_Content
     END
 
 
-IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Sys_LogContent')
+IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_sys_logContent')
     BEGIN
-    ALTER TABLE Sys_Log DROP  CONSTRAINT [Constraint_Sys_LogContent]
+    ALTER TABLE sys_log DROP  CONSTRAINT [Constraint_sys_logContent]
     END
 
-IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Sys_LogContent')
+IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_sys_logContent')
     BEGIN
-    ALTER TABLE Sys_Log DROP  CONSTRAINT [UniqueNonclustered_Sys_LogContent]
+    ALTER TABLE sys_log DROP  CONSTRAINT [UniqueNonclustered_sys_logContent]
     END
 
--- [Sys_Log.Sql] -------------
+-- [sys_log.Sql] -------------
 
 
--- [Sys_Log.Sql] -------------
+-- [sys_log.Sql] -------------
 
-IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Sys_Log') AND name='Sql')
+IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('sys_log') AND name='Sql')
     BEGIN
-     ALTER TABLE Sys_Log ALTER COLUMN [Sql] NVARCHAR(MAX)
+     ALTER TABLE sys_log ALTER COLUMN [Sql] NVARCHAR(MAX)
     END
 ELSE
     BEGIN
-    DECLARE @sql_add_Sys_Log_Sql NVARCHAR(MAX);
-    SET @sql_add_Sys_Log_Sql = 'ALTER TABLE Sys_Log ADD [Sql] NVARCHAR(MAX)'
-    EXEC sp_executesql @sql_add_Sys_Log_Sql
+    DECLARE @sql_add_sys_log_Sql NVARCHAR(MAX);
+    SET @sql_add_sys_log_Sql = 'ALTER TABLE sys_log ADD [Sql] NVARCHAR(MAX)'
+    EXEC sp_executesql @sql_add_sys_log_Sql
     END
 
 
-IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Sys_LogSql')
+IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_sys_logSql')
     BEGIN
-    ALTER TABLE Sys_Log DROP  CONSTRAINT [Constraint_Sys_LogSql]
+    ALTER TABLE sys_log DROP  CONSTRAINT [Constraint_sys_logSql]
     END
 
-IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Sys_LogSql')
+IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_sys_logSql')
     BEGIN
-    ALTER TABLE Sys_Log DROP  CONSTRAINT [UniqueNonclustered_Sys_LogSql]
+    ALTER TABLE sys_log DROP  CONSTRAINT [UniqueNonclustered_sys_logSql]
     END
--- [Sys_PageLog] ----------------------
+-- [sys_pagelog] ----------------------
 
-IF NOT EXISTS(SELECT * FROM sysobjects WHERE [name]='Sys_PageLog' AND xtype='U')
+IF NOT EXISTS(SELECT * FROM sysobjects WHERE [name]='sys_pagelog' AND xtype='U')
 
 BEGIN
 
-    CREATE TABLE Sys_PageLog ([ID] BIGINT NOT NULL
+    CREATE TABLE sys_pagelog ([ID] BIGINT NOT NULL
         ,[Createdat] BIGINT NOT NULL
         ,[Updatedat] BIGINT NOT NULL
         ,[Sort] BIGINT NOT NULL,
         [Ip] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS
         ,[Request] NVARCHAR(MAX)
-, CONSTRAINT [PK_Sys_PageLog] PRIMARY KEY CLUSTERED ([ID] ASC)) ON [PRIMARY]
+, CONSTRAINT [PK_sys_pagelog] PRIMARY KEY CLUSTERED ([ID] ASC)) ON [PRIMARY]
 END
 
 
 -- Dropping obsolete fields -----------
-DECLARE @name_Sys_PageLog NVARCHAR(64)
-DECLARE cursor_Sys_PageLog CURSOR FOR 
-    SELECT name FROM SYSCOLUMNS WHERE id=object_id('Sys_PageLog') AND (name NOT IN ('ID','Createdat','Updatedat','Sort','Ip','Request'))
+DECLARE @name_sys_pagelog NVARCHAR(64)
+DECLARE cursor_sys_pagelog CURSOR FOR 
+    SELECT name FROM SYSCOLUMNS WHERE id=object_id('sys_pagelog') AND (name NOT IN ('ID','Createdat','Updatedat','Sort','Ip','Request'))
 
-OPEN cursor_Sys_PageLog
-FETCH NEXT FROM cursor_Sys_PageLog INTO @name_Sys_PageLog
+OPEN cursor_sys_pagelog
+FETCH NEXT FROM cursor_sys_pagelog INTO @name_sys_pagelog
 
 WHILE @@FETCH_STATUS = 0
 BEGIN
-    PRINT 'Dropping Sys_PageLog.' + @name_Sys_PageLog;
+    PRINT 'Dropping sys_pagelog.' + @name_sys_pagelog;
     
-    DECLARE @sql_Sys_PageLog NVARCHAR(MAX);
-    SET @sql_Sys_PageLog = 'ALTER TABLE Sys_PageLog DROP COLUMN ' + QUOTENAME(@name_Sys_PageLog)
-    EXEC sp_executesql @sql_Sys_PageLog
+    DECLARE @sql_sys_pagelog NVARCHAR(MAX);
+    SET @sql_sys_pagelog = 'ALTER TABLE sys_pagelog DROP COLUMN ' + QUOTENAME(@name_sys_pagelog)
+    EXEC sp_executesql @sql_sys_pagelog
     
     
-    FETCH NEXT FROM cursor_Sys_PageLog INTO @name_Sys_PageLog
+    FETCH NEXT FROM cursor_sys_pagelog INTO @name_sys_pagelog
 END
 
-CLOSE cursor_Sys_PageLog;
-DEALLOCATE cursor_Sys_PageLog;
+CLOSE cursor_sys_pagelog;
+DEALLOCATE cursor_sys_pagelog;
 
 
--- [Sys_PageLog.Ip] -------------
+-- [sys_pagelog.Ip] -------------
 
 
--- [Sys_PageLog.Ip] -------------
+-- [sys_pagelog.Ip] -------------
 
-IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Sys_PageLog') AND name='Ip')
+IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('sys_pagelog') AND name='Ip')
     BEGIN
-     ALTER TABLE Sys_PageLog ALTER COLUMN [Ip] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS
+     ALTER TABLE sys_pagelog ALTER COLUMN [Ip] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS
     END
 ELSE
     BEGIN
-    DECLARE @sql_add_Sys_PageLog_Ip NVARCHAR(MAX);
-    SET @sql_add_Sys_PageLog_Ip = 'ALTER TABLE Sys_PageLog ADD [Ip] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS'
-    EXEC sp_executesql @sql_add_Sys_PageLog_Ip
+    DECLARE @sql_add_sys_pagelog_Ip NVARCHAR(MAX);
+    SET @sql_add_sys_pagelog_Ip = 'ALTER TABLE sys_pagelog ADD [Ip] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS'
+    EXEC sp_executesql @sql_add_sys_pagelog_Ip
     END
 
 
-IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Sys_PageLogIp')
+IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_sys_pagelogIp')
     BEGIN
-    ALTER TABLE Sys_PageLog DROP  CONSTRAINT [Constraint_Sys_PageLogIp]
+    ALTER TABLE sys_pagelog DROP  CONSTRAINT [Constraint_sys_pagelogIp]
     END
 
-IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Sys_PageLogIp')
+IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_sys_pagelogIp')
     BEGIN
-    ALTER TABLE Sys_PageLog DROP  CONSTRAINT [UniqueNonclustered_Sys_PageLogIp]
+    ALTER TABLE sys_pagelog DROP  CONSTRAINT [UniqueNonclustered_sys_pagelogIp]
     END
 
--- [Sys_PageLog.Request] -------------
+-- [sys_pagelog.Request] -------------
 
 
--- [Sys_PageLog.Request] -------------
+-- [sys_pagelog.Request] -------------
 
-IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Sys_PageLog') AND name='Request')
+IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('sys_pagelog') AND name='Request')
     BEGIN
-     ALTER TABLE Sys_PageLog ALTER COLUMN [Request] NVARCHAR(MAX)
+     ALTER TABLE sys_pagelog ALTER COLUMN [Request] NVARCHAR(MAX)
     END
 ELSE
     BEGIN
-    DECLARE @sql_add_Sys_PageLog_Request NVARCHAR(MAX);
-    SET @sql_add_Sys_PageLog_Request = 'ALTER TABLE Sys_PageLog ADD [Request] NVARCHAR(MAX)'
-    EXEC sp_executesql @sql_add_Sys_PageLog_Request
+    DECLARE @sql_add_sys_pagelog_Request NVARCHAR(MAX);
+    SET @sql_add_sys_pagelog_Request = 'ALTER TABLE sys_pagelog ADD [Request] NVARCHAR(MAX)'
+    EXEC sp_executesql @sql_add_sys_pagelog_Request
     END
 
 
-IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Sys_PageLogRequest')
+IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_sys_pagelogRequest')
     BEGIN
-    ALTER TABLE Sys_PageLog DROP  CONSTRAINT [Constraint_Sys_PageLogRequest]
+    ALTER TABLE sys_pagelog DROP  CONSTRAINT [Constraint_sys_pagelogRequest]
     END
 
-IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Sys_PageLogRequest')
+IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_sys_pagelogRequest')
     BEGIN
-    ALTER TABLE Sys_PageLog DROP  CONSTRAINT [UniqueNonclustered_Sys_PageLogRequest]
+    ALTER TABLE sys_pagelog DROP  CONSTRAINT [UniqueNonclustered_sys_pagelogRequest]
     END
--- [Ts_Api] ----------------------
+-- [ts_api] ----------------------
 
-IF NOT EXISTS(SELECT * FROM sysobjects WHERE [name]='Ts_Api' AND xtype='U')
+IF NOT EXISTS(SELECT * FROM sysobjects WHERE [name]='ts_api' AND xtype='U')
 
 BEGIN
 
-    CREATE TABLE Ts_Api ([ID] BIGINT NOT NULL
+    CREATE TABLE ts_api ([ID] BIGINT NOT NULL
         ,[Createdat] BIGINT NOT NULL
         ,[Updatedat] BIGINT NOT NULL
         ,[Sort] BIGINT NOT NULL,
         [Name] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS
         ,[Project] BIGINT
-, CONSTRAINT [PK_Ts_Api] PRIMARY KEY CLUSTERED ([ID] ASC)) ON [PRIMARY]
+, CONSTRAINT [PK_ts_api] PRIMARY KEY CLUSTERED ([ID] ASC)) ON [PRIMARY]
 END
 
 
 -- Dropping obsolete fields -----------
-DECLARE @name_Ts_Api NVARCHAR(64)
-DECLARE cursor_Ts_Api CURSOR FOR 
-    SELECT name FROM SYSCOLUMNS WHERE id=object_id('Ts_Api') AND (name NOT IN ('ID','Createdat','Updatedat','Sort','Name','Project'))
+DECLARE @name_ts_api NVARCHAR(64)
+DECLARE cursor_ts_api CURSOR FOR 
+    SELECT name FROM SYSCOLUMNS WHERE id=object_id('ts_api') AND (name NOT IN ('ID','Createdat','Updatedat','Sort','Name','Project'))
 
-OPEN cursor_Ts_Api
-FETCH NEXT FROM cursor_Ts_Api INTO @name_Ts_Api
+OPEN cursor_ts_api
+FETCH NEXT FROM cursor_ts_api INTO @name_ts_api
 
 WHILE @@FETCH_STATUS = 0
 BEGIN
-    PRINT 'Dropping Ts_Api.' + @name_Ts_Api;
+    PRINT 'Dropping ts_api.' + @name_ts_api;
     
-    DECLARE @sql_Ts_Api NVARCHAR(MAX);
-    SET @sql_Ts_Api = 'ALTER TABLE Ts_Api DROP COLUMN ' + QUOTENAME(@name_Ts_Api)
-    EXEC sp_executesql @sql_Ts_Api
+    DECLARE @sql_ts_api NVARCHAR(MAX);
+    SET @sql_ts_api = 'ALTER TABLE ts_api DROP COLUMN ' + QUOTENAME(@name_ts_api)
+    EXEC sp_executesql @sql_ts_api
     
     
-    FETCH NEXT FROM cursor_Ts_Api INTO @name_Ts_Api
+    FETCH NEXT FROM cursor_ts_api INTO @name_ts_api
 END
 
-CLOSE cursor_Ts_Api;
-DEALLOCATE cursor_Ts_Api;
+CLOSE cursor_ts_api;
+DEALLOCATE cursor_ts_api;
 
 
--- [Ts_Api.Name] -------------
+-- [ts_api.Name] -------------
 
 
--- [Ts_Api.Name] -------------
+-- [ts_api.Name] -------------
 
-IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ts_Api') AND name='Name')
+IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('ts_api') AND name='Name')
     BEGIN
-     ALTER TABLE Ts_Api ALTER COLUMN [Name] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS
+     ALTER TABLE ts_api ALTER COLUMN [Name] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS
     END
 ELSE
     BEGIN
-    DECLARE @sql_add_Ts_Api_Name NVARCHAR(MAX);
-    SET @sql_add_Ts_Api_Name = 'ALTER TABLE Ts_Api ADD [Name] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS'
-    EXEC sp_executesql @sql_add_Ts_Api_Name
+    DECLARE @sql_add_ts_api_Name NVARCHAR(MAX);
+    SET @sql_add_ts_api_Name = 'ALTER TABLE ts_api ADD [Name] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS'
+    EXEC sp_executesql @sql_add_ts_api_Name
     END
 
 
-IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ts_ApiName')
+IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_ts_apiName')
     BEGIN
-    ALTER TABLE Ts_Api DROP  CONSTRAINT [Constraint_Ts_ApiName]
+    ALTER TABLE ts_api DROP  CONSTRAINT [Constraint_ts_apiName]
     END
 
-IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ts_ApiName')
+IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_ts_apiName')
     BEGIN
-    ALTER TABLE Ts_Api DROP  CONSTRAINT [UniqueNonclustered_Ts_ApiName]
+    ALTER TABLE ts_api DROP  CONSTRAINT [UniqueNonclustered_ts_apiName]
     END
 
--- [Ts_Api.Project] -------------
+-- [ts_api.Project] -------------
 
 
--- [Ts_Api.Project] -------------
+-- [ts_api.Project] -------------
 
-IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ts_Api') AND name='Project')
+IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('ts_api') AND name='Project')
     BEGIN
-     ALTER TABLE Ts_Api ALTER COLUMN [Project] BIGINT
+     ALTER TABLE ts_api ALTER COLUMN [Project] BIGINT
     END
 ELSE
     BEGIN
-    DECLARE @sql_add_Ts_Api_Project NVARCHAR(MAX);
-    SET @sql_add_Ts_Api_Project = 'ALTER TABLE Ts_Api ADD [Project] BIGINT'
-    EXEC sp_executesql @sql_add_Ts_Api_Project
+    DECLARE @sql_add_ts_api_Project NVARCHAR(MAX);
+    SET @sql_add_ts_api_Project = 'ALTER TABLE ts_api ADD [Project] BIGINT'
+    EXEC sp_executesql @sql_add_ts_api_Project
     END
 
 
-IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ts_ApiProject')
+IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_ts_apiProject')
     BEGIN
-    ALTER TABLE Ts_Api DROP  CONSTRAINT [Constraint_Ts_ApiProject]
+    ALTER TABLE ts_api DROP  CONSTRAINT [Constraint_ts_apiProject]
     END
 
-IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ts_ApiProject')
+IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_ts_apiProject')
     BEGIN
-    ALTER TABLE Ts_Api DROP  CONSTRAINT [UniqueNonclustered_Ts_ApiProject]
+    ALTER TABLE ts_api DROP  CONSTRAINT [UniqueNonclustered_ts_apiProject]
     END
--- [Ts_Field] ----------------------
+-- [ts_field] ----------------------
 
-IF NOT EXISTS(SELECT * FROM sysobjects WHERE [name]='Ts_Field' AND xtype='U')
+IF NOT EXISTS(SELECT * FROM sysobjects WHERE [name]='ts_field' AND xtype='U')
 
 BEGIN
 
-    CREATE TABLE Ts_Field ([ID] BIGINT NOT NULL
+    CREATE TABLE ts_field ([ID] BIGINT NOT NULL
         ,[Createdat] BIGINT NOT NULL
         ,[Updatedat] BIGINT NOT NULL
         ,[Sort] BIGINT NOT NULL,
@@ -1152,229 +1152,229 @@ BEGIN
         ,[SelectLines] NVARCHAR(MAX)
         ,[Project] BIGINT
         ,[Table] BIGINT
-, CONSTRAINT [PK_Ts_Field] PRIMARY KEY CLUSTERED ([ID] ASC)) ON [PRIMARY]
+, CONSTRAINT [PK_ts_field] PRIMARY KEY CLUSTERED ([ID] ASC)) ON [PRIMARY]
 END
 
 
 -- Dropping obsolete fields -----------
-DECLARE @name_Ts_Field NVARCHAR(64)
-DECLARE cursor_Ts_Field CURSOR FOR 
-    SELECT name FROM SYSCOLUMNS WHERE id=object_id('Ts_Field') AND (name NOT IN ('ID','Createdat','Updatedat','Sort','Name','Desc','FieldType','Length','SelectLines','Project','Table'))
+DECLARE @name_ts_field NVARCHAR(64)
+DECLARE cursor_ts_field CURSOR FOR 
+    SELECT name FROM SYSCOLUMNS WHERE id=object_id('ts_field') AND (name NOT IN ('ID','Createdat','Updatedat','Sort','Name','Desc','FieldType','Length','SelectLines','Project','Table'))
 
-OPEN cursor_Ts_Field
-FETCH NEXT FROM cursor_Ts_Field INTO @name_Ts_Field
+OPEN cursor_ts_field
+FETCH NEXT FROM cursor_ts_field INTO @name_ts_field
 
 WHILE @@FETCH_STATUS = 0
 BEGIN
-    PRINT 'Dropping Ts_Field.' + @name_Ts_Field;
+    PRINT 'Dropping ts_field.' + @name_ts_field;
     
-    DECLARE @sql_Ts_Field NVARCHAR(MAX);
-    SET @sql_Ts_Field = 'ALTER TABLE Ts_Field DROP COLUMN ' + QUOTENAME(@name_Ts_Field)
-    EXEC sp_executesql @sql_Ts_Field
+    DECLARE @sql_ts_field NVARCHAR(MAX);
+    SET @sql_ts_field = 'ALTER TABLE ts_field DROP COLUMN ' + QUOTENAME(@name_ts_field)
+    EXEC sp_executesql @sql_ts_field
     
     
-    FETCH NEXT FROM cursor_Ts_Field INTO @name_Ts_Field
+    FETCH NEXT FROM cursor_ts_field INTO @name_ts_field
 END
 
-CLOSE cursor_Ts_Field;
-DEALLOCATE cursor_Ts_Field;
+CLOSE cursor_ts_field;
+DEALLOCATE cursor_ts_field;
 
 
--- [Ts_Field.Name] -------------
+-- [ts_field.Name] -------------
 
 
--- [Ts_Field.Name] -------------
+-- [ts_field.Name] -------------
 
-IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ts_Field') AND name='Name')
+IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('ts_field') AND name='Name')
     BEGIN
-     ALTER TABLE Ts_Field ALTER COLUMN [Name] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS
+     ALTER TABLE ts_field ALTER COLUMN [Name] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS
     END
 ELSE
     BEGIN
-    DECLARE @sql_add_Ts_Field_Name NVARCHAR(MAX);
-    SET @sql_add_Ts_Field_Name = 'ALTER TABLE Ts_Field ADD [Name] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS'
-    EXEC sp_executesql @sql_add_Ts_Field_Name
+    DECLARE @sql_add_ts_field_Name NVARCHAR(MAX);
+    SET @sql_add_ts_field_Name = 'ALTER TABLE ts_field ADD [Name] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS'
+    EXEC sp_executesql @sql_add_ts_field_Name
     END
 
 
-IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ts_FieldName')
+IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_ts_fieldName')
     BEGIN
-    ALTER TABLE Ts_Field DROP  CONSTRAINT [Constraint_Ts_FieldName]
+    ALTER TABLE ts_field DROP  CONSTRAINT [Constraint_ts_fieldName]
     END
 
-IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ts_FieldName')
+IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_ts_fieldName')
     BEGIN
-    ALTER TABLE Ts_Field DROP  CONSTRAINT [UniqueNonclustered_Ts_FieldName]
+    ALTER TABLE ts_field DROP  CONSTRAINT [UniqueNonclustered_ts_fieldName]
     END
 
--- [Ts_Field.Desc] -------------
+-- [ts_field.Desc] -------------
 
 
--- [Ts_Field.Desc] -------------
+-- [ts_field.Desc] -------------
 
-IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ts_Field') AND name='Desc')
+IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('ts_field') AND name='Desc')
     BEGIN
-     ALTER TABLE Ts_Field ALTER COLUMN [Desc] NVARCHAR(MAX)
+     ALTER TABLE ts_field ALTER COLUMN [Desc] NVARCHAR(MAX)
     END
 ELSE
     BEGIN
-    DECLARE @sql_add_Ts_Field_Desc NVARCHAR(MAX);
-    SET @sql_add_Ts_Field_Desc = 'ALTER TABLE Ts_Field ADD [Desc] NVARCHAR(MAX)'
-    EXEC sp_executesql @sql_add_Ts_Field_Desc
+    DECLARE @sql_add_ts_field_Desc NVARCHAR(MAX);
+    SET @sql_add_ts_field_Desc = 'ALTER TABLE ts_field ADD [Desc] NVARCHAR(MAX)'
+    EXEC sp_executesql @sql_add_ts_field_Desc
     END
 
 
-IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ts_FieldDesc')
+IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_ts_fieldDesc')
     BEGIN
-    ALTER TABLE Ts_Field DROP  CONSTRAINT [Constraint_Ts_FieldDesc]
+    ALTER TABLE ts_field DROP  CONSTRAINT [Constraint_ts_fieldDesc]
     END
 
-IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ts_FieldDesc')
+IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_ts_fieldDesc')
     BEGIN
-    ALTER TABLE Ts_Field DROP  CONSTRAINT [UniqueNonclustered_Ts_FieldDesc]
+    ALTER TABLE ts_field DROP  CONSTRAINT [UniqueNonclustered_ts_fieldDesc]
     END
 
--- [Ts_Field.FieldType] -------------
+-- [ts_field.FieldType] -------------
 
 
--- [Ts_Field.FieldType] -------------
+-- [ts_field.FieldType] -------------
 
-IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ts_Field') AND name='FieldType')
+IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('ts_field') AND name='FieldType')
     BEGIN
-     ALTER TABLE Ts_Field ALTER COLUMN [FieldType] INT
+     ALTER TABLE ts_field ALTER COLUMN [FieldType] INT
     END
 ELSE
     BEGIN
-    DECLARE @sql_add_Ts_Field_FieldType NVARCHAR(MAX);
-    SET @sql_add_Ts_Field_FieldType = 'ALTER TABLE Ts_Field ADD [FieldType] INT'
-    EXEC sp_executesql @sql_add_Ts_Field_FieldType
+    DECLARE @sql_add_ts_field_FieldType NVARCHAR(MAX);
+    SET @sql_add_ts_field_FieldType = 'ALTER TABLE ts_field ADD [FieldType] INT'
+    EXEC sp_executesql @sql_add_ts_field_FieldType
     END
 
 
-IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ts_FieldFieldType')
+IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_ts_fieldFieldType')
     BEGIN
-    ALTER TABLE Ts_Field DROP  CONSTRAINT [Constraint_Ts_FieldFieldType]
+    ALTER TABLE ts_field DROP  CONSTRAINT [Constraint_ts_fieldFieldType]
     END
 
-IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ts_FieldFieldType')
+IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_ts_fieldFieldType')
     BEGIN
-    ALTER TABLE Ts_Field DROP  CONSTRAINT [UniqueNonclustered_Ts_FieldFieldType]
+    ALTER TABLE ts_field DROP  CONSTRAINT [UniqueNonclustered_ts_fieldFieldType]
     END
 
--- [Ts_Field.Length] -------------
+-- [ts_field.Length] -------------
 
 
--- [Ts_Field.Length] -------------
+-- [ts_field.Length] -------------
 
-IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ts_Field') AND name='Length')
+IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('ts_field') AND name='Length')
     BEGIN
-     ALTER TABLE Ts_Field ALTER COLUMN [Length] BIGINT
+     ALTER TABLE ts_field ALTER COLUMN [Length] BIGINT
     END
 ELSE
     BEGIN
-    DECLARE @sql_add_Ts_Field_Length NVARCHAR(MAX);
-    SET @sql_add_Ts_Field_Length = 'ALTER TABLE Ts_Field ADD [Length] BIGINT'
-    EXEC sp_executesql @sql_add_Ts_Field_Length
+    DECLARE @sql_add_ts_field_Length NVARCHAR(MAX);
+    SET @sql_add_ts_field_Length = 'ALTER TABLE ts_field ADD [Length] BIGINT'
+    EXEC sp_executesql @sql_add_ts_field_Length
     END
 
 
-IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ts_FieldLength')
+IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_ts_fieldLength')
     BEGIN
-    ALTER TABLE Ts_Field DROP  CONSTRAINT [Constraint_Ts_FieldLength]
+    ALTER TABLE ts_field DROP  CONSTRAINT [Constraint_ts_fieldLength]
     END
 
-IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ts_FieldLength')
+IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_ts_fieldLength')
     BEGIN
-    ALTER TABLE Ts_Field DROP  CONSTRAINT [UniqueNonclustered_Ts_FieldLength]
+    ALTER TABLE ts_field DROP  CONSTRAINT [UniqueNonclustered_ts_fieldLength]
     END
 
--- [Ts_Field.SelectLines] -------------
+-- [ts_field.SelectLines] -------------
 
 
--- [Ts_Field.SelectLines] -------------
+-- [ts_field.SelectLines] -------------
 
-IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ts_Field') AND name='SelectLines')
+IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('ts_field') AND name='SelectLines')
     BEGIN
-     ALTER TABLE Ts_Field ALTER COLUMN [SelectLines] NVARCHAR(MAX)
+     ALTER TABLE ts_field ALTER COLUMN [SelectLines] NVARCHAR(MAX)
     END
 ELSE
     BEGIN
-    DECLARE @sql_add_Ts_Field_SelectLines NVARCHAR(MAX);
-    SET @sql_add_Ts_Field_SelectLines = 'ALTER TABLE Ts_Field ADD [SelectLines] NVARCHAR(MAX)'
-    EXEC sp_executesql @sql_add_Ts_Field_SelectLines
+    DECLARE @sql_add_ts_field_SelectLines NVARCHAR(MAX);
+    SET @sql_add_ts_field_SelectLines = 'ALTER TABLE ts_field ADD [SelectLines] NVARCHAR(MAX)'
+    EXEC sp_executesql @sql_add_ts_field_SelectLines
     END
 
 
-IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ts_FieldSelectLines')
+IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_ts_fieldSelectLines')
     BEGIN
-    ALTER TABLE Ts_Field DROP  CONSTRAINT [Constraint_Ts_FieldSelectLines]
+    ALTER TABLE ts_field DROP  CONSTRAINT [Constraint_ts_fieldSelectLines]
     END
 
-IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ts_FieldSelectLines')
+IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_ts_fieldSelectLines')
     BEGIN
-    ALTER TABLE Ts_Field DROP  CONSTRAINT [UniqueNonclustered_Ts_FieldSelectLines]
+    ALTER TABLE ts_field DROP  CONSTRAINT [UniqueNonclustered_ts_fieldSelectLines]
     END
 
--- [Ts_Field.Project] -------------
+-- [ts_field.Project] -------------
 
 
--- [Ts_Field.Project] -------------
+-- [ts_field.Project] -------------
 
-IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ts_Field') AND name='Project')
+IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('ts_field') AND name='Project')
     BEGIN
-     ALTER TABLE Ts_Field ALTER COLUMN [Project] BIGINT
+     ALTER TABLE ts_field ALTER COLUMN [Project] BIGINT
     END
 ELSE
     BEGIN
-    DECLARE @sql_add_Ts_Field_Project NVARCHAR(MAX);
-    SET @sql_add_Ts_Field_Project = 'ALTER TABLE Ts_Field ADD [Project] BIGINT'
-    EXEC sp_executesql @sql_add_Ts_Field_Project
+    DECLARE @sql_add_ts_field_Project NVARCHAR(MAX);
+    SET @sql_add_ts_field_Project = 'ALTER TABLE ts_field ADD [Project] BIGINT'
+    EXEC sp_executesql @sql_add_ts_field_Project
     END
 
 
-IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ts_FieldProject')
+IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_ts_fieldProject')
     BEGIN
-    ALTER TABLE Ts_Field DROP  CONSTRAINT [Constraint_Ts_FieldProject]
+    ALTER TABLE ts_field DROP  CONSTRAINT [Constraint_ts_fieldProject]
     END
 
-IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ts_FieldProject')
+IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_ts_fieldProject')
     BEGIN
-    ALTER TABLE Ts_Field DROP  CONSTRAINT [UniqueNonclustered_Ts_FieldProject]
+    ALTER TABLE ts_field DROP  CONSTRAINT [UniqueNonclustered_ts_fieldProject]
     END
 
--- [Ts_Field.Table] -------------
+-- [ts_field.Table] -------------
 
 
--- [Ts_Field.Table] -------------
+-- [ts_field.Table] -------------
 
-IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ts_Field') AND name='Table')
+IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('ts_field') AND name='Table')
     BEGIN
-     ALTER TABLE Ts_Field ALTER COLUMN [Table] BIGINT
+     ALTER TABLE ts_field ALTER COLUMN [Table] BIGINT
     END
 ELSE
     BEGIN
-    DECLARE @sql_add_Ts_Field_Table NVARCHAR(MAX);
-    SET @sql_add_Ts_Field_Table = 'ALTER TABLE Ts_Field ADD [Table] BIGINT'
-    EXEC sp_executesql @sql_add_Ts_Field_Table
+    DECLARE @sql_add_ts_field_Table NVARCHAR(MAX);
+    SET @sql_add_ts_field_Table = 'ALTER TABLE ts_field ADD [Table] BIGINT'
+    EXEC sp_executesql @sql_add_ts_field_Table
     END
 
 
-IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ts_FieldTable')
+IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_ts_fieldTable')
     BEGIN
-    ALTER TABLE Ts_Field DROP  CONSTRAINT [Constraint_Ts_FieldTable]
+    ALTER TABLE ts_field DROP  CONSTRAINT [Constraint_ts_fieldTable]
     END
 
-IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ts_FieldTable')
+IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_ts_fieldTable')
     BEGIN
-    ALTER TABLE Ts_Field DROP  CONSTRAINT [UniqueNonclustered_Ts_FieldTable]
+    ALTER TABLE ts_field DROP  CONSTRAINT [UniqueNonclustered_ts_fieldTable]
     END
--- [Ts_HostConfig] ----------------------
+-- [ts_hostconfig] ----------------------
 
-IF NOT EXISTS(SELECT * FROM sysobjects WHERE [name]='Ts_HostConfig' AND xtype='U')
+IF NOT EXISTS(SELECT * FROM sysobjects WHERE [name]='ts_hostconfig' AND xtype='U')
 
 BEGIN
 
-    CREATE TABLE Ts_HostConfig ([ID] BIGINT NOT NULL
+    CREATE TABLE ts_hostconfig ([ID] BIGINT NOT NULL
         ,[Createdat] BIGINT NOT NULL
         ,[Updatedat] BIGINT NOT NULL
         ,[Sort] BIGINT NOT NULL,
@@ -1385,592 +1385,592 @@ BEGIN
         ,[DirVs] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS
         ,[DirVsCodeWeb] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS
         ,[Project] BIGINT
-, CONSTRAINT [PK_Ts_HostConfig] PRIMARY KEY CLUSTERED ([ID] ASC)) ON [PRIMARY]
+, CONSTRAINT [PK_ts_hostconfig] PRIMARY KEY CLUSTERED ([ID] ASC)) ON [PRIMARY]
 END
 
 
 -- Dropping obsolete fields -----------
-DECLARE @name_Ts_HostConfig NVARCHAR(64)
-DECLARE cursor_Ts_HostConfig CURSOR FOR 
-    SELECT name FROM SYSCOLUMNS WHERE id=object_id('Ts_HostConfig') AND (name NOT IN ('ID','Createdat','Updatedat','Sort','Hostname','Database','DatabaseName','DatabaseConn','DirVs','DirVsCodeWeb','Project'))
+DECLARE @name_ts_hostconfig NVARCHAR(64)
+DECLARE cursor_ts_hostconfig CURSOR FOR 
+    SELECT name FROM SYSCOLUMNS WHERE id=object_id('ts_hostconfig') AND (name NOT IN ('ID','Createdat','Updatedat','Sort','Hostname','Database','DatabaseName','DatabaseConn','DirVs','DirVsCodeWeb','Project'))
 
-OPEN cursor_Ts_HostConfig
-FETCH NEXT FROM cursor_Ts_HostConfig INTO @name_Ts_HostConfig
+OPEN cursor_ts_hostconfig
+FETCH NEXT FROM cursor_ts_hostconfig INTO @name_ts_hostconfig
 
 WHILE @@FETCH_STATUS = 0
 BEGIN
-    PRINT 'Dropping Ts_HostConfig.' + @name_Ts_HostConfig;
+    PRINT 'Dropping ts_hostconfig.' + @name_ts_hostconfig;
     
-    DECLARE @sql_Ts_HostConfig NVARCHAR(MAX);
-    SET @sql_Ts_HostConfig = 'ALTER TABLE Ts_HostConfig DROP COLUMN ' + QUOTENAME(@name_Ts_HostConfig)
-    EXEC sp_executesql @sql_Ts_HostConfig
+    DECLARE @sql_ts_hostconfig NVARCHAR(MAX);
+    SET @sql_ts_hostconfig = 'ALTER TABLE ts_hostconfig DROP COLUMN ' + QUOTENAME(@name_ts_hostconfig)
+    EXEC sp_executesql @sql_ts_hostconfig
     
     
-    FETCH NEXT FROM cursor_Ts_HostConfig INTO @name_Ts_HostConfig
+    FETCH NEXT FROM cursor_ts_hostconfig INTO @name_ts_hostconfig
 END
 
-CLOSE cursor_Ts_HostConfig;
-DEALLOCATE cursor_Ts_HostConfig;
+CLOSE cursor_ts_hostconfig;
+DEALLOCATE cursor_ts_hostconfig;
 
 
--- [Ts_HostConfig.Hostname] -------------
+-- [ts_hostconfig.Hostname] -------------
 
 
--- [Ts_HostConfig.Hostname] -------------
+-- [ts_hostconfig.Hostname] -------------
 
-IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ts_HostConfig') AND name='Hostname')
+IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('ts_hostconfig') AND name='Hostname')
     BEGIN
-     ALTER TABLE Ts_HostConfig ALTER COLUMN [Hostname] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS
+     ALTER TABLE ts_hostconfig ALTER COLUMN [Hostname] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS
     END
 ELSE
     BEGIN
-    DECLARE @sql_add_Ts_HostConfig_Hostname NVARCHAR(MAX);
-    SET @sql_add_Ts_HostConfig_Hostname = 'ALTER TABLE Ts_HostConfig ADD [Hostname] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS'
-    EXEC sp_executesql @sql_add_Ts_HostConfig_Hostname
+    DECLARE @sql_add_ts_hostconfig_Hostname NVARCHAR(MAX);
+    SET @sql_add_ts_hostconfig_Hostname = 'ALTER TABLE ts_hostconfig ADD [Hostname] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS'
+    EXEC sp_executesql @sql_add_ts_hostconfig_Hostname
     END
 
 
-IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ts_HostConfigHostname')
+IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_ts_hostconfigHostname')
     BEGIN
-    ALTER TABLE Ts_HostConfig DROP  CONSTRAINT [Constraint_Ts_HostConfigHostname]
+    ALTER TABLE ts_hostconfig DROP  CONSTRAINT [Constraint_ts_hostconfigHostname]
     END
 
-IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ts_HostConfigHostname')
+IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_ts_hostconfigHostname')
     BEGIN
-    ALTER TABLE Ts_HostConfig DROP  CONSTRAINT [UniqueNonclustered_Ts_HostConfigHostname]
+    ALTER TABLE ts_hostconfig DROP  CONSTRAINT [UniqueNonclustered_ts_hostconfigHostname]
     END
 
--- [Ts_HostConfig.Database] -------------
+-- [ts_hostconfig.Database] -------------
 
 
--- [Ts_HostConfig.Database] -------------
+-- [ts_hostconfig.Database] -------------
 
-IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ts_HostConfig') AND name='Database')
+IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('ts_hostconfig') AND name='Database')
     BEGIN
-     ALTER TABLE Ts_HostConfig ALTER COLUMN [Database] INT
+     ALTER TABLE ts_hostconfig ALTER COLUMN [Database] INT
     END
 ELSE
     BEGIN
-    DECLARE @sql_add_Ts_HostConfig_Database NVARCHAR(MAX);
-    SET @sql_add_Ts_HostConfig_Database = 'ALTER TABLE Ts_HostConfig ADD [Database] INT'
-    EXEC sp_executesql @sql_add_Ts_HostConfig_Database
+    DECLARE @sql_add_ts_hostconfig_Database NVARCHAR(MAX);
+    SET @sql_add_ts_hostconfig_Database = 'ALTER TABLE ts_hostconfig ADD [Database] INT'
+    EXEC sp_executesql @sql_add_ts_hostconfig_Database
     END
 
 
-IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ts_HostConfigDatabase')
+IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_ts_hostconfigDatabase')
     BEGIN
-    ALTER TABLE Ts_HostConfig DROP  CONSTRAINT [Constraint_Ts_HostConfigDatabase]
+    ALTER TABLE ts_hostconfig DROP  CONSTRAINT [Constraint_ts_hostconfigDatabase]
     END
 
-IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ts_HostConfigDatabase')
+IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_ts_hostconfigDatabase')
     BEGIN
-    ALTER TABLE Ts_HostConfig DROP  CONSTRAINT [UniqueNonclustered_Ts_HostConfigDatabase]
+    ALTER TABLE ts_hostconfig DROP  CONSTRAINT [UniqueNonclustered_ts_hostconfigDatabase]
     END
 
--- [Ts_HostConfig.DatabaseName] -------------
+-- [ts_hostconfig.DatabaseName] -------------
 
 
--- [Ts_HostConfig.DatabaseName] -------------
+-- [ts_hostconfig.DatabaseName] -------------
 
-IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ts_HostConfig') AND name='DatabaseName')
+IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('ts_hostconfig') AND name='DatabaseName')
     BEGIN
-     ALTER TABLE Ts_HostConfig ALTER COLUMN [DatabaseName] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS
+     ALTER TABLE ts_hostconfig ALTER COLUMN [DatabaseName] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS
     END
 ELSE
     BEGIN
-    DECLARE @sql_add_Ts_HostConfig_DatabaseName NVARCHAR(MAX);
-    SET @sql_add_Ts_HostConfig_DatabaseName = 'ALTER TABLE Ts_HostConfig ADD [DatabaseName] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS'
-    EXEC sp_executesql @sql_add_Ts_HostConfig_DatabaseName
+    DECLARE @sql_add_ts_hostconfig_DatabaseName NVARCHAR(MAX);
+    SET @sql_add_ts_hostconfig_DatabaseName = 'ALTER TABLE ts_hostconfig ADD [DatabaseName] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS'
+    EXEC sp_executesql @sql_add_ts_hostconfig_DatabaseName
     END
 
 
-IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ts_HostConfigDatabaseName')
+IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_ts_hostconfigDatabaseName')
     BEGIN
-    ALTER TABLE Ts_HostConfig DROP  CONSTRAINT [Constraint_Ts_HostConfigDatabaseName]
+    ALTER TABLE ts_hostconfig DROP  CONSTRAINT [Constraint_ts_hostconfigDatabaseName]
     END
 
-IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ts_HostConfigDatabaseName')
+IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_ts_hostconfigDatabaseName')
     BEGIN
-    ALTER TABLE Ts_HostConfig DROP  CONSTRAINT [UniqueNonclustered_Ts_HostConfigDatabaseName]
+    ALTER TABLE ts_hostconfig DROP  CONSTRAINT [UniqueNonclustered_ts_hostconfigDatabaseName]
     END
 
--- [Ts_HostConfig.DatabaseConn] -------------
+-- [ts_hostconfig.DatabaseConn] -------------
 
 
--- [Ts_HostConfig.DatabaseConn] -------------
+-- [ts_hostconfig.DatabaseConn] -------------
 
-IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ts_HostConfig') AND name='DatabaseConn')
+IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('ts_hostconfig') AND name='DatabaseConn')
     BEGIN
-     ALTER TABLE Ts_HostConfig ALTER COLUMN [DatabaseConn] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS
+     ALTER TABLE ts_hostconfig ALTER COLUMN [DatabaseConn] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS
     END
 ELSE
     BEGIN
-    DECLARE @sql_add_Ts_HostConfig_DatabaseConn NVARCHAR(MAX);
-    SET @sql_add_Ts_HostConfig_DatabaseConn = 'ALTER TABLE Ts_HostConfig ADD [DatabaseConn] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS'
-    EXEC sp_executesql @sql_add_Ts_HostConfig_DatabaseConn
+    DECLARE @sql_add_ts_hostconfig_DatabaseConn NVARCHAR(MAX);
+    SET @sql_add_ts_hostconfig_DatabaseConn = 'ALTER TABLE ts_hostconfig ADD [DatabaseConn] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS'
+    EXEC sp_executesql @sql_add_ts_hostconfig_DatabaseConn
     END
 
 
-IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ts_HostConfigDatabaseConn')
+IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_ts_hostconfigDatabaseConn')
     BEGIN
-    ALTER TABLE Ts_HostConfig DROP  CONSTRAINT [Constraint_Ts_HostConfigDatabaseConn]
+    ALTER TABLE ts_hostconfig DROP  CONSTRAINT [Constraint_ts_hostconfigDatabaseConn]
     END
 
-IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ts_HostConfigDatabaseConn')
+IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_ts_hostconfigDatabaseConn')
     BEGIN
-    ALTER TABLE Ts_HostConfig DROP  CONSTRAINT [UniqueNonclustered_Ts_HostConfigDatabaseConn]
+    ALTER TABLE ts_hostconfig DROP  CONSTRAINT [UniqueNonclustered_ts_hostconfigDatabaseConn]
     END
 
--- [Ts_HostConfig.DirVs] -------------
+-- [ts_hostconfig.DirVs] -------------
 
 
--- [Ts_HostConfig.DirVs] -------------
+-- [ts_hostconfig.DirVs] -------------
 
-IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ts_HostConfig') AND name='DirVs')
+IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('ts_hostconfig') AND name='DirVs')
     BEGIN
-     ALTER TABLE Ts_HostConfig ALTER COLUMN [DirVs] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS
+     ALTER TABLE ts_hostconfig ALTER COLUMN [DirVs] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS
     END
 ELSE
     BEGIN
-    DECLARE @sql_add_Ts_HostConfig_DirVs NVARCHAR(MAX);
-    SET @sql_add_Ts_HostConfig_DirVs = 'ALTER TABLE Ts_HostConfig ADD [DirVs] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS'
-    EXEC sp_executesql @sql_add_Ts_HostConfig_DirVs
+    DECLARE @sql_add_ts_hostconfig_DirVs NVARCHAR(MAX);
+    SET @sql_add_ts_hostconfig_DirVs = 'ALTER TABLE ts_hostconfig ADD [DirVs] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS'
+    EXEC sp_executesql @sql_add_ts_hostconfig_DirVs
     END
 
 
-IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ts_HostConfigDirVs')
+IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_ts_hostconfigDirVs')
     BEGIN
-    ALTER TABLE Ts_HostConfig DROP  CONSTRAINT [Constraint_Ts_HostConfigDirVs]
+    ALTER TABLE ts_hostconfig DROP  CONSTRAINT [Constraint_ts_hostconfigDirVs]
     END
 
-IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ts_HostConfigDirVs')
+IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_ts_hostconfigDirVs')
     BEGIN
-    ALTER TABLE Ts_HostConfig DROP  CONSTRAINT [UniqueNonclustered_Ts_HostConfigDirVs]
+    ALTER TABLE ts_hostconfig DROP  CONSTRAINT [UniqueNonclustered_ts_hostconfigDirVs]
     END
 
--- [Ts_HostConfig.DirVsCodeWeb] -------------
+-- [ts_hostconfig.DirVsCodeWeb] -------------
 
 
--- [Ts_HostConfig.DirVsCodeWeb] -------------
+-- [ts_hostconfig.DirVsCodeWeb] -------------
 
-IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ts_HostConfig') AND name='DirVsCodeWeb')
+IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('ts_hostconfig') AND name='DirVsCodeWeb')
     BEGIN
-     ALTER TABLE Ts_HostConfig ALTER COLUMN [DirVsCodeWeb] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS
+     ALTER TABLE ts_hostconfig ALTER COLUMN [DirVsCodeWeb] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS
     END
 ELSE
     BEGIN
-    DECLARE @sql_add_Ts_HostConfig_DirVsCodeWeb NVARCHAR(MAX);
-    SET @sql_add_Ts_HostConfig_DirVsCodeWeb = 'ALTER TABLE Ts_HostConfig ADD [DirVsCodeWeb] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS'
-    EXEC sp_executesql @sql_add_Ts_HostConfig_DirVsCodeWeb
+    DECLARE @sql_add_ts_hostconfig_DirVsCodeWeb NVARCHAR(MAX);
+    SET @sql_add_ts_hostconfig_DirVsCodeWeb = 'ALTER TABLE ts_hostconfig ADD [DirVsCodeWeb] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS'
+    EXEC sp_executesql @sql_add_ts_hostconfig_DirVsCodeWeb
     END
 
 
-IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ts_HostConfigDirVsCodeWeb')
+IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_ts_hostconfigDirVsCodeWeb')
     BEGIN
-    ALTER TABLE Ts_HostConfig DROP  CONSTRAINT [Constraint_Ts_HostConfigDirVsCodeWeb]
+    ALTER TABLE ts_hostconfig DROP  CONSTRAINT [Constraint_ts_hostconfigDirVsCodeWeb]
     END
 
-IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ts_HostConfigDirVsCodeWeb')
+IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_ts_hostconfigDirVsCodeWeb')
     BEGIN
-    ALTER TABLE Ts_HostConfig DROP  CONSTRAINT [UniqueNonclustered_Ts_HostConfigDirVsCodeWeb]
+    ALTER TABLE ts_hostconfig DROP  CONSTRAINT [UniqueNonclustered_ts_hostconfigDirVsCodeWeb]
     END
 
--- [Ts_HostConfig.Project] -------------
+-- [ts_hostconfig.Project] -------------
 
 
--- [Ts_HostConfig.Project] -------------
+-- [ts_hostconfig.Project] -------------
 
-IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ts_HostConfig') AND name='Project')
+IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('ts_hostconfig') AND name='Project')
     BEGIN
-     ALTER TABLE Ts_HostConfig ALTER COLUMN [Project] BIGINT
+     ALTER TABLE ts_hostconfig ALTER COLUMN [Project] BIGINT
     END
 ELSE
     BEGIN
-    DECLARE @sql_add_Ts_HostConfig_Project NVARCHAR(MAX);
-    SET @sql_add_Ts_HostConfig_Project = 'ALTER TABLE Ts_HostConfig ADD [Project] BIGINT'
-    EXEC sp_executesql @sql_add_Ts_HostConfig_Project
+    DECLARE @sql_add_ts_hostconfig_Project NVARCHAR(MAX);
+    SET @sql_add_ts_hostconfig_Project = 'ALTER TABLE ts_hostconfig ADD [Project] BIGINT'
+    EXEC sp_executesql @sql_add_ts_hostconfig_Project
     END
 
 
-IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ts_HostConfigProject')
+IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_ts_hostconfigProject')
     BEGIN
-    ALTER TABLE Ts_HostConfig DROP  CONSTRAINT [Constraint_Ts_HostConfigProject]
+    ALTER TABLE ts_hostconfig DROP  CONSTRAINT [Constraint_ts_hostconfigProject]
     END
 
-IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ts_HostConfigProject')
+IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_ts_hostconfigProject')
     BEGIN
-    ALTER TABLE Ts_HostConfig DROP  CONSTRAINT [UniqueNonclustered_Ts_HostConfigProject]
+    ALTER TABLE ts_hostconfig DROP  CONSTRAINT [UniqueNonclustered_ts_hostconfigProject]
     END
--- [Ts_Project] ----------------------
+-- [ts_project] ----------------------
 
-IF NOT EXISTS(SELECT * FROM sysobjects WHERE [name]='Ts_Project' AND xtype='U')
+IF NOT EXISTS(SELECT * FROM sysobjects WHERE [name]='ts_project' AND xtype='U')
 
 BEGIN
 
-    CREATE TABLE Ts_Project ([ID] BIGINT NOT NULL
+    CREATE TABLE ts_project ([ID] BIGINT NOT NULL
         ,[Createdat] BIGINT NOT NULL
         ,[Updatedat] BIGINT NOT NULL
         ,[Sort] BIGINT NOT NULL,
         [Code] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS
         ,[Caption] NVARCHAR(256) COLLATE Chinese_PRC_CI_AS
         ,[TypeSessionUser] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS
-, CONSTRAINT [PK_Ts_Project] PRIMARY KEY CLUSTERED ([ID] ASC)) ON [PRIMARY]
+, CONSTRAINT [PK_ts_project] PRIMARY KEY CLUSTERED ([ID] ASC)) ON [PRIMARY]
 END
 
 
 -- Dropping obsolete fields -----------
-DECLARE @name_Ts_Project NVARCHAR(64)
-DECLARE cursor_Ts_Project CURSOR FOR 
-    SELECT name FROM SYSCOLUMNS WHERE id=object_id('Ts_Project') AND (name NOT IN ('ID','Createdat','Updatedat','Sort','Code','Caption','TypeSessionUser'))
+DECLARE @name_ts_project NVARCHAR(64)
+DECLARE cursor_ts_project CURSOR FOR 
+    SELECT name FROM SYSCOLUMNS WHERE id=object_id('ts_project') AND (name NOT IN ('ID','Createdat','Updatedat','Sort','Code','Caption','TypeSessionUser'))
 
-OPEN cursor_Ts_Project
-FETCH NEXT FROM cursor_Ts_Project INTO @name_Ts_Project
+OPEN cursor_ts_project
+FETCH NEXT FROM cursor_ts_project INTO @name_ts_project
 
 WHILE @@FETCH_STATUS = 0
 BEGIN
-    PRINT 'Dropping Ts_Project.' + @name_Ts_Project;
+    PRINT 'Dropping ts_project.' + @name_ts_project;
     
-    DECLARE @sql_Ts_Project NVARCHAR(MAX);
-    SET @sql_Ts_Project = 'ALTER TABLE Ts_Project DROP COLUMN ' + QUOTENAME(@name_Ts_Project)
-    EXEC sp_executesql @sql_Ts_Project
+    DECLARE @sql_ts_project NVARCHAR(MAX);
+    SET @sql_ts_project = 'ALTER TABLE ts_project DROP COLUMN ' + QUOTENAME(@name_ts_project)
+    EXEC sp_executesql @sql_ts_project
     
     
-    FETCH NEXT FROM cursor_Ts_Project INTO @name_Ts_Project
+    FETCH NEXT FROM cursor_ts_project INTO @name_ts_project
 END
 
-CLOSE cursor_Ts_Project;
-DEALLOCATE cursor_Ts_Project;
+CLOSE cursor_ts_project;
+DEALLOCATE cursor_ts_project;
 
 
--- [Ts_Project.Code] -------------
+-- [ts_project.Code] -------------
 
 
--- [Ts_Project.Code] -------------
+-- [ts_project.Code] -------------
 
-IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ts_Project') AND name='Code')
+IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('ts_project') AND name='Code')
     BEGIN
-     ALTER TABLE Ts_Project ALTER COLUMN [Code] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS
+     ALTER TABLE ts_project ALTER COLUMN [Code] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS
     END
 ELSE
     BEGIN
-    DECLARE @sql_add_Ts_Project_Code NVARCHAR(MAX);
-    SET @sql_add_Ts_Project_Code = 'ALTER TABLE Ts_Project ADD [Code] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS'
-    EXEC sp_executesql @sql_add_Ts_Project_Code
+    DECLARE @sql_add_ts_project_Code NVARCHAR(MAX);
+    SET @sql_add_ts_project_Code = 'ALTER TABLE ts_project ADD [Code] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS'
+    EXEC sp_executesql @sql_add_ts_project_Code
     END
 
 
-IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ts_ProjectCode')
+IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_ts_projectCode')
     BEGIN
-    ALTER TABLE Ts_Project DROP  CONSTRAINT [Constraint_Ts_ProjectCode]
+    ALTER TABLE ts_project DROP  CONSTRAINT [Constraint_ts_projectCode]
     END
 
-IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ts_ProjectCode')
+IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_ts_projectCode')
     BEGIN
-    ALTER TABLE Ts_Project DROP  CONSTRAINT [UniqueNonclustered_Ts_ProjectCode]
+    ALTER TABLE ts_project DROP  CONSTRAINT [UniqueNonclustered_ts_projectCode]
     END
 
--- [Ts_Project.Caption] -------------
+-- [ts_project.Caption] -------------
 
 
--- [Ts_Project.Caption] -------------
+-- [ts_project.Caption] -------------
 
-IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ts_Project') AND name='Caption')
+IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('ts_project') AND name='Caption')
     BEGIN
-     ALTER TABLE Ts_Project ALTER COLUMN [Caption] NVARCHAR(256) COLLATE Chinese_PRC_CI_AS
+     ALTER TABLE ts_project ALTER COLUMN [Caption] NVARCHAR(256) COLLATE Chinese_PRC_CI_AS
     END
 ELSE
     BEGIN
-    DECLARE @sql_add_Ts_Project_Caption NVARCHAR(MAX);
-    SET @sql_add_Ts_Project_Caption = 'ALTER TABLE Ts_Project ADD [Caption] NVARCHAR(256) COLLATE Chinese_PRC_CI_AS'
-    EXEC sp_executesql @sql_add_Ts_Project_Caption
+    DECLARE @sql_add_ts_project_Caption NVARCHAR(MAX);
+    SET @sql_add_ts_project_Caption = 'ALTER TABLE ts_project ADD [Caption] NVARCHAR(256) COLLATE Chinese_PRC_CI_AS'
+    EXEC sp_executesql @sql_add_ts_project_Caption
     END
 
 
-IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ts_ProjectCaption')
+IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_ts_projectCaption')
     BEGIN
-    ALTER TABLE Ts_Project DROP  CONSTRAINT [Constraint_Ts_ProjectCaption]
+    ALTER TABLE ts_project DROP  CONSTRAINT [Constraint_ts_projectCaption]
     END
 
-IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ts_ProjectCaption')
+IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_ts_projectCaption')
     BEGIN
-    ALTER TABLE Ts_Project DROP  CONSTRAINT [UniqueNonclustered_Ts_ProjectCaption]
+    ALTER TABLE ts_project DROP  CONSTRAINT [UniqueNonclustered_ts_projectCaption]
     END
 
--- [Ts_Project.TypeSessionUser] -------------
+-- [ts_project.TypeSessionUser] -------------
 
 
--- [Ts_Project.TypeSessionUser] -------------
+-- [ts_project.TypeSessionUser] -------------
 
-IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ts_Project') AND name='TypeSessionUser')
+IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('ts_project') AND name='TypeSessionUser')
     BEGIN
-     ALTER TABLE Ts_Project ALTER COLUMN [TypeSessionUser] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS
+     ALTER TABLE ts_project ALTER COLUMN [TypeSessionUser] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS
     END
 ELSE
     BEGIN
-    DECLARE @sql_add_Ts_Project_TypeSessionUser NVARCHAR(MAX);
-    SET @sql_add_Ts_Project_TypeSessionUser = 'ALTER TABLE Ts_Project ADD [TypeSessionUser] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS'
-    EXEC sp_executesql @sql_add_Ts_Project_TypeSessionUser
+    DECLARE @sql_add_ts_project_TypeSessionUser NVARCHAR(MAX);
+    SET @sql_add_ts_project_TypeSessionUser = 'ALTER TABLE ts_project ADD [TypeSessionUser] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS'
+    EXEC sp_executesql @sql_add_ts_project_TypeSessionUser
     END
 
 
-IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ts_ProjectTypeSessionUser')
+IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_ts_projectTypeSessionUser')
     BEGIN
-    ALTER TABLE Ts_Project DROP  CONSTRAINT [Constraint_Ts_ProjectTypeSessionUser]
+    ALTER TABLE ts_project DROP  CONSTRAINT [Constraint_ts_projectTypeSessionUser]
     END
 
-IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ts_ProjectTypeSessionUser')
+IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_ts_projectTypeSessionUser')
     BEGIN
-    ALTER TABLE Ts_Project DROP  CONSTRAINT [UniqueNonclustered_Ts_ProjectTypeSessionUser]
+    ALTER TABLE ts_project DROP  CONSTRAINT [UniqueNonclustered_ts_projectTypeSessionUser]
     END
--- [Ts_Table] ----------------------
+-- [ts_table] ----------------------
 
-IF NOT EXISTS(SELECT * FROM sysobjects WHERE [name]='Ts_Table' AND xtype='U')
+IF NOT EXISTS(SELECT * FROM sysobjects WHERE [name]='ts_table' AND xtype='U')
 
 BEGIN
 
-    CREATE TABLE Ts_Table ([ID] BIGINT NOT NULL
+    CREATE TABLE ts_table ([ID] BIGINT NOT NULL
         ,[Createdat] BIGINT NOT NULL
         ,[Updatedat] BIGINT NOT NULL
         ,[Sort] BIGINT NOT NULL,
         [Name] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS
         ,[Desc] NVARCHAR(MAX)
         ,[Project] BIGINT
-, CONSTRAINT [PK_Ts_Table] PRIMARY KEY CLUSTERED ([ID] ASC)) ON [PRIMARY]
+, CONSTRAINT [PK_ts_table] PRIMARY KEY CLUSTERED ([ID] ASC)) ON [PRIMARY]
 END
 
 
 -- Dropping obsolete fields -----------
-DECLARE @name_Ts_Table NVARCHAR(64)
-DECLARE cursor_Ts_Table CURSOR FOR 
-    SELECT name FROM SYSCOLUMNS WHERE id=object_id('Ts_Table') AND (name NOT IN ('ID','Createdat','Updatedat','Sort','Name','Desc','Project'))
+DECLARE @name_ts_table NVARCHAR(64)
+DECLARE cursor_ts_table CURSOR FOR 
+    SELECT name FROM SYSCOLUMNS WHERE id=object_id('ts_table') AND (name NOT IN ('ID','Createdat','Updatedat','Sort','Name','Desc','Project'))
 
-OPEN cursor_Ts_Table
-FETCH NEXT FROM cursor_Ts_Table INTO @name_Ts_Table
+OPEN cursor_ts_table
+FETCH NEXT FROM cursor_ts_table INTO @name_ts_table
 
 WHILE @@FETCH_STATUS = 0
 BEGIN
-    PRINT 'Dropping Ts_Table.' + @name_Ts_Table;
+    PRINT 'Dropping ts_table.' + @name_ts_table;
     
-    DECLARE @sql_Ts_Table NVARCHAR(MAX);
-    SET @sql_Ts_Table = 'ALTER TABLE Ts_Table DROP COLUMN ' + QUOTENAME(@name_Ts_Table)
-    EXEC sp_executesql @sql_Ts_Table
+    DECLARE @sql_ts_table NVARCHAR(MAX);
+    SET @sql_ts_table = 'ALTER TABLE ts_table DROP COLUMN ' + QUOTENAME(@name_ts_table)
+    EXEC sp_executesql @sql_ts_table
     
     
-    FETCH NEXT FROM cursor_Ts_Table INTO @name_Ts_Table
+    FETCH NEXT FROM cursor_ts_table INTO @name_ts_table
 END
 
-CLOSE cursor_Ts_Table;
-DEALLOCATE cursor_Ts_Table;
+CLOSE cursor_ts_table;
+DEALLOCATE cursor_ts_table;
 
 
--- [Ts_Table.Name] -------------
+-- [ts_table.Name] -------------
 
 
--- [Ts_Table.Name] -------------
+-- [ts_table.Name] -------------
 
-IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ts_Table') AND name='Name')
+IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('ts_table') AND name='Name')
     BEGIN
-     ALTER TABLE Ts_Table ALTER COLUMN [Name] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS
+     ALTER TABLE ts_table ALTER COLUMN [Name] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS
     END
 ELSE
     BEGIN
-    DECLARE @sql_add_Ts_Table_Name NVARCHAR(MAX);
-    SET @sql_add_Ts_Table_Name = 'ALTER TABLE Ts_Table ADD [Name] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS'
-    EXEC sp_executesql @sql_add_Ts_Table_Name
+    DECLARE @sql_add_ts_table_Name NVARCHAR(MAX);
+    SET @sql_add_ts_table_Name = 'ALTER TABLE ts_table ADD [Name] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS'
+    EXEC sp_executesql @sql_add_ts_table_Name
     END
 
 
-IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ts_TableName')
+IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_ts_tableName')
     BEGIN
-    ALTER TABLE Ts_Table DROP  CONSTRAINT [Constraint_Ts_TableName]
+    ALTER TABLE ts_table DROP  CONSTRAINT [Constraint_ts_tableName]
     END
 
-IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ts_TableName')
+IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_ts_tableName')
     BEGIN
-    ALTER TABLE Ts_Table DROP  CONSTRAINT [UniqueNonclustered_Ts_TableName]
+    ALTER TABLE ts_table DROP  CONSTRAINT [UniqueNonclustered_ts_tableName]
     END
 
--- [Ts_Table.Desc] -------------
+-- [ts_table.Desc] -------------
 
 
--- [Ts_Table.Desc] -------------
+-- [ts_table.Desc] -------------
 
-IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ts_Table') AND name='Desc')
+IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('ts_table') AND name='Desc')
     BEGIN
-     ALTER TABLE Ts_Table ALTER COLUMN [Desc] NVARCHAR(MAX)
+     ALTER TABLE ts_table ALTER COLUMN [Desc] NVARCHAR(MAX)
     END
 ELSE
     BEGIN
-    DECLARE @sql_add_Ts_Table_Desc NVARCHAR(MAX);
-    SET @sql_add_Ts_Table_Desc = 'ALTER TABLE Ts_Table ADD [Desc] NVARCHAR(MAX)'
-    EXEC sp_executesql @sql_add_Ts_Table_Desc
+    DECLARE @sql_add_ts_table_Desc NVARCHAR(MAX);
+    SET @sql_add_ts_table_Desc = 'ALTER TABLE ts_table ADD [Desc] NVARCHAR(MAX)'
+    EXEC sp_executesql @sql_add_ts_table_Desc
     END
 
 
-IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ts_TableDesc')
+IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_ts_tableDesc')
     BEGIN
-    ALTER TABLE Ts_Table DROP  CONSTRAINT [Constraint_Ts_TableDesc]
+    ALTER TABLE ts_table DROP  CONSTRAINT [Constraint_ts_tableDesc]
     END
 
-IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ts_TableDesc')
+IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_ts_tableDesc')
     BEGIN
-    ALTER TABLE Ts_Table DROP  CONSTRAINT [UniqueNonclustered_Ts_TableDesc]
+    ALTER TABLE ts_table DROP  CONSTRAINT [UniqueNonclustered_ts_tableDesc]
     END
 
--- [Ts_Table.Project] -------------
+-- [ts_table.Project] -------------
 
 
--- [Ts_Table.Project] -------------
+-- [ts_table.Project] -------------
 
-IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ts_Table') AND name='Project')
+IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('ts_table') AND name='Project')
     BEGIN
-     ALTER TABLE Ts_Table ALTER COLUMN [Project] BIGINT
+     ALTER TABLE ts_table ALTER COLUMN [Project] BIGINT
     END
 ELSE
     BEGIN
-    DECLARE @sql_add_Ts_Table_Project NVARCHAR(MAX);
-    SET @sql_add_Ts_Table_Project = 'ALTER TABLE Ts_Table ADD [Project] BIGINT'
-    EXEC sp_executesql @sql_add_Ts_Table_Project
+    DECLARE @sql_add_ts_table_Project NVARCHAR(MAX);
+    SET @sql_add_ts_table_Project = 'ALTER TABLE ts_table ADD [Project] BIGINT'
+    EXEC sp_executesql @sql_add_ts_table_Project
     END
 
 
-IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ts_TableProject')
+IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_ts_tableProject')
     BEGIN
-    ALTER TABLE Ts_Table DROP  CONSTRAINT [Constraint_Ts_TableProject]
+    ALTER TABLE ts_table DROP  CONSTRAINT [Constraint_ts_tableProject]
     END
 
-IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ts_TableProject')
+IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_ts_tableProject')
     BEGIN
-    ALTER TABLE Ts_Table DROP  CONSTRAINT [UniqueNonclustered_Ts_TableProject]
+    ALTER TABLE ts_table DROP  CONSTRAINT [UniqueNonclustered_ts_tableProject]
     END
--- [Ts_UiComponent] ----------------------
+-- [ts_uicomponent] ----------------------
 
-IF NOT EXISTS(SELECT * FROM sysobjects WHERE [name]='Ts_UiComponent' AND xtype='U')
+IF NOT EXISTS(SELECT * FROM sysobjects WHERE [name]='ts_uicomponent' AND xtype='U')
 
 BEGIN
 
-    CREATE TABLE Ts_UiComponent ([ID] BIGINT NOT NULL
+    CREATE TABLE ts_uicomponent ([ID] BIGINT NOT NULL
         ,[Createdat] BIGINT NOT NULL
         ,[Updatedat] BIGINT NOT NULL
         ,[Sort] BIGINT NOT NULL,
         [Name] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS
         ,[Caption] NVARCHAR(256) COLLATE Chinese_PRC_CI_AS
         ,[Project] BIGINT
-, CONSTRAINT [PK_Ts_UiComponent] PRIMARY KEY CLUSTERED ([ID] ASC)) ON [PRIMARY]
+, CONSTRAINT [PK_ts_uicomponent] PRIMARY KEY CLUSTERED ([ID] ASC)) ON [PRIMARY]
 END
 
 
 -- Dropping obsolete fields -----------
-DECLARE @name_Ts_UiComponent NVARCHAR(64)
-DECLARE cursor_Ts_UiComponent CURSOR FOR 
-    SELECT name FROM SYSCOLUMNS WHERE id=object_id('Ts_UiComponent') AND (name NOT IN ('ID','Createdat','Updatedat','Sort','Name','Caption','Project'))
+DECLARE @name_ts_uicomponent NVARCHAR(64)
+DECLARE cursor_ts_uicomponent CURSOR FOR 
+    SELECT name FROM SYSCOLUMNS WHERE id=object_id('ts_uicomponent') AND (name NOT IN ('ID','Createdat','Updatedat','Sort','Name','Caption','Project'))
 
-OPEN cursor_Ts_UiComponent
-FETCH NEXT FROM cursor_Ts_UiComponent INTO @name_Ts_UiComponent
+OPEN cursor_ts_uicomponent
+FETCH NEXT FROM cursor_ts_uicomponent INTO @name_ts_uicomponent
 
 WHILE @@FETCH_STATUS = 0
 BEGIN
-    PRINT 'Dropping Ts_UiComponent.' + @name_Ts_UiComponent;
+    PRINT 'Dropping ts_uicomponent.' + @name_ts_uicomponent;
     
-    DECLARE @sql_Ts_UiComponent NVARCHAR(MAX);
-    SET @sql_Ts_UiComponent = 'ALTER TABLE Ts_UiComponent DROP COLUMN ' + QUOTENAME(@name_Ts_UiComponent)
-    EXEC sp_executesql @sql_Ts_UiComponent
+    DECLARE @sql_ts_uicomponent NVARCHAR(MAX);
+    SET @sql_ts_uicomponent = 'ALTER TABLE ts_uicomponent DROP COLUMN ' + QUOTENAME(@name_ts_uicomponent)
+    EXEC sp_executesql @sql_ts_uicomponent
     
     
-    FETCH NEXT FROM cursor_Ts_UiComponent INTO @name_Ts_UiComponent
+    FETCH NEXT FROM cursor_ts_uicomponent INTO @name_ts_uicomponent
 END
 
-CLOSE cursor_Ts_UiComponent;
-DEALLOCATE cursor_Ts_UiComponent;
+CLOSE cursor_ts_uicomponent;
+DEALLOCATE cursor_ts_uicomponent;
 
 
--- [Ts_UiComponent.Name] -------------
+-- [ts_uicomponent.Name] -------------
 
 
--- [Ts_UiComponent.Name] -------------
+-- [ts_uicomponent.Name] -------------
 
-IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ts_UiComponent') AND name='Name')
+IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('ts_uicomponent') AND name='Name')
     BEGIN
-     ALTER TABLE Ts_UiComponent ALTER COLUMN [Name] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS
+     ALTER TABLE ts_uicomponent ALTER COLUMN [Name] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS
     END
 ELSE
     BEGIN
-    DECLARE @sql_add_Ts_UiComponent_Name NVARCHAR(MAX);
-    SET @sql_add_Ts_UiComponent_Name = 'ALTER TABLE Ts_UiComponent ADD [Name] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS'
-    EXEC sp_executesql @sql_add_Ts_UiComponent_Name
+    DECLARE @sql_add_ts_uicomponent_Name NVARCHAR(MAX);
+    SET @sql_add_ts_uicomponent_Name = 'ALTER TABLE ts_uicomponent ADD [Name] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS'
+    EXEC sp_executesql @sql_add_ts_uicomponent_Name
     END
 
 
-IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ts_UiComponentName')
+IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_ts_uicomponentName')
     BEGIN
-    ALTER TABLE Ts_UiComponent DROP  CONSTRAINT [Constraint_Ts_UiComponentName]
+    ALTER TABLE ts_uicomponent DROP  CONSTRAINT [Constraint_ts_uicomponentName]
     END
 
-IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ts_UiComponentName')
+IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_ts_uicomponentName')
     BEGIN
-    ALTER TABLE Ts_UiComponent DROP  CONSTRAINT [UniqueNonclustered_Ts_UiComponentName]
+    ALTER TABLE ts_uicomponent DROP  CONSTRAINT [UniqueNonclustered_ts_uicomponentName]
     END
 
--- [Ts_UiComponent.Caption] -------------
+-- [ts_uicomponent.Caption] -------------
 
 
--- [Ts_UiComponent.Caption] -------------
+-- [ts_uicomponent.Caption] -------------
 
-IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ts_UiComponent') AND name='Caption')
+IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('ts_uicomponent') AND name='Caption')
     BEGIN
-     ALTER TABLE Ts_UiComponent ALTER COLUMN [Caption] NVARCHAR(256) COLLATE Chinese_PRC_CI_AS
+     ALTER TABLE ts_uicomponent ALTER COLUMN [Caption] NVARCHAR(256) COLLATE Chinese_PRC_CI_AS
     END
 ELSE
     BEGIN
-    DECLARE @sql_add_Ts_UiComponent_Caption NVARCHAR(MAX);
-    SET @sql_add_Ts_UiComponent_Caption = 'ALTER TABLE Ts_UiComponent ADD [Caption] NVARCHAR(256) COLLATE Chinese_PRC_CI_AS'
-    EXEC sp_executesql @sql_add_Ts_UiComponent_Caption
+    DECLARE @sql_add_ts_uicomponent_Caption NVARCHAR(MAX);
+    SET @sql_add_ts_uicomponent_Caption = 'ALTER TABLE ts_uicomponent ADD [Caption] NVARCHAR(256) COLLATE Chinese_PRC_CI_AS'
+    EXEC sp_executesql @sql_add_ts_uicomponent_Caption
     END
 
 
-IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ts_UiComponentCaption')
+IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_ts_uicomponentCaption')
     BEGIN
-    ALTER TABLE Ts_UiComponent DROP  CONSTRAINT [Constraint_Ts_UiComponentCaption]
+    ALTER TABLE ts_uicomponent DROP  CONSTRAINT [Constraint_ts_uicomponentCaption]
     END
 
-IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ts_UiComponentCaption')
+IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_ts_uicomponentCaption')
     BEGIN
-    ALTER TABLE Ts_UiComponent DROP  CONSTRAINT [UniqueNonclustered_Ts_UiComponentCaption]
+    ALTER TABLE ts_uicomponent DROP  CONSTRAINT [UniqueNonclustered_ts_uicomponentCaption]
     END
 
--- [Ts_UiComponent.Project] -------------
+-- [ts_uicomponent.Project] -------------
 
 
--- [Ts_UiComponent.Project] -------------
+-- [ts_uicomponent.Project] -------------
 
-IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ts_UiComponent') AND name='Project')
+IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('ts_uicomponent') AND name='Project')
     BEGIN
-     ALTER TABLE Ts_UiComponent ALTER COLUMN [Project] BIGINT
+     ALTER TABLE ts_uicomponent ALTER COLUMN [Project] BIGINT
     END
 ELSE
     BEGIN
-    DECLARE @sql_add_Ts_UiComponent_Project NVARCHAR(MAX);
-    SET @sql_add_Ts_UiComponent_Project = 'ALTER TABLE Ts_UiComponent ADD [Project] BIGINT'
-    EXEC sp_executesql @sql_add_Ts_UiComponent_Project
+    DECLARE @sql_add_ts_uicomponent_Project NVARCHAR(MAX);
+    SET @sql_add_ts_uicomponent_Project = 'ALTER TABLE ts_uicomponent ADD [Project] BIGINT'
+    EXEC sp_executesql @sql_add_ts_uicomponent_Project
     END
 
 
-IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ts_UiComponentProject')
+IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_ts_uicomponentProject')
     BEGIN
-    ALTER TABLE Ts_UiComponent DROP  CONSTRAINT [Constraint_Ts_UiComponentProject]
+    ALTER TABLE ts_uicomponent DROP  CONSTRAINT [Constraint_ts_uicomponentProject]
     END
 
-IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ts_UiComponentProject')
+IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_ts_uicomponentProject')
     BEGIN
-    ALTER TABLE Ts_UiComponent DROP  CONSTRAINT [UniqueNonclustered_Ts_UiComponentProject]
+    ALTER TABLE ts_uicomponent DROP  CONSTRAINT [UniqueNonclustered_ts_uicomponentProject]
     END
--- [Ts_UiPage] ----------------------
+-- [ts_uipage] ----------------------
 
-IF NOT EXISTS(SELECT * FROM sysobjects WHERE [name]='Ts_UiPage' AND xtype='U')
+IF NOT EXISTS(SELECT * FROM sysobjects WHERE [name]='ts_uipage' AND xtype='U')
 
 BEGIN
 
-    CREATE TABLE Ts_UiPage ([ID] BIGINT NOT NULL
+    CREATE TABLE ts_uipage ([ID] BIGINT NOT NULL
         ,[Createdat] BIGINT NOT NULL
         ,[Updatedat] BIGINT NOT NULL
         ,[Sort] BIGINT NOT NULL,
@@ -1982,377 +1982,377 @@ BEGIN
         ,[OgImage] NVARCHAR(MAX)
         ,[Template] BIGINT
         ,[Project] BIGINT
-, CONSTRAINT [PK_Ts_UiPage] PRIMARY KEY CLUSTERED ([ID] ASC)) ON [PRIMARY]
+, CONSTRAINT [PK_ts_uipage] PRIMARY KEY CLUSTERED ([ID] ASC)) ON [PRIMARY]
 END
 
 
 -- Dropping obsolete fields -----------
-DECLARE @name_Ts_UiPage NVARCHAR(64)
-DECLARE cursor_Ts_UiPage CURSOR FOR 
-    SELECT name FROM SYSCOLUMNS WHERE id=object_id('Ts_UiPage') AND (name NOT IN ('ID','Createdat','Updatedat','Sort','Name','Caption','Route','OgTitle','OgDesc','OgImage','Template','Project'))
+DECLARE @name_ts_uipage NVARCHAR(64)
+DECLARE cursor_ts_uipage CURSOR FOR 
+    SELECT name FROM SYSCOLUMNS WHERE id=object_id('ts_uipage') AND (name NOT IN ('ID','Createdat','Updatedat','Sort','Name','Caption','Route','OgTitle','OgDesc','OgImage','Template','Project'))
 
-OPEN cursor_Ts_UiPage
-FETCH NEXT FROM cursor_Ts_UiPage INTO @name_Ts_UiPage
+OPEN cursor_ts_uipage
+FETCH NEXT FROM cursor_ts_uipage INTO @name_ts_uipage
 
 WHILE @@FETCH_STATUS = 0
 BEGIN
-    PRINT 'Dropping Ts_UiPage.' + @name_Ts_UiPage;
+    PRINT 'Dropping ts_uipage.' + @name_ts_uipage;
     
-    DECLARE @sql_Ts_UiPage NVARCHAR(MAX);
-    SET @sql_Ts_UiPage = 'ALTER TABLE Ts_UiPage DROP COLUMN ' + QUOTENAME(@name_Ts_UiPage)
-    EXEC sp_executesql @sql_Ts_UiPage
+    DECLARE @sql_ts_uipage NVARCHAR(MAX);
+    SET @sql_ts_uipage = 'ALTER TABLE ts_uipage DROP COLUMN ' + QUOTENAME(@name_ts_uipage)
+    EXEC sp_executesql @sql_ts_uipage
     
     
-    FETCH NEXT FROM cursor_Ts_UiPage INTO @name_Ts_UiPage
+    FETCH NEXT FROM cursor_ts_uipage INTO @name_ts_uipage
 END
 
-CLOSE cursor_Ts_UiPage;
-DEALLOCATE cursor_Ts_UiPage;
+CLOSE cursor_ts_uipage;
+DEALLOCATE cursor_ts_uipage;
 
 
--- [Ts_UiPage.Name] -------------
+-- [ts_uipage.Name] -------------
 
 
--- [Ts_UiPage.Name] -------------
+-- [ts_uipage.Name] -------------
 
-IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ts_UiPage') AND name='Name')
+IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('ts_uipage') AND name='Name')
     BEGIN
-     ALTER TABLE Ts_UiPage ALTER COLUMN [Name] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS
+     ALTER TABLE ts_uipage ALTER COLUMN [Name] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS
     END
 ELSE
     BEGIN
-    DECLARE @sql_add_Ts_UiPage_Name NVARCHAR(MAX);
-    SET @sql_add_Ts_UiPage_Name = 'ALTER TABLE Ts_UiPage ADD [Name] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS'
-    EXEC sp_executesql @sql_add_Ts_UiPage_Name
+    DECLARE @sql_add_ts_uipage_Name NVARCHAR(MAX);
+    SET @sql_add_ts_uipage_Name = 'ALTER TABLE ts_uipage ADD [Name] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS'
+    EXEC sp_executesql @sql_add_ts_uipage_Name
     END
 
 
-IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ts_UiPageName')
+IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_ts_uipageName')
     BEGIN
-    ALTER TABLE Ts_UiPage DROP  CONSTRAINT [Constraint_Ts_UiPageName]
+    ALTER TABLE ts_uipage DROP  CONSTRAINT [Constraint_ts_uipageName]
     END
 
-IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ts_UiPageName')
+IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_ts_uipageName')
     BEGIN
-    ALTER TABLE Ts_UiPage DROP  CONSTRAINT [UniqueNonclustered_Ts_UiPageName]
+    ALTER TABLE ts_uipage DROP  CONSTRAINT [UniqueNonclustered_ts_uipageName]
     END
 
--- [Ts_UiPage.Caption] -------------
+-- [ts_uipage.Caption] -------------
 
 
--- [Ts_UiPage.Caption] -------------
+-- [ts_uipage.Caption] -------------
 
-IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ts_UiPage') AND name='Caption')
+IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('ts_uipage') AND name='Caption')
     BEGIN
-     ALTER TABLE Ts_UiPage ALTER COLUMN [Caption] NVARCHAR(256) COLLATE Chinese_PRC_CI_AS
+     ALTER TABLE ts_uipage ALTER COLUMN [Caption] NVARCHAR(256) COLLATE Chinese_PRC_CI_AS
     END
 ELSE
     BEGIN
-    DECLARE @sql_add_Ts_UiPage_Caption NVARCHAR(MAX);
-    SET @sql_add_Ts_UiPage_Caption = 'ALTER TABLE Ts_UiPage ADD [Caption] NVARCHAR(256) COLLATE Chinese_PRC_CI_AS'
-    EXEC sp_executesql @sql_add_Ts_UiPage_Caption
+    DECLARE @sql_add_ts_uipage_Caption NVARCHAR(MAX);
+    SET @sql_add_ts_uipage_Caption = 'ALTER TABLE ts_uipage ADD [Caption] NVARCHAR(256) COLLATE Chinese_PRC_CI_AS'
+    EXEC sp_executesql @sql_add_ts_uipage_Caption
     END
 
 
-IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ts_UiPageCaption')
+IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_ts_uipageCaption')
     BEGIN
-    ALTER TABLE Ts_UiPage DROP  CONSTRAINT [Constraint_Ts_UiPageCaption]
+    ALTER TABLE ts_uipage DROP  CONSTRAINT [Constraint_ts_uipageCaption]
     END
 
-IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ts_UiPageCaption')
+IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_ts_uipageCaption')
     BEGIN
-    ALTER TABLE Ts_UiPage DROP  CONSTRAINT [UniqueNonclustered_Ts_UiPageCaption]
+    ALTER TABLE ts_uipage DROP  CONSTRAINT [UniqueNonclustered_ts_uipageCaption]
     END
 
--- [Ts_UiPage.Route] -------------
+-- [ts_uipage.Route] -------------
 
 
--- [Ts_UiPage.Route] -------------
+-- [ts_uipage.Route] -------------
 
-IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ts_UiPage') AND name='Route')
+IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('ts_uipage') AND name='Route')
     BEGIN
-     ALTER TABLE Ts_UiPage ALTER COLUMN [Route] NVARCHAR(MAX)
+     ALTER TABLE ts_uipage ALTER COLUMN [Route] NVARCHAR(MAX)
     END
 ELSE
     BEGIN
-    DECLARE @sql_add_Ts_UiPage_Route NVARCHAR(MAX);
-    SET @sql_add_Ts_UiPage_Route = 'ALTER TABLE Ts_UiPage ADD [Route] NVARCHAR(MAX)'
-    EXEC sp_executesql @sql_add_Ts_UiPage_Route
+    DECLARE @sql_add_ts_uipage_Route NVARCHAR(MAX);
+    SET @sql_add_ts_uipage_Route = 'ALTER TABLE ts_uipage ADD [Route] NVARCHAR(MAX)'
+    EXEC sp_executesql @sql_add_ts_uipage_Route
     END
 
 
-IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ts_UiPageRoute')
+IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_ts_uipageRoute')
     BEGIN
-    ALTER TABLE Ts_UiPage DROP  CONSTRAINT [Constraint_Ts_UiPageRoute]
+    ALTER TABLE ts_uipage DROP  CONSTRAINT [Constraint_ts_uipageRoute]
     END
 
-IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ts_UiPageRoute')
+IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_ts_uipageRoute')
     BEGIN
-    ALTER TABLE Ts_UiPage DROP  CONSTRAINT [UniqueNonclustered_Ts_UiPageRoute]
+    ALTER TABLE ts_uipage DROP  CONSTRAINT [UniqueNonclustered_ts_uipageRoute]
     END
 
--- [Ts_UiPage.OgTitle] -------------
+-- [ts_uipage.OgTitle] -------------
 
 
--- [Ts_UiPage.OgTitle] -------------
+-- [ts_uipage.OgTitle] -------------
 
-IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ts_UiPage') AND name='OgTitle')
+IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('ts_uipage') AND name='OgTitle')
     BEGIN
-     ALTER TABLE Ts_UiPage ALTER COLUMN [OgTitle] NVARCHAR(MAX)
+     ALTER TABLE ts_uipage ALTER COLUMN [OgTitle] NVARCHAR(MAX)
     END
 ELSE
     BEGIN
-    DECLARE @sql_add_Ts_UiPage_OgTitle NVARCHAR(MAX);
-    SET @sql_add_Ts_UiPage_OgTitle = 'ALTER TABLE Ts_UiPage ADD [OgTitle] NVARCHAR(MAX)'
-    EXEC sp_executesql @sql_add_Ts_UiPage_OgTitle
+    DECLARE @sql_add_ts_uipage_OgTitle NVARCHAR(MAX);
+    SET @sql_add_ts_uipage_OgTitle = 'ALTER TABLE ts_uipage ADD [OgTitle] NVARCHAR(MAX)'
+    EXEC sp_executesql @sql_add_ts_uipage_OgTitle
     END
 
 
-IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ts_UiPageOgTitle')
+IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_ts_uipageOgTitle')
     BEGIN
-    ALTER TABLE Ts_UiPage DROP  CONSTRAINT [Constraint_Ts_UiPageOgTitle]
+    ALTER TABLE ts_uipage DROP  CONSTRAINT [Constraint_ts_uipageOgTitle]
     END
 
-IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ts_UiPageOgTitle')
+IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_ts_uipageOgTitle')
     BEGIN
-    ALTER TABLE Ts_UiPage DROP  CONSTRAINT [UniqueNonclustered_Ts_UiPageOgTitle]
+    ALTER TABLE ts_uipage DROP  CONSTRAINT [UniqueNonclustered_ts_uipageOgTitle]
     END
 
--- [Ts_UiPage.OgDesc] -------------
+-- [ts_uipage.OgDesc] -------------
 
 
--- [Ts_UiPage.OgDesc] -------------
+-- [ts_uipage.OgDesc] -------------
 
-IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ts_UiPage') AND name='OgDesc')
+IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('ts_uipage') AND name='OgDesc')
     BEGIN
-     ALTER TABLE Ts_UiPage ALTER COLUMN [OgDesc] NVARCHAR(MAX)
+     ALTER TABLE ts_uipage ALTER COLUMN [OgDesc] NVARCHAR(MAX)
     END
 ELSE
     BEGIN
-    DECLARE @sql_add_Ts_UiPage_OgDesc NVARCHAR(MAX);
-    SET @sql_add_Ts_UiPage_OgDesc = 'ALTER TABLE Ts_UiPage ADD [OgDesc] NVARCHAR(MAX)'
-    EXEC sp_executesql @sql_add_Ts_UiPage_OgDesc
+    DECLARE @sql_add_ts_uipage_OgDesc NVARCHAR(MAX);
+    SET @sql_add_ts_uipage_OgDesc = 'ALTER TABLE ts_uipage ADD [OgDesc] NVARCHAR(MAX)'
+    EXEC sp_executesql @sql_add_ts_uipage_OgDesc
     END
 
 
-IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ts_UiPageOgDesc')
+IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_ts_uipageOgDesc')
     BEGIN
-    ALTER TABLE Ts_UiPage DROP  CONSTRAINT [Constraint_Ts_UiPageOgDesc]
+    ALTER TABLE ts_uipage DROP  CONSTRAINT [Constraint_ts_uipageOgDesc]
     END
 
-IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ts_UiPageOgDesc')
+IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_ts_uipageOgDesc')
     BEGIN
-    ALTER TABLE Ts_UiPage DROP  CONSTRAINT [UniqueNonclustered_Ts_UiPageOgDesc]
+    ALTER TABLE ts_uipage DROP  CONSTRAINT [UniqueNonclustered_ts_uipageOgDesc]
     END
 
--- [Ts_UiPage.OgImage] -------------
+-- [ts_uipage.OgImage] -------------
 
 
--- [Ts_UiPage.OgImage] -------------
+-- [ts_uipage.OgImage] -------------
 
-IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ts_UiPage') AND name='OgImage')
+IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('ts_uipage') AND name='OgImage')
     BEGIN
-     ALTER TABLE Ts_UiPage ALTER COLUMN [OgImage] NVARCHAR(MAX)
+     ALTER TABLE ts_uipage ALTER COLUMN [OgImage] NVARCHAR(MAX)
     END
 ELSE
     BEGIN
-    DECLARE @sql_add_Ts_UiPage_OgImage NVARCHAR(MAX);
-    SET @sql_add_Ts_UiPage_OgImage = 'ALTER TABLE Ts_UiPage ADD [OgImage] NVARCHAR(MAX)'
-    EXEC sp_executesql @sql_add_Ts_UiPage_OgImage
+    DECLARE @sql_add_ts_uipage_OgImage NVARCHAR(MAX);
+    SET @sql_add_ts_uipage_OgImage = 'ALTER TABLE ts_uipage ADD [OgImage] NVARCHAR(MAX)'
+    EXEC sp_executesql @sql_add_ts_uipage_OgImage
     END
 
 
-IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ts_UiPageOgImage')
+IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_ts_uipageOgImage')
     BEGIN
-    ALTER TABLE Ts_UiPage DROP  CONSTRAINT [Constraint_Ts_UiPageOgImage]
+    ALTER TABLE ts_uipage DROP  CONSTRAINT [Constraint_ts_uipageOgImage]
     END
 
-IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ts_UiPageOgImage')
+IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_ts_uipageOgImage')
     BEGIN
-    ALTER TABLE Ts_UiPage DROP  CONSTRAINT [UniqueNonclustered_Ts_UiPageOgImage]
+    ALTER TABLE ts_uipage DROP  CONSTRAINT [UniqueNonclustered_ts_uipageOgImage]
     END
 
--- [Ts_UiPage.Template] -------------
+-- [ts_uipage.Template] -------------
 
 
--- [Ts_UiPage.Template] -------------
+-- [ts_uipage.Template] -------------
 
-IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ts_UiPage') AND name='Template')
+IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('ts_uipage') AND name='Template')
     BEGIN
-     ALTER TABLE Ts_UiPage ALTER COLUMN [Template] BIGINT
+     ALTER TABLE ts_uipage ALTER COLUMN [Template] BIGINT
     END
 ELSE
     BEGIN
-    DECLARE @sql_add_Ts_UiPage_Template NVARCHAR(MAX);
-    SET @sql_add_Ts_UiPage_Template = 'ALTER TABLE Ts_UiPage ADD [Template] BIGINT'
-    EXEC sp_executesql @sql_add_Ts_UiPage_Template
+    DECLARE @sql_add_ts_uipage_Template NVARCHAR(MAX);
+    SET @sql_add_ts_uipage_Template = 'ALTER TABLE ts_uipage ADD [Template] BIGINT'
+    EXEC sp_executesql @sql_add_ts_uipage_Template
     END
 
 
-IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ts_UiPageTemplate')
+IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_ts_uipageTemplate')
     BEGIN
-    ALTER TABLE Ts_UiPage DROP  CONSTRAINT [Constraint_Ts_UiPageTemplate]
+    ALTER TABLE ts_uipage DROP  CONSTRAINT [Constraint_ts_uipageTemplate]
     END
 
-IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ts_UiPageTemplate')
+IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_ts_uipageTemplate')
     BEGIN
-    ALTER TABLE Ts_UiPage DROP  CONSTRAINT [UniqueNonclustered_Ts_UiPageTemplate]
+    ALTER TABLE ts_uipage DROP  CONSTRAINT [UniqueNonclustered_ts_uipageTemplate]
     END
 
--- [Ts_UiPage.Project] -------------
+-- [ts_uipage.Project] -------------
 
 
--- [Ts_UiPage.Project] -------------
+-- [ts_uipage.Project] -------------
 
-IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ts_UiPage') AND name='Project')
+IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('ts_uipage') AND name='Project')
     BEGIN
-     ALTER TABLE Ts_UiPage ALTER COLUMN [Project] BIGINT
+     ALTER TABLE ts_uipage ALTER COLUMN [Project] BIGINT
     END
 ELSE
     BEGIN
-    DECLARE @sql_add_Ts_UiPage_Project NVARCHAR(MAX);
-    SET @sql_add_Ts_UiPage_Project = 'ALTER TABLE Ts_UiPage ADD [Project] BIGINT'
-    EXEC sp_executesql @sql_add_Ts_UiPage_Project
+    DECLARE @sql_add_ts_uipage_Project NVARCHAR(MAX);
+    SET @sql_add_ts_uipage_Project = 'ALTER TABLE ts_uipage ADD [Project] BIGINT'
+    EXEC sp_executesql @sql_add_ts_uipage_Project
     END
 
 
-IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ts_UiPageProject')
+IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_ts_uipageProject')
     BEGIN
-    ALTER TABLE Ts_UiPage DROP  CONSTRAINT [Constraint_Ts_UiPageProject]
+    ALTER TABLE ts_uipage DROP  CONSTRAINT [Constraint_ts_uipageProject]
     END
 
-IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ts_UiPageProject')
+IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_ts_uipageProject')
     BEGIN
-    ALTER TABLE Ts_UiPage DROP  CONSTRAINT [UniqueNonclustered_Ts_UiPageProject]
+    ALTER TABLE ts_uipage DROP  CONSTRAINT [UniqueNonclustered_ts_uipageProject]
     END
--- [Ts_UiTemplate] ----------------------
+-- [ts_uitemplate] ----------------------
 
-IF NOT EXISTS(SELECT * FROM sysobjects WHERE [name]='Ts_UiTemplate' AND xtype='U')
+IF NOT EXISTS(SELECT * FROM sysobjects WHERE [name]='ts_uitemplate' AND xtype='U')
 
 BEGIN
 
-    CREATE TABLE Ts_UiTemplate ([ID] BIGINT NOT NULL
+    CREATE TABLE ts_uitemplate ([ID] BIGINT NOT NULL
         ,[Createdat] BIGINT NOT NULL
         ,[Updatedat] BIGINT NOT NULL
         ,[Sort] BIGINT NOT NULL,
         [Name] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS
         ,[Caption] NVARCHAR(256) COLLATE Chinese_PRC_CI_AS
         ,[Project] BIGINT
-, CONSTRAINT [PK_Ts_UiTemplate] PRIMARY KEY CLUSTERED ([ID] ASC)) ON [PRIMARY]
+, CONSTRAINT [PK_ts_uitemplate] PRIMARY KEY CLUSTERED ([ID] ASC)) ON [PRIMARY]
 END
 
 
 -- Dropping obsolete fields -----------
-DECLARE @name_Ts_UiTemplate NVARCHAR(64)
-DECLARE cursor_Ts_UiTemplate CURSOR FOR 
-    SELECT name FROM SYSCOLUMNS WHERE id=object_id('Ts_UiTemplate') AND (name NOT IN ('ID','Createdat','Updatedat','Sort','Name','Caption','Project'))
+DECLARE @name_ts_uitemplate NVARCHAR(64)
+DECLARE cursor_ts_uitemplate CURSOR FOR 
+    SELECT name FROM SYSCOLUMNS WHERE id=object_id('ts_uitemplate') AND (name NOT IN ('ID','Createdat','Updatedat','Sort','Name','Caption','Project'))
 
-OPEN cursor_Ts_UiTemplate
-FETCH NEXT FROM cursor_Ts_UiTemplate INTO @name_Ts_UiTemplate
+OPEN cursor_ts_uitemplate
+FETCH NEXT FROM cursor_ts_uitemplate INTO @name_ts_uitemplate
 
 WHILE @@FETCH_STATUS = 0
 BEGIN
-    PRINT 'Dropping Ts_UiTemplate.' + @name_Ts_UiTemplate;
+    PRINT 'Dropping ts_uitemplate.' + @name_ts_uitemplate;
     
-    DECLARE @sql_Ts_UiTemplate NVARCHAR(MAX);
-    SET @sql_Ts_UiTemplate = 'ALTER TABLE Ts_UiTemplate DROP COLUMN ' + QUOTENAME(@name_Ts_UiTemplate)
-    EXEC sp_executesql @sql_Ts_UiTemplate
+    DECLARE @sql_ts_uitemplate NVARCHAR(MAX);
+    SET @sql_ts_uitemplate = 'ALTER TABLE ts_uitemplate DROP COLUMN ' + QUOTENAME(@name_ts_uitemplate)
+    EXEC sp_executesql @sql_ts_uitemplate
     
     
-    FETCH NEXT FROM cursor_Ts_UiTemplate INTO @name_Ts_UiTemplate
+    FETCH NEXT FROM cursor_ts_uitemplate INTO @name_ts_uitemplate
 END
 
-CLOSE cursor_Ts_UiTemplate;
-DEALLOCATE cursor_Ts_UiTemplate;
+CLOSE cursor_ts_uitemplate;
+DEALLOCATE cursor_ts_uitemplate;
 
 
--- [Ts_UiTemplate.Name] -------------
+-- [ts_uitemplate.Name] -------------
 
 
--- [Ts_UiTemplate.Name] -------------
+-- [ts_uitemplate.Name] -------------
 
-IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ts_UiTemplate') AND name='Name')
+IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('ts_uitemplate') AND name='Name')
     BEGIN
-     ALTER TABLE Ts_UiTemplate ALTER COLUMN [Name] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS
+     ALTER TABLE ts_uitemplate ALTER COLUMN [Name] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS
     END
 ELSE
     BEGIN
-    DECLARE @sql_add_Ts_UiTemplate_Name NVARCHAR(MAX);
-    SET @sql_add_Ts_UiTemplate_Name = 'ALTER TABLE Ts_UiTemplate ADD [Name] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS'
-    EXEC sp_executesql @sql_add_Ts_UiTemplate_Name
+    DECLARE @sql_add_ts_uitemplate_Name NVARCHAR(MAX);
+    SET @sql_add_ts_uitemplate_Name = 'ALTER TABLE ts_uitemplate ADD [Name] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS'
+    EXEC sp_executesql @sql_add_ts_uitemplate_Name
     END
 
 
-IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ts_UiTemplateName')
+IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_ts_uitemplateName')
     BEGIN
-    ALTER TABLE Ts_UiTemplate DROP  CONSTRAINT [Constraint_Ts_UiTemplateName]
+    ALTER TABLE ts_uitemplate DROP  CONSTRAINT [Constraint_ts_uitemplateName]
     END
 
-IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ts_UiTemplateName')
+IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_ts_uitemplateName')
     BEGIN
-    ALTER TABLE Ts_UiTemplate DROP  CONSTRAINT [UniqueNonclustered_Ts_UiTemplateName]
+    ALTER TABLE ts_uitemplate DROP  CONSTRAINT [UniqueNonclustered_ts_uitemplateName]
     END
 
--- [Ts_UiTemplate.Caption] -------------
+-- [ts_uitemplate.Caption] -------------
 
 
--- [Ts_UiTemplate.Caption] -------------
+-- [ts_uitemplate.Caption] -------------
 
-IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ts_UiTemplate') AND name='Caption')
+IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('ts_uitemplate') AND name='Caption')
     BEGIN
-     ALTER TABLE Ts_UiTemplate ALTER COLUMN [Caption] NVARCHAR(256) COLLATE Chinese_PRC_CI_AS
+     ALTER TABLE ts_uitemplate ALTER COLUMN [Caption] NVARCHAR(256) COLLATE Chinese_PRC_CI_AS
     END
 ELSE
     BEGIN
-    DECLARE @sql_add_Ts_UiTemplate_Caption NVARCHAR(MAX);
-    SET @sql_add_Ts_UiTemplate_Caption = 'ALTER TABLE Ts_UiTemplate ADD [Caption] NVARCHAR(256) COLLATE Chinese_PRC_CI_AS'
-    EXEC sp_executesql @sql_add_Ts_UiTemplate_Caption
+    DECLARE @sql_add_ts_uitemplate_Caption NVARCHAR(MAX);
+    SET @sql_add_ts_uitemplate_Caption = 'ALTER TABLE ts_uitemplate ADD [Caption] NVARCHAR(256) COLLATE Chinese_PRC_CI_AS'
+    EXEC sp_executesql @sql_add_ts_uitemplate_Caption
     END
 
 
-IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ts_UiTemplateCaption')
+IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_ts_uitemplateCaption')
     BEGIN
-    ALTER TABLE Ts_UiTemplate DROP  CONSTRAINT [Constraint_Ts_UiTemplateCaption]
+    ALTER TABLE ts_uitemplate DROP  CONSTRAINT [Constraint_ts_uitemplateCaption]
     END
 
-IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ts_UiTemplateCaption')
+IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_ts_uitemplateCaption')
     BEGIN
-    ALTER TABLE Ts_UiTemplate DROP  CONSTRAINT [UniqueNonclustered_Ts_UiTemplateCaption]
+    ALTER TABLE ts_uitemplate DROP  CONSTRAINT [UniqueNonclustered_ts_uitemplateCaption]
     END
 
--- [Ts_UiTemplate.Project] -------------
+-- [ts_uitemplate.Project] -------------
 
 
--- [Ts_UiTemplate.Project] -------------
+-- [ts_uitemplate.Project] -------------
 
-IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ts_UiTemplate') AND name='Project')
+IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('ts_uitemplate') AND name='Project')
     BEGIN
-     ALTER TABLE Ts_UiTemplate ALTER COLUMN [Project] BIGINT
+     ALTER TABLE ts_uitemplate ALTER COLUMN [Project] BIGINT
     END
 ELSE
     BEGIN
-    DECLARE @sql_add_Ts_UiTemplate_Project NVARCHAR(MAX);
-    SET @sql_add_Ts_UiTemplate_Project = 'ALTER TABLE Ts_UiTemplate ADD [Project] BIGINT'
-    EXEC sp_executesql @sql_add_Ts_UiTemplate_Project
+    DECLARE @sql_add_ts_uitemplate_Project NVARCHAR(MAX);
+    SET @sql_add_ts_uitemplate_Project = 'ALTER TABLE ts_uitemplate ADD [Project] BIGINT'
+    EXEC sp_executesql @sql_add_ts_uitemplate_Project
     END
 
 
-IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ts_UiTemplateProject')
+IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_ts_uitemplateProject')
     BEGIN
-    ALTER TABLE Ts_UiTemplate DROP  CONSTRAINT [Constraint_Ts_UiTemplateProject]
+    ALTER TABLE ts_uitemplate DROP  CONSTRAINT [Constraint_ts_uitemplateProject]
     END
 
-IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ts_UiTemplateProject')
+IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_ts_uitemplateProject')
     BEGIN
-    ALTER TABLE Ts_UiTemplate DROP  CONSTRAINT [UniqueNonclustered_Ts_UiTemplateProject]
+    ALTER TABLE ts_uitemplate DROP  CONSTRAINT [UniqueNonclustered_ts_uitemplateProject]
     END
--- [Ts_VarType] ----------------------
+-- [ts_vartype] ----------------------
 
-IF NOT EXISTS(SELECT * FROM sysobjects WHERE [name]='Ts_VarType' AND xtype='U')
+IF NOT EXISTS(SELECT * FROM sysobjects WHERE [name]='ts_vartype' AND xtype='U')
 
 BEGIN
 
-    CREATE TABLE Ts_VarType ([ID] BIGINT NOT NULL
+    CREATE TABLE ts_vartype ([ID] BIGINT NOT NULL
         ,[Createdat] BIGINT NOT NULL
         ,[Updatedat] BIGINT NOT NULL
         ,[Sort] BIGINT NOT NULL,
@@ -2362,192 +2362,192 @@ BEGIN
         ,[BindType] INT
         ,[Bind] BIGINT
         ,[Project] BIGINT
-, CONSTRAINT [PK_Ts_VarType] PRIMARY KEY CLUSTERED ([ID] ASC)) ON [PRIMARY]
+, CONSTRAINT [PK_ts_vartype] PRIMARY KEY CLUSTERED ([ID] ASC)) ON [PRIMARY]
 END
 
 
 -- Dropping obsolete fields -----------
-DECLARE @name_Ts_VarType NVARCHAR(64)
-DECLARE cursor_Ts_VarType CURSOR FOR 
-    SELECT name FROM SYSCOLUMNS WHERE id=object_id('Ts_VarType') AND (name NOT IN ('ID','Createdat','Updatedat','Sort','Name','Type','Val','BindType','Bind','Project'))
+DECLARE @name_ts_vartype NVARCHAR(64)
+DECLARE cursor_ts_vartype CURSOR FOR 
+    SELECT name FROM SYSCOLUMNS WHERE id=object_id('ts_vartype') AND (name NOT IN ('ID','Createdat','Updatedat','Sort','Name','Type','Val','BindType','Bind','Project'))
 
-OPEN cursor_Ts_VarType
-FETCH NEXT FROM cursor_Ts_VarType INTO @name_Ts_VarType
+OPEN cursor_ts_vartype
+FETCH NEXT FROM cursor_ts_vartype INTO @name_ts_vartype
 
 WHILE @@FETCH_STATUS = 0
 BEGIN
-    PRINT 'Dropping Ts_VarType.' + @name_Ts_VarType;
+    PRINT 'Dropping ts_vartype.' + @name_ts_vartype;
     
-    DECLARE @sql_Ts_VarType NVARCHAR(MAX);
-    SET @sql_Ts_VarType = 'ALTER TABLE Ts_VarType DROP COLUMN ' + QUOTENAME(@name_Ts_VarType)
-    EXEC sp_executesql @sql_Ts_VarType
+    DECLARE @sql_ts_vartype NVARCHAR(MAX);
+    SET @sql_ts_vartype = 'ALTER TABLE ts_vartype DROP COLUMN ' + QUOTENAME(@name_ts_vartype)
+    EXEC sp_executesql @sql_ts_vartype
     
     
-    FETCH NEXT FROM cursor_Ts_VarType INTO @name_Ts_VarType
+    FETCH NEXT FROM cursor_ts_vartype INTO @name_ts_vartype
 END
 
-CLOSE cursor_Ts_VarType;
-DEALLOCATE cursor_Ts_VarType;
+CLOSE cursor_ts_vartype;
+DEALLOCATE cursor_ts_vartype;
 
 
--- [Ts_VarType.Name] -------------
+-- [ts_vartype.Name] -------------
 
 
--- [Ts_VarType.Name] -------------
+-- [ts_vartype.Name] -------------
 
-IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ts_VarType') AND name='Name')
+IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('ts_vartype') AND name='Name')
     BEGIN
-     ALTER TABLE Ts_VarType ALTER COLUMN [Name] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS
+     ALTER TABLE ts_vartype ALTER COLUMN [Name] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS
     END
 ELSE
     BEGIN
-    DECLARE @sql_add_Ts_VarType_Name NVARCHAR(MAX);
-    SET @sql_add_Ts_VarType_Name = 'ALTER TABLE Ts_VarType ADD [Name] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS'
-    EXEC sp_executesql @sql_add_Ts_VarType_Name
+    DECLARE @sql_add_ts_vartype_Name NVARCHAR(MAX);
+    SET @sql_add_ts_vartype_Name = 'ALTER TABLE ts_vartype ADD [Name] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS'
+    EXEC sp_executesql @sql_add_ts_vartype_Name
     END
 
 
-IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ts_VarTypeName')
+IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_ts_vartypeName')
     BEGIN
-    ALTER TABLE Ts_VarType DROP  CONSTRAINT [Constraint_Ts_VarTypeName]
+    ALTER TABLE ts_vartype DROP  CONSTRAINT [Constraint_ts_vartypeName]
     END
 
-IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ts_VarTypeName')
+IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_ts_vartypeName')
     BEGIN
-    ALTER TABLE Ts_VarType DROP  CONSTRAINT [UniqueNonclustered_Ts_VarTypeName]
+    ALTER TABLE ts_vartype DROP  CONSTRAINT [UniqueNonclustered_ts_vartypeName]
     END
 
--- [Ts_VarType.Type] -------------
+-- [ts_vartype.Type] -------------
 
 
--- [Ts_VarType.Type] -------------
+-- [ts_vartype.Type] -------------
 
-IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ts_VarType') AND name='Type')
+IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('ts_vartype') AND name='Type')
     BEGIN
-     ALTER TABLE Ts_VarType ALTER COLUMN [Type] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS
-    END
-ELSE
-    BEGIN
-    DECLARE @sql_add_Ts_VarType_Type NVARCHAR(MAX);
-    SET @sql_add_Ts_VarType_Type = 'ALTER TABLE Ts_VarType ADD [Type] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS'
-    EXEC sp_executesql @sql_add_Ts_VarType_Type
-    END
-
-
-IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ts_VarTypeType')
-    BEGIN
-    ALTER TABLE Ts_VarType DROP  CONSTRAINT [Constraint_Ts_VarTypeType]
-    END
-
-IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ts_VarTypeType')
-    BEGIN
-    ALTER TABLE Ts_VarType DROP  CONSTRAINT [UniqueNonclustered_Ts_VarTypeType]
-    END
-
--- [Ts_VarType.Val] -------------
-
-
--- [Ts_VarType.Val] -------------
-
-IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ts_VarType') AND name='Val')
-    BEGIN
-     ALTER TABLE Ts_VarType ALTER COLUMN [Val] NVARCHAR(MAX)
+     ALTER TABLE ts_vartype ALTER COLUMN [Type] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS
     END
 ELSE
     BEGIN
-    DECLARE @sql_add_Ts_VarType_Val NVARCHAR(MAX);
-    SET @sql_add_Ts_VarType_Val = 'ALTER TABLE Ts_VarType ADD [Val] NVARCHAR(MAX)'
-    EXEC sp_executesql @sql_add_Ts_VarType_Val
+    DECLARE @sql_add_ts_vartype_Type NVARCHAR(MAX);
+    SET @sql_add_ts_vartype_Type = 'ALTER TABLE ts_vartype ADD [Type] NVARCHAR(64) COLLATE Chinese_PRC_CI_AS'
+    EXEC sp_executesql @sql_add_ts_vartype_Type
     END
 
 
-IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ts_VarTypeVal')
+IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_ts_vartypeType')
     BEGIN
-    ALTER TABLE Ts_VarType DROP  CONSTRAINT [Constraint_Ts_VarTypeVal]
+    ALTER TABLE ts_vartype DROP  CONSTRAINT [Constraint_ts_vartypeType]
     END
 
-IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ts_VarTypeVal')
+IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_ts_vartypeType')
     BEGIN
-    ALTER TABLE Ts_VarType DROP  CONSTRAINT [UniqueNonclustered_Ts_VarTypeVal]
+    ALTER TABLE ts_vartype DROP  CONSTRAINT [UniqueNonclustered_ts_vartypeType]
     END
 
--- [Ts_VarType.BindType] -------------
+-- [ts_vartype.Val] -------------
 
 
--- [Ts_VarType.BindType] -------------
+-- [ts_vartype.Val] -------------
 
-IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ts_VarType') AND name='BindType')
+IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('ts_vartype') AND name='Val')
     BEGIN
-     ALTER TABLE Ts_VarType ALTER COLUMN [BindType] INT
-    END
-ELSE
-    BEGIN
-    DECLARE @sql_add_Ts_VarType_BindType NVARCHAR(MAX);
-    SET @sql_add_Ts_VarType_BindType = 'ALTER TABLE Ts_VarType ADD [BindType] INT'
-    EXEC sp_executesql @sql_add_Ts_VarType_BindType
-    END
-
-
-IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ts_VarTypeBindType')
-    BEGIN
-    ALTER TABLE Ts_VarType DROP  CONSTRAINT [Constraint_Ts_VarTypeBindType]
-    END
-
-IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ts_VarTypeBindType')
-    BEGIN
-    ALTER TABLE Ts_VarType DROP  CONSTRAINT [UniqueNonclustered_Ts_VarTypeBindType]
-    END
-
--- [Ts_VarType.Bind] -------------
-
-
--- [Ts_VarType.Bind] -------------
-
-IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ts_VarType') AND name='Bind')
-    BEGIN
-     ALTER TABLE Ts_VarType ALTER COLUMN [Bind] BIGINT
+     ALTER TABLE ts_vartype ALTER COLUMN [Val] NVARCHAR(MAX)
     END
 ELSE
     BEGIN
-    DECLARE @sql_add_Ts_VarType_Bind NVARCHAR(MAX);
-    SET @sql_add_Ts_VarType_Bind = 'ALTER TABLE Ts_VarType ADD [Bind] BIGINT'
-    EXEC sp_executesql @sql_add_Ts_VarType_Bind
+    DECLARE @sql_add_ts_vartype_Val NVARCHAR(MAX);
+    SET @sql_add_ts_vartype_Val = 'ALTER TABLE ts_vartype ADD [Val] NVARCHAR(MAX)'
+    EXEC sp_executesql @sql_add_ts_vartype_Val
     END
 
 
-IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ts_VarTypeBind')
+IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_ts_vartypeVal')
     BEGIN
-    ALTER TABLE Ts_VarType DROP  CONSTRAINT [Constraint_Ts_VarTypeBind]
+    ALTER TABLE ts_vartype DROP  CONSTRAINT [Constraint_ts_vartypeVal]
     END
 
-IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ts_VarTypeBind')
+IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_ts_vartypeVal')
     BEGIN
-    ALTER TABLE Ts_VarType DROP  CONSTRAINT [UniqueNonclustered_Ts_VarTypeBind]
+    ALTER TABLE ts_vartype DROP  CONSTRAINT [UniqueNonclustered_ts_vartypeVal]
     END
 
--- [Ts_VarType.Project] -------------
+-- [ts_vartype.BindType] -------------
 
 
--- [Ts_VarType.Project] -------------
+-- [ts_vartype.BindType] -------------
 
-IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('Ts_VarType') AND name='Project')
+IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('ts_vartype') AND name='BindType')
     BEGIN
-     ALTER TABLE Ts_VarType ALTER COLUMN [Project] BIGINT
+     ALTER TABLE ts_vartype ALTER COLUMN [BindType] INT
     END
 ELSE
     BEGIN
-    DECLARE @sql_add_Ts_VarType_Project NVARCHAR(MAX);
-    SET @sql_add_Ts_VarType_Project = 'ALTER TABLE Ts_VarType ADD [Project] BIGINT'
-    EXEC sp_executesql @sql_add_Ts_VarType_Project
+    DECLARE @sql_add_ts_vartype_BindType NVARCHAR(MAX);
+    SET @sql_add_ts_vartype_BindType = 'ALTER TABLE ts_vartype ADD [BindType] INT'
+    EXEC sp_executesql @sql_add_ts_vartype_BindType
     END
 
 
-IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_Ts_VarTypeProject')
+IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_ts_vartypeBindType')
     BEGIN
-    ALTER TABLE Ts_VarType DROP  CONSTRAINT [Constraint_Ts_VarTypeProject]
+    ALTER TABLE ts_vartype DROP  CONSTRAINT [Constraint_ts_vartypeBindType]
     END
 
-IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_Ts_VarTypeProject')
+IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_ts_vartypeBindType')
     BEGIN
-    ALTER TABLE Ts_VarType DROP  CONSTRAINT [UniqueNonclustered_Ts_VarTypeProject]
+    ALTER TABLE ts_vartype DROP  CONSTRAINT [UniqueNonclustered_ts_vartypeBindType]
+    END
+
+-- [ts_vartype.Bind] -------------
+
+
+-- [ts_vartype.Bind] -------------
+
+IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('ts_vartype') AND name='Bind')
+    BEGIN
+     ALTER TABLE ts_vartype ALTER COLUMN [Bind] BIGINT
+    END
+ELSE
+    BEGIN
+    DECLARE @sql_add_ts_vartype_Bind NVARCHAR(MAX);
+    SET @sql_add_ts_vartype_Bind = 'ALTER TABLE ts_vartype ADD [Bind] BIGINT'
+    EXEC sp_executesql @sql_add_ts_vartype_Bind
+    END
+
+
+IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_ts_vartypeBind')
+    BEGIN
+    ALTER TABLE ts_vartype DROP  CONSTRAINT [Constraint_ts_vartypeBind]
+    END
+
+IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_ts_vartypeBind')
+    BEGIN
+    ALTER TABLE ts_vartype DROP  CONSTRAINT [UniqueNonclustered_ts_vartypeBind]
+    END
+
+-- [ts_vartype.Project] -------------
+
+
+-- [ts_vartype.Project] -------------
+
+IF EXISTS(SELECT * FROM SYSCOLUMNS WHERE id=object_id('ts_vartype') AND name='Project')
+    BEGIN
+     ALTER TABLE ts_vartype ALTER COLUMN [Project] BIGINT
+    END
+ELSE
+    BEGIN
+    DECLARE @sql_add_ts_vartype_Project NVARCHAR(MAX);
+    SET @sql_add_ts_vartype_Project = 'ALTER TABLE ts_vartype ADD [Project] BIGINT'
+    EXEC sp_executesql @sql_add_ts_vartype_Project
+    END
+
+
+IF EXISTS(SELECT object_id FROM [sys].[objects] WHERE name='Constraint_ts_vartypeProject')
+    BEGIN
+    ALTER TABLE ts_vartype DROP  CONSTRAINT [Constraint_ts_vartypeProject]
+    END
+
+IF EXISTS(SELECT * FROM SYSINDEXES WHERE name='UniqueNonclustered_ts_vartypeProject')
+    BEGIN
+    ALTER TABLE ts_vartype DROP  CONSTRAINT [UniqueNonclustered_ts_vartypeProject]
     END
