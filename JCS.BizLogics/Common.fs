@@ -35,36 +35,10 @@ type HostEnum =
 | Kamatera
 
 let runtime = 
-
-    let h = {
-        data = ()
-        port = 5045
-        rdbms = Util.Db.Rdbms.SqlServer
-        conn = "server=.; database=JCS; Trusted_Connection=True;"
-        url = ""
-        cert = ""
-        certpwd = ""
-
-        updateDatabase = true
-
-        VsDirSolution = @"C:/Dev/JCS"
-        req__vueDeployDir = @"C:/Dev/JCS/vscode/dist"
-        fsDir = @"C:/FsRoot/JCS" }
-
-    let hostEnum = 
-        let machinename = Environment.MachineName
-        match Environment.MachineName with
-        | "MAIN" -> HostEnum.Dev
-        | "PTNHKDIE15IJZN" -> HostEnum.Kamatera
-        | _ -> HostEnum.Dev
-
-    match hostEnum with
-    | HostEnum.Kamatera -> 
-        h.conn <- "server=localhost\MSSQLSERVER01; database=JCS; Trusted_Connection=True;"
-    | _ -> ()
-
     RuntimeData_empty()
-    |> empty__Runtime<EuComplex,unit,HostData,RuntimeData> "JCS" h
+    |> empty__Runtime<EuComplex,unit,HostData,RuntimeData> 
+        "JCS" 
+        { version = 0 }
 
 let appendFact runtime fact = 
     lock runtime.facts (fun _ ->
