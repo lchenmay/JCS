@@ -36,7 +36,7 @@ let ssrPageHome = {
     title = "J-Cat Sys"
     desc = "Cross platform code automation solution"
     image = "https://jcatsys.com/file/35461232.png"
-    url = runtime.host.url
+    url = ""//runtime.host.url
     noscript = "" }
 
 let r1 = str__regex @"\w+"

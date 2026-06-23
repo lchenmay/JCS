@@ -83,17 +83,17 @@ let createProject (code:string) =
     else
         None
 
-let code__ProjectComplexo ps =
-    runtime.data.projectxs.Values
-    |> Array.tryFind(fun i -> i.project.p.Code = fst ps)
+//let code__ProjectComplexo ps =
+//    runtime.data.projectxs.Values
+//    |> Array.tryFind(fun i -> i.project.p.Code = fst ps)
 
-let createProjectComplex ps = 
-    match createProject (fst ps) with
-    | Some project -> 
-        let projectx = project__ProjectComplex project
-        runtime.data.projectxs[project.ID] <- projectx
-        Some projectx
-    | None -> None
+//let createProjectComplex ps = 
+//    match createProject (fst ps) with
+//    | Some project -> 
+//        let projectx = project__ProjectComplex project
+//        runtime.data.projectxs[project.ID] <- projectx
+//        Some projectx
+//    | None -> None
 
 let updateProjectComplex projectx ps = 
     if 
@@ -105,8 +105,8 @@ let updateProjectComplex projectx ps =
     else
         None
 
-let tryProjectCU (code:string) = 
-    tryCU code__ProjectComplexo createProjectComplex updateProjectComplex
+//let tryProjectCU (code:string) = 
+//    tryCU code__ProjectComplexo createProjectComplex updateProjectComplex
 
 let createPage projectx (name:string) = 
     let name = name.Trim()

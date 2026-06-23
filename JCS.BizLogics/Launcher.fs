@@ -26,7 +26,9 @@ open JCS.BizLogics.SSR
 
 let launch() =
 
-    init runtime |> ignore
+    //init runtime |> ignore
+
+    ()
 
     //runtime.listener.echo <- echo
     //runtime.listener.h404o <- Some(fun _ -> 

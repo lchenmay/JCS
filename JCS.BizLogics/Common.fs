@@ -34,12 +34,6 @@ type HostEnum =
 | Dev
 | Kamatera
 
-let runtime = 
-    RuntimeData_empty()
-    |> empty__Runtime<EuComplex,unit,HostData,RuntimeData> 
-        "JCS" 
-        { version = 0 }
-
 let appendFact runtime fact = 
     lock runtime.facts (fun _ ->
         runtime.facts <- 
