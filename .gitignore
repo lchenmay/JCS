@@ -202,3 +202,5 @@ JCS.BizLogics/bin/Debug/net8.0/zh-Hant/System.Private.ServiceModel.resources.dll
 /JCS.BizLogics/bin
 /JCS.Shared/bin
 /TypeSys/bin
+
+.fake
