@@ -4,36 +4,33 @@
 
 /.vs
 /TypeSys/obj
+/TypeSys/bin
 /BizShared/obj
-/BlazorWebAssembly/bin/Debug/net8.0
+/BizShared/bin
 /BlazorWebAssembly/obj
-/BizShared/bin/Debug/net8.0
-/BlazorLogics/bin/Debug/net8.0
+/BlazorWebAssembly/bin
 /BlazorLogics/obj
-/AioServer/bin/Debug/net8.0
+/BlazorLogics/bin
 /AioServer/obj
-/WebLogics/bin/Debug/net8.0
+/AioServer/bin
 /WebLogics/obj
-/BlazorWebAssembly/bin/Release/net8.0
-/BizShared/bin/Release/net8.0
+/WebLogics/bin
 /WebDeploy
-/WebLogics/bin/Release/net8.0
 /BlazorWebAssembly/Properties/PublishProfiles/IISProfile.pubxml.user
-/Shared/bin/Debug/net8.0
 /Shared/obj
-/BizLogics/bin/Debug/net8.0
-/BizLogics/obj/Debug/net8.0
+/Shared/bin
 /BizLogics/obj
-/Server/bin/Debug/net8.0
+/BizLogics/bin
 /Server/obj
+/Server/bin
+/JCS.BizLogics/obj
+/JCS.BizLogics/bin
+/JCS.Shared/obj
+/JCS.Shared/bin
 /portal/node_modules
 /portal/src/.vs
 *.dll
-/JCS.BizLogics/obj
-/JCS.Shared/obj
-/JCS.BizLogics/bin
-/JCS.Shared/bin
-/TypeSys/bin
+node_modules
 
 .fake
 
@@ -46,3 +43,4 @@ build_log.txt
 server-out.txt
 run_log.txt
 *.lockb
+*.lock
