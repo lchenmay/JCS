@@ -2,21 +2,44 @@ VUE_BUILD_PATH="dist"
 DEPLOY_MAIN_FOLDER="../VueDeploy"
 
 FORCE_FLAG=0
+SKIP_GIT=0
 
 if [ "$1" == "--fc" ]; then
     FORCE_FLAG=1
+fi
+if [ "$1" == "--skip-git" ]; then
+    SKIP_GIT=1
+fi
+
+if [ "$SKIP_GIT" -eq 1 ]; then
+    echo "GitHub 不可用，跳过 git 操作（代码已通过 scp 同步）"
+    bun install
+    bun bd
+    echo "=======DEPLOY FIN (scp mode)======="
+    exit 0
 fi
 
 git reset --hard HEAD
 echo "git reset done"
 
-git fetch origin
-LATEST_COMMIT=$(git rev-parse origin/main)
-CURRENT_COMMIT=$(git rev-parse HEAD)
+if git fetch origin 2>/dev/null; then
+    LATEST_COMMIT=$(git rev-parse origin/main)
+    CURRENT_COMMIT=$(git rev-parse HEAD)
+    GIT_OK=1
+else
+    echo "⚠ git fetch 失败，GitHub 可能不可用。如果代码已通过 scp 同步，用 --skip-git 重新部署"
+    LATEST_COMMIT=""
+    CURRENT_COMMIT=$(git rev-parse HEAD)
+    GIT_OK=0
+fi
 
 execute_build_and_deploy() {
     set -x
-    git pull origin main
+    if [ "$GIT_OK" -eq 1 ]; then
+        git pull origin main
+    else
+        echo "⚠ 跳过 git pull（GitHub 不可用）"
+    fi
     bun install
     bun bd
     set +x
@@ -31,7 +54,10 @@ if [ "$FORCE_FLAG" -eq 1 ]; then
     echo "Force flag (--fc) detected. Executing commands unconditionally."
     execute_build_and_deploy
 else
-    if [ "$LATEST_COMMIT" != "$CURRENT_COMMIT" ]; then
+    if [ "$GIT_OK" -eq 0 ]; then
+        echo "GitHub 不可用，使用本地代码构建"
+        execute_build_and_deploy
+    elif [ "$LATEST_COMMIT" != "$CURRENT_COMMIT" ]; then
         echo "Commits not same  OLD: $CURRENT_COMMIT - NEW: $LATEST_COMMIT"
         execute_build_and_deploy
     else

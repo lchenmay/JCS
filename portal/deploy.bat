@@ -7,12 +7,35 @@ set DEPLOY_GCHAIN_PATH="../GChainVsOpen/Deploy"
 set DEPLOY_CTC_PATH="../CrypTradeClubVsOpen/Deploy"
 
 set FORCE_FLAG=0
+set SKIP_GIT=0
+set GIT_OK=0
 
 if "%~1"=="--force" set FORCE_FLAG=1
+if "%~1"=="--skip-git" set SKIP_GIT=1
+
+if "%SKIP_GIT%"=="1" (
+    echo GitHub unavailable, skipping git (code synced via scp)
+    call bun install
+    call bun bd
+    if %errorlevel% equ 0 (
+        robocopy "%VUE_BUILD_PATH%" "%DEPLOY_GCHAIN_PATH%" /E /PURGE /NFL /NDL /NJH /NJS
+        robocopy "%VUE_BUILD_PATH%" "%DEPLOY_CTC_PATH%" /E /PURGE /NFL /NDL /NJH /NJS
+    )
+    @echo =======DEPLOY FIN (scp mode)=======
+    endlocal
+    exit /b 0
+)
 
 echo git reset fetch
 git reset --hard HEAD
-git fetch origin
+git fetch origin 2>nul
+if %errorlevel% neq 0 (
+    echo WARNING: git fetch failed, GitHub may be unavailable
+    echo If code was synced via scp, run with --skip-git
+    set GIT_OK=0
+    goto Execute_Build_n_Deploy
+)
+set GIT_OK=1
 
 for /f %%i in ('git rev-parse origin/main') do set LATEST_COMMIT=%%i
 for /f %%i in ('git rev-parse HEAD') do set CURRENT_COMMIT=%%i
@@ -35,17 +58,18 @@ echo Force flag (--force) detected. Executing commands unconditionally.
 
 :Execute_Build_n_Deploy
 echo git pull build
-git pull origin main
-bun install
-bun bd
+if "%GIT_OK%"=="1" (
+    git pull origin main
+) else (
+    echo Skipping git pull (GitHub unavailable)
+)
+call bun install
+call bun bd
 
 echo robocopy
 if %errorlevel% equ 0 (
-    rmdir /s /q %DEPLOY_GCHAIN_PATH%
-    rmdir /s /q %DEPLOY_CTC_PATH%
-
-    robocopy /mt /z /purge /s %VUE_BUILD_PATH% %DEPLOY_GCHAIN_PATH%
-    robocopy /mt /z /purge /s %VUE_BUILD_PATH% %DEPLOY_CTC_PATH%
+    robocopy "%VUE_BUILD_PATH%" "%DEPLOY_GCHAIN_PATH%" /E /PURGE /NFL /NDL /NJH /NJS
+    robocopy "%VUE_BUILD_PATH%" "%DEPLOY_CTC_PATH%" /E /PURGE /NFL /NDL /NJH /NJS
 )
 
 :End_Script
