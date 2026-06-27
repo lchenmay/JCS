@@ -27,7 +27,6 @@
 /JCS.BizLogics/bin
 /JCS.Shared/obj
 /JCS.Shared/bin
-/portal/node_modules
 /portal/src/.vs
 *.dll
 node_modules
