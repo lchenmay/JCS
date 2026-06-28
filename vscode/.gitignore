@@ -9,7 +9,6 @@ lerna-debug.log*
 package-lock.json
 ./vs/**
 
-node_modules
 dist
 dist-ssr
 *.local
