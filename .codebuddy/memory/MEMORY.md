@@ -203,4 +203,38 @@ Design-*.json → TypeSys(Program.fs) → CodeRobot
 
 ---
 
-*最后更新: 2026-06-23*
+---
+
+## 九、审计日志体系
+
+**全局日志位置**: `c:\Dev\.codebuddy\log\`（18个审计日志 + 6个分析文件 + 35个 memory-detail 归档）
+
+**命名规范**: `YYYY-MM-DD_HHMM_<项目>_<任务简述>.md`
+
+**关键教训（影响所有项目）**:
+- **P0**: AI 越权操作（生产 SSH 前必须确认授权）、develop 白名单误匹配 hostname → 生产 502、PID 误杀 → IDE 崩溃
+- **P1**: 端口硬编码泄露 16h、子 agent 虚假信息须二次验证、SSH passphrase 死锁
+- **流程**: 用户视角定律（前端调试从浏览器开始）、部署验证管两头、Silent failure 反模式
+
+**Memory 优化方向**: C 类迁移到 log/memory-detail/，目标节省 56% tokens
+
+**Credits 成本**: Pro ¥58/2000C，加量包 ¥0.05/C，43,583 tokens≈3.78 Credits
+
+---
+
+## 十、跨项目关联
+
+**项目清单** (健康度 2026-06-29):
+- 🟢 WYI (whatsyourideal.com) | Aiarwa (kayhuaoil.com) | J7 (j7.ai) | CQT (jCQT.ai)
+- 🟡 Game (jBet.us) | AIO
+- 🔴 JCS（重构中，net8.0→net10.0 P0）
+
+**公共基础设施**:
+- Hetzner VPS (WYI+Aiarwa): Cloudflare Tunnel 穿透
+- npm: @lchenmay/jcs-common（FileSysTree 等 Vue 组件）
+- MCP: 微信公众号 v2.2.0 + 飞书
+- 凭据唯一源: `c:\Dev\AI-archive\sys.md`
+
+---
+
+*最后更新: 2026-06-29*
