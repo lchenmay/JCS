@@ -34,12 +34,10 @@ node_modules
 .fake
 
 # AI 调试临时文件
-*.Backup.tmp
 *.tmp
 build_output.txt
 build_err.txt
 build_log.txt
 server-out.txt
 run_log.txt
-*.lockb
 *.lock
