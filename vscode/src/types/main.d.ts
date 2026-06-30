@@ -19,6 +19,8 @@ declare global {
 
         user: jcs.EuComplex
         data: jcs.ClientRuntime
+
+        debugger: string  // "human" | "ai" — 由前端端口判断
     }
 
     export type WsCtx = {

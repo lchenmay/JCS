@@ -9,6 +9,11 @@ globalThis.clientRuntime = glib.vue.reactive(ClientRuntime_empty())
 globalThis.runtime = glib.vue.reactive(glib.runtime.prepRuntime())
 runtime.host = host
 
+// 判断调试来源：调用 jcs-common 的 getDebugger()
+runtime.debugger = glib.bin.getDebugger()
+;(window as any).__DEBUGGER__ = runtime.debugger
+console.log('[debugger] source:', runtime.debugger)
+
 //runtime.user = glib.Mor.[]
 
 glib.runtime.createGlobalWatcher()

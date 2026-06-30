@@ -18,7 +18,9 @@ declare global {
         session: string
 
         user: jcs.EuComplex
-        data: j7.ClientRuntime
+        data: jcs.ClientRuntime
+
+        debugger: string  // "human" | "ai" — 由前端端口判断
     }
 
     export type WsCtx = {

@@ -21,6 +21,8 @@ declare global {
         lang: string
         user: [].[]
         data: [].ClientRuntime
+
+        debugger: string  // "human" | "ai" — 由前端端口判断
     }
 
     export type WsCtx = {
