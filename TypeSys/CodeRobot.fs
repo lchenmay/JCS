@@ -1080,15 +1080,15 @@ let go output exeDir config  =
     tables |> Array.iter (table__sql config.rdbms (sqlSQLServer.w,sqlPostgreSQL.w))
 
     [|  "// OrmMor.ts"
-        "import { BinIndexed, BytesBuilder } from \"~/lib/util/bin\""
-        "import * as binCommon from '~/lib/util/bin'"
+        "import { BinIndexed, BytesBuilder } from \"@lchenmay/jcs-common\""
+        "import * as binCommon from \"@lchenmay/jcs-common\""
         "const marshall = {...binCommon }"
         "" |]
     |> omTypeScript.w.multiLine
 
     [|  "// OrmMor.ts"
-        "import { BinIndexed, BytesBuilder } from \"~/lib/util/bin\""
-        "import * as binCommon from '~/lib/util/bin'"
+        "import { BinIndexed, BytesBuilder } from \"@lchenmay/jcs-common\""
+        "import * as binCommon from \"@lchenmay/jcs-common\""
         "import * as binOrm from './OrmMor'"
         "const marshall = {...binCommon, ...binOrm }"
         "" |]
