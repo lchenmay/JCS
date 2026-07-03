@@ -20,7 +20,6 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Common\UtilKestrel\UtilKestrel.fsproj" />
     <ProjectReference Include="..\..\Common\Util\Util.fsproj" />
-    <ProjectReference Include="..\JCS.Shared\JCS.Shared.fsproj" />
   </ItemGroup>
 
 </Project>
