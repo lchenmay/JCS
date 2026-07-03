@@ -147,8 +147,11 @@ let buildTypeCat output
         | _ ->  c.tEnum <- TypeEnum.Product [||]
         ())
 
-    cTypesSorted
-    |> Array.iter(type__str output 0)
+    // 类型定义详细输出（默认关闭，减少日志噪音）
+    // 设置环境变量 TYPESYS_VERBOSE_DUMP=1 可启用
+    if System.Environment.GetEnvironmentVariable("TYPESYS_VERBOSE_DUMP") = "1" then
+        cTypesSorted
+        |> Array.iter(type__str output 0)
 
     tc
 
