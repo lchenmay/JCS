@@ -191,6 +191,14 @@ let target__config target =
             conn = "server=127.0.0.1; user=sa; database=JA"
             mainDir = @"C:\Dev\JA\JA.Shared"
             JsDir = @"C:\Dev\JA\vscode\src\lib\shared" }
+    | 20 ->
+        {   ns = "Aiarwa.Shared"
+            rdbms = Rdbms.PostgreSql
+            dbName = "Aiarwa"
+            donmainName = "wigaoil.com"
+            conn = "Host=localhost;Port=5432;Database=aiarwa;Username=aiarwa;Password=e2TpqcaTEYLfkvFMkc"
+            mainDir = @"C:\Dev\Aiarwa\Aiarwa.Shared"
+            JsDir = @"C:\Dev\Aiarwa\vscode\src\lib\shared" }
     | 10 ->
         {   ns = "Game.Shared"
             rdbms = Rdbms.SqlServer
@@ -272,7 +280,8 @@ let runMultiple exeDir =
 
     [|  
         //6 // JCS
-        7 // J-7
+        //7 // J-7
+        20 // Aiarwa
         //16 // studio
         //17 // J
         //18 // FA
