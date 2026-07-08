@@ -280,8 +280,8 @@ let runMultiple exeDir =
 
     [|  
         //6 // JCS
-        //7 // J-7
-        20 // Aiarwa
+        7 // J-7
+        //20 // Aiarwa
         //16 // studio
         //17 // J
         //18 // FA
