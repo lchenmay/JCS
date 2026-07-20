@@ -14,7 +14,7 @@ let output (s:string) = Console.WriteLine s
 
 let target__config target = 
 
-    @"C:\Dev\JCS\BizShared\Types.fs"
+    @"E:\DEV\JCS\BizShared\Types.fs"
     |> TypeSys.FSharp.go output
 
     let pwd = "jjsjd2VSd$"
@@ -197,8 +197,8 @@ let target__config target =
             dbName = "Aiarwa"
             donmainName = "wigaoil.com"
             conn = "Host=localhost;Port=5432;Database=aiarwa;Username=aiarwa;Password=e2TpqcaTEYLfkvFMkc"
-            mainDir = @"C:\Dev\Aiarwa\Aiarwa.Shared"
-            JsDir = @"C:\Dev\Aiarwa\vscode\src\lib\shared" }
+            mainDir = @"E:\DEV\Aiarwa\Aiarwa.Shared"
+            JsDir = @"E:\DEV\Aiarwa\vscode\src\lib\shared" }
     | 10 ->
         {   ns = "Game.Shared"
             rdbms = Rdbms.SqlServer
@@ -280,8 +280,8 @@ let runMultiple exeDir =
 
     [|  
         //6 // JCS
-        7 // J-7
-        //20 // Aiarwa
+        //7 // J-7
+        20 // Aiarwa
         //16 // studio
         //17 // J
         //18 // FA
@@ -291,7 +291,7 @@ let runMultiple exeDir =
     |> Array.map target__config
     |> Array.iter(CodeRobot.go output exeDir)
 
-Directory.GetCurrentDirectory() |> runMultiple
+System.AppContext.BaseDirectory.TrimEnd('\\','/') |> runMultiple
 //Directory.GetCurrentDirectory() |> JCS.BizLogics.CodeRobot.runAll
 
 Util.Runtime.halt output "" ""
