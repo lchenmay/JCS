@@ -30,6 +30,9 @@
 /portal/src/.vs
 *.dll
 node_modules
+/portal/dist/
+/vscode/dist/
+/VsCodeTemplate/dist/
 
 .fake
 
@@ -41,3 +44,9 @@ build_log.txt
 server-out.txt
 run_log.txt
 *.lock
+!portal/bun.lock
+!vscode/bun.lock
+!VsCodeTemplate/bun.lock
+
+# Project-local Codex verification receipts
+/.codex/out/

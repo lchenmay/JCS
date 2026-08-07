@@ -1,0 +1,102 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://local.invalid/codex/jcs-policy.schema.json",
+  "title": "JCS project-local Codex policy",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["version", "mode", "repository", "runtimePermissions", "sourcesOfTruth", "generatedPaths", "generators", "dependencies", "rules", "riskClassification", "verification", "completionGate"],
+  "properties": {
+    "$schema": { "type": "string" },
+    "version": { "const": 2 },
+    "mode": { "enum": ["audit", "enforce"] },
+    "repository": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "root", "writeScope", "outsideRepository"],
+      "properties": {
+        "name": { "type": "string", "minLength": 1 },
+        "root": { "type": "string", "minLength": 1 },
+        "writeScope": { "const": "repository-only" },
+        "outsideRepository": { "const": "ignore" }
+      }
+    },
+    "runtimePermissions": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["managedByRepository", "description"],
+      "properties": {
+        "managedByRepository": { "const": false },
+        "description": { "type": "string", "minLength": 1 }
+      }
+    },
+    "sourcesOfTruth": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name", "patterns"],
+        "properties": {
+          "name": { "type": "string" },
+          "patterns": { "$ref": "#/$defs/stringArray" }
+        }
+      }
+    },
+    "generatedPaths": { "$ref": "#/$defs/stringArray" },
+    "generators": {
+      "type": "object",
+      "required": ["trusted", "direct"],
+      "properties": {
+        "trusted": { "$ref": "#/$defs/stringArray" },
+        "direct": { "$ref": "#/$defs/stringArray" }
+      }
+    },
+    "protectedPaths": { "type": "array", "items": { "type": "object" } },
+    "dependencies": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["repository", "path", "relationship", "defaultAccess", "automaticVerification", "impactPatterns"],
+        "properties": {
+          "repository": { "type": "string", "minLength": 1 },
+          "path": { "type": "string", "minLength": 1 },
+          "relationship": { "enum": ["upstream", "downstream"] },
+          "defaultAccess": { "const": "read-only" },
+          "automaticVerification": { "const": false },
+          "impactPatterns": { "$ref": "#/$defs/stringArray" }
+        }
+      }
+    },
+    "rules": { "type": "array", "items": { "type": "object" } },
+    "riskClassification": {
+      "type": "object",
+      "required": ["default", "levels", "pathRules"],
+      "properties": {
+        "default": { "$ref": "#/$defs/risk" },
+        "levels": { "type": "object" },
+        "pathRules": { "type": "array", "items": { "type": "object" } }
+      }
+    },
+    "verification": {
+      "type": "object",
+      "required": ["reviewEntryPoint", "entryPoint", "receiptPath", "checks"],
+      "properties": {
+        "reviewEntryPoint": { "type": "string" },
+        "entryPoint": { "type": "string" },
+        "receiptPath": { "type": "string" },
+        "checks": { "type": "array", "items": { "type": "object" } }
+      }
+    },
+    "completionGate": {
+      "type": "object",
+      "required": ["enabled", "blockingMode"],
+      "properties": {
+        "enabled": { "type": "boolean" },
+        "blockingMode": { "enum": ["enforce"] }
+      }
+    }
+  },
+  "$defs": {
+    "stringArray": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+    "risk": { "enum": ["L1", "L2", "L3"] }
+  }
+}

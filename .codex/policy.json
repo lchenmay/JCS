@@ -1,40 +1,288 @@
 {
-  "version": 1,
+  "$schema": "./policy.schema.json",
+  "version": 2,
   "mode": "audit",
-  "repositoryName": "JCS",
-  "repositoryRoot": "D:\\DEV\\JCS",
-  "verificationCommand": "scripts/codex-verify.ps1",
-  "generatedPathFragments": [
-    "jcs.shared/ormtypes.fs",
-    "jcs.shared/ormmor.fs",
-    "jcs.shared/custommor.fs",
-    "jcs.shared/types.fs",
-    "jcs.shared/sqlpostgresql.sql",
-    "jcs.shared/sqlsqlserver.sql",
-    "bizshared/ormtypes.fs",
-    "bizshared/ormtypes.d.ts",
-    "bizshared/ormmor.fs",
-    "bizshared/ormmor.ts",
-    "bizshared/custommor.fs",
-    "bizshared/custommor.ts",
-    "bizshared/types.fs",
-    "bizshared/types.d.ts",
-    "portal/src/lib/shared/ormtypes.d.ts",
-    "portal/src/lib/shared/ormmor.ts",
-    "portal/src/lib/shared/custommor.ts",
-    "portal/src/lib/shared/types.d.ts",
-    "vscode/src/lib/shared/ormtypes.d.ts",
-    "vscode/src/lib/shared/ormmor.ts",
-    "vscode/src/lib/shared/custommor.ts",
-    "vscode/src/lib/shared/types.d.ts",
-    "vscodetemplate/src/lib/shared/ormtypes.d.ts",
-    "vscodetemplate/src/lib/shared/ormmor.ts",
-    "vscodetemplate/src/lib/shared/custommor.ts",
-    "vscodetemplate/src/lib/shared/types.d.ts"
+  "repository": {
+    "name": "JCS",
+    "root": "D:\\DEV\\JCS",
+    "writeScope": "repository-only",
+    "outsideRepository": "ignore"
+  },
+  "runtimePermissions": {
+    "managedByRepository": false,
+    "description": "The Codex permission profile is selected by the runtime and is never changed by this repository."
+  },
+  "sourcesOfTruth": [
+    {
+      "name": "JCS shared schema",
+      "patterns": ["JCS.Shared/Design-*.json", "BizShared/Design-*.json"]
+    }
   ],
-  "directGeneratorFragments": ["typesys/typesys.fsproj", "run-typesys-jcs.fsx"],
-  "trustedGeneratorFragments": ["scripts/regenerate-types.ps1"],
-  "siblingRepositoryRoots": [],
-  "scope": { "outsideRepository": "ignore" },
-  "completionGate": { "enabled": true }
+  "generatedPaths": [
+    "JCS.Shared/OrmTypes.fs",
+    "JCS.Shared/OrmMor.fs",
+    "JCS.Shared/CustomMor.fs",
+    "JCS.Shared/Types.fs",
+    "JCS.Shared/sqlPostgreSQL.sql",
+    "JCS.Shared/sqlSQLServer.sql",
+    "BizShared/OrmTypes.fs",
+    "BizShared/OrmTypes.d.ts",
+    "BizShared/OrmMor.fs",
+    "BizShared/OrmMor.ts",
+    "BizShared/CustomMor.fs",
+    "BizShared/CustomMor.ts",
+    "BizShared/Types.fs",
+    "BizShared/Types.d.ts",
+    "portal/src/lib/shared/OrmTypes.d.ts",
+    "portal/src/lib/shared/OrmMor.ts",
+    "portal/src/lib/shared/CustomMor.ts",
+    "portal/src/lib/shared/Types.d.ts",
+    "vscode/src/lib/shared/OrmTypes.d.ts",
+    "vscode/src/lib/shared/OrmMor.ts",
+    "vscode/src/lib/shared/CustomMor.ts",
+    "vscode/src/lib/shared/Types.d.ts",
+    "VsCodeTemplate/src/lib/shared/OrmTypes.d.ts",
+    "VsCodeTemplate/src/lib/shared/OrmMor.ts",
+    "VsCodeTemplate/src/lib/shared/CustomMor.ts",
+    "VsCodeTemplate/src/lib/shared/Types.d.ts"
+  ],
+  "generators": {
+    "trusted": ["scripts/regenerate-types.ps1"],
+    "direct": ["TypeSys/TypeSys.fsproj", "run-typesys-jcs.fsx"]
+  },
+  "protectedPaths": [
+    {
+      "name": "secret-bearing files",
+      "pattern": "(?i)(^|[\\s/\\\\\"])(?:\\.env(?:\\.[^\\s/\\\\\"]+)?|[^\\s/\\\\\"]+\\.(?:pem|key|pfx|p12))(?=[\\s/\\\\\"]|$)",
+      "risk": "L3"
+    },
+    {
+      "name": "production configuration",
+      "pattern": "(?i)(^|[\\s/\\\\])(?:deploy[\\/\\\\]prod|production(?:\\.|[\\/\\\\]))",
+      "risk": "L3"
+    }
+  ],
+  "dependencies": [
+    {
+      "repository": "Common",
+      "path": "D:\\DEV\\Common",
+      "relationship": "upstream",
+      "defaultAccess": "read-only",
+      "automaticVerification": false,
+      "impactPatterns": []
+    },
+    {
+      "repository": "Aiarwa",
+      "path": "D:\\DEV\\Aiarwa",
+      "relationship": "downstream",
+      "defaultAccess": "read-only",
+      "automaticVerification": false,
+      "impactPatterns": ["TypeSys/**", "JCS.Shared/**", "BizShared/**"]
+    }
+  ],
+  "rules": [
+    {
+      "name": "generated-file-direct-edit",
+      "kind": "generatedPathEdit",
+      "appliesToTools": ["apply_patch", "Edit", "Write"],
+      "severity": "deny",
+      "risk": "L2",
+      "message": "Use the controlled generator instead of editing a generated path directly."
+    },
+    {
+      "name": "protected-file-edit",
+      "kind": "protectedPathEdit",
+      "appliesToTools": ["apply_patch", "Edit", "Write"],
+      "severity": "deny",
+      "risk": "L3",
+      "message": "Editing a protected or secret-bearing file through Codex is blocked."
+    },
+    {
+      "name": "direct-generator-execution",
+      "kind": "directGenerator",
+      "severity": "deny",
+      "risk": "L2",
+      "message": "Run the repository controlled-generation wrapper instead."
+    },
+    {
+      "name": "git-hard-reset",
+      "kind": "commandRegex",
+      "pattern": "(?i)\\bgit(?:\\.exe)?\\s+(?:-c\\s+\\S+\\s+)?reset\\s+--hard\\b",
+      "severity": "deny",
+      "risk": "L3",
+      "message": "Hard reset can discard user work."
+    },
+    {
+      "name": "git-destructive-clean",
+      "kind": "commandRegex",
+      "pattern": "(?i)\\bgit(?:\\.exe)?\\s+(?:-c\\s+\\S+\\s+)?clean\\s+[^\\r\\n]*(?:-fd|-df|-fdx|-dfx|--force)",
+      "severity": "deny",
+      "risk": "L3",
+      "message": "Destructive git clean can remove untracked work."
+    },
+    {
+      "name": "git-force-push",
+      "kind": "commandRegex",
+      "pattern": "(?i)\\bgit(?:\\.exe)?\\s+(?:-c\\s+\\S+\\s+)?push\\s+[^\\r\\n]*(?:--force(?:-with-lease)?|-f)\\b",
+      "severity": "deny",
+      "risk": "L3",
+      "message": "Force push is forbidden."
+    },
+    {
+      "name": "recursive-delete",
+      "kind": "commandRegex",
+      "pattern": "(?i)\\b(?:remove-item|rm|rmdir|del)\\b[^\\r\\n]*(?:-recurse|-rf|/s)\\b",
+      "severity": "deny",
+      "risk": "L3",
+      "message": "Recursive delete requires a separately reviewed and recoverable operation."
+    },
+    {
+      "name": "forceful-process-kill",
+      "kind": "commandRegex",
+      "pattern": "(?i)\\b(?:taskkill(?:\\.exe)?\\b[^\\r\\n]*/f|stop-process\\b[^\\r\\n]*-force)",
+      "severity": "deny",
+      "risk": "L3",
+      "message": "Forceful process termination is blocked."
+    },
+    {
+      "name": "external-side-effect",
+      "kind": "commandRegex",
+      "pattern": "(?i)\\b(ssh|scp|rsync|systemctl|restart-service|stop-service|psql)\\b|\\bdotnet\\s+ef\\s+database\\s+update\\b|\\bdeploy(?:ment)?\\b",
+      "severity": "context",
+      "risk": "L3",
+      "message": "External, deployment, service, or database action requires an explicit current user request and scoped approval."
+    }
+  ],
+  "riskClassification": {
+    "default": "L1",
+    "levels": {
+      "L1": {
+        "description": "Ordinary repository-local change with focused verification."
+      },
+      "L2": {
+        "description": "Schema, generated code, shared API, policy, or dependency-sensitive change."
+      },
+      "L3": {
+        "description": "Destructive, secret-bearing, production, database, service, or remote action.",
+        "requiresExplicitAuthorizationForAction": true
+      }
+    },
+    "pathRules": [
+      {
+        "risk": "L2",
+        "patterns": [
+          ".codex/**",
+          "AGENTS.md",
+          "scripts/codex-*.ps1",
+          "scripts/regenerate-types.ps1",
+          "TypeSys/**",
+          "JCS.Shared/**",
+          "BizShared/**"
+        ]
+      },
+      {
+        "risk": "L3",
+        "patterns": [".env", ".env.*", "deploy/prod/**", "*.pem", "**/*.pem", "*.key", "**/*.key", "*.pfx", "**/*.pfx", "*.p12", "**/*.p12"]
+      }
+    ]
+  },
+  "verification": {
+    "reviewEntryPoint": "scripts/codex-policy-review.ps1",
+    "entryPoint": "scripts/codex-verify.ps1",
+    "receiptPath": ".codex/out/verification-receipt.json",
+    "checks": [
+      {
+        "name": "policy-tests",
+        "category": "policy",
+        "executable": "pwsh.exe",
+        "workingDirectory": ".",
+        "arguments": ["-NoProfile", "-File", ".codex/hooks/Test-Policy.ps1", "-PolicyPath", ".codex/policy.json"],
+        "always": true
+      },
+      {
+        "name": "typesys-release-build",
+        "category": "build",
+        "executable": "dotnet",
+        "workingDirectory": ".",
+        "arguments": ["build", "TypeSys/TypeSys.fsproj", "-c", "Release", "--no-restore", "--no-dependencies"],
+        "always": true
+      },
+      {
+        "name": "jcs-shared-release-build",
+        "category": "build",
+        "executable": "dotnet",
+        "workingDirectory": ".",
+        "arguments": ["build", "JCS.Shared/JCS.Shared.fsproj", "-c", "Release", "--no-restore", "--no-dependencies"],
+        "always": true
+      },
+      {
+        "name": "jcs-bizlogics-release-build",
+        "category": "build",
+        "executable": "dotnet",
+        "workingDirectory": ".",
+        "arguments": ["build", "JCS.BizLogics/JCS.BizLogics.fsproj", "-c", "Release", "--no-restore", "--no-dependencies"],
+        "minimumRisk": "L2",
+        "runAtOrAbove": false,
+        "whenPaths": ["JCS.BizLogics/**", "TypeSys/**", "JCS.Shared/**", "BizShared/**"]
+      },
+      {
+        "name": "dependency-impact-readonly",
+        "category": "dependency",
+        "executable": "pwsh.exe",
+        "workingDirectory": ".",
+        "arguments": ["-NoProfile", "-File", "scripts/codex-dependency-impact.ps1", "-Json"],
+        "minimumRisk": "L2",
+        "runAtOrAbove": true
+      },
+      {
+        "name": "portal-typecheck",
+        "category": "frontend",
+        "executable": "npm",
+        "workingDirectory": "portal",
+        "arguments": ["run", "test"],
+        "preconditions": [
+          {
+            "kind": "anyPathExists",
+            "paths": ["portal/node_modules/.bin/vue-tsc", "portal/node_modules/.bin/vue-tsc.cmd"],
+            "message": "portal dependencies are not installed; vue-tsc is unavailable."
+          }
+        ],
+        "whenPaths": ["portal/**"]
+      },
+      {
+        "name": "vscode-typecheck",
+        "category": "frontend",
+        "executable": "npm",
+        "workingDirectory": "vscode",
+        "arguments": ["run", "test"],
+        "preconditions": [
+          {
+            "kind": "anyPathExists",
+            "paths": ["vscode/node_modules/.bin/vue-tsc", "vscode/node_modules/.bin/vue-tsc.cmd"],
+            "message": "vscode dependencies are not installed; vue-tsc is unavailable."
+          }
+        ],
+        "whenPaths": ["vscode/**"]
+      },
+      {
+        "name": "template-typecheck",
+        "category": "frontend",
+        "executable": "npm",
+        "workingDirectory": "VsCodeTemplate",
+        "arguments": ["run", "test"],
+        "preconditions": [
+          {
+            "kind": "anyPathExists",
+            "paths": ["VsCodeTemplate/node_modules/.bin/vue-tsc", "VsCodeTemplate/node_modules/.bin/vue-tsc.cmd"],
+            "message": "VsCodeTemplate dependencies are not installed; vue-tsc is unavailable."
+          }
+        ],
+        "whenPaths": ["VsCodeTemplate/**"]
+      }
+    ]
+  },
+  "completionGate": {
+    "enabled": true,
+    "blockingMode": "enforce"
+  }
 }
