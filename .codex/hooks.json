@@ -1,0 +1,8 @@
+{
+  "description": "JCS deterministic policy and completion gate.",
+  "hooks": {
+    "PreToolUse": [{ "matcher": "^(Bash|apply_patch|Edit|Write)$", "hooks": [{ "type": "command", "command": "pwsh.exe -NoProfile -File \"D:\\DEV\\JCS\\.codex\\hooks\\PreToolUse.ps1\" -PolicyPath \"D:\\DEV\\JCS\\.codex\\policy.json\"", "commandWindows": "pwsh.exe -NoProfile -File \"D:\\DEV\\JCS\\.codex\\hooks\\PreToolUse.ps1\" -PolicyPath \"D:\\DEV\\JCS\\.codex\\policy.json\"", "timeout": 10, "statusMessage": "Auditing JCS policy" }] }],
+    "PostToolUse": [{ "matcher": "^(Bash|apply_patch|Edit|Write)$", "hooks": [{ "type": "command", "command": "pwsh.exe -NoProfile -File \"D:\\DEV\\JCS\\.codex\\hooks\\PostToolUse.ps1\" -PolicyPath \"D:\\DEV\\JCS\\.codex\\policy.json\"", "commandWindows": "pwsh.exe -NoProfile -File \"D:\\DEV\\JCS\\.codex\\hooks\\PostToolUse.ps1\" -PolicyPath \"D:\\DEV\\JCS\\.codex\\policy.json\"", "timeout": 10, "statusMessage": "Tracking JCS verification state" }] }],
+    "Stop": [{ "hooks": [{ "type": "command", "command": "pwsh.exe -NoProfile -File \"D:\\DEV\\JCS\\.codex\\hooks\\Stop.ps1\" -PolicyPath \"D:\\DEV\\JCS\\.codex\\policy.json\"", "commandWindows": "pwsh.exe -NoProfile -File \"D:\\DEV\\JCS\\.codex\\hooks\\Stop.ps1\" -PolicyPath \"D:\\DEV\\JCS\\.codex\\policy.json\"", "timeout": 10, "statusMessage": "Auditing JCS completion evidence" }] }]
+  }
+}
