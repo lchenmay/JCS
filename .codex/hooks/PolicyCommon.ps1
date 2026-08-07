@@ -99,11 +99,20 @@ function Get-PolicyData {
         throw 'Policy must define repository.name, repository.root, and verification.entryPoint.'
     }
     Assert-PolicyDefinition -Policy $policy
-    $declaredRoot = (Resolve-Path -LiteralPath ([string] $policy.repository.root)).Path.TrimEnd('\')
     $actualRoot = (Resolve-Path -LiteralPath (Join-Path (Split-Path -Parent $resolved) '..')).Path.TrimEnd('\')
+    $declaredRootValue = [string] $policy.repository.root
+    $declaredRoot = if ([System.IO.Path]::IsPathRooted($declaredRootValue)) {
+        (Resolve-Path -LiteralPath $declaredRootValue).Path.TrimEnd('\')
+    }
+    else {
+        [System.IO.Path]::GetFullPath((Join-Path $actualRoot $declaredRootValue)).TrimEnd('\')
+    }
     if (-not $declaredRoot.Equals($actualRoot, [System.StringComparison]::OrdinalIgnoreCase)) {
         throw "Policy repository root '$declaredRoot' does not match its containing repository '$actualRoot'."
     }
+    # Keep the declaration relocatable on disk while exposing a canonical root
+    # to every consumer after loading.
+    $policy.repository.root = $actualRoot
     return $policy
 }
 

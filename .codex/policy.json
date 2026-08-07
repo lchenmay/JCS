@@ -4,7 +4,7 @@
   "mode": "audit",
   "repository": {
     "name": "JCS",
-    "root": "D:\\DEV\\JCS",
+    "root": ".",
     "writeScope": "repository-only",
     "outsideRepository": "ignore"
   },
