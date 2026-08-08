@@ -6,7 +6,7 @@ function Write-PolicyHookJson {
 }
 
 function Get-PolicySha256 {
-    param([Parameter(Mandatory = $true)] [string] $Value)
+    param([Parameter(Mandatory = $true)] [AllowEmptyString()] [string] $Value)
     $sha = [System.Security.Cryptography.SHA256]::Create()
     try {
         $bytes = [System.Text.Encoding]::UTF8.GetBytes($Value)

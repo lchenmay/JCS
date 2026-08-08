@@ -57,6 +57,9 @@ try {
     $policy | ConvertTo-Json -Depth 24 | Set-Content -LiteralPath $script:testPolicyPath -Encoding UTF8
     & git -C $testRoot init --quiet
     if ($LASTEXITCODE -ne 0) { throw 'Unable to initialize the isolated policy test repository.' }
+    & git -C $testRoot add --all
+    & git -C $testRoot -c user.name='Codex Policy Test' -c user.email='policy-test@example.invalid' commit --quiet -m 'Create clean policy fixture'
+    if ($LASTEXITCODE -ne 0) { throw 'Unable to commit the clean policy test fixture.' }
     . (Join-Path $PSScriptRoot 'PolicyCommon.ps1')
 
     Invoke-TestSuite 1 'safe repository-local edit' {
