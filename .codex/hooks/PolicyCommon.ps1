@@ -361,12 +361,14 @@ function Test-PolicyRuleMatch {
     $normalized = ConvertTo-PolicyNormalizedText $ToolText
     switch ([string] $Rule.kind) {
         'generatedPathEdit' {
+            if ($ToolName -in @('Bash', 'exec', 'shell_command') -and -not (Test-PolicyMutatingTool -ToolName $ToolName -ToolText $ToolText)) { return $false }
             foreach ($path in @($Policy.generatedPaths)) {
                 if ($normalized.Contains((ConvertTo-PolicyNormalizedText ([string] $path)))) { return $true }
             }
             return $false
         }
         'protectedPathEdit' {
+            if ($ToolName -in @('Bash', 'exec', 'shell_command') -and -not (Test-PolicyMutatingTool -ToolName $ToolName -ToolText $ToolText)) { return $false }
             foreach ($item in @($Policy.protectedPaths)) {
                 if ($ToolText -match ([string] $item.pattern)) { return $true }
             }
