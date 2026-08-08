@@ -102,7 +102,7 @@
     {
       "name": "generated-file-direct-edit",
       "kind": "generatedPathEdit",
-      "appliesToTools": ["apply_patch", "Edit", "Write"],
+      "appliesToTools": ["Bash", "exec", "shell_command", "apply_patch", "Edit", "Write"],
       "severity": "deny",
       "risk": "L2",
       "message": "Use the controlled generator instead of editing a generated path directly."
@@ -110,7 +110,7 @@
     {
       "name": "protected-file-edit",
       "kind": "protectedPathEdit",
-      "appliesToTools": ["apply_patch", "Edit", "Write"],
+      "appliesToTools": ["Bash", "exec", "shell_command", "apply_patch", "Edit", "Write"],
       "severity": "deny",
       "risk": "L3",
       "message": "Editing a protected or secret-bearing file through Codex is blocked."

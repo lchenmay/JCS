@@ -85,6 +85,9 @@ try {
         $fallbackState = Read-PolicySessionState -Policy $loadedPolicy -SessionId 'suite-02'
         Assert-Condition ($null -ne $fallbackState) 'PreToolUse did not bootstrap session state when SessionStart was absent.'
         Assert-Condition ($null -ne $fallbackState.PSObject.Properties['baselineStatusSha256']) 'Fallback session state did not preserve a baseline hash.'
+        $shellEvent = $base + @{ hook_event_name = 'PreToolUse'; tool_name = 'Bash'; tool_input = @{ command = "Set-Content -LiteralPath generated/output.txt -Value 'unsafe'" } }
+        $shellResult = Invoke-Hook 'PreToolUse.ps1' $shellEvent | ConvertFrom-Json
+        Assert-Condition ($shellResult.hookSpecificOutput.permissionDecision -eq 'deny') 'A shell write to a generated file was not denied.'
     }
 
     Invoke-TestSuite 3 'controlled generator entry point' {
@@ -121,6 +124,9 @@ try {
             $result = Invoke-Hook 'PreToolUse.ps1' $event | ConvertFrom-Json
             Assert-Condition ($result.hookSpecificOutput.permissionDecision -eq 'deny') "Protected path was not denied: $path"
         }
+        $shellEvent = $base + @{ hook_event_name = 'PreToolUse'; tool_name = 'Bash'; tool_input = @{ command = "Set-Content -LiteralPath .env.production -Value 'unsafe'" } }
+        $shellResult = Invoke-Hook 'PreToolUse.ps1' $shellEvent | ConvertFrom-Json
+        Assert-Condition ($shellResult.hookSpecificOutput.permissionDecision -eq 'deny') 'A shell write to a protected path was not denied.'
     }
 
     Invoke-TestSuite 7 'external side effects require context, not implicit execution' {
