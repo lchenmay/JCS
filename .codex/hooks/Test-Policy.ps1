@@ -75,6 +75,10 @@ try {
         $result = Invoke-Hook 'PreToolUse.ps1' $event | ConvertFrom-Json
         Assert-Condition ($result.hookSpecificOutput.permissionDecision -eq 'deny') 'A direct generated-file edit was not denied.'
         Assert-Condition ([string] $result.hookSpecificOutput.permissionDecisionReason -match 'L2') 'Generated-file denial did not carry L2 risk.'
+        $loadedPolicy = Get-PolicyData -PolicyPath $script:testPolicyPath
+        $fallbackState = Read-PolicySessionState -Policy $loadedPolicy -SessionId 'suite-02'
+        Assert-Condition ($null -ne $fallbackState) 'PreToolUse did not bootstrap session state when SessionStart was absent.'
+        Assert-Condition ($null -ne $fallbackState.PSObject.Properties['baselineStatusSha256']) 'Fallback session state did not preserve a baseline hash.'
     }
 
     Invoke-TestSuite 3 'controlled generator entry point' {

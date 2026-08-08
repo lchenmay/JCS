@@ -14,6 +14,37 @@ try {
     $toolText = Get-PolicyToolText -EventData $eventData
     if (-not (Test-PolicyEventInRepository -Policy $policy -EventData $eventData -ToolText $toolText)) { exit 0 }
 
+    $sessionId = [string] $eventData.session_id
+    $state = Read-PolicySessionState -Policy $policy -SessionId $sessionId
+    if ($null -eq $state) {
+        $changedFiles = @(Get-PolicyChangedFiles -Policy $policy)
+        $baselineRisk = Get-PolicyRiskLevelForPaths -Policy $policy -Paths $changedFiles
+        $now = (Get-Date).ToUniversalTime().ToString('o')
+        $statusHash = Get-PolicySha256 ($changedFiles -join "`n")
+        $state = [pscustomobject]@{
+            baselineAt = $now
+            baselineChangedFileCount = $changedFiles.Count
+            baselineStatusSha256 = $statusHash
+            dirtyAt = $null
+            dirtyTool = $null
+            highestRisk = $baselineRisk
+            verifiedAt = $null
+            verificationAttemptedAt = $null
+            verificationSuccess = $false
+        }
+        Write-PolicySessionState -Policy $policy -SessionId $sessionId -State $state
+        Write-PolicyAuditRecord -Policy $policy -Record ([ordered]@{
+            timestamp = $now
+            event = 'SessionBootstrap'
+            mode = $mode
+            riskLevel = $baselineRisk
+            sessionId = $sessionId
+            source = 'pre-tool-fallback'
+            changedFileCount = $changedFiles.Count
+            statusSha256 = $statusHash
+        })
+    }
+
     $findings = New-Object System.Collections.Generic.List[object]
     $risk = [string] $policy.riskClassification.default
     foreach ($rule in @($policy.rules)) {
