@@ -6,11 +6,15 @@
     "name": "JCS",
     "root": ".",
     "writeScope": "repository-only",
-    "outsideRepository": "ignore"
+    "outsideRepository": "deny"
   },
   "runtimePermissions": {
     "managedByRepository": false,
     "description": "The Codex permission profile is selected by the runtime and is never changed by this repository."
+  },
+  "baselineProtection": {
+    "enabled": true,
+    "destructiveCommandPattern": "(?i)\\bgit(?:\\.exe)?\\s+(?:-c\\s+\\S+\\s+)?(?:restore|reset|clean)\\b|\\bgit(?:\\.exe)?\\s+(?:-c\\s+\\S+\\s+)?checkout\\b[^\\r\\n]*--|\\bgit(?:\\.exe)?\\s+stash\\s+(?:pop|drop|clear)\\b|\\b(?:Remove-Item|rm|del|erase|rmdir|git\\s+rm)\\b|\\b(?:os\\.remove|shutil\\.rmtree|unlink|rmSync|unlinkSync)\\s*\\("
   },
   "sourcesOfTruth": [
     {
@@ -81,6 +85,20 @@
     }
   ],
   "rules": [
+    {
+      "name": "outside-repository-write",
+      "kind": "outsideRepositoryWrite",
+      "severity": "deny",
+      "risk": "L3",
+      "message": "Writes outside the active JCS Git root require a separate task with an explicitly added writable root."
+    },
+    {
+      "name": "tracked-file-delete",
+      "kind": "trackedFileDelete",
+      "severity": "deny",
+      "risk": "L3",
+      "message": "Deleting or moving a tracked file requires a separately reviewed controlled deletion workflow."
+    },
     {
       "name": "generated-file-direct-edit",
       "kind": "generatedPathEdit",

@@ -15,6 +15,14 @@ not authorize writes to any sibling repository.
   generated path or run a direct generator entry point.
 - Treat declared dependency repositories as read-only context. Writing to one
   requires a separate, explicit user request and a fresh worktree check there.
+- Never write outside this Git root from a JCS task. Cross-repository work must
+  use a separate task whose runtime explicitly adds that repository as a
+  writable root; repository notes are not authorization.
+- Do not delete or move tracked files directly. Use a separately reviewed
+  controlled deletion workflow.
+- Preserve every path that was already modified at session start. Do not use
+  reset, restore, checkout, clean, stash removal, or an equivalent operation
+  to make the baseline disappear.
 - Production, remote, service, database, secret-bearing, destructive, and
   process-termination actions require an explicit current user request.
 

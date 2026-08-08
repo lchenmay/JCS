@@ -18,6 +18,8 @@ try {
     $state = Read-PolicySessionState -Policy $policy -SessionId $sessionId
     if ($null -eq $state) {
         $state = [pscustomobject]@{
+            baselineChangedFiles = @()
+            baselinePreserved = $true
             dirtyAt = $null
             dirtyTool = $null
             highestRisk = [string] $policy.riskClassification.default
@@ -29,6 +31,8 @@ try {
     elseif ($null -eq $state.PSObject.Properties['highestRisk']) {
         $state | Add-Member -NotePropertyName highestRisk -NotePropertyValue ([string] $policy.riskClassification.default)
     }
+    if ($null -eq $state.PSObject.Properties['baselineChangedFiles']) { $state | Add-Member -NotePropertyName baselineChangedFiles -NotePropertyValue @() }
+    if ($null -eq $state.PSObject.Properties['baselinePreserved']) { $state | Add-Member -NotePropertyName baselinePreserved -NotePropertyValue $true }
 
     $now = (Get-Date).ToUniversalTime().ToString('o')
     Write-PolicyAuditRecord -Policy $policy -Record ([ordered]@{
@@ -62,7 +66,30 @@ try {
         $toolRisk = Get-PolicyRiskLevelForTool -Policy $policy -ToolName $toolName -ToolText $toolText
         $state.highestRisk = Get-PolicyHigherRisk -Left ([string] $state.highestRisk) -Right $toolRisk
         $state.verificationSuccess = $false
+        $currentChangedFiles = @(Get-PolicyChangedFiles -Policy $policy)
+        $missingBaseline = @($state.baselineChangedFiles | Where-Object { $_ -notin $currentChangedFiles })
+        if ($missingBaseline.Count -gt 0) {
+            $state.baselinePreserved = $false
+            $state.highestRisk = Get-PolicyHigherRisk -Left ([string] $state.highestRisk) -Right 'L3'
+            Write-PolicyAuditRecord -Policy $policy -Record ([ordered]@{
+                timestamp = $now
+                event = 'BaselineViolation'
+                sessionId = $sessionId
+                riskLevel = 'L3'
+                missingPathCount = $missingBaseline.Count
+                missingPathsSha256 = Get-PolicySha256 ($missingBaseline -join "`n")
+            })
+        }
         Write-PolicySessionState -Policy $policy -SessionId $sessionId -State $state
+        if (-not [bool] $state.baselinePreserved) {
+            Write-PolicyHookJson ([ordered]@{
+                systemMessage = 'JCS baseline protection detected that pre-existing user changes disappeared. Stop work and report the affected paths; do not claim completion.'
+                hookSpecificOutput = [ordered]@{
+                    hookEventName = 'PostToolUse'
+                    additionalContext = 'A pre-task changed path is no longer present in Git status. Completion is blocked even if verification later passes.'
+                }
+            })
+        }
     }
 }
 catch {

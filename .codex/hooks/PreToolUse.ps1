@@ -24,7 +24,9 @@ try {
         $state = [pscustomobject]@{
             baselineAt = $now
             baselineChangedFileCount = $changedFiles.Count
+            baselineChangedFiles = @($changedFiles)
             baselineStatusSha256 = $statusHash
+            baselinePreserved = $true
             dirtyAt = $null
             dirtyTool = $null
             highestRisk = $baselineRisk
@@ -57,6 +59,16 @@ try {
             })
             $risk = Get-PolicyHigherRisk -Left $risk -Right ([string] $rule.risk)
         }
+    }
+    $baselinePaths = if ($null -ne $state.PSObject.Properties['baselineChangedFiles']) { @($state.baselineChangedFiles) } else { @() }
+    if (Test-PolicyBaselineDestructiveCommand -Policy $policy -ToolText $toolText -BaselinePaths $baselinePaths) {
+        $findings.Add([pscustomobject]@{
+            rule = 'baseline-preservation'
+            severity = 'deny'
+            risk = 'L3'
+            detail = 'This command can discard paths that were already modified when the task started.'
+        })
+        $risk = Get-PolicyHigherRisk -Left $risk -Right 'L3'
     }
     Write-PolicyAuditRecord -Policy $policy -Record ([ordered]@{
         timestamp = (Get-Date).ToUniversalTime().ToString('o')

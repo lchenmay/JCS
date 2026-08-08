@@ -34,8 +34,8 @@ function Assert-PolicyRelativePath {
 
 function Assert-PolicyDefinition {
     param([Parameter(Mandatory = $true)] [object] $Policy)
-    if ([string] $Policy.repository.writeScope -ne 'repository-only' -or [string] $Policy.repository.outsideRepository -ne 'ignore') {
-        throw 'Policy repository scope must be repository-only with outsideRepository=ignore.'
+    if ([string] $Policy.repository.writeScope -ne 'repository-only' -or [string] $Policy.repository.outsideRepository -ne 'deny') {
+        throw 'Policy repository scope must be repository-only with outsideRepository=deny.'
     }
     if ([bool] $Policy.runtimePermissions.managedByRepository) {
         throw 'A repository policy cannot manage the Codex runtime permission profile.'
@@ -47,7 +47,7 @@ function Assert-PolicyDefinition {
         $name = [string] $rule.name
         if ([string]::IsNullOrWhiteSpace($name) -or $ruleNames.ContainsKey($name)) { throw "Policy rule names must be non-empty and unique: '$name'." }
         $ruleNames[$name] = $true
-        if ([string] $rule.kind -notin @('generatedPathEdit', 'protectedPathEdit', 'directGenerator', 'commandRegex')) { throw "Unsupported policy rule kind '$($rule.kind)'." }
+        if ([string] $rule.kind -notin @('generatedPathEdit', 'protectedPathEdit', 'directGenerator', 'commandRegex', 'outsideRepositoryWrite', 'trackedFileDelete')) { throw "Unsupported policy rule kind '$($rule.kind)'." }
         if ([string] $rule.severity -notin @('deny', 'context')) { throw "Unsupported policy severity '$($rule.severity)'." }
         [void] (Get-PolicyRiskRank ([string] $rule.risk))
         if ([string] $rule.kind -eq 'commandRegex' -and [string]::IsNullOrWhiteSpace([string] $rule.pattern)) { throw "Rule '$name' requires a pattern." }
@@ -83,6 +83,9 @@ function Assert-PolicyDefinition {
             throw "Dependency '$($dependency.repository)' must remain read-only and cannot enable automatic verification from JCS."
         }
         if (-not [System.IO.Path]::IsPathRooted([string] $dependency.path)) { throw "Dependency '$($dependency.repository)' must declare an absolute path." }
+    }
+    if (-not [bool] $Policy.baselineProtection.enabled -or [string]::IsNullOrWhiteSpace([string] $Policy.baselineProtection.destructiveCommandPattern)) {
+        throw 'baselineProtection must be enabled with a destructiveCommandPattern.'
     }
 }
 
@@ -176,8 +179,116 @@ function Test-PolicyEventInRepository {
         $path = (ConvertTo-PolicyNormalizedText ([string] $match.Value)).TrimEnd('/', '.', ',', ';', ':', ')', ']')
         if ($path -eq $root -or $path.StartsWith("$root/")) { $hasLocalAbsolutePath = $true; break }
     }
-    if ($absolutePaths.Count -gt 0 -and -not $hasLocalAbsolutePath) { return $false }
     return ($cwdIsLocal -or $hasLocalAbsolutePath)
+}
+
+function Resolve-PolicyCandidatePath {
+    param(
+        [Parameter(Mandatory = $true)] [object] $Policy,
+        [Parameter(Mandatory = $true)] [string] $Candidate
+    )
+    $value = $Candidate.Trim().Trim('"', "'", '`').TrimEnd(',', ';', ':', ')', ']', '}')
+    if ([string]::IsNullOrWhiteSpace($value) -or $value -match '[*?]') { return $null }
+    try {
+        if ([System.IO.Path]::IsPathRooted($value)) { return [System.IO.Path]::GetFullPath($value) }
+        return [System.IO.Path]::GetFullPath((Join-Path (Get-PolicyRepositoryRoot -Policy $Policy) $value))
+    }
+    catch { return $null }
+}
+
+function Get-PolicyCandidatePaths {
+    param(
+        [Parameter(Mandatory = $true)] [object] $Policy,
+        [AllowEmptyString()] [string] $ToolText
+    )
+    $candidates = New-Object System.Collections.Generic.List[string]
+    foreach ($match in [regex]::Matches($ToolText, '(?i)(?<![A-Za-z0-9_])[A-Z]:[\\/][^\s"''`|]+')) { $candidates.Add([string] $match.Value) }
+    foreach ($match in [regex]::Matches($ToolText, '(?m)^\*\*\*\s+(?:Add|Update|Delete)\s+File:\s*(.+?)\s*$')) { $candidates.Add([string] $match.Groups[1].Value) }
+    foreach ($match in [regex]::Matches($ToolText, '(?i)"(?:file_path|path|target|destination)"\s*:\s*"([^"]+)"')) { $candidates.Add(([string] $match.Groups[1].Value) -replace '\\\\', '\') }
+    foreach ($match in [regex]::Matches($ToolText, '(?i)-(?:LiteralPath|Path|Destination)\s+(?:"([^"]+)"|''([^'']+)''|([^\s;|]+))')) {
+        $value = ''
+        foreach ($index in 1..3) {
+            if (-not [string]::IsNullOrWhiteSpace([string] $match.Groups[$index].Value)) { $value = [string] $match.Groups[$index].Value; break }
+        }
+        if (-not [string]::IsNullOrWhiteSpace($value)) { $candidates.Add([string] $value) }
+    }
+    foreach ($match in [regex]::Matches($ToolText, '(?i)\bgit(?:\.exe)?\s+(?:-c\s+\S+\s+)?(?:restore|checkout)\b[^\r\n]*?--\s+(?:"([^"]+)"|''([^'']+)''|([^\s;|]+))')) {
+        foreach ($index in 1..3) {
+            if (-not [string]::IsNullOrWhiteSpace([string] $match.Groups[$index].Value)) { $candidates.Add([string] $match.Groups[$index].Value); break }
+        }
+    }
+    $resolved = foreach ($candidate in $candidates) {
+        $path = Resolve-PolicyCandidatePath -Policy $Policy -Candidate $candidate
+        if (-not [string]::IsNullOrWhiteSpace([string] $path)) { $path }
+    }
+    return @($resolved | Sort-Object -Unique)
+}
+
+function Test-PolicyPathInsideRepository {
+    param(
+        [Parameter(Mandatory = $true)] [object] $Policy,
+        [Parameter(Mandatory = $true)] [string] $Path
+    )
+    $root = [System.IO.Path]::GetFullPath((Get-PolicyRepositoryRoot -Policy $Policy)).TrimEnd('\', '/')
+    $resolved = [System.IO.Path]::GetFullPath($Path).TrimEnd('\', '/')
+    return $resolved.Equals($root, [StringComparison]::OrdinalIgnoreCase) -or $resolved.StartsWith("$root\", [StringComparison]::OrdinalIgnoreCase)
+}
+
+function Test-PolicyOutsideRepositoryWrite {
+    param(
+        [Parameter(Mandatory = $true)] [object] $Policy,
+        [Parameter(Mandatory = $true)] [string] $ToolName,
+        [AllowEmptyString()] [string] $ToolText
+    )
+    if (-not (Test-PolicyMutatingTool -ToolName $ToolName -ToolText $ToolText)) { return $false }
+    foreach ($path in @(Get-PolicyCandidatePaths -Policy $Policy -ToolText $ToolText)) {
+        if (-not (Test-PolicyPathInsideRepository -Policy $Policy -Path $path)) { return $true }
+    }
+    return $false
+}
+
+function Test-PolicyTrackedFileDelete {
+    param(
+        [Parameter(Mandatory = $true)] [object] $Policy,
+        [Parameter(Mandatory = $true)] [string] $ToolName,
+        [AllowEmptyString()] [string] $ToolText
+    )
+    $deleteIntent = $ToolText -match '(?im)^\*\*\*\s+Delete\s+File:' -or
+        $ToolText -match '(?i)\b(?:Remove-Item|rm|del|erase|rmdir|git\s+rm|Move-Item)\b' -or
+        $ToolText -match '(?i)\b(?:os\.remove|shutil\.rmtree|unlink|rmSync|unlinkSync)\s*\('
+    if (-not $deleteIntent) { return $false }
+    $root = Get-PolicyRepositoryRoot -Policy $Policy
+    foreach ($path in @(Get-PolicyCandidatePaths -Policy $Policy -ToolText $ToolText)) {
+        if (-not (Test-PolicyPathInsideRepository -Policy $Policy -Path $path)) { continue }
+        $relative = [System.IO.Path]::GetRelativePath($root, $path).Replace('\', '/')
+        $tracked = @(git -C $root ls-files -- $relative "$relative/**")
+        if ($LASTEXITCODE -ne 0) { throw "Unable to inspect tracked deletion target '$relative'." }
+        if ($tracked.Count -gt 0) { return $true }
+    }
+    return $false
+}
+
+function Test-PolicyBaselineDestructiveCommand {
+    param(
+        [Parameter(Mandatory = $true)] [object] $Policy,
+        [AllowEmptyString()] [string] $ToolText,
+        [string[]] $BaselinePaths = @()
+    )
+    if (-not [bool] $Policy.baselineProtection.enabled -or $BaselinePaths.Count -eq 0) { return $false }
+    if ($ToolText -notmatch ([string] $Policy.baselineProtection.destructiveCommandPattern)) { return $false }
+    if ($ToolText -match '(?i)\bgit(?:\.exe)?\s+(?:-c\s+\S+\s+)?(?:reset|clean)\b|\bgit(?:\.exe)?\s+stash\s+(?:pop|drop|clear)\b') { return $true }
+    $candidates = @(Get-PolicyCandidatePaths -Policy $Policy -ToolText $ToolText)
+    if ($candidates.Count -eq 0) { return $true }
+    $root = Get-PolicyRepositoryRoot -Policy $Policy
+    foreach ($candidate in $candidates) {
+        if (-not (Test-PolicyPathInsideRepository -Policy $Policy -Path $candidate)) { continue }
+        $relative = [System.IO.Path]::GetRelativePath($root, $candidate).Replace('\', '/').TrimEnd('/')
+        foreach ($baseline in $BaselinePaths) {
+            $normalizedBaseline = (ConvertTo-PolicyNormalizedText ([string] $baseline)).TrimStart('./').TrimEnd('/')
+            if ($normalizedBaseline -eq (ConvertTo-PolicyNormalizedText $relative) -or $normalizedBaseline.StartsWith("$(ConvertTo-PolicyNormalizedText $relative)/")) { return $true }
+        }
+    }
+    return $false
 }
 
 function Test-PolicyPathMatchesPattern {
@@ -270,6 +381,8 @@ function Test-PolicyRuleMatch {
             }
             return $false
         }
+        'outsideRepositoryWrite' { return Test-PolicyOutsideRepositoryWrite -Policy $Policy -ToolName $ToolName -ToolText $ToolText }
+        'trackedFileDelete' { return Test-PolicyTrackedFileDelete -Policy $Policy -ToolName $ToolName -ToolText $ToolText }
         'commandRegex' { return $ToolText -match ([string] $Rule.pattern) }
         default { throw "Unsupported policy rule kind '$($Rule.kind)'." }
     }
@@ -375,7 +488,7 @@ function Test-PolicyMutatingTool {
         [AllowEmptyString()] [string] $ToolText
     )
     if ($ToolName -in @('apply_patch', 'Edit', 'Write')) { return $true }
-    return $ToolText -match '(?i)\b(Set-Content|Add-Content|Out-File|Copy-Item|Move-Item|Remove-Item|New-Item|Rename-Item|git\s+apply|dotnet\s+format|npm\s+version)\b|(?:--write\b)|(?:regenerate|generate|sync)-[^\s"'']+\.ps1\b'
+    return $ToolText -match '(?i)\b(Set-Content|Add-Content|Out-File|Copy-Item|Move-Item|Remove-Item|New-Item|Rename-Item|git\s+(?:apply|rm|restore|reset|clean|checkout)|dotnet\s+format|npm\s+version|os\.remove|shutil\.rmtree|unlink|rmSync|unlinkSync)\b|(?:--write\b)|(?:regenerate|generate|sync)-[^\s"'']+\.ps1\b'
 }
 
 function Test-PolicyVerificationCommand {

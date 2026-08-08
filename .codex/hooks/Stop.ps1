@@ -22,6 +22,14 @@ try {
         hasState = $null -ne $state
         stopHookActive = [bool] $eventData.stop_hook_active
     })
+    if ($null -ne $state -and $null -ne $state.PSObject.Properties['baselinePreserved'] -and -not [bool] $state.baselinePreserved) {
+        if ($mode -ne [string] $policy.completionGate.blockingMode -or [bool] $eventData.stop_hook_active) {
+            Write-PolicyHookJson ([ordered]@{ systemMessage = 'JCS baseline protection failed: pre-existing user changes disappeared. The final response must identify this failure and must not claim successful completion.' })
+            exit 0
+        }
+        Write-PolicyHookJson ([ordered]@{ decision = 'block'; reason = 'Pre-existing user changes disappeared during the task. Completion is blocked regardless of later verification.' })
+        exit 0
+    }
     if ($null -eq $state -or [string]::IsNullOrWhiteSpace([string] $state.dirtyAt)) { exit 0 }
     $verifiedAfterWrite = $false
     if ([bool] $state.verificationSuccess -and -not [string]::IsNullOrWhiteSpace([string] $state.verifiedAt)) {

@@ -4,7 +4,7 @@
   "title": "JCS project-local Codex policy",
   "type": "object",
   "additionalProperties": false,
-  "required": ["version", "mode", "repository", "runtimePermissions", "sourcesOfTruth", "generatedPaths", "generators", "dependencies", "rules", "riskClassification", "verification", "completionGate"],
+  "required": ["version", "mode", "repository", "runtimePermissions", "baselineProtection", "sourcesOfTruth", "generatedPaths", "generators", "dependencies", "rules", "riskClassification", "verification", "completionGate"],
   "properties": {
     "$schema": { "type": "string" },
     "version": { "const": 2 },
@@ -17,7 +17,7 @@
         "name": { "type": "string", "minLength": 1 },
         "root": { "type": "string", "minLength": 1 },
         "writeScope": { "const": "repository-only" },
-        "outsideRepository": { "const": "ignore" }
+        "outsideRepository": { "const": "deny" }
       }
     },
     "runtimePermissions": {
@@ -27,6 +27,15 @@
       "properties": {
         "managedByRepository": { "const": false },
         "description": { "type": "string", "minLength": 1 }
+      }
+    },
+    "baselineProtection": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["enabled", "destructiveCommandPattern"],
+      "properties": {
+        "enabled": { "const": true },
+        "destructiveCommandPattern": { "type": "string", "minLength": 1 }
       }
     },
     "sourcesOfTruth": {

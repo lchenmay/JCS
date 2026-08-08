@@ -55,6 +55,9 @@ try {
     New-Item -ItemType Directory -Path $testPolicyDirectory | Out-Null
     $script:testPolicyPath = Join-Path $testPolicyDirectory 'policy.json'
     $policy | ConvertTo-Json -Depth 24 | Set-Content -LiteralPath $script:testPolicyPath -Encoding UTF8
+    New-Item -ItemType Directory -Path (Join-Path $testRoot 'src') | Out-Null
+    Set-Content -LiteralPath (Join-Path $testRoot 'src\tracked.txt') -Value 'tracked' -Encoding UTF8
+    Set-Content -LiteralPath (Join-Path $testRoot 'src\user-work.txt') -Value 'baseline' -Encoding UTF8
     & git -C $testRoot init --quiet
     if ($LASTEXITCODE -ne 0) { throw 'Unable to initialize the isolated policy test repository.' }
     & git -C $testRoot add --all
@@ -133,9 +136,13 @@ try {
     Invoke-TestSuite 8 'outside-repository isolation' {
         $base = New-BaseEvent 'suite-08'
         $outsidePatch = $base + @{ hook_event_name = 'PreToolUse'; tool_name = 'apply_patch'; tool_input = @{ command = '*** Update File: D:\DEV\Sibling\src\x.txt' } }
-        Assert-Condition ([string]::IsNullOrWhiteSpace((Invoke-Hook 'PreToolUse.ps1' $outsidePatch))) 'An outside-repository patch was governed by JCS policy.'
+        $outsidePatchResult = Invoke-Hook 'PreToolUse.ps1' $outsidePatch | ConvertFrom-Json
+        Assert-Condition ($outsidePatchResult.hookSpecificOutput.permissionDecision -eq 'deny') 'An outside-repository patch was not denied.'
         $outsideDelete = $base + @{ hook_event_name = 'PreToolUse'; tool_name = 'Bash'; tool_input = @{ command = 'Remove-Item -LiteralPath C:\Temp\outside -Recurse' } }
-        Assert-Condition ([string]::IsNullOrWhiteSpace((Invoke-Hook 'PreToolUse.ps1' $outsideDelete))) 'An outside-repository delete was governed by JCS policy.'
+        $outsideDeleteResult = Invoke-Hook 'PreToolUse.ps1' $outsideDelete | ConvertFrom-Json
+        Assert-Condition ($outsideDeleteResult.hookSpecificOutput.permissionDecision -eq 'deny') 'An outside-repository delete was not denied.'
+        $outsideRead = $base + @{ hook_event_name = 'PreToolUse'; tool_name = 'Bash'; tool_input = @{ command = 'Get-Content -LiteralPath C:\Temp\outside.txt' } }
+        Assert-Condition ([string]::IsNullOrWhiteSpace((Invoke-Hook 'PreToolUse.ps1' $outsideRead))) 'A read-only outside path was incorrectly denied.'
         $hookDefinition = Get-Content -Raw -LiteralPath (Join-Path $PSScriptRoot '..\hooks.json')
         Assert-Condition ($hookDefinition -notmatch 'D:\\\\DEV\\\\JCS') 'Hook definitions still contain a hard-coded JCS root.'
         Assert-Condition ($hookDefinition -match 'git rev-parse --show-toplevel') 'Hook definitions do not resolve scripts from the active Git root.'
@@ -213,8 +220,60 @@ try {
         Assert-Condition (-not [string]::IsNullOrWhiteSpace([string] $secondResult.systemMessage)) 'The second stop did not report the unresolved verification failure.'
     }
 
+    Invoke-TestSuite 13 'outside write path normalization' {
+        $base = New-BaseEvent 'suite-13'
+        $parentPatch = $base + @{ hook_event_name = 'PreToolUse'; tool_name = 'apply_patch'; tool_input = @{ command = '*** Update File: ..\sibling\x.txt' } }
+        $parentResult = Invoke-Hook 'PreToolUse.ps1' $parentPatch | ConvertFrom-Json
+        Assert-Condition ($parentResult.hookSpecificOutput.permissionDecision -eq 'deny') 'A parent-traversing patch was not denied.'
+        $outsidePath = Join-Path (Split-Path -Parent $testRoot) 'sibling\x.txt'
+        $shellWrite = $base + @{ hook_event_name = 'PreToolUse'; tool_name = 'Bash'; tool_input = @{ command = "Set-Content -LiteralPath '$outsidePath' -Value unsafe" } }
+        $shellResult = Invoke-Hook 'PreToolUse.ps1' $shellWrite | ConvertFrom-Json
+        Assert-Condition ($shellResult.hookSpecificOutput.permissionDecision -eq 'deny') 'A shell write to an absolute outside path was not denied.'
+    }
+
+    Invoke-TestSuite 14 'baseline overwrite prevention and completion gate' {
+        $userPath = Join-Path $testRoot 'src\user-work.txt'
+        Set-Content -LiteralPath $userPath -Value 'user-owned-change' -Encoding UTF8
+        try {
+            $base = New-BaseEvent 'suite-14'
+            $start = $base + @{ hook_event_name = 'SessionStart'; source = 'startup'; model = 'test-model' }
+            [void] (Invoke-Hook 'SessionStart.ps1' $start)
+            foreach ($command in @('git restore -- src/user-work.txt', 'git checkout -- src/user-work.txt')) {
+                $event = $base + @{ hook_event_name = 'PreToolUse'; tool_name = 'Bash'; tool_input = @{ command = $command } }
+                $result = Invoke-Hook 'PreToolUse.ps1' $event | ConvertFrom-Json
+                Assert-Condition ($result.hookSpecificOutput.permissionDecision -eq 'deny') "A baseline-overwriting command was not denied: $command"
+            }
+
+            $postBase = New-BaseEvent 'suite-14-post'
+            $postStart = $postBase + @{ hook_event_name = 'SessionStart'; source = 'startup'; model = 'test-model' }
+            [void] (Invoke-Hook 'SessionStart.ps1' $postStart)
+            & git -C $testRoot restore -- src/user-work.txt
+            $post = $postBase + @{ hook_event_name = 'PostToolUse'; tool_name = 'Bash'; tool_input = @{ command = 'git restore -- src/user-work.txt' }; tool_response = @{ exitCode = 0 } }
+            $postResult = Invoke-Hook 'PostToolUse.ps1' $post | ConvertFrom-Json
+            Assert-Condition ([string] $postResult.hookSpecificOutput.additionalContext -match 'pre-task changed path') 'PostToolUse did not report the disappeared baseline.'
+            $stop = $postBase + @{ hook_event_name = 'Stop'; stop_hook_active = $false; last_assistant_message = 'done' }
+            $stopResult = Invoke-Hook 'Stop.ps1' $stop | ConvertFrom-Json
+            Assert-Condition ($stopResult.decision -eq 'block') 'Completion was not blocked after baseline loss.'
+        }
+        finally { & git -C $testRoot restore -- src/user-work.txt }
+    }
+
+    Invoke-TestSuite 15 'tracked deletion target protection' {
+        $base = New-BaseEvent 'suite-15'
+        $patchDelete = $base + @{ hook_event_name = 'PreToolUse'; tool_name = 'apply_patch'; tool_input = @{ command = "*** Begin Patch`n*** Delete File: src/tracked.txt`n*** End Patch" } }
+        $patchResult = Invoke-Hook 'PreToolUse.ps1' $patchDelete | ConvertFrom-Json
+        Assert-Condition ($patchResult.hookSpecificOutput.permissionDecision -eq 'deny') 'An apply_patch tracked-file deletion was not denied.'
+        $shellDelete = $base + @{ hook_event_name = 'PreToolUse'; tool_name = 'Bash'; tool_input = @{ command = 'Remove-Item -LiteralPath src/tracked.txt -Force' } }
+        $shellResult = Invoke-Hook 'PreToolUse.ps1' $shellDelete | ConvertFrom-Json
+        Assert-Condition ($shellResult.hookSpecificOutput.permissionDecision -eq 'deny') 'A shell tracked-file deletion was not denied.'
+        Set-Content -LiteralPath (Join-Path $testRoot 'untracked.tmp') -Value 'temporary' -Encoding UTF8
+        $untrackedDelete = $base + @{ hook_event_name = 'PreToolUse'; tool_name = 'Bash'; tool_input = @{ command = 'Remove-Item -LiteralPath untracked.tmp -Force' } }
+        $untrackedResult = Invoke-Hook 'PreToolUse.ps1' $untrackedDelete
+        Assert-Condition ([string]::IsNullOrWhiteSpace($untrackedResult)) "A non-baseline untracked-file deletion was incorrectly denied: $untrackedResult"
+    }
+
     $failed = @($script:suiteResults | Where-Object { -not $_.passed })
-    Write-Output ("Policy suites: {0}/12 passed" -f (12 - $failed.Count))
+    Write-Output ("Policy suites: {0}/15 passed" -f (15 - $failed.Count))
     if ($failed.Count -gt 0) { throw "$($failed.Count) policy test suite(s) failed." }
 }
 finally {
