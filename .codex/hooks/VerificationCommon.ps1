@@ -11,7 +11,7 @@ function Reset-CodexVerificationResults {
 }
 
 function Add-CodexVerificationResult {
-    param([string] $Name, [bool] $Success, [int] $ExitCode, [string] $Output, [string] $Command = '')
+    param([string] $Name, [bool] $Success, [int] $ExitCode, [string] $Output, [string] $Command = '', [string[]] $EvidenceLevels = @())
     $text = if ($null -eq $Output) { '' } else { $Output.Trim() }
     if ($text.Length -gt 12000) { $text = $text.Substring($text.Length - 12000) }
     $failureKind = $null
@@ -22,7 +22,10 @@ function Add-CodexVerificationResult {
         elseif ($text -match '(?i)tooling prerequisite not found|script not found|command not found|not recognized as (?:a |the )?(?:name of a )?(?:cmdlet|command)|no such file or directory') {
             'tooling-prerequisite'
         }
-        else { 'command-failure' }
+        elseif ($text -match '(?i)\b(assert|expected|actual|test(?:s)? failed|failure)\b') { 'test-failure' }
+        elseif ($text -match '(?i)\b(timeout|timed out)\b') { 'timeout' }
+        elseif ($text -match '(?i)\b(unauthorized|forbidden|permission denied|access denied)\b') { 'authorization' }
+        else { 'unknown-failure' }
     }
     $script:CodexVerificationResults += [pscustomobject]@{
         name = $Name
@@ -31,6 +34,7 @@ function Add-CodexVerificationResult {
         output = $text
         command = $Command
         failureKind = $failureKind
+        evidenceLevels = @($EvidenceLevels)
     }
 }
 
@@ -45,6 +49,7 @@ function Invoke-CodexVerificationCheck {
         [Parameter(Mandatory = $true)] [string] $WorkingDirectory,
         [Parameter(Mandatory = $true)] [string] $Executable,
         [string[]] $Arguments = @(),
+        [string[]] $EvidenceLevels = @(),
         [switch] $Quiet
     )
     $previousErrorActionPreference = $ErrorActionPreference
@@ -64,7 +69,7 @@ function Invoke-CodexVerificationCheck {
         Pop-Location
     }
     $commandText = ($Executable + ' ' + ($Arguments -join ' ')).Trim()
-    Add-CodexVerificationResult -Name $Name -Success:($exitCode -eq 0) -ExitCode $exitCode -Output $output -Command $commandText
+    Add-CodexVerificationResult -Name $Name -Success:($exitCode -eq 0) -ExitCode $exitCode -Output $output -Command $commandText -EvidenceLevels $EvidenceLevels
     if (-not $Quiet) {
         Write-Output "[$Name] exit=$exitCode"
         if (-not [string]::IsNullOrWhiteSpace($output)) { Write-Output $output.TrimEnd() }
@@ -80,6 +85,9 @@ function Write-CodexVerificationReport {
         [string[]] $GeneratedFilesChanged = @(),
         [string[]] $SourceFilesChanged = @(),
         [object[]] $DependencyImpacts = @(),
+        [object] $Coverage = $null,
+        [object] $TaskProfile = $null,
+        [AllowEmptyString()] [string] $SessionId = '',
         [Parameter(Mandatory = $true)] [string] $ReceiptPath,
         [bool] $Full = $false,
         [bool] $PolicyOnly = $false,
@@ -90,7 +98,7 @@ function Write-CodexVerificationReport {
         if ([string] $failedCheck.name -match '(?i)typecheck$') { $failedCheck.failureKind = 'compile-or-typecheck' }
     }
     $checks = @($script:CodexVerificationResults | ForEach-Object {
-        [ordered]@{ name = $_.name; command = $_.command; passed = [bool] $_.success; exitCode = [int] $_.exitCode; failureKind = $_.failureKind }
+        [ordered]@{ name = $_.name; command = $_.command; passed = [bool] $_.success; exitCode = [int] $_.exitCode; failureKind = $_.failureKind; evidenceLevels = @($_.evidenceLevels) }
     })
     $risks = @()
     if ($GeneratedFilesChanged.Count -gt 0 -and $SourceFilesChanged.Count -eq 0) {
@@ -107,15 +115,24 @@ function Write-CodexVerificationReport {
     foreach ($failedCheck in $failed) {
         $risks += "Verification failed: $($failedCheck.name) [$($failedCheck.failureKind)]."
     }
+    $confidence = if ($null -eq $Coverage -or [string]::IsNullOrWhiteSpace([string] $Coverage.confidence)) { 'unknown' } else { [string] $Coverage.confidence }
+    if ($confidence -in @('none', 'partial', 'unknown')) {
+        $risks += "Verification coverage is $confidence; passing selected checks is not complete evidence for every changed behavior."
+    }
+    $recommendedActions = if ($null -eq $Coverage) { @('Report that verification coverage could not be determined.') } else { @($Coverage.recommendedActions) }
     $report = [ordered]@{
-        schemaVersion = 1
+        schemaVersion = 3
         timestamp = (Get-Date).ToUniversalTime().ToString('o')
+        sessionId = $SessionId
         repository = $RepositoryName
         repositoryRoot = $Repository
         riskLevel = $RiskLevel
         full = $Full
         policyOnly = $PolicyOnly
         success = $failed.Count -eq 0
+        verificationConfidence = $confidence
+        taskProfile = $TaskProfile
+        coverage = $Coverage
         changedFiles = @($ChangedFiles)
         generatedFilesChanged = @($GeneratedFilesChanged)
         authoritativeSourcesChanged = @($SourceFilesChanged)
@@ -125,6 +142,7 @@ function Write-CodexVerificationReport {
         skippedChecks = @($script:CodexVerificationSkipped)
         externalSystemsModified = $false
         risks = $risks
+        recommendedActions = @($recommendedActions)
     }
     $receiptDirectory = Split-Path -Parent $ReceiptPath
     New-Item -ItemType Directory -Force -Path $receiptDirectory | Out-Null
@@ -133,7 +151,7 @@ function Write-CodexVerificationReport {
         $report | ConvertTo-Json -Depth 12
     }
     else {
-        Write-Output ("Verification result: {0}; risk={1}; checks={2}; skipped={3}; changed-files={4}" -f $(if ($report.success) { 'PASS' } else { 'FAIL' }), $RiskLevel, $checks.Count, $script:CodexVerificationSkipped.Count, $ChangedFiles.Count)
+        Write-Output ("Verification result: {0}; risk={1}; confidence={2}; checks={3}; skipped={4}; changed-files={5}" -f $(if ($report.success) { 'PASS' } else { 'FAIL' }), $RiskLevel, $confidence, $checks.Count, $script:CodexVerificationSkipped.Count, $ChangedFiles.Count)
         Write-Output "Receipt: $ReceiptPath"
     }
     $script:CodexVerificationSuccess = [bool] $report.success

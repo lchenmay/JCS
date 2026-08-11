@@ -42,6 +42,29 @@ function Assert-PolicyDefinition {
     }
     [void] (Get-PolicyRiskRank ([string] $Policy.riskClassification.default))
 
+    if (-not [bool] $Policy.taskRouting.enabled -or [string] $Policy.taskRouting.unknownStatus -ne 'U') {
+        throw 'taskRouting must be enabled and use U as its unknown status.'
+    }
+    if ([int] $Policy.taskRouting.maxFocusedDiagnosticAttempts -lt 1) {
+        throw 'taskRouting.maxFocusedDiagnosticAttempts must be at least 1.'
+    }
+    $packNames = @{}
+    $alwaysPackCount = 0
+    foreach ($pack in @($Policy.taskRouting.rulePacks)) {
+        $packName = ([string] $pack.name).ToLowerInvariant()
+        if ([string]::IsNullOrWhiteSpace($packName) -or $packNames.ContainsKey($packName)) { throw "Task rule-pack names must be non-empty and unique: '$packName'." }
+        $packNames[$packName] = $true
+        if ([bool] $pack.always) { $alwaysPackCount++ }
+        [void] (Get-PolicyRiskRank ([string] $pack.minimumRisk))
+        foreach ($pattern in @($pack.promptPatterns)) {
+            try { [void] [regex]::new([string] $pattern) }
+            catch { throw "Task rule pack '$packName' contains an invalid prompt regex: $pattern" }
+        }
+    }
+    if ($alwaysPackCount -ne 1 -or -not $packNames.ContainsKey('core')) {
+        throw 'taskRouting must contain exactly one always-on core rule pack.'
+    }
+
     $ruleNames = @{}
     foreach ($rule in @($Policy.rules)) {
         $name = [string] $rule.name
@@ -59,6 +82,13 @@ function Assert-PolicyDefinition {
     Assert-PolicyRelativePath -Path ([string] $Policy.verification.entryPoint) -Field 'verification.entryPoint'
     Assert-PolicyRelativePath -Path ([string] $Policy.verification.reviewEntryPoint) -Field 'verification.reviewEntryPoint'
     Assert-PolicyRelativePath -Path ([string] $Policy.verification.receiptPath) -Field 'verification.receiptPath'
+    Assert-PolicyRelativePath -Path ([string] $Policy.verification.receiptPathTemplate) -Field 'verification.receiptPathTemplate'
+    if (-not ([string] $Policy.verification.receiptPathTemplate).Contains('{sessionId}')) {
+        throw 'verification.receiptPathTemplate must contain {sessionId}.'
+    }
+    foreach ($path in @($Policy.verification.ignoredPaths)) {
+        Assert-PolicyRelativePath -Path ([string] $path) -Field 'verification.ignoredPaths'
+    }
 
     $checkNames = @{}
     foreach ($check in @($Policy.verification.checks)) {
@@ -66,6 +96,7 @@ function Assert-PolicyDefinition {
         if ([string]::IsNullOrWhiteSpace($name) -or $checkNames.ContainsKey($name)) { throw "Verification check names must be non-empty and unique: '$name'." }
         $checkNames[$name] = $true
         if ([string]::IsNullOrWhiteSpace([string] $check.executable)) { throw "Verification check '$name' requires an executable." }
+        if (@($check.evidenceLevels).Count -eq 0) { throw "Verification check '$name' requires at least one evidence level." }
         Assert-PolicyRelativePath -Path ([string] $check.workingDirectory) -Field "verification.checks[$name].workingDirectory"
         if (-not [string]::IsNullOrWhiteSpace([string] $check.minimumRisk)) { [void] (Get-PolicyRiskRank ([string] $check.minimumRisk)) }
         if ([string] $check.executable -eq 'dotnet' -and @($check.arguments) -contains 'build' -and @($check.arguments) -notcontains '--no-dependencies') {
@@ -76,6 +107,20 @@ function Assert-PolicyDefinition {
             if ([string] $precondition.kind -ne 'anyPathExists') { throw "Verification check '$name' has an unsupported precondition kind '$($precondition.kind)'." }
             foreach ($path in @($precondition.paths)) { Assert-PolicyRelativePath -Path ([string] $path) -Field "verification.checks[$name].preconditions.paths" }
         }
+    }
+
+    $coverageNames = @{}
+    foreach ($coverageRule in @($Policy.verification.coverageRules)) {
+        $name = [string] $coverageRule.name
+        if ([string]::IsNullOrWhiteSpace($name) -or $coverageNames.ContainsKey($name)) { throw "Verification coverage rule names must be non-empty and unique: '$name'." }
+        $coverageNames[$name] = $true
+        if (@($coverageRule.patterns).Count -eq 0 -or @($coverageRule.checkNames).Count -eq 0) { throw "Verification coverage rule '$name' requires patterns and checkNames." }
+        foreach ($checkName in @($coverageRule.checkNames)) {
+            if (-not $checkNames.ContainsKey([string] $checkName)) { throw "Verification coverage rule '$name' references unknown check '$checkName'." }
+        }
+    }
+    if ([int] $Policy.completionGate.maxRepeatedVerificationFailures -lt 1) {
+        throw 'completionGate.maxRepeatedVerificationFailures must be at least 1.'
     }
 
     foreach ($dependency in @($Policy.dependencies)) {
@@ -93,8 +138,8 @@ function Get-PolicyData {
     param([Parameter(Mandatory = $true)] [string] $PolicyPath)
     $resolved = (Resolve-Path -LiteralPath $PolicyPath).Path
     $policy = Get-Content -Raw -LiteralPath $resolved | ConvertFrom-Json
-    if ([int] $policy.version -ne 2) {
-        throw "Unsupported policy version in $resolved. Expected version 2."
+    if ([int] $policy.version -ne 4) {
+        throw "Unsupported policy version in $resolved. Expected version 4."
     }
     if ([string]::IsNullOrWhiteSpace([string] $policy.repository.name) -or
         [string]::IsNullOrWhiteSpace([string] $policy.repository.root) -or
@@ -431,6 +476,48 @@ function Get-PolicySessionStatePath {
     $safeSession = $SessionId -replace '[^A-Za-z0-9_.-]', '_'
     if ([string]::IsNullOrWhiteSpace($safeSession)) { $safeSession = 'unknown-session' }
     return (Join-Path (Get-PolicyStateRoot -Policy $Policy) "$safeSession.json")
+}
+
+function Get-PolicyVerificationReceiptRelativePath {
+    param(
+        [Parameter(Mandatory = $true)] [object] $Policy,
+        [AllowEmptyString()] [string] $SessionId = ''
+    )
+    if ([string]::IsNullOrWhiteSpace($SessionId)) { return [string] $Policy.verification.receiptPath }
+    $safeSession = $SessionId -replace '[^A-Za-z0-9_.-]', '_'
+    if ([string]::IsNullOrWhiteSpace($safeSession)) { $safeSession = 'unknown-session' }
+    return ([string] $Policy.verification.receiptPathTemplate).Replace('{sessionId}', $safeSession)
+}
+
+function New-PolicySessionState {
+    param(
+        [Parameter(Mandatory = $true)] [object] $Policy,
+        [string[]] $ChangedFiles = @()
+    )
+    $now = (Get-Date).ToUniversalTime().ToString('o')
+    return [pscustomobject]@{
+        baselineAt = $now
+        baselineChangedFileCount = $ChangedFiles.Count
+        baselineChangedFiles = @($ChangedFiles)
+        baselineStatusSha256 = Get-PolicySha256 ($ChangedFiles -join "`n")
+        baselinePreserved = $true
+        dirtyAt = $null
+        dirtyTool = $null
+        highestRisk = Get-PolicyRiskLevelForPaths -Policy $Policy -Paths $ChangedFiles
+        verifiedAt = $null
+        verificationAttemptedAt = $null
+        verificationSuccess = $false
+        verificationConfidence = 'not-run'
+        verificationFailureSignature = $null
+        repeatedVerificationFailures = 0
+        verificationRecommendedActions = @()
+        taskProfileStatus = [string] $Policy.taskRouting.unknownStatus
+        taskTypes = @()
+        selectedRulePacks = @('core')
+        requiredEvidence = @()
+        taskPromptSha256 = $null
+        focusedDiagnosticAttempts = 0
+    }
 }
 
 function Read-PolicySessionState {

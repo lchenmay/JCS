@@ -4,10 +4,10 @@
   "title": "JCS project-local Codex policy",
   "type": "object",
   "additionalProperties": false,
-  "required": ["version", "mode", "repository", "runtimePermissions", "baselineProtection", "sourcesOfTruth", "generatedPaths", "generators", "dependencies", "rules", "riskClassification", "verification", "completionGate"],
+  "required": ["version", "mode", "repository", "runtimePermissions", "baselineProtection", "sourcesOfTruth", "generatedPaths", "generators", "dependencies", "rules", "taskRouting", "riskClassification", "verification", "completionGate"],
   "properties": {
     "$schema": { "type": "string" },
-    "version": { "const": 2 },
+    "version": { "const": 4 },
     "mode": { "enum": ["audit", "enforce"] },
     "repository": {
       "type": "object",
@@ -76,6 +76,34 @@
       }
     },
     "rules": { "type": "array", "items": { "type": "object" } },
+    "taskRouting": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["enabled", "unknownStatus", "maxFocusedDiagnosticAttempts", "rulePacks"],
+      "properties": {
+        "enabled": { "const": true },
+        "unknownStatus": { "const": "U" },
+        "maxFocusedDiagnosticAttempts": { "type": "integer", "minimum": 1 },
+        "rulePacks": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["name", "summary", "always", "minimumRisk", "promptPatterns", "pathPatterns", "requiredEvidence"],
+            "properties": {
+              "name": { "type": "string", "minLength": 1 },
+              "summary": { "type": "string", "minLength": 1 },
+              "always": { "type": "boolean" },
+              "minimumRisk": { "$ref": "#/$defs/risk" },
+              "promptPatterns": { "$ref": "#/$defs/stringArray" },
+              "pathPatterns": { "$ref": "#/$defs/stringArray" },
+              "requiredEvidence": { "$ref": "#/$defs/stringArray" }
+            }
+          }
+        }
+      }
+    },
     "riskClassification": {
       "type": "object",
       "required": ["default", "levels", "pathRules"],
@@ -87,20 +115,53 @@
     },
     "verification": {
       "type": "object",
-      "required": ["reviewEntryPoint", "entryPoint", "receiptPath", "checks"],
+      "additionalProperties": false,
+      "required": ["reviewEntryPoint", "entryPoint", "receiptPath", "receiptPathTemplate", "ignoredPaths", "coverageRules", "checks"],
       "properties": {
         "reviewEntryPoint": { "type": "string" },
         "entryPoint": { "type": "string" },
         "receiptPath": { "type": "string" },
-        "checks": { "type": "array", "items": { "type": "object" } }
+        "receiptPathTemplate": { "type": "string", "pattern": "\\{sessionId\\}" },
+        "ignoredPaths": { "$ref": "#/$defs/stringArray" },
+        "coverageRules": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["name", "patterns", "checkNames"],
+            "properties": {
+              "name": { "type": "string", "minLength": 1 },
+              "patterns": { "$ref": "#/$defs/stringArray" },
+              "checkNames": { "$ref": "#/$defs/stringArray" }
+            }
+          }
+        },
+        "checks": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["name", "category", "evidenceLevels", "executable", "workingDirectory", "arguments", "whenPaths"],
+            "properties": {
+              "name": { "type": "string", "minLength": 1 },
+              "category": { "type": "string", "minLength": 1 },
+              "evidenceLevels": { "$ref": "#/$defs/stringArray" },
+              "executable": { "type": "string", "minLength": 1 },
+              "workingDirectory": { "type": "string", "minLength": 1 },
+              "arguments": { "$ref": "#/$defs/stringArray" },
+              "whenPaths": { "$ref": "#/$defs/stringArray" }
+            }
+          }
+        }
       }
     },
     "completionGate": {
       "type": "object",
-      "required": ["enabled", "blockingMode"],
+      "additionalProperties": false,
+      "required": ["enabled", "blockingMode", "maxRepeatedVerificationFailures"],
       "properties": {
         "enabled": { "type": "boolean" },
-        "blockingMode": { "enum": ["enforce"] }
+        "blockingMode": { "enum": ["enforce"] },
+        "maxRepeatedVerificationFailures": { "type": "integer", "minimum": 1 }
       }
     }
   },

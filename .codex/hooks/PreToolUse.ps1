@@ -3,6 +3,7 @@ param([Parameter(Mandatory = $true)] [string] $PolicyPath)
 $ErrorActionPreference = 'Stop'
 $mode = 'audit'
 . (Join-Path $PSScriptRoot 'PolicyCommon.ps1')
+. (Join-Path $PSScriptRoot 'VerificationSelection.ps1')
 
 try {
     $rawInput = [Console]::In.ReadToEnd()
@@ -18,22 +19,10 @@ try {
     $state = Read-PolicySessionState -Policy $policy -SessionId $sessionId
     if ($null -eq $state) {
         $changedFiles = @(Get-PolicyChangedFiles -Policy $policy)
-        $baselineRisk = Get-PolicyRiskLevelForPaths -Policy $policy -Paths $changedFiles
         $now = (Get-Date).ToUniversalTime().ToString('o')
-        $statusHash = Get-PolicySha256 ($changedFiles -join "`n")
-        $state = [pscustomobject]@{
-            baselineAt = $now
-            baselineChangedFileCount = $changedFiles.Count
-            baselineChangedFiles = @($changedFiles)
-            baselineStatusSha256 = $statusHash
-            baselinePreserved = $true
-            dirtyAt = $null
-            dirtyTool = $null
-            highestRisk = $baselineRisk
-            verifiedAt = $null
-            verificationAttemptedAt = $null
-            verificationSuccess = $false
-        }
+        $state = New-PolicySessionState -Policy $policy -ChangedFiles $changedFiles
+        $baselineRisk = [string] $state.highestRisk
+        $statusHash = [string] $state.baselineStatusSha256
         Write-PolicySessionState -Policy $policy -SessionId $sessionId -State $state
         Write-PolicyAuditRecord -Policy $policy -Record ([ordered]@{
             timestamp = $now

@@ -35,7 +35,18 @@ not authorize writes to any sibling repository.
 - `enforce` mode may block only deterministic JCS-local rules declared in the
   policy. It is not a machine-wide permission boundary.
 - Run the verification entry point declared by the policy after implementation.
-  The selected risk level determines the checks. If verification is skipped or
-  fails, say so and do not present it as successful evidence.
+  The prompt hook selects the smallest applicable task rule packs and provides
+  a session-aware verification command. Use that command so the receipt can be
+  tied to this task. If verification is skipped or fails, say so and do not
+  present it as successful evidence.
+- Treat the verification receipt's confidence separately from command success.
+  `structural` means builds or static checks passed; only `behavioral` means the
+  declared behavior has matching evidence. `partial` or `unknown` is not
+  complete behavioral evidence.
+- Treat task status `U` as an unknown-intent or unknown-failure state. Run at
+  most one hypothesis-driven focused diagnostic, then report the evidence gap
+  or request direction instead of repeating the broad verifier.
+- Do not repeat the same broad verification after an unchanged failure. Diagnose
+  the failure signature, use a focused check, or request user direction.
 - Final handoff must list changed files, policy/risk decisions, verification
   evidence, skipped checks, unresolved risks, and external systems modified.

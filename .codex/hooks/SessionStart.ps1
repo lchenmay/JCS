@@ -2,6 +2,7 @@ param([Parameter(Mandatory = $true)] [string] $PolicyPath)
 
 $ErrorActionPreference = 'Stop'
 . (Join-Path $PSScriptRoot 'PolicyCommon.ps1')
+. (Join-Path $PSScriptRoot 'VerificationSelection.ps1')
 
 try {
     $rawInput = [Console]::In.ReadToEnd()
@@ -11,22 +12,11 @@ try {
     if (-not (Test-PolicyEventInRepository -Policy $policy -EventData $eventData -ToolText '')) { exit 0 }
 
     $changedFiles = Get-PolicyChangedFiles -Policy $policy
-    $risk = Get-PolicyRiskLevelForPaths -Policy $policy -Paths $changedFiles
+    $riskFiles = Get-CodexVerificationChangedFiles -Policy $policy
+    $risk = Get-PolicyRiskLevelForPaths -Policy $policy -Paths $riskFiles
     $now = (Get-Date).ToUniversalTime().ToString('o')
-    $statusHash = Get-PolicySha256 ($changedFiles -join "`n")
-    $state = [pscustomobject]@{
-        baselineAt = $now
-        baselineChangedFileCount = $changedFiles.Count
-        baselineChangedFiles = @($changedFiles)
-        baselineStatusSha256 = $statusHash
-        baselinePreserved = $true
-        dirtyAt = $null
-        dirtyTool = $null
-        highestRisk = $risk
-        verifiedAt = $null
-        verificationAttemptedAt = $null
-        verificationSuccess = $false
-    }
+    $state = New-PolicySessionState -Policy $policy -ChangedFiles $changedFiles
+    $statusHash = [string] $state.baselineStatusSha256
     Write-PolicySessionState -Policy $policy -SessionId ([string] $eventData.session_id) -State $state
     Write-PolicyAuditRecord -Policy $policy -Record ([ordered]@{
         timestamp = $now
@@ -43,7 +33,7 @@ try {
     $mode = Get-PolicyMode -Policy $policy
     $verifyCommand = Get-PolicyVerificationCommand -Policy $policy
     $permissionMode = [string] $eventData.permission_mode
-    $context = "$name project policy active: mode=$mode, risk=$risk, changed-files=$($changedFiles.Count), write-scope=repository-only, outside-repository=deny. Existing changed paths are protected from reset/restore/delete. Dependency repositories are read-only. Runtime permission mode '$permissionMode' is not managed by this repository. Verification entry point: $verifyCommand."
+    $context = "$name policy: mode=$mode; risk=$risk; baseline-files=$($changedFiles.Count); write-scope=repository-only. Runtime permission '$permissionMode' is not managed by this repository. Verify with $verifyCommand."
     Write-PolicyHookJson ([ordered]@{
         hookSpecificOutput = [ordered]@{
             hookEventName = 'SessionStart'

@@ -207,7 +207,12 @@ try {
         Assert-Condition ($blocked.decision -eq 'block') 'Completion was not blocked after an unverified write.'
         $verify = $base + @{ hook_event_name = 'PostToolUse'; tool_name = 'Bash'; tool_input = @{ command = 'pwsh -File scripts/codex-verify.ps1' }; tool_response = @{ exitCode = 0 } }
         [void] (Invoke-Hook 'PostToolUse.ps1' $verify)
-        Assert-Condition ([string]::IsNullOrWhiteSpace((Invoke-Hook 'Stop.ps1' $stop))) 'Successful verification did not open the completion gate.'
+        $stopOutput = Invoke-Hook 'Stop.ps1' $stop
+        if (-not [string]::IsNullOrWhiteSpace($stopOutput)) {
+            $stopResult = $stopOutput | ConvertFrom-Json
+            Assert-Condition ([string]::IsNullOrWhiteSpace([string] $stopResult.decision)) 'Successful verification did not open the completion gate.'
+            Assert-Condition ([string] $stopResult.systemMessage -match 'confidence=unknown') 'Missing verification receipt did not downgrade confidence.'
+        }
     }
 
     Invoke-TestSuite 12 'failed verification and bounded stop recovery' {
@@ -278,8 +283,96 @@ try {
         Assert-Condition ([string]::IsNullOrWhiteSpace($untrackedResult)) "A non-baseline untracked-file deletion was incorrectly denied: $untrackedResult"
     }
 
+    Invoke-TestSuite 16 'adaptive verification selection and coverage' {
+        . (Join-Path $PSScriptRoot 'VerificationSelection.ps1')
+        . (Join-Path $PSScriptRoot 'TaskRouting.ps1')
+        $loadedPolicy = Get-PolicyData -PolicyPath $script:testPolicyPath
+        $l1Plan = @(Get-CodexVerificationPlan -Policy $loadedPolicy -ChangedFiles @('src/safe.fs') -RiskLevel 'L1')
+        Assert-Condition (@($l1Plan | Where-Object { $_.selected }).Count -eq 0) 'An unmatched L1 path selected heavyweight checks.'
+        $l1Profile = Get-CodexTaskProfile -Policy $loadedPolicy -ChangedFiles @('src/safe.fs')
+        $l1Coverage = Get-CodexVerificationCoverage -Policy $loadedPolicy -ChangedFiles @('src/safe.fs') -Plan $l1Plan -TaskProfile $l1Profile
+        Assert-Condition ([string] $l1Coverage.confidence -eq 'unknown') 'An unmatched L1 path did not report unknown coverage.'
+
+        $typeProfile = Get-CodexTaskProfile -Policy $loadedPolicy -ChangedFiles @('TypeSys/sample.fs')
+        $typePlan = @(Get-CodexVerificationPlan -Policy $loadedPolicy -ChangedFiles @('TypeSys/sample.fs') -RiskLevel 'L2' -TaskTypes @($typeProfile.taskTypes))
+        $selected = @($typePlan | Where-Object { $_.selected } | ForEach-Object { [string] $_.name })
+        foreach ($name in @('typesys-release-build', 'jcs-shared-release-build', 'jcs-bizlogics-release-build', 'dependency-impact-readonly')) {
+            Assert-Condition ($name -in $selected) "TypeSys change did not select '$name'."
+        }
+        Assert-Condition ('portal-typecheck' -notin $selected) 'TypeSys change unnecessarily selected portal typecheck.'
+        $mockResults = @($typePlan | Where-Object { $_.selected } | ForEach-Object { [pscustomobject]@{ name = $_.name; success = $true; evidenceLevels = @($_.evidenceLevels) } })
+        $mockResults += [pscustomobject]@{ name = 'generated-file-consistency'; success = $true; evidenceLevels = @('generation') }
+        $typeCoverage = Get-CodexVerificationCoverage -Policy $loadedPolicy -ChangedFiles @('TypeSys/sample.fs') -Plan $typePlan -TaskProfile $typeProfile -Results $mockResults
+        Assert-Condition ([string] $typeCoverage.confidence -eq 'structural') 'Declared TypeSys verification did not report structural coverage.'
+    }
+
+    Invoke-TestSuite 17 'partial confidence and repeated failure circuit breaker' {
+        $loadedPolicy = Get-PolicyData -PolicyPath $script:testPolicyPath
+        $receiptPath = Join-Path (Get-PolicyRepositoryRoot -Policy $loadedPolicy) ([string] $loadedPolicy.verification.receiptPath)
+        New-Item -ItemType Directory -Force -Path (Split-Path -Parent $receiptPath) | Out-Null
+
+        $base = New-BaseEvent 'suite-17-partial'
+        $write = $base + @{ hook_event_name = 'PostToolUse'; tool_name = 'apply_patch'; tool_input = @{ command = '*** Update File: src/safe.txt' }; tool_response = @{ exitCode = 0 } }
+        [void] (Invoke-Hook 'PostToolUse.ps1' $write)
+        @{ verificationConfidence = 'partial'; recommendedActions = @('Run a focused check.'); checks = @() } | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath $receiptPath -Encoding UTF8
+        $verify = $base + @{ hook_event_name = 'PostToolUse'; tool_name = 'Bash'; tool_input = @{ command = 'pwsh -File scripts/codex-verify.ps1' }; tool_response = @{ exitCode = 0 } }
+        [void] (Invoke-Hook 'PostToolUse.ps1' $verify)
+        $stop = $base + @{ hook_event_name = 'Stop'; stop_hook_active = $false; last_assistant_message = 'done' }
+        $partialResult = Invoke-Hook 'Stop.ps1' $stop | ConvertFrom-Json
+        Assert-Condition ([string]::IsNullOrWhiteSpace([string] $partialResult.decision)) 'Partial coverage incorrectly blocked completion.'
+        Assert-Condition ([string] $partialResult.systemMessage -match 'confidence=partial') 'Partial coverage did not require an explicit caveat.'
+
+        $repeatBase = New-BaseEvent 'suite-17-repeat'
+        $repeatWrite = $repeatBase + @{ hook_event_name = 'PostToolUse'; tool_name = 'apply_patch'; tool_input = @{ command = '*** Update File: src/safe.txt' }; tool_response = @{ exitCode = 0 } }
+        [void] (Invoke-Hook 'PostToolUse.ps1' $repeatWrite)
+        @{ verificationConfidence = 'declared'; recommendedActions = @(); checks = @(@{ name = 'focused'; passed = $false; failureKind = 'command-failure' }) } | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath $receiptPath -Encoding UTF8
+        $failedVerify = $repeatBase + @{ hook_event_name = 'PostToolUse'; tool_name = 'Bash'; tool_input = @{ command = 'pwsh -File scripts/codex-verify.ps1' }; tool_response = @{ exitCode = 1 } }
+        [void] (Invoke-Hook 'PostToolUse.ps1' $failedVerify)
+        [void] (Invoke-Hook 'PostToolUse.ps1' $failedVerify)
+        $repeatStop = $repeatBase + @{ hook_event_name = 'Stop'; stop_hook_active = $false; last_assistant_message = 'done' }
+        $repeatResult = Invoke-Hook 'Stop.ps1' $repeatStop | ConvertFrom-Json
+        Assert-Condition ([string]::IsNullOrWhiteSpace([string] $repeatResult.decision)) 'Repeated identical failure kept the completion loop blocked.'
+        Assert-Condition ([string] $repeatResult.systemMessage -match 'repeated 2 times') 'Repeated failure did not activate the circuit breaker.'
+    }
+
+    Invoke-TestSuite 18 'prompt routing and unknown-intent fallback' {
+        . (Join-Path $PSScriptRoot 'TaskRouting.ps1')
+        $loadedPolicy = Get-PolicyData -PolicyPath $script:testPolicyPath
+        $profile = Get-CodexTaskProfile -Policy $loadedPolicy -Prompt '订单金额算错了，修复后端业务逻辑'
+        Assert-Condition ('bugfix' -in @($profile.taskTypes)) 'A defect prompt did not select the bugfix rule pack.'
+        Assert-Condition ('backend' -in @($profile.taskTypes)) 'A backend prompt did not select the backend rule pack.'
+        Assert-Condition ('behavioral' -in @($profile.requiredEvidence)) 'A bugfix did not require behavioral evidence.'
+        Assert-Condition ([string] $profile.status -eq 'known') 'A recognized task was marked unknown.'
+
+        $unknown = Get-CodexTaskProfile -Policy $loadedPolicy -Prompt '帮我处理一下这个'
+        Assert-Condition ([string] $unknown.status -eq 'U') 'An unrecognized prompt did not enter U state.'
+        $base = New-BaseEvent 'suite-18'
+        [void] (Invoke-Hook 'SessionStart.ps1' ($base + @{ hook_event_name = 'SessionStart'; source = 'startup'; model = 'test-model' }))
+        $promptOutput = Invoke-Hook 'UserPromptSubmit.ps1' ($base + @{ hook_event_name = 'UserPromptSubmit'; prompt = '修复后端错误' }) | ConvertFrom-Json
+        Assert-Condition ([string] $promptOutput.hookSpecificOutput.additionalContext -match "-SessionId 'suite-18'") 'Prompt routing did not provide a session-aware verification command.'
+        $state = Read-PolicySessionState -Policy $loadedPolicy -SessionId 'suite-18'
+        Assert-Condition ('bugfix' -in @($state.taskTypes)) 'Prompt routing did not persist the selected task type.'
+    }
+
+    Invoke-TestSuite 19 'behavioral evidence is distinct from structural success' {
+        . (Join-Path $PSScriptRoot 'TaskRouting.ps1')
+        . (Join-Path $PSScriptRoot 'VerificationSelection.ps1')
+        $loadedPolicy = Get-PolicyData -PolicyPath $script:testPolicyPath
+        $profile = Get-CodexTaskProfile -Policy $loadedPolicy -Prompt '修复后端错误' -ChangedFiles @('JCS.BizLogics/Logic.fs')
+        $plan = @(Get-CodexVerificationPlan -Policy $loadedPolicy -ChangedFiles @('JCS.BizLogics/Logic.fs') -RiskLevel 'L1' -TaskTypes @($profile.taskTypes))
+        $structural = @([pscustomobject]@{ name = 'jcs-bizlogics-release-build'; success = $true; evidenceLevels = @('structural') })
+        $partial = Get-CodexVerificationCoverage -Policy $loadedPolicy -ChangedFiles @('JCS.BizLogics/Logic.fs') -Plan $plan -TaskProfile $profile -Results $structural
+        Assert-Condition ([string] $partial.confidence -eq 'partial') 'Structural success incorrectly claimed behavioral coverage.'
+        Assert-Condition ('behavioral' -in @($partial.missingEvidence)) 'Missing behavioral evidence was not reported.'
+
+        $behavioral = @($structural) + [pscustomobject]@{ name = 'focused-regression'; success = $true; evidenceLevels = @('behavioral') }
+        $complete = Get-CodexVerificationCoverage -Policy $loadedPolicy -ChangedFiles @('JCS.BizLogics/Logic.fs') -Plan $plan -TaskProfile $profile -Results $behavioral
+        Assert-Condition ([string] $complete.confidence -eq 'behavioral') 'Focused behavior evidence did not raise confidence to behavioral.'
+    }
+
     $failed = @($script:suiteResults | Where-Object { -not $_.passed })
-    Write-Output ("Policy suites: {0}/15 passed" -f (15 - $failed.Count))
+    $totalSuites = 19
+    Write-Output ("Policy suites: {0}/{1} passed" -f ($totalSuites - $failed.Count), $totalSuites)
     if ($failed.Count -gt 0) { throw "$($failed.Count) policy test suite(s) failed." }
 }
 finally {

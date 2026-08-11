@@ -35,11 +35,26 @@ try {
     if ([bool] $state.verificationSuccess -and -not [string]::IsNullOrWhiteSpace([string] $state.verifiedAt)) {
         $verifiedAfterWrite = ([DateTimeOffset]::Parse([string] $state.verifiedAt) -ge [DateTimeOffset]::Parse([string] $state.dirtyAt))
     }
-    if ($verifiedAfterWrite) { exit 0 }
+    if ($verifiedAfterWrite) {
+        $confidence = if ($null -eq $state.PSObject.Properties['verificationConfidence']) { 'unknown' } else { [string] $state.verificationConfidence }
+        $profileStatus = if ($null -eq $state.PSObject.Properties['taskProfileStatus']) { [string] $policy.taskRouting.unknownStatus } else { [string] $state.taskProfileStatus }
+        if ($confidence -in @('none', 'partial', 'unknown') -or $profileStatus -eq [string] $policy.taskRouting.unknownStatus) {
+            $actions = if ($null -ne $state.PSObject.Properties['verificationRecommendedActions']) { @($state.verificationRecommendedActions) -join ' ' } else { '' }
+            Write-PolicyHookJson ([ordered]@{ systemMessage = "Verification completed with confidence=$confidence and task-status=$profileStatus. Do not claim complete behavioral validation. $actions" })
+        }
+        exit 0
+    }
 
     $name = Get-PolicyRepositoryName -Policy $policy
     $verifyCommand = Get-PolicyVerificationCommand -Policy $policy
     $risk = if ([string]::IsNullOrWhiteSpace([string] $state.highestRisk)) { [string] $policy.riskClassification.default } else { [string] $state.highestRisk }
+    $repeatCount = if ($null -eq $state.PSObject.Properties['repeatedVerificationFailures']) { 0 } else { [int] $state.repeatedVerificationFailures }
+    $maxRepeats = [int] $policy.completionGate.maxRepeatedVerificationFailures
+    if ($repeatCount -ge $maxRepeats) {
+        $signature = if ($null -eq $state.PSObject.Properties['verificationFailureSignature']) { 'unknown' } else { [string] $state.verificationFailureSignature }
+        Write-PolicyHookJson ([ordered]@{ systemMessage = "The same verification failure repeated $repeatCount times (signature=$signature). Stop broad retries, report the unresolved failure, and request focused evidence or user direction." })
+        exit 0
+    }
     if ($mode -ne [string] $policy.completionGate.blockingMode) {
         Write-PolicyHookJson ([ordered]@{ systemMessage = "$name policy audit ($risk): repository changes are not yet verified. Suggested command: $verifyCommand" })
         exit 0
@@ -49,7 +64,12 @@ try {
         exit 0
     }
 
-    $reason = "Repository changes at risk $risk were detected after the last successful verification. Run $verifyCommand. Fix safe failures or report the exact unresolved check without claiming validation success."
+    $profileStatus = if ($null -eq $state.PSObject.Properties['taskProfileStatus']) { [string] $policy.taskRouting.unknownStatus } else { [string] $state.taskProfileStatus }
+    $diagnostic = if ($profileStatus -eq [string] $policy.taskRouting.unknownStatus -or $repeatCount -gt 0) {
+        'Use at most one hypothesis-driven -FocusedCheck diagnostic; do not repeat the unchanged broad verifier.'
+    }
+    else { 'Run the task-profile verification command before completion.' }
+    $reason = "Repository changes at risk $risk were detected after the last successful verification. Run $verifyCommand. $diagnostic Fix safe failures or report the exact unresolved check without claiming validation success."
     Write-PolicyHookJson ([ordered]@{ decision = 'block'; reason = $reason })
 }
 catch {

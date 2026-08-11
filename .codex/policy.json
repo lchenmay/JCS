@@ -1,6 +1,6 @@
 {
   "$schema": "./policy.schema.json",
-  "version": 2,
+  "version": 4,
   "mode": "audit",
   "repository": {
     "name": "JCS",
@@ -171,6 +171,175 @@
       "message": "External, deployment, service, or database action requires an explicit current user request and scoped approval."
     }
   ],
+  "taskRouting": {
+    "enabled": true,
+    "unknownStatus": "U",
+    "maxFocusedDiagnosticAttempts": 1,
+    "rulePacks": [
+      {
+        "name": "core",
+        "summary": "Preserve the repository boundary, the user baseline, explicit side-effect authorization, and truthful evidence reporting.",
+        "always": true,
+        "minimumRisk": "L1",
+        "promptPatterns": [],
+        "pathPatterns": [],
+        "requiredEvidence": []
+      },
+      {
+        "name": "policy-infrastructure",
+        "summary": "Validate project policy, hooks, schemas, selection logic, and completion behavior.",
+        "always": false,
+        "minimumRisk": "L2",
+        "promptPatterns": ["(?i)\\b(policy|hook|agents\\.md|rule system)\\b|策略|规则系统|钩子"],
+        "pathPatterns": [".codex/**", "AGENTS.md", "scripts/codex-*.ps1"],
+        "requiredEvidence": ["policy"]
+      },
+      {
+        "name": "bugfix",
+        "summary": "Reproduce the defect and require focused behavioral regression evidence.",
+        "always": false,
+        "minimumRisk": "L1",
+        "promptPatterns": ["(?i)\\b(fix|bug|wrong|error|broken|regression)\\b|修复|错误|不对|异常|失败|问题"],
+        "pathPatterns": [],
+        "requiredEvidence": ["behavioral"]
+      },
+      {
+        "name": "feature",
+        "summary": "Implement an acceptance behavior and require behavioral evidence for it.",
+        "always": false,
+        "minimumRisk": "L1",
+        "promptPatterns": ["(?i)\\b(add|implement|feature|support|create|build)\\b|新增|实现|支持|添加|开发"],
+        "pathPatterns": [],
+        "requiredEvidence": ["behavioral"]
+      },
+      {
+        "name": "refactor",
+        "summary": "Preserve observable behavior while changing structure.",
+        "always": false,
+        "minimumRisk": "L1",
+        "promptPatterns": ["(?i)\\b(refactor|cleanup|restructure|rename)\\b|重构|整理|改名|优化结构"],
+        "pathPatterns": [],
+        "requiredEvidence": ["structural", "behavioral"]
+      },
+      {
+        "name": "generated-code",
+        "summary": "Change authoritative sources and use the trusted generator; never patch generated outputs directly.",
+        "always": false,
+        "minimumRisk": "L2",
+        "promptPatterns": ["(?i)\\b(generated|generator|typesys|regenerate|design json)\\b|生成代码|类型生成|生成类型|重新生成|设计文件|权威源"],
+        "pathPatterns": ["TypeSys/**", "scripts/regenerate-types.ps1", "JCS.Shared/Design-*.json", "BizShared/Design-*.json"],
+        "requiredEvidence": ["generation", "structural", "dependency"]
+      },
+      {
+        "name": "shared-contract",
+        "summary": "Treat shared API and serialized types as compatibility-sensitive contracts.",
+        "always": false,
+        "minimumRisk": "L2",
+        "promptPatterns": ["(?i)\\b(public api|shared contract|shared type|breaking change)\\b|公共接口|共享类型|共享契约"],
+        "pathPatterns": ["JCS.Shared/**", "BizShared/**"],
+        "requiredEvidence": ["structural", "dependency"]
+      },
+      {
+        "name": "backend",
+        "summary": "Build the touched backend boundary and keep API and serialization behavior explicit.",
+        "always": false,
+        "minimumRisk": "L1",
+        "promptPatterns": ["(?i)\\b(backend|server|api|bizlogics|f#|dotnet)\\b|后端|接口|服务端|业务逻辑"],
+        "pathPatterns": ["JCS.BizLogics/**", "WebLogics/**", "Server/**", "AioServer/**"],
+        "requiredEvidence": ["structural"]
+      },
+      {
+        "name": "frontend",
+        "summary": "Typecheck the touched frontend and require behavioral evidence for user-visible changes.",
+        "always": false,
+        "minimumRisk": "L1",
+        "promptPatterns": ["(?i)\\b(frontend|portal|vscode|vue|typescript|ui)\\b|前端|页面|界面"],
+        "pathPatterns": ["portal/**", "vscode/**", "VsCodeTemplate/**"],
+        "requiredEvidence": ["structural"]
+      },
+      {
+        "name": "ui-behavior",
+        "summary": "Verify visible or interactive behavior rather than relying on typecheck alone.",
+        "always": false,
+        "minimumRisk": "L1",
+        "promptPatterns": ["(?i)\\b(interaction|visual|responsive|click|dialog)\\b|交互|视觉|点击|弹窗|响应式"],
+        "pathPatterns": [],
+        "requiredEvidence": ["behavioral", "visual"]
+      },
+      {
+        "name": "database",
+        "summary": "Review migration direction, compatibility, backup, rollback, and target environment before any database action.",
+        "always": false,
+        "minimumRisk": "L3",
+        "promptPatterns": ["(?i)\\b(database|migration|sql|postgres|sqlserver|schema migration)\\b|数据库|迁移|数据表"],
+        "pathPatterns": ["**/*.sql", "**/Migrations/**"],
+        "requiredEvidence": ["migration", "behavioral"]
+      },
+      {
+        "name": "dependency",
+        "summary": "Review lockfiles, compatibility, consumers, and build impact for dependency changes.",
+        "always": false,
+        "minimumRisk": "L2",
+        "promptPatterns": ["(?i)\\b(dependency|package|upgrade|nuget|npm)\\b|依赖|升级包"],
+        "pathPatterns": ["**/*.fsproj", "**/*.sln", "**/*.slnf", "**/package.json", "**/package-lock.json"],
+        "requiredEvidence": ["dependency", "structural"]
+      },
+      {
+        "name": "performance",
+        "summary": "Use a fixed baseline and repeated measurements; never infer improvement from one run.",
+        "always": false,
+        "minimumRisk": "L2",
+        "promptPatterns": ["(?i)\\b(performance|benchmark|latency|throughput|memory leak)\\b|性能|基准|延迟|吞吐|内存泄漏"],
+        "pathPatterns": [],
+        "requiredEvidence": ["performance"]
+      },
+      {
+        "name": "security",
+        "summary": "Require explicit threat, authorization, secret-handling, and negative-path evidence.",
+        "always": false,
+        "minimumRisk": "L3",
+        "promptPatterns": ["(?i)\\b(security|auth|authorization|secret|credential|vulnerability)\\b|安全|认证|授权|密钥|漏洞"],
+        "pathPatterns": ["**/Auth/**", "**/Security/**"],
+        "requiredEvidence": ["security", "behavioral"]
+      },
+      {
+        "name": "deployment",
+        "summary": "Require an explicit current request, target, health check, rollback, and operation receipt.",
+        "always": false,
+        "minimumRisk": "L3",
+        "promptPatterns": ["(?i)\\b(deploy|production|ssh|service|server rollout)\\b|部署|生产|服务器|上线"],
+        "pathPatterns": ["deploy/**", "**/Dockerfile", "**/docker-compose*.yml"],
+        "requiredEvidence": ["deployment"]
+      },
+      {
+        "name": "documentation",
+        "summary": "Preserve factual provenance and verify produced artifacts visually when layout matters.",
+        "always": false,
+        "minimumRisk": "L1",
+        "promptPatterns": ["(?i)\\b(documentation|docs|readme|pdf|latex)\\b|文档|说明书|生成报告|编写报告|整理报告"],
+        "pathPatterns": ["docs/**", "**/*.md", "**/*.tex"],
+        "requiredEvidence": ["structural", "visual"]
+      },
+      {
+        "name": "test",
+        "summary": "Do not weaken, skip, or delete assertions to make a failing task appear successful.",
+        "always": false,
+        "minimumRisk": "L1",
+        "promptPatterns": ["(?i)\\b(test|coverage|regression test)\\b|测试|覆盖率|回归"],
+        "pathPatterns": ["**/test/**", "**/tests/**", "**/*.Tests/**"],
+        "requiredEvidence": ["behavioral"]
+      },
+      {
+        "name": "release",
+        "summary": "Require explicit publication authorization, immutable version evidence, and a release receipt.",
+        "always": false,
+        "minimumRisk": "L3",
+        "promptPatterns": ["(?i)\\b(release|publish|tag|version bump)\\b|发布|发版|打标签"],
+        "pathPatterns": [],
+        "requiredEvidence": ["release"]
+      }
+    ]
+  },
   "riskClassification": {
     "default": "L1",
     "levels": {
@@ -208,34 +377,94 @@
     "reviewEntryPoint": "scripts/codex-policy-review.ps1",
     "entryPoint": "scripts/codex-verify.ps1",
     "receiptPath": ".codex/out/verification-receipt.json",
+    "receiptPathTemplate": ".codex/out/verification-receipt-{sessionId}.json",
+    "ignoredPaths": [
+      ".codex/out/**"
+    ],
+    "coverageRules": [
+      {
+        "name": "policy-infrastructure",
+        "patterns": [".codex/**", "AGENTS.md", "scripts/codex-*.ps1"],
+        "checkNames": ["policy-tests"]
+      },
+      {
+        "name": "typesys",
+        "patterns": ["TypeSys/**", "scripts/regenerate-types.ps1"],
+        "checkNames": ["typesys-release-build", "jcs-shared-release-build", "jcs-bizlogics-release-build", "dependency-impact-readonly"]
+      },
+      {
+        "name": "shared-contracts",
+        "patterns": ["JCS.Shared/**", "BizShared/**"],
+        "checkNames": ["jcs-shared-release-build", "jcs-bizlogics-release-build", "dependency-impact-readonly"]
+      },
+      {
+        "name": "bizlogics",
+        "patterns": ["JCS.BizLogics/**"],
+        "checkNames": ["jcs-bizlogics-release-build"]
+      },
+      {
+        "name": "web-logics",
+        "patterns": ["WebLogics/**"],
+        "checkNames": ["web-logics-release-build"]
+      },
+      {
+        "name": "server",
+        "patterns": ["Server/**"],
+        "checkNames": ["server-release-build"]
+      },
+      {
+        "name": "aio-server",
+        "patterns": ["AioServer/**"],
+        "checkNames": ["aio-server-release-build"]
+      },
+      {
+        "name": "portal",
+        "patterns": ["portal/**"],
+        "checkNames": ["portal-typecheck"]
+      },
+      {
+        "name": "vscode",
+        "patterns": ["vscode/**"],
+        "checkNames": ["vscode-typecheck"]
+      },
+      {
+        "name": "template",
+        "patterns": ["VsCodeTemplate/**"],
+        "checkNames": ["template-typecheck"]
+      }
+    ],
     "checks": [
       {
         "name": "policy-tests",
         "category": "policy",
+        "evidenceLevels": ["policy"],
         "executable": "pwsh.exe",
         "workingDirectory": ".",
         "arguments": ["-NoProfile", "-File", ".codex/hooks/Test-Policy.ps1", "-PolicyPath", ".codex/policy.json"],
-        "always": true
+        "whenPaths": [".codex/**", "AGENTS.md", "scripts/codex-*.ps1"]
       },
       {
         "name": "typesys-release-build",
         "category": "build",
+        "evidenceLevels": ["structural"],
         "executable": "dotnet",
         "workingDirectory": ".",
         "arguments": ["build", "TypeSys/TypeSys.fsproj", "-c", "Release", "--no-restore", "--no-dependencies"],
-        "always": true
+        "whenPaths": ["TypeSys/**", "scripts/regenerate-types.ps1"]
       },
       {
         "name": "jcs-shared-release-build",
         "category": "build",
+        "evidenceLevels": ["structural"],
         "executable": "dotnet",
         "workingDirectory": ".",
         "arguments": ["build", "JCS.Shared/JCS.Shared.fsproj", "-c", "Release", "--no-restore", "--no-dependencies"],
-        "always": true
+        "whenPaths": ["TypeSys/**", "JCS.Shared/**", "BizShared/**"]
       },
       {
         "name": "jcs-bizlogics-release-build",
         "category": "build",
+        "evidenceLevels": ["structural"],
         "executable": "dotnet",
         "workingDirectory": ".",
         "arguments": ["build", "JCS.BizLogics/JCS.BizLogics.fsproj", "-c", "Release", "--no-restore", "--no-dependencies"],
@@ -246,15 +475,45 @@
       {
         "name": "dependency-impact-readonly",
         "category": "dependency",
+        "evidenceLevels": ["dependency"],
         "executable": "pwsh.exe",
         "workingDirectory": ".",
         "arguments": ["-NoProfile", "-File", "scripts/codex-dependency-impact.ps1", "-Json"],
         "minimumRisk": "L2",
-        "runAtOrAbove": true
+        "runAtOrAbove": false,
+        "whenPaths": ["TypeSys/**", "JCS.Shared/**", "BizShared/**"]
+      },
+      {
+        "name": "web-logics-release-build",
+        "category": "build",
+        "evidenceLevels": ["structural"],
+        "executable": "dotnet",
+        "workingDirectory": ".",
+        "arguments": ["build", "WebLogics/WebLogics.fsproj", "-c", "Release", "--no-restore", "--no-dependencies"],
+        "whenPaths": ["WebLogics/**"]
+      },
+      {
+        "name": "server-release-build",
+        "category": "build",
+        "evidenceLevels": ["structural"],
+        "executable": "dotnet",
+        "workingDirectory": ".",
+        "arguments": ["build", "Server/Server.fsproj", "-c", "Release", "--no-restore", "--no-dependencies"],
+        "whenPaths": ["Server/**"]
+      },
+      {
+        "name": "aio-server-release-build",
+        "category": "build",
+        "evidenceLevels": ["structural"],
+        "executable": "dotnet",
+        "workingDirectory": ".",
+        "arguments": ["build", "AioServer/AioServer.fsproj", "-c", "Release", "--no-restore", "--no-dependencies"],
+        "whenPaths": ["AioServer/**"]
       },
       {
         "name": "portal-typecheck",
         "category": "frontend",
+        "evidenceLevels": ["structural"],
         "executable": "npm",
         "workingDirectory": "portal",
         "arguments": ["run", "test"],
@@ -270,6 +529,7 @@
       {
         "name": "vscode-typecheck",
         "category": "frontend",
+        "evidenceLevels": ["structural"],
         "executable": "npm",
         "workingDirectory": "vscode",
         "arguments": ["run", "test"],
@@ -285,6 +545,7 @@
       {
         "name": "template-typecheck",
         "category": "frontend",
+        "evidenceLevels": ["structural"],
         "executable": "npm",
         "workingDirectory": "VsCodeTemplate",
         "arguments": ["run", "test"],
@@ -301,6 +562,7 @@
   },
   "completionGate": {
     "enabled": true,
-    "blockingMode": "enforce"
+    "blockingMode": "enforce",
+    "maxRepeatedVerificationFailures": 2
   }
 }
