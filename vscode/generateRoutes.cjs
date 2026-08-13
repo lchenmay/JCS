@@ -101,7 +101,7 @@ generateRoutes(pagesDir).then((generatedRoutes) => {
   const routes: Array<RouteRecordRaw> = [
     ${generatedRoutes.map(
       (route) =>{
-        const layoutPath = route.meta.layout?`()=>import ( "/src/layouts/${route.meta.layout}.vue" )`:`()=>import ( "/src/layouts/blank.vue" )`
+        const layoutPath = route.meta.layout?`()=>import ( "~/layouts/${route.meta.layout}.vue" )`:`()=>import ( "~/layouts/blank.vue" )`
 
         return  `{
       path: '${route.path}',

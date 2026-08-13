@@ -43,7 +43,6 @@ export const glib = {
 
   post: fetchs.post,
   get: fetchs.get,
-  send: ws.trySend,
 
   setRT: runtime.setRT,
   getRT: runtime.getRT,

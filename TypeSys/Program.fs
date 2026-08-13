@@ -4,6 +4,7 @@ open System
 open System.IO
 
 open TypeSys.Common
+open TypeSys.RepositoryPaths
 
 open Util.Db
 
@@ -16,13 +17,7 @@ let private optionalEnvironment name =
     | null -> ""
     | value -> value
 
-let private requireDirectory expectedPath =
-    let resolved = Path.GetFullPath expectedPath
-    if not (Directory.Exists resolved) then
-        invalidOp $"TypeSys target directory does not exist: {resolved}"
-    resolved
-
-let targetConfig target =
+let targetConfig repositoryRoot target =
     match target with
     | 6 ->
         { ns = "JCS.Shared"
@@ -30,31 +25,32 @@ let targetConfig target =
           dbName = "JCS"
           donmainName = "jcatsys.com"
           conn = optionalEnvironment "TYPESYS_CONNECTION_JCS"
-          mainDir = requireDirectory @"D:\DEV\JCS\JCS.Shared"
-          JsDir = requireDirectory @"D:\DEV\JCS\vscode\src\lib\shared" }
+          mainDir = repositoryDirectory repositoryRoot "JCS.Shared"
+          JsDir = repositoryDirectory repositoryRoot (Path.Combine("vscode", "src", "lib", "shared")) }
     | 20 ->
+        let targetRoot = environmentDirectory "TYPESYS_AIARWA_ROOT"
         { ns = "Aiarwa.Shared"
           rdbms = Rdbms.PostgreSql
           dbName = "Aiarwa"
           donmainName = "wigaoil.com"
           conn = optionalEnvironment "TYPESYS_CONNECTION_AIARWA"
-          mainDir = requireDirectory @"D:\DEV\Aiarwa\Aiarwa.Shared"
-          JsDir = requireDirectory @"D:\DEV\Aiarwa\vscode\src\lib\shared" }
+          mainDir = repositoryDirectory targetRoot "Aiarwa.Shared"
+          JsDir = repositoryDirectory targetRoot (Path.Combine("vscode", "src", "lib", "shared")) }
     | _ ->
-        invalidArg (nameof target) $"Unsupported D:\DEV TypeSys target: {target}. Supported targets are 6 (JCS) and 20 (Aiarwa)."
+        invalidArg (nameof target) $"Unsupported TypeSys target: {target}. Supported targets are 6 (JCS) and 20 (Aiarwa)."
 
-let runTarget exeDir target =
-    let config = targetConfig target
+let runTarget repositoryRoot target =
+    let config = targetConfig repositoryRoot target
     output $"TypeSys target {target}: {config.mainDir}"
-    config |> CodeRobot.go output exeDir
+    config |> CodeRobot.go output
 
 let args = Environment.GetCommandLineArgs() |> Array.skip 1
-let exeDir = AppContext.BaseDirectory.TrimEnd('\\', '/')
+let repositoryRoot = repositoryRootFrom AppContext.BaseDirectory
 
 match args with
 | [| "--target"; value |] ->
     match Int32.TryParse value with
-    | true, target -> runTarget exeDir target
+    | true, target -> runTarget repositoryRoot target
     | _ -> invalidArg (nameof value) "--target must be an integer."
 | [| "--list-targets" |] ->
     output "6 JCS"

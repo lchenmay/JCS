@@ -22,7 +22,7 @@ export const biz__LoginOptions = (biz: string ="DISCORD"): LoginOption => {
   const options = {
     biz: biz.toUpperCase(),
     code: "",
-    redirectUrl: rtxx.host.discordRedirect,
+    redirectUrl: runtime.host.discordRedirect,
   }
 
   const urlParams = new URLSearchParams(window.location.search)
@@ -33,8 +33,8 @@ export const LoginOption__RT = async (options: LoginOption) => {
   const res = await glib.post('/api/public/auth', options)
   if (res.session) {
     glib.notify.aSuc("Login Suc")
-    rtxx.session= String(res.session)
-    if(res.ec) rtxx.user = res.ec
+    runtime.session= String(res.session)
+    if(res.ec) runtime.user = res.ec
   } 
   return res
 }
@@ -47,7 +47,7 @@ const authParams__URLQuery = (params: Record<string, any>) => {
     .join('&');
 }
 
-export const host__DiscordRedirectURL = (host: Host = rtxx.host) => {
+export const host__DiscordRedirectURL = (host: Host = runtime.host) => {
   const p: authParams = {
     client_id: host.discordAPPID,
     response_type: "code",

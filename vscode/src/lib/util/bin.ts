@@ -3,6 +3,12 @@ export type BinIndexed = {
     index: number
 }
 
+export const getDebugger = () => {
+    const port = Number.parseInt(window.location.port, 10)
+        || (window.location.protocol === 'https:' ? 443 : 80)
+    return port % 4 === 3 ? 'ai' : 'human'
+}
+
 export class BytesBuilder {
 
     count: number

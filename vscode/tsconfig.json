@@ -16,7 +16,7 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "esModuleInterop": true,
-    "lib": ["ESNext", "DOM"],
+    "lib": ["ESNext", "DOM", "DOM.Iterable"],
     "skipLibCheck": true,
     "paths": {
       "~/*": ["./src/*"]
@@ -25,5 +25,6 @@
     "typeRoots": ["src/types"],
     "outDir": "dist",
   },
-  "include": ["src/**/*.ts","src/**/*.js", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue","vite.config.ts"]
+  "include": ["src/**/*.ts","src/**/*.js", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue","vite.config.ts"],
+  "exclude": ["src/pcs/**"]
 }

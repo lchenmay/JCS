@@ -15,12 +15,14 @@
     "@types/react-dom": "^18.3.0",
     "@vitejs/plugin-vue-jsx": "^4.0.0",
     "@vue/runtime-core": "^3.4.29",
+    "axios": "^1.19.0",
     "caniuse-lite": "^1.0.30001690",
     "pixi.js": "^8.2.5",
     "vue": "^3.4.27",
     "vue-router": "^4.0.13"
   },
   "devDependencies": {
+    "@types/node": "^26.2.0",
     "@typescript-eslint/eslint-plugin": "^6.19.1",
     "@typescript-eslint/parser": "^6.19.1",
     "@vitejs/plugin-vue": "^5.0.5",

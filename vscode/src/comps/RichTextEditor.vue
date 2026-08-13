@@ -63,7 +63,7 @@ import { markdown__html } from '~/lib/util/markdown'
 import { navigate, router } from '~/lib/mod/route'
 
 const props = defineProps(['mx','href'])
-props.mx as j.MomentComplex
+props.mx as jcs.MomentComplex
 props.href as string
 
 watch(() => props.mx, (newValue, oldValue) => {

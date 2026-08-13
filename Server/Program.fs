@@ -5,7 +5,9 @@ open System.Text
 open System.IO
 open System.Diagnostics
 
-open UtilWebServer.Common
+open UtilKestrel.Common
+
+let private output (text: string) = Console.WriteLine text
 
 [<EntryPoint>]
 let main argv =

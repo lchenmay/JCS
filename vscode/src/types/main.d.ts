@@ -16,6 +16,7 @@ declare global {
         wsctx: WsCtx
         router: Router
         session: string
+        lang: string
 
         user: jcs.EuComplex
         data: jcs.ClientRuntime

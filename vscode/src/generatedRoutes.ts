@@ -4,7 +4,7 @@ import { RouteRecordRaw } from 'vue-router';
   const routes: Array<RouteRecordRaw> = [
     {
       path: '//Admin',
-      component: ()=>import ( "/src/layouts/jcs.vue" ),
+      component: ()=>import ( "~/layouts/jcs.vue" ),
       meta: {"layout":"jcs"},
       children: [{
         path: "",
@@ -16,7 +16,7 @@ import { RouteRecordRaw } from 'vue-router';
     },
     {
       path: '/CodeRobot/Project',
-      component: ()=>import ( "/src/layouts/jcs.vue" ),
+      component: ()=>import ( "~/layouts/jcs.vue" ),
       meta: {"layout":"jcs"},
       children: [{
         path: "",
@@ -28,7 +28,7 @@ import { RouteRecordRaw } from 'vue-router';
     },
     {
       path: '/CodeRobot/Projects',
-      component: ()=>import ( "/src/layouts/jcs.vue" ),
+      component: ()=>import ( "~/layouts/jcs.vue" ),
       meta: {"layout":"jcs"},
       children: [{
         path: "",
@@ -40,7 +40,7 @@ import { RouteRecordRaw } from 'vue-router';
     },
     {
       path: '//CodeRobotCenter',
-      component: ()=>import ( "/src/layouts/jcs.vue" ),
+      component: ()=>import ( "~/layouts/jcs.vue" ),
       meta: {"layout":"jcs"},
       children: [{
         path: "",
@@ -52,7 +52,7 @@ import { RouteRecordRaw } from 'vue-router';
     },
     {
       path: '/Common/Api',
-      component: ()=>import ( "/src/layouts/jcs.vue" ),
+      component: ()=>import ( "~/layouts/jcs.vue" ),
       meta: {"layout":"jcs"},
       children: [{
         path: "",
@@ -64,7 +64,7 @@ import { RouteRecordRaw } from 'vue-router';
     },
     {
       path: '/Common/Comp',
-      component: ()=>import ( "/src/layouts/jcs.vue" ),
+      component: ()=>import ( "~/layouts/jcs.vue" ),
       meta: {"layout":"jcs"},
       children: [{
         path: "",
@@ -76,7 +76,7 @@ import { RouteRecordRaw } from 'vue-router';
     },
     {
       path: '/Common/Field',
-      component: ()=>import ( "/src/layouts/jcs.vue" ),
+      component: ()=>import ( "~/layouts/jcs.vue" ),
       meta: {"layout":"jcs"},
       children: [{
         path: "",
@@ -88,7 +88,7 @@ import { RouteRecordRaw } from 'vue-router';
     },
     {
       path: '/Common/Page',
-      component: ()=>import ( "/src/layouts/jcs.vue" ),
+      component: ()=>import ( "~/layouts/jcs.vue" ),
       meta: {"layout":"jcs"},
       children: [{
         path: "",
@@ -100,7 +100,7 @@ import { RouteRecordRaw } from 'vue-router';
     },
     {
       path: '/Common/Project',
-      component: ()=>import ( "/src/layouts/jcs.vue" ),
+      component: ()=>import ( "~/layouts/jcs.vue" ),
       meta: {"layout":"jcs"},
       children: [{
         path: "",
@@ -112,7 +112,7 @@ import { RouteRecordRaw } from 'vue-router';
     },
     {
       path: '/Common/Table',
-      component: ()=>import ( "/src/layouts/jcs.vue" ),
+      component: ()=>import ( "~/layouts/jcs.vue" ),
       meta: {"layout":"jcs"},
       children: [{
         path: "",
@@ -124,7 +124,7 @@ import { RouteRecordRaw } from 'vue-router';
     },
     {
       path: '/Common/Template',
-      component: ()=>import ( "/src/layouts/jcs.vue" ),
+      component: ()=>import ( "~/layouts/jcs.vue" ),
       meta: {"layout":"jcs"},
       children: [{
         path: "",
@@ -136,7 +136,7 @@ import { RouteRecordRaw } from 'vue-router';
     },
     {
       path: '/Common/VarType',
-      component: ()=>import ( "/src/layouts/jcs.vue" ),
+      component: ()=>import ( "~/layouts/jcs.vue" ),
       meta: {"layout":"jcs"},
       children: [{
         path: "",
@@ -148,7 +148,7 @@ import { RouteRecordRaw } from 'vue-router';
     },
     {
       path: '//index',
-      component: ()=>import ( "/src/layouts/jcs.vue" ),
+      component: ()=>import ( "~/layouts/jcs.vue" ),
       meta: {"layout":"jcs"},
       children: [{
         path: "",
@@ -160,7 +160,7 @@ import { RouteRecordRaw } from 'vue-router';
     },
     {
       path: '//JCS',
-      component: ()=>import ( "/src/layouts/jcs.vue" ),
+      component: ()=>import ( "~/layouts/jcs.vue" ),
       meta: {"layout":"jcs"},
       children: [{
         path: "",
@@ -172,7 +172,7 @@ import { RouteRecordRaw } from 'vue-router';
     },
     {
       path: '/Public/HomePage',
-      component: ()=>import ( "/src/layouts/jcs.vue" ),
+      component: ()=>import ( "~/layouts/jcs.vue" ),
       meta: {"layout":"jcs"},
       children: [{
         path: "",
@@ -184,7 +184,7 @@ import { RouteRecordRaw } from 'vue-router';
     },
     {
       path: '/Public/Moment',
-      component: ()=>import ( "/src/layouts/jcs.vue" ),
+      component: ()=>import ( "~/layouts/jcs.vue" ),
       meta: {"layout":"jcs"},
       children: [{
         path: "",
@@ -196,7 +196,7 @@ import { RouteRecordRaw } from 'vue-router';
     },
     {
       path: '/Public/Moments',
-      component: ()=>import ( "/src/layouts/jcs.vue" ),
+      component: ()=>import ( "~/layouts/jcs.vue" ),
       meta: {"layout":"jcs"},
       children: [{
         path: "",

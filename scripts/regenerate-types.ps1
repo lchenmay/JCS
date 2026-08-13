@@ -2,9 +2,10 @@ param([switch] $Execute, [switch] $AllowUnchangedDesign)
 
 $ErrorActionPreference = 'Stop'
 $repoRoot = (Resolve-Path -LiteralPath (Join-Path $PSScriptRoot '..')).Path
-$expectedRoot = 'D:\DEV\JCS'
-if (-not [string]::Equals($repoRoot, $expectedRoot, [StringComparison]::OrdinalIgnoreCase)) {
-    throw "Refusing generation outside $expectedRoot. Resolved root: $repoRoot"
+foreach ($marker in @('.git', 'AGENTS.md', 'TypeSys\TypeSys.fsproj')) {
+    if (-not (Test-Path -LiteralPath (Join-Path $repoRoot $marker))) {
+        throw "Refusing generation because repository marker is missing: $marker"
+    }
 }
 
 $status = @(git -C $repoRoot status --porcelain=v1 --untracked-files=all)
@@ -17,9 +18,13 @@ if (-not $AllowUnchangedDesign -and $designChanges.Count -eq 0) { $issues.Add('N
 
 $programPath = Join-Path $repoRoot 'TypeSys\Program.fs'
 $program = Get-Content -Raw -LiteralPath $programPath
+$codeRobot = Get-Content -Raw -LiteralPath (Join-Path $repoRoot 'TypeSys\CodeRobot.fs')
 if ($program -notmatch 'TypeSys has no default target') { $issues.Add('TypeSys does not contain the no-default-target safety gate.') }
-if ($program -notmatch [regex]::Escape('D:\DEV\JCS\JCS.Shared')) { $issues.Add('JCS target path is not D:\DEV\JCS\JCS.Shared.') }
-if ($program -match '(?i)let\s+pwd\s*=\s*"[^"\r\n]+"') { $issues.Add('TypeSys still contains an embedded password literal.') }
+if ($program -notmatch 'repositoryDirectory repositoryRoot') { $issues.Add('JCS target is not resolved relative to the repository.') }
+if ($program -notmatch 'TYPESYS_AIARWA_ROOT') { $issues.Add('The cross-repository Aiarwa target lacks an explicit root gate.') }
+if (($program + $codeRobot) -match '(?i)[A-Z]:[\\/]') { $issues.Add('TypeSys still contains a hardcoded drive path.') }
+if ($codeRobot -match '(?i)Password\s*=') { $issues.Add('TypeSys still contains an embedded password assignment.') }
+if ($codeRobot -match 'File\.Copy\s*\(') { $issues.Add('TypeSys still copies hand-maintained frontend templates.') }
 
 Write-Output "JCS controlled TypeSys generation; execute=$Execute"
 if ($issues.Count -gt 0) {

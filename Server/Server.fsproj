@@ -2,7 +2,6 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net8.0</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
@@ -10,11 +9,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Common\UtilWebServer\UtilWebServer.fsproj" />
+    <ProjectReference Include="..\..\Common\UtilKestrel\UtilKestrel.fsproj" />
     <ProjectReference Include="..\..\Common\Util\Util.fsproj" />
     <ProjectReference Include="..\JCS.BizLogics\JCS.BizLogics.fsproj" />
-    <ProjectReference Include="..\JCS.Shared\JCS.Shared.fsproj" />
-    <ProjectReference Include="..\TypeSys\TypeSys.fsproj" />
   </ItemGroup>
 
 </Project>
