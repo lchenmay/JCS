@@ -1,6 +1,5 @@
 ﻿open System
 open System.Collections.Generic
-open System.IO
 open System.Text
 open System.Text.Json
 open System.Threading
@@ -26,21 +25,6 @@ let output (s:string) =
     |> Console.WriteLine
 
 let outputRawStr (s:string) = Console.WriteLine s
-
-let rec private repositoryWebRoot (directory: DirectoryInfo) =
-    let gitMarker = Path.Combine(directory.FullName, ".git")
-    if Directory.Exists gitMarker || File.Exists gitMarker then
-        Path.Combine(directory.FullName, "WebDeploy", "wwwroot")
-    elif isNull directory.Parent then
-        Path.Combine(AppContext.BaseDirectory, "wwwroot")
-    else
-        repositoryWebRoot directory.Parent
-
-let webRoot =
-    match Environment.GetEnvironmentVariable "JCS_AIOSERVER_WEB_ROOT" with
-    | configured when String.IsNullOrWhiteSpace configured ->
-        repositoryWebRoot (DirectoryInfo AppContext.BaseDirectory)
-    | configured -> Path.GetFullPath configured
 
 [<EntryPoint>]
 let main args =
@@ -75,7 +59,7 @@ let main args =
         None
 
     zweb.disconnector.Add(fun bin -> ())
-    lauchWebServer output (httpHandler (httpEcho webRoot () branch)) wsHandler zweb
+    lauchWebServer output (httpHandler (httpEcho @"C:\Dev\JCS\WebDeploy\wwwroot" () branch)) wsHandler zweb
 
     Util.Runtime.halt output "" ""
 

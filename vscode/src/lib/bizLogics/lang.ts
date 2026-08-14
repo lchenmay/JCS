@@ -1,5 +1,6 @@
 import * as Graphics from '~/lib/util/graphics'
 import * as GraphicsImpl from '~/lib/util/graphicsH5'
+import * as types from '~/lib/bizLogics/types'
 import { drawLine, fillRect } from '../util/graphicsPixi'
 
 const data = {

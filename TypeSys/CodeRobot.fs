@@ -1069,7 +1069,7 @@ let prepareRobot output config=
         output = output }
 
 
-let go output config =
+let go output exeDir config  = 
 
     let robot = prepareRobot output config
 
@@ -1168,11 +1168,50 @@ let go output config =
     save srcs
 
     if Directory.Exists config.JsDir then
-        Path.Combine(config.JsDir, "..", "..", "..")
-        |> Path.GetFullPath
+        let pathsrc = 
+            let di = new DirectoryInfo(exeDir)
+            Path.Combine(di.Parent.Parent.Parent.Parent.FullName,"VsCodeTemplate")
+        let pathdst = 
+            let di = new DirectoryInfo(config.JsDir)
+            Path.Combine(di.Parent.Parent.Parent.Parent.FullName,"vscode")
+        [|  
+            //"src/main.ts"
+            //"src/comps/RichTextEditor.vue"
+            //"src/comps/Uploader.vue"
+            //"src/lib/bizlogics/lang.ts"
+            //"src/lib/store/init.ts"
+            //"src/lib/store/runtime.ts"
+            //"src/lib/store/wshandler.ts"
+            "src/lib/util/bin.ts"
+            "src/lib/util/graphics.ts"
+            "src/lib/util/graphicsH5.ts"
+            "src/lib/util/graphicsPixi.ts"
+            "src/lib/util/text.ts"
+            "src/lib/util/markdown.ts"
+            //"src/types/main.d.ts"  
+                                    |]
+        |> Array.iter(fun f -> 
+            try
+                File.Copy(
+                Path.Combine(pathsrc,f),
+                Path.Combine(pathdst,f),true)
+            with 
+            | _ -> ())
+
+        config.JsDir.Replace("\src\lib\shared","")
         |> FrontendPackVue.build robot.config.mainDir
 
     "Done" |> output
         
-let short (_output: string -> unit) (_code: string) (_deployHost: string) =
-    invalidOp "The legacy TypeSys.short entry is disabled. Use the repository-controlled generation wrapper."
+let short output code deployHost = 
+    go 
+        output 
+        @"C:\Dev\JCS\TypeSys\bin\Debug\net10.0"
+        {
+            ns = code + ".Shared"
+            rdbms = Util.Db.Rdbms.PostgreSql
+            dbName = code.ToLower()
+            donmainName = ""
+            conn = @"Host=" + deployHost + ";Port=5432;Database=" + code.ToLower() + ";Username=" + code.ToLower() + ";Password=e2TpqcaTEYLfkvFMkc"
+            mainDir = @"C:/Dev/" + code + "/" + code + ".Shared"
+            JsDir = @"C:/Dev/" + code + "/vscode/src/lib/shared" }

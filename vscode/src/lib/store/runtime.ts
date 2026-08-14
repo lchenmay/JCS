@@ -40,7 +40,6 @@ export const prepRuntime = (): Runtime => {
         router: glib.route.router,
 
         session: loadLS("session", ''),
-        lang: loadLS("lang", ''),
         user: {},
 
         data: ClientRuntime_empty()

@@ -1,6 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
 	  <DisableImplicitFSharpCoreReference>true</DisableImplicitFSharpCoreReference>
 	  <GenerateDocumentationFile>true</GenerateDocumentationFile>
 	  <OutputType>Exe</OutputType>
@@ -11,7 +12,6 @@
 	  <Compile Include="FSharp.fs" />
     <Compile Include="MetaType.fs" />
     <Compile Include="Common.fs" />
-    <Compile Include="RepositoryPaths.fs" />
     <Compile Include="RDBMS.fs" />
     <Compile Include="CodeRobotI.fs" />
     <Compile Include="LangPackTypeScript.fs" />
@@ -21,6 +21,9 @@
     <Compile Include="CodeRobot.fs" />
     <Compile Include="Loadcfg.fs" />
     <Compile Include="Program.fs" />
+    <Content Include="set.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
   <ItemGroup />

@@ -1,0 +1,29 @@
+{
+  "7": {
+    "ns": "Shared",
+    "rdbms": 0,
+    "dbName": "J7",
+    "donmainName": "",
+    "conn": "server=127.0.0.1; user=sa; database=J7",
+    "mainDir": "C:\\Dev\\J-7\\Shared",
+    "JsDir": "C:\\Dev\\J-7\\vscode\\src\\lib\\shared"
+  },
+  "9": {
+    "ns": "Shared",
+    "rdbms": 0,
+    "dbName": "Game",
+    "donmainName": "",
+    "conn": "server=127.0.0.1; user=sa; database=Game",
+    "mainDir": "C:\\Dev\\Game\\Shared",
+    "JsDir": "C:\\Dev\\Game\\vscode\\src\\lib\\shared"
+  },
+  "11": {
+    "ns": "Shared",
+    "rdbms": 0,
+    "dbName": "GNexts",
+    "donmainName": "",
+    "conn": "server=127.0.0.1; user=sa; database=GNexts",
+    "mainDir": "C:\\Dev\\GNexts\\Shared",
+    "JsDir": "C:\\Dev\\GNexts\\vscode\\src\\lib\\shared"
+  }
+}

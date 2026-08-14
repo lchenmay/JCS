@@ -2,6 +2,7 @@
 
   <PropertyGroup>
     <OutputType>Library</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
 	  <DisableImplicitFSharpCoreReference>true</DisableImplicitFSharpCoreReference>
   </PropertyGroup>
 
@@ -17,7 +18,6 @@
   </ItemGroup>
 
   <ItemGroup>
-	<ProjectReference Include="..\JCS.Shared\JCS.Shared.fsproj" />
     <ProjectReference Include="..\..\Common\UtilKestrel\UtilKestrel.fsproj" />
     <ProjectReference Include="..\..\Common\Util\Util.fsproj" />
   </ItemGroup>
