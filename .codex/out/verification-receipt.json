@@ -1,0 +1,411 @@
+{
+  "schemaVersion": 3,
+  "timestamp": "2026-08-13T06:16:16.1986614Z",
+  "sessionId": "",
+  "repository": "JCS",
+  "repositoryRoot": "D:\\DEV\\JCS",
+  "riskLevel": "L3",
+  "full": true,
+  "policyOnly": false,
+  "success": false,
+  "verificationConfidence": "partial",
+  "taskProfile": {
+    "status": "known",
+    "taskTypes": [
+      "backend",
+      "dependency",
+      "generated-code",
+      "security"
+    ],
+    "selectedRulePacks": [
+      "core",
+      "generated-code",
+      "backend",
+      "dependency",
+      "security"
+    ],
+    "inferredRisk": "L3",
+    "requiredEvidence": [
+      "behavioral",
+      "dependency",
+      "generation",
+      "security",
+      "structural"
+    ],
+    "unknownExplicitTaskTypes": [],
+    "recommendedActions": [],
+    "matches": [
+      {
+        "name": "core",
+        "summary": "Preserve the repository boundary, the user baseline, explicit side-effect authorization, and truthful evidence reporting.",
+        "minimumRisk": "L1",
+        "requiredEvidence": [],
+        "matchedBy": [
+          "always"
+        ],
+        "always": true
+      },
+      {
+        "name": "generated-code",
+        "summary": "Change authoritative sources and use the trusted generator; never patch generated outputs directly.",
+        "minimumRisk": "L2",
+        "requiredEvidence": [
+          "generation",
+          "structural",
+          "dependency"
+        ],
+        "matchedBy": [
+          "explicit",
+          "path"
+        ],
+        "always": false
+      },
+      {
+        "name": "backend",
+        "summary": "Build the touched backend boundary and keep API and serialization behavior explicit.",
+        "minimumRisk": "L1",
+        "requiredEvidence": [
+          "structural"
+        ],
+        "matchedBy": [
+          "explicit",
+          "path"
+        ],
+        "always": false
+      },
+      {
+        "name": "dependency",
+        "summary": "Review lockfiles, compatibility, consumers, and build impact for dependency changes.",
+        "minimumRisk": "L2",
+        "requiredEvidence": [
+          "dependency",
+          "structural"
+        ],
+        "matchedBy": [
+          "explicit",
+          "path"
+        ],
+        "always": false
+      },
+      {
+        "name": "security",
+        "summary": "Require explicit threat, authorization, secret-handling, and negative-path evidence.",
+        "minimumRisk": "L3",
+        "requiredEvidence": [
+          "security",
+          "behavioral"
+        ],
+        "matchedBy": [
+          "explicit"
+        ],
+        "always": false
+      }
+    ]
+  },
+  "coverage": {
+    "confidence": "partial",
+    "pathConfidence": "partial",
+    "taskProfileStatus": "known",
+    "requiredEvidence": [
+      "behavioral",
+      "dependency",
+      "generation",
+      "security",
+      "structural"
+    ],
+    "availableEvidence": [
+      "dependency",
+      "generation",
+      "policy",
+      "structural"
+    ],
+    "missingEvidence": [
+      "behavioral",
+      "security"
+    ],
+    "changedFileCount": 8,
+    "coveredFileCount": 6,
+    "uncoveredPaths": [
+      "AioServer/Program.fs",
+      "BlazorWebAssembly/Properties/PublishProfiles/FolderProfile.pubxml"
+    ],
+    "files": [
+      {
+        "path": "AioServer/Program.fs",
+        "confidence": "partial",
+        "coverageRules": [
+          "aio-server"
+        ],
+        "expectedChecks": [
+          "aio-server-release-build"
+        ],
+        "missingChecks": [
+          "aio-server-release-build"
+        ]
+      },
+      {
+        "path": "BlazorWebAssembly/Properties/PublishProfiles/FolderProfile.pubxml",
+        "confidence": "none",
+        "coverageRules": [],
+        "expectedChecks": [],
+        "missingChecks": []
+      },
+      {
+        "path": "scripts/regenerate-types.ps1",
+        "confidence": "declared",
+        "coverageRules": [
+          "typesys"
+        ],
+        "expectedChecks": [
+          "dependency-impact-readonly",
+          "jcs-bizlogics-release-build",
+          "jcs-shared-release-build",
+          "typesys-release-build"
+        ],
+        "missingChecks": []
+      },
+      {
+        "path": "TypeSys/CodeRobot.fs",
+        "confidence": "declared",
+        "coverageRules": [
+          "typesys"
+        ],
+        "expectedChecks": [
+          "dependency-impact-readonly",
+          "jcs-bizlogics-release-build",
+          "jcs-shared-release-build",
+          "typesys-release-build"
+        ],
+        "missingChecks": []
+      },
+      {
+        "path": "TypeSys/Program.fs",
+        "confidence": "declared",
+        "coverageRules": [
+          "typesys"
+        ],
+        "expectedChecks": [
+          "dependency-impact-readonly",
+          "jcs-bizlogics-release-build",
+          "jcs-shared-release-build",
+          "typesys-release-build"
+        ],
+        "missingChecks": []
+      },
+      {
+        "path": "TypeSys/RepositoryPaths.fs",
+        "confidence": "declared",
+        "coverageRules": [
+          "typesys"
+        ],
+        "expectedChecks": [
+          "dependency-impact-readonly",
+          "jcs-bizlogics-release-build",
+          "jcs-shared-release-build",
+          "typesys-release-build"
+        ],
+        "missingChecks": []
+      },
+      {
+        "path": "TypeSys/set.json",
+        "confidence": "declared",
+        "coverageRules": [
+          "typesys"
+        ],
+        "expectedChecks": [
+          "dependency-impact-readonly",
+          "jcs-bizlogics-release-build",
+          "jcs-shared-release-build",
+          "typesys-release-build"
+        ],
+        "missingChecks": []
+      },
+      {
+        "path": "TypeSys/TypeSys.fsproj",
+        "confidence": "declared",
+        "coverageRules": [
+          "typesys"
+        ],
+        "expectedChecks": [
+          "dependency-impact-readonly",
+          "jcs-bizlogics-release-build",
+          "jcs-shared-release-build",
+          "typesys-release-build"
+        ],
+        "missingChecks": []
+      }
+    ],
+    "recommendedActions": [
+      "Add or run a focused check for uncovered paths, or report path coverage as partial.",
+      "Missing required evidence: behavioral, security. Passing structural checks alone is not complete behavioral validation."
+    ]
+  },
+  "changedFiles": [
+    "AioServer/Program.fs",
+    "BlazorWebAssembly/Properties/PublishProfiles/FolderProfile.pubxml",
+    "scripts/regenerate-types.ps1",
+    "TypeSys/CodeRobot.fs",
+    "TypeSys/Program.fs",
+    "TypeSys/RepositoryPaths.fs",
+    "TypeSys/set.json",
+    "TypeSys/TypeSys.fsproj"
+  ],
+  "generatedFilesChanged": [],
+  "authoritativeSourcesChanged": [],
+  "dependencyImpacts": [
+    {
+      "repository": "Common",
+      "relationship": "upstream",
+      "impacted": false,
+      "compatibilityVerified": false,
+      "defaultAccess": "read-only"
+    },
+    {
+      "repository": "Aiarwa",
+      "relationship": "downstream",
+      "impacted": true,
+      "compatibilityVerified": false,
+      "defaultAccess": "read-only"
+    }
+  ],
+  "userChangesPreserved": "not-evaluated-by-verifier",
+  "checks": [
+    {
+      "name": "generated-file-consistency",
+      "command": "",
+      "passed": true,
+      "exitCode": 0,
+      "failureKind": null,
+      "evidenceLevels": [
+        "generation"
+      ]
+    },
+    {
+      "name": "policy-tests",
+      "command": "pwsh.exe -NoProfile -File .codex/hooks/Test-Policy.ps1 -PolicyPath .codex/policy.json",
+      "passed": true,
+      "exitCode": 0,
+      "failureKind": null,
+      "evidenceLevels": [
+        "policy"
+      ]
+    },
+    {
+      "name": "typesys-release-build",
+      "command": "dotnet build TypeSys/TypeSys.fsproj -c Release --no-restore --no-dependencies",
+      "passed": true,
+      "exitCode": 0,
+      "failureKind": null,
+      "evidenceLevels": [
+        "structural"
+      ]
+    },
+    {
+      "name": "jcs-shared-release-build",
+      "command": "dotnet build JCS.Shared/JCS.Shared.fsproj -c Release --no-restore --no-dependencies",
+      "passed": true,
+      "exitCode": 0,
+      "failureKind": null,
+      "evidenceLevels": [
+        "structural"
+      ]
+    },
+    {
+      "name": "jcs-bizlogics-release-build",
+      "command": "dotnet build JCS.BizLogics/JCS.BizLogics.fsproj -c Release --no-restore --no-dependencies",
+      "passed": true,
+      "exitCode": 0,
+      "failureKind": null,
+      "evidenceLevels": [
+        "structural"
+      ]
+    },
+    {
+      "name": "dependency-impact-readonly",
+      "command": "pwsh.exe -NoProfile -File scripts/codex-dependency-impact.ps1 -Json",
+      "passed": true,
+      "exitCode": 0,
+      "failureKind": null,
+      "evidenceLevels": [
+        "dependency"
+      ]
+    },
+    {
+      "name": "web-logics-release-build",
+      "command": "dotnet build WebLogics/WebLogics.fsproj -c Release --no-restore --no-dependencies",
+      "passed": false,
+      "exitCode": 1,
+      "failureKind": "unknown-failure",
+      "evidenceLevels": [
+        "structural"
+      ]
+    },
+    {
+      "name": "server-release-build",
+      "command": "dotnet build Server/Server.fsproj -c Release --no-restore --no-dependencies",
+      "passed": false,
+      "exitCode": 1,
+      "failureKind": "unknown-failure",
+      "evidenceLevels": [
+        "structural"
+      ]
+    },
+    {
+      "name": "aio-server-release-build",
+      "command": "dotnet build AioServer/AioServer.fsproj -c Release --no-restore --no-dependencies",
+      "passed": false,
+      "exitCode": 1,
+      "failureKind": "unknown-failure",
+      "evidenceLevels": [
+        "structural"
+      ]
+    },
+    {
+      "name": "portal-typecheck",
+      "command": "npm run test",
+      "passed": false,
+      "exitCode": 1,
+      "failureKind": "compile-or-typecheck",
+      "evidenceLevels": [
+        "structural"
+      ]
+    },
+    {
+      "name": "vscode-typecheck",
+      "command": "npm run test",
+      "passed": false,
+      "exitCode": 1,
+      "failureKind": "compile-or-typecheck",
+      "evidenceLevels": [
+        "structural"
+      ]
+    },
+    {
+      "name": "template-typecheck",
+      "command": "npm run test",
+      "passed": false,
+      "exitCode": 1,
+      "failureKind": "compile-or-typecheck",
+      "evidenceLevels": [
+        "structural"
+      ]
+    }
+  ],
+  "skippedChecks": [],
+  "externalSystemsModified": false,
+  "risks": [
+    "Any associated L3 action requires separate explicit user authorization; the verifier does not grant it.",
+    "Dependency compatibility remains unverified: Aiarwa.",
+    "Verification failed: web-logics-release-build [unknown-failure].",
+    "Verification failed: server-release-build [unknown-failure].",
+    "Verification failed: aio-server-release-build [unknown-failure].",
+    "Verification failed: portal-typecheck [compile-or-typecheck].",
+    "Verification failed: vscode-typecheck [compile-or-typecheck].",
+    "Verification failed: template-typecheck [compile-or-typecheck].",
+    "Verification coverage is partial; passing selected checks is not complete evidence for every changed behavior."
+  ],
+  "recommendedActions": [
+    "Add or run a focused check for uncovered paths, or report path coverage as partial.",
+    "Missing required evidence: behavioral, security. Passing structural checks alone is not complete behavioral validation."
+  ]
+}
