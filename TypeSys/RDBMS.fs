@@ -1,4 +1,4 @@
-﻿module TypeSys.RDBMS
+module TypeSys.RDBMS
 
 open System
 open System.IO
@@ -16,7 +16,7 @@ open Util.DbTx
 open Util.Collection
 
 open TypeSys.MetaType
-open TypeSys.Common
+open TypeSys.Config
 
 let sqlField rdbms f =
     let sort,fname,def,json = f

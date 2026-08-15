@@ -1,4 +1,4 @@
-﻿module TypeSys.CodeRobot
+module TypeSys.CodeRobot
 
 open System
 open System.IO
@@ -20,7 +20,7 @@ open Util.DbTx
 open Util.Orm
 
 open TypeSys.MetaType
-open TypeSys.Common
+open TypeSys.Config
 open TypeSys.RDBMS
 open TypeSys.CodeRobotI
 open TypeSys.LangPackTypeScript
@@ -30,10 +30,11 @@ open TypeSys.CodeRobotIITs
 type Robot = {
 srcs: Src[]
 sqlSQLServer: Src
-sqlPostegreSQL: Src
+sqlPostgreSQL: Src
 ot: Src
 otTypeScript: Src
 om: Src
+omdb: Src
 omTypeScript: Src
 cm: Src
 typeTypeScript: Src
@@ -41,8 +42,6 @@ cmTypeScript: Src
 config: RobotConfig
 output: string -> unit }
 
-let robot__srcs robot = 
-    robot.srcs,robot.sqlSQLServer,robot.sqlPostegreSQL,robot.ot,robot.otTypeScript,robot.om,robot.omTypeScript,robot.cm,robot.typeTypeScript,robot.cmTypeScript
 
 let create__Src (pattern:string) = 
     let buffer = new List<string>()
@@ -300,7 +299,7 @@ let save srcs =
 
 let addMulti line = Array.iter(fun src -> src.buffer.Add line)
 
-let fSharpHeader src m opens = 
+let fSharpHeader src m includeDb opens = 
     [|  "module " + m
         ""
         "open LanguagePrimitives"
@@ -314,18 +313,23 @@ let fSharpHeader src m opens =
         "open Util.Perf"
         "open Util.Measures"
         "open Util.CollectionModDict"
-        "open Util.Collection"
-        "open Util.Db"
-        "open Util.DbQuery"
-        "open Util.DbTx"
-        "open Util.Bin"
+        "open Util.Collection" |]
+    |> src.w.multiLine
+
+    // 仅 Native（omdb）/自定义 ORM（cm）需要 DB 驱动命名空间；跨平台子集（ot/om）不引入，
+    // 否则生成的 Aiarwa.Shared.OrmMor / OrmTypes 会间接持有 System.Data.SqlClient。
+    if includeDb then
+        [|  "open Util.Db"
+            "open Util.DbQuery"
+            "open Util.DbTx" |]
+        |> src.w.multiLine
+
+    [|  "open Util.Bin"
         "open Util.Text"
         "open Util.Json"
         "open Util.Orm"
         "open Util.Math"
         "open Util.Stat"
-        ""
-        "open PreOrm"
         "" |]
     |> src.w.multiLine
 
@@ -333,8 +337,16 @@ let fSharpHeader src m opens =
 
 let buildTableEnums robot (t:Table) (name,lines:(string * string)[]) =
 
-    let srcs,sqlSQLServer,sqlPostgreSQL,ot,otTypeScript,om,omTypeScript,cm,typeTypeScript,cmTypeScript =
-        robot__srcs robot
+    let srcs = robot.srcs
+    let sqlSQLServer = robot.sqlSQLServer
+    let sqlPostgreSQL = robot.sqlPostgreSQL
+    let ot = robot.ot
+    let otTypeScript = robot.otTypeScript
+    let om = robot.om
+    let omTypeScript = robot.omTypeScript
+    let cm = robot.cm
+    let typeTypeScript = robot.typeTypeScript
+    let cmTypeScript = robot.cmTypeScript
 
     let enumName = t.typeName.ToLower() + name + "Enum"
 
@@ -442,8 +454,16 @@ let buildTableEnums robot (t:Table) (name,lines:(string * string)[]) =
 
 let buildTableType robot (t:Table) (fieldNames:string[],fields) =
 
-    let srcs,sqlSQLServer,sqlPostgreSQL,ot,otTypeScript,om,omTypeScript,cm,typeTypeScript,cmTypeScript =
-        robot__srcs robot
+    let srcs = robot.srcs
+    let sqlSQLServer = robot.sqlSQLServer
+    let sqlPostgreSQL = robot.sqlPostgreSQL
+    let ot = robot.ot
+    let otTypeScript = robot.otTypeScript
+    let om = robot.om
+    let omTypeScript = robot.omTypeScript
+    let cm = robot.cm
+    let typeTypeScript = robot.typeTypeScript
+    let cmTypeScript = robot.cmTypeScript
 
     fieldNames
     |> Array.map(fun i -> 
@@ -584,6 +604,7 @@ let buildTableType robot (t:Table) (fieldNames:string[],fields) =
 
     ot.w.newlineBlank()
 
+// —— 跨平台子集（无后缀，默认）：纯函数 + 子集 _metadata，零 DB 依赖 ——
 let buildTableMor om (t:Table) (fieldNames:string[],fields) =
 
     om.w.newlineBlank()
@@ -617,36 +638,6 @@ let buildTableMor om (t:Table) (fieldNames:string[],fields) =
     "p" |> om.w.newlineIndent 1
 
     om.w.newlineBlank()
-    "let p" + t.typeName + "__sps (p:p" + t.typeName + ") =" |> om.w.newline
-    "match rdbms with" |> om.w.newlineIndent 1
-    "| Rdbms.SqlServer ->" |> om.w.newlineIndent 1
-    "[|" |> om.w.newlineIndent 2
-    fieldNames
-    |> Array.iter(fun i -> 
-        let sort,name,def,json = t.fields[i]
-        "(\"" + name + "\", " |> om.w.newlineIndent 3
-        match def with
-        | FieldDef.SelectLines items -> "EnumToValue p." + name
-        | FieldDef.Timestamp -> "p." + name + ".Ticks"
-        | _ -> "p." + name 
-        |> om.w.appendEnd
-        ") |> kvp__sqlparam" |> om.w.appendEnd)
-    " |]" |> om.w.appendEnd
-    "| Rdbms.PostgreSql ->" |> om.w.newlineIndent 1
-    "[|" |> om.w.newlineIndent 2
-    fieldNames
-    |> Array.iter(fun i -> 
-        let sort,name,def,json = t.fields[i]
-        "(\"" + name.ToLower() + "\", " |> om.w.newlineIndent 3
-        match def with
-        | FieldDef.SelectLines items -> "EnumToValue p." + name
-        | FieldDef.Timestamp -> "p." + name + ".Ticks"
-        | _ -> "p." + name 
-        |> om.w.appendEnd
-        ") |> kvp__sqlparam" |> om.w.appendEnd)
-    " |]" |> om.w.appendEnd
-
-    om.w.newlineBlank()
     "let db__" + t.typeName + " = db__Rcd db__p" + t.typeName |> om.w.newline
 
     om.w.newlineBlank()
@@ -661,50 +652,6 @@ let buildTableMor om (t:Table) (fieldNames:string[],fields) =
         let sort,name,def,json = t.fields[i]
         name + " = p." + name |> om.w.newlineIndent 1)
     " }" |> om.w.appendEnd
-
-    om.w.newlineBlank()
-    "let " + t.typeName + "_update_transaction output (updater,suc,fail) (rcd:" + t.typeName + ") =" |> om.w.newline
-    "let rollback_p = rcd.p |> p" + t.typeName + "_clone" |> om.w.newlineIndent 1
-    "let rollback_updatedat = rcd.Updatedat" |> om.w.newlineIndent 1
-    "updater rcd.p" |> om.w.newlineIndent 1
-    "let ctime,res =" |> om.w.newlineIndent 1
-    "(rcd.ID,rcd.p,rollback_p,rollback_updatedat)" |> om.w.newlineIndent 2
-    "|> update (conn,output," + t.typeName + "_table," + t.typeName + "_sql_update(),p" + t.typeName + "__sps,suc,fail)" |> om.w.newlineIndent 2
-    "match res with" |> om.w.newlineIndent 1
-    "| Suc ctx ->" |> om.w.newlineIndent 1
-    "rcd.Updatedat <- ctime" |> om.w.newlineIndent 2
-    "suc(ctime,ctx)" |> om.w.newlineIndent 2
-    "| Fail(eso,ctx) ->" |> om.w.newlineIndent 1
-    "rcd.p <- rollback_p" |> om.w.newlineIndent 2
-    "rcd.Updatedat <- rollback_updatedat" |> om.w.newlineIndent 2
-    "fail eso" |> om.w.newlineIndent 2
-
-    om.w.newlineBlank()
-    "let " + t.typeName + "_update output (rcd:" + t.typeName + ") =" |> om.w.newline
-    "rcd" |> om.w.newlineIndent 1
-    "|> " + t.typeName + "_update_transaction output (" |> om.w.newlineIndent 1
-    tab + "(fun p -> ())," |> om.w.newlineIndent 1
-    tab + "(fun (ctime,ctx) -> Some rcd)," |> om.w.newlineIndent 1
-    tab + "(fun dte -> None))" |> om.w.newlineIndent 1
-    "" |> om.w.newlineIndent 1
-
-    om.w.newlineBlank()
-    "let " + t.typeName + "_create_incremental_transaction output (suc,fail) p =" |> om.w.newline
-    "let cid = Interlocked.Increment " + t.typeName + "_id" |> om.w.newlineIndent 1
-    "let ctime = DateTime.UtcNow" |> om.w.newlineIndent 1
-    "match create (conn,output," + t.typeName + "_table,p" + t.typeName + "__sps) (cid,ctime,p) with" |> om.w.newlineIndent 1
-    "| Suc ctx -> ((cid,ctime,ctime,cid),p) |> " + t.typeName + "_wrapper |> suc" |> om.w.newlineIndent 1
-    "| Fail(eso,ctx) -> fail(eso,ctx)" |> om.w.newlineIndent 1
-
-    om.w.newlineBlank()
-    "let " + t.typeName + "_create output p =" |> om.w.newline
-    t.typeName + "_create_incremental_transaction output (" |> om.w.newlineIndent 1
-    tab + "(fun rcd -> Some rcd)," |> om.w.newlineIndent 1
-    tab + "(fun (eso,ctx) -> None)) p" |> om.w.newlineIndent 1
-    "" |> om.w.newlineIndent 1
-
-    om.w.newlineBlank()
-    "let id__" + t.typeName + "o id: " + t.typeName + " option = id__rcd(conn," + t.typeName + "_fieldorders()," + t.typeName + "_table,db__" + t.typeName + ") id" |> om.w.newline
 
     om.w.newlineBlank()
     "let p" + t.typeName + "_marshall = {" |> om.w.newline
@@ -727,13 +674,12 @@ let buildTableMor om (t:Table) (fieldNames:string[],fields) =
     " }" |> om.w.appendEnd
 
     om.w.newlineBlank()
-    "let " + t.typeName + "_metadata = {" |> om.w.newline
+    "let " + t.typeName + "_metadata : Util.Orm.MetadataTypes<p" + t.typeName + "> = {" |> om.w.newline
     "fieldorders = " + t.typeName + "_fieldorders" |> om.w.newlineIndent 1
     "db__rcd = db__" + t.typeName + " " |> om.w.newlineIndent 1
     "wrapper = " + t.typeName + "_wrapper" |> om.w.newlineIndent 1
-    "sps = p" + t.typeName + "__sps" |> om.w.newlineIndent 1
     "id = " + t.typeName + "_id" |> om.w.newlineIndent 1
-    "id__rcdo = id__" + t.typeName + "o" |> om.w.newlineIndent 1
+    "id__rcdo = (fun _ -> None)" |> om.w.newlineIndent 1
     "clone = p" + t.typeName + "_clone" |> om.w.newlineIndent 1
     "empty__p = p" + t.typeName + "_empty" |> om.w.newlineIndent 1
     "rcd__bin = " + t.typeName + "__bin" |> om.w.newlineIndent 1
@@ -742,39 +688,141 @@ let buildTableMor om (t:Table) (fieldNames:string[],fields) =
     "json__po = json__p" + t.typeName + "o" |> om.w.newlineIndent 1
     "rcd__json = " + t.typeName + "__json" |> om.w.newlineIndent 1
     "json__rcdo = json__" + t.typeName + "o" |> om.w.newlineIndent 1
-    "p_create = " + t.typeName + "_create" |> om.w.newlineIndent 1
-    "sql_update = " + t.typeName + "_sql_update" |> om.w.newlineIndent 1
-    "rcd_update = " + t.typeName + "_update" |> om.w.newlineIndent 1
-    "table = " + t.typeName + "_table" |> om.w.newlineIndent 1
     "shorthand = \"" + t.typeName.ToLower() + "\"" |> om.w.newlineIndent 1
     " }" |> om.w.appendEnd
 
-    om.w.newlineBlank()
-    "let " + t.typeName + "TxSqlServer =" |> om.w.newline
-    "\"\"\"" |> om.w.newlineIndent 1
-    "IF NOT EXISTS(SELECT * FROM sysobjects WHERE [name]='" + t.tableName + "' AND xtype='U')" |> om.w.newlineIndent 1
-    "BEGIN" + crlf |> om.w.newlineIndent 1
-    "    CREATE TABLE " + t.tableName + " ([ID] BIGINT NOT NULL" |> om.w.newlineIndent 1
-    ",[Createdat] BIGINT NOT NULL" |> om.w.newlineIndent 1
-    ",[Updatedat] BIGINT NOT NULL" |> om.w.newlineIndent 1
-    ",[Sort] BIGINT NOT NULL," |> om.w.newlineIndent 1
+// —— native 全量（强调 .Native）：含 DB 驱动 + 自包含纯函数（避免消费者同名遮蔽）——
+let buildTableMorNative omdb (t:Table) (fieldNames:string[],fields) =
+
+    omdb.w.newlineBlank()
+    "let p" + t.typeName + "__sps (p:p" + t.typeName + ") =" |> omdb.w.newline
+    "match rdbms with" |> omdb.w.newlineIndent 1
+    "| Rdbms.SqlServer ->" |> omdb.w.newlineIndent 1
+    "[|" |> omdb.w.newlineIndent 2
+    fieldNames
+    |> Array.iter(fun i -> 
+        let sort,name,def,json = t.fields[i]
+        "(\"" + name + "\", " |> omdb.w.newlineIndent 3
+        match def with
+        | FieldDef.SelectLines items -> "EnumToValue p." + name
+        | FieldDef.Timestamp -> "p." + name + ".Ticks"
+        | _ -> "p." + name 
+        |> omdb.w.appendEnd
+        ") |> kvp__sqlparam" |> omdb.w.appendEnd)
+    " |]" |> omdb.w.appendEnd
+    "| Rdbms.PostgreSql ->" |> omdb.w.newlineIndent 1
+    "[|" |> omdb.w.newlineIndent 2
+    fieldNames
+    |> Array.iter(fun i -> 
+        let sort,name,def,json = t.fields[i]
+        "(\"" + name.ToLower() + "\", " |> omdb.w.newlineIndent 3
+        match def with
+        | FieldDef.SelectLines items -> "EnumToValue p." + name
+        | FieldDef.Timestamp -> "p." + name + ".Ticks"
+        | _ -> "p." + name 
+        |> omdb.w.appendEnd
+        ") |> kvp__sqlparam" |> omdb.w.appendEnd)
+    " |]" |> omdb.w.appendEnd
+
+    omdb.w.newlineBlank()
+    "let " + t.typeName + "_update_transaction output (updater,suc,fail) (rcd:" + t.typeName + ") =" |> omdb.w.newline
+    "let rollback_p = rcd.p |> p" + t.typeName + "_clone" |> omdb.w.newlineIndent 1
+    "let rollback_updatedat = rcd.Updatedat" |> omdb.w.newlineIndent 1
+    "updater rcd.p" |> omdb.w.newlineIndent 1
+    "let ctime,res =" |> omdb.w.newlineIndent 1
+    "(rcd.ID,rcd.p,rollback_p,rollback_updatedat)" |> omdb.w.newlineIndent 2
+    "|> update (conn,output," + t.typeName + "_table," + t.typeName + "_sql_update(),p" + t.typeName + "__sps,suc,fail)" |> omdb.w.newlineIndent 2
+    "match res with" |> omdb.w.newlineIndent 1
+    "| Suc ctx ->" |> omdb.w.newlineIndent 1
+    "rcd.Updatedat <- ctime" |> omdb.w.newlineIndent 2
+    "suc(ctime,ctx)" |> omdb.w.newlineIndent 2
+    "| Fail(eso,ctx) ->" |> omdb.w.newlineIndent 1
+    "rcd.p <- rollback_p" |> omdb.w.newlineIndent 2
+    "rcd.Updatedat <- rollback_updatedat" |> omdb.w.newlineIndent 2
+    "fail eso" |> omdb.w.newlineIndent 2
+
+    omdb.w.newlineBlank()
+    "let " + t.typeName + "_update output (rcd:" + t.typeName + ") =" |> omdb.w.newline
+    "rcd" |> omdb.w.newlineIndent 1
+    "|> " + t.typeName + "_update_transaction output (" |> omdb.w.newlineIndent 1
+    tab + "(fun p -> ())," |> omdb.w.newlineIndent 1
+    tab + "(fun (ctime,ctx) -> Some rcd)," |> omdb.w.newlineIndent 1
+    tab + "(fun dte -> None))" |> omdb.w.newlineIndent 1
+    "" |> omdb.w.newlineIndent 1
+
+    omdb.w.newlineBlank()
+    "let " + t.typeName + "_create_incremental_transaction output (suc,fail) p =" |> omdb.w.newline
+    "let cid = Interlocked.Increment " + t.typeName + "_id" |> omdb.w.newlineIndent 1
+    "let ctime = DateTime.UtcNow" |> omdb.w.newlineIndent 1
+    "match create (conn,output," + t.typeName + "_table,p" + t.typeName + "__sps) (cid,ctime,p) with" |> omdb.w.newlineIndent 1
+    "| Suc ctx -> ((cid,ctime,ctime,cid),p) |> " + t.typeName + "_wrapper |> suc" |> omdb.w.newlineIndent 1
+    "| Fail(eso,ctx) -> fail(eso,ctx)" |> omdb.w.newlineIndent 1
+
+    omdb.w.newlineBlank()
+    "let " + t.typeName + "_create output p =" |> omdb.w.newline
+    t.typeName + "_create_incremental_transaction output (" |> omdb.w.newlineIndent 1
+    tab + "(fun rcd -> Some rcd)," |> omdb.w.newlineIndent 1
+    tab + "(fun (eso,ctx) -> None)) p" |> omdb.w.newlineIndent 1
+    "" |> omdb.w.newlineIndent 1
+
+    omdb.w.newlineBlank()
+    "let id__" + t.typeName + "o id: " + t.typeName + " option = id__rcd(conn," + t.typeName + "_fieldorders()," + t.typeName + "_table,db__" + t.typeName + ") id" |> omdb.w.newline
+
+    omdb.w.newlineBlank()
+    "let " + t.typeName + "_metadata : Util.Orm.MetadataTypesNative<p" + t.typeName + "> = {" |> omdb.w.newline
+    "fieldorders = " + t.typeName + "_fieldorders" |> omdb.w.newlineIndent 1
+    "db__rcd = db__" + t.typeName + " " |> omdb.w.newlineIndent 1
+    "wrapper = " + t.typeName + "_wrapper" |> omdb.w.newlineIndent 1
+    "sps = p" + t.typeName + "__sps" |> omdb.w.newlineIndent 1
+    "id = " + t.typeName + "_id" |> omdb.w.newlineIndent 1
+    "id__rcdo = id__" + t.typeName + "o" |> omdb.w.newlineIndent 1
+    "clone = p" + t.typeName + "_clone" |> omdb.w.newlineIndent 1
+    "empty__p = p" + t.typeName + "_empty" |> omdb.w.newlineIndent 1
+    "rcd__bin = " + t.typeName + "__bin" |> omdb.w.newlineIndent 1
+    "bin__rcd = bin__" + t.typeName |> omdb.w.newlineIndent 1
+    "p__json = p" + t.typeName + "__json" |> omdb.w.newlineIndent 1
+    "json__po = json__p" + t.typeName + "o" |> omdb.w.newlineIndent 1
+    "rcd__json = " + t.typeName + "__json" |> omdb.w.newlineIndent 1
+    "json__rcdo = json__" + t.typeName + "o" |> omdb.w.newlineIndent 1
+    "p_create = " + t.typeName + "_create" |> omdb.w.newlineIndent 1
+    "sql_update = " + t.typeName + "_sql_update" |> omdb.w.newlineIndent 1
+    "rcd_update = " + t.typeName + "_update" |> omdb.w.newlineIndent 1
+    "table = " + t.typeName + "_table" |> omdb.w.newlineIndent 1
+    "shorthand = \"" + t.typeName.ToLower() + "\"" |> omdb.w.newlineIndent 1
+    " }" |> omdb.w.appendEnd
+
+    omdb.w.newlineBlank()
+    "let " + t.typeName + "TxSqlServer =" |> omdb.w.newline
+    "\"\"\"" |> omdb.w.newlineIndent 1
+    "IF NOT EXISTS(SELECT * FROM sysobjects WHERE [name]='" + t.tableName + "' AND xtype='U')" |> omdb.w.newlineIndent 1
+    "BEGIN" + crlf |> omdb.w.newlineIndent 1
+    "    CREATE TABLE " + t.tableName + " ([ID] BIGINT NOT NULL" |> omdb.w.newlineIndent 1
+    ",[Createdat] BIGINT NOT NULL" |> omdb.w.newlineIndent 1
+    ",[Updatedat] BIGINT NOT NULL" |> omdb.w.newlineIndent 1
+    ",[Sort] BIGINT NOT NULL," |> omdb.w.newlineIndent 1
 
     fieldNames
     |> Array.iter(fun i -> 
         let sort,name,def,json = t.fields[i]
-        ",[" + name + "]" |> om.w.newlineIndent 1)
+        ",[" + name + "]" |> omdb.w.newlineIndent 1)
 
-    ")" |> om.w.appendEnd
-    "END" |> om.w.newlineIndent 1
-    "\"\"\"" |> om.w.newlineIndent 1
-
-
-    om.w.newlineBlank()
+    ")" |> omdb.w.appendEnd
+    "END" |> omdb.w.newlineIndent 1
+    "\"\"\"" |> omdb.w.newlineIndent 1
 
 let buildTable robot (t:Table) =
 
-    let srcs,sqlSQLServer,sqlPostgreSQL,ot,otTypeScript,om,omTypeScript,cm,typeTypeScript,cmTypeScript =
-        robot__srcs robot
+    let srcs = robot.srcs
+    let sqlSQLServer = robot.sqlSQLServer
+    let sqlPostgreSQL = robot.sqlPostgreSQL
+    let ot = robot.ot
+    let otTypeScript = robot.otTypeScript
+    let om = robot.om
+    let omdb = robot.omdb
+    let omTypeScript = robot.omTypeScript
+    let cm = robot.cm
+    let typeTypeScript = robot.typeTypeScript
+    let cmTypeScript = robot.cmTypeScript
 
     "// [" + t.tableName + "] (" + t.typeName + ")" |> addMulti <| [| ot; otTypeScript |]
     addMulti "" [| ot; otTypeScript |]
@@ -790,14 +838,24 @@ let buildTable robot (t:Table) =
 
     buildTableType robot t (fieldNames,fields)
     buildTableMor om t (fieldNames,fields)
+    buildTableMorNative omdb t (fieldNames,fields)
 
 let buildTables robot tables =
 
-    let srcs,sqlSQLServer,sqlPostgreSQL,ot,otTypeScript,om,omTypeScript,cm,typeTypeScript,cmTypeScript =
-        robot__srcs robot
+    let srcs = robot.srcs
+    let sqlSQLServer = robot.sqlSQLServer
+    let sqlPostgreSQL = robot.sqlPostgreSQL
+    let ot = robot.ot
+    let otTypeScript = robot.otTypeScript
+    let om = robot.om
+    let omTypeScript = robot.omTypeScript
+    let cm = robot.cm
+    let typeTypeScript = robot.typeTypeScript
+    let cmTypeScript = robot.cmTypeScript
+    let omdb = robot.omdb
 
-    om.w.newlineBlank()
-    "let mutable conn = \"\"" |> om.w.newline
+    omdb.w.newlineBlank()
+    "let mutable conn = \"\"" |> omdb.w.newline
 
     tables
     |> Array.iter (buildTable robot)
@@ -809,37 +867,37 @@ let buildTables robot tables =
         |> Array.map(fun i -> "| " + tables[i].typeName + " = " + i.ToString())
         |> Array.iter om.w.newline
 
-    om.w.newlineBlank()
-    "let tablenames = [|" |> om.w.newline
+    omdb.w.newlineBlank()
+    "let tablenames = [|" |> omdb.w.newline
     tables
     |> Array.map(fun t -> t.typeName + "_metadata.table")
-    |> Array.iter(om.w.newlineIndent 1)
-    " |]" |> om.w.appendEnd
+    |> Array.iter(omdb.w.newlineIndent 1)
+    " |]" |> omdb.w.appendEnd
 
-    om.w.newlineBlank()
-    "let init() =" |> om.w.newline
+    omdb.w.newlineBlank()
+    "let init() =" |> omdb.w.newline
     tables
     |> Array.iter(fun t -> 
-        om.w.newlineBlank()
-        "let sqlMax" + t.tableName + ", sqlCount" + t.tableName + " =" |> om.w.newlineIndent 1
-        "match rdbms with" |> om.w.newlineIndent 2
-        "| Rdbms.SqlServer -> \"SELECT MAX(ID) FROM [" + t.tableName + "]\", \"SELECT COUNT(ID) FROM [" + t.tableName + "]\"" |> om.w.newlineIndent 2
-        "| Rdbms.PostgreSql -> \"SELECT MAX(id) FROM " + t.tableName.ToLower() + "\", \"SELECT COUNT(id) FROM " + t.tableName.ToLower() + "\"" |> om.w.newlineIndent 2
-        "match singlevalue_query conn (str__sql sqlMax" + t.tableName + ") with" |> om.w.newlineIndent 1
-        "| Some v ->" |> om.w.newlineIndent 1
-        "let max = v :?> int64" |> om.w.newlineIndent 2
-        "if max > " + t.typeName + "_id.Value then" |> om.w.newlineIndent 2
-        t.typeName + "_id.Value <- max" |> om.w.newlineIndent 3
-        "| None -> ()" |> om.w.newlineIndent 1
-        om.w.newlineBlank()
-        "match singlevalue_query conn (str__sql sqlCount" + t.tableName + ") with" |> om.w.newlineIndent 1
-        "| Some v ->" |> om.w.newlineIndent 1
-        "" + t.typeName + "_count.Value <-" |> om.w.newlineIndent 2
-        "match rdbms with" |> om.w.newlineIndent 3
-        "| Rdbms.SqlServer -> v :?> int32" |> om.w.newlineIndent 3
-        "| Rdbms.PostgreSql -> v :?> int64 |> int32" |> om.w.newlineIndent 3
-        "| None -> ()" |> om.w.newlineIndent 1)
-    "()" |> om.w.newlineIndent 1
+        omdb.w.newlineBlank()
+        "let sqlMax" + t.tableName + ", sqlCount" + t.tableName + " =" |> omdb.w.newlineIndent 1
+        "match rdbms with" |> omdb.w.newlineIndent 2
+        "| Rdbms.SqlServer -> \"SELECT MAX(ID) FROM [" + t.tableName + "]\", \"SELECT COUNT(ID) FROM [" + t.tableName + "]\"" |> omdb.w.newlineIndent 2
+        "| Rdbms.PostgreSql -> \"SELECT MAX(id) FROM " + t.tableName.ToLower() + "\", \"SELECT COUNT(id) FROM " + t.tableName.ToLower() + "\"" |> omdb.w.newlineIndent 2
+        "match singlevalue_query conn (str__sql sqlMax" + t.tableName + ") with" |> omdb.w.newlineIndent 1
+        "| Some v ->" |> omdb.w.newlineIndent 1
+        "let max = v :?> int64" |> omdb.w.newlineIndent 2
+        "if max > " + t.typeName + "_id.Value then" |> omdb.w.newlineIndent 2
+        t.typeName + "_id.Value <- max" |> omdb.w.newlineIndent 3
+        "| None -> ()" |> omdb.w.newlineIndent 1
+        omdb.w.newlineBlank()
+        "match singlevalue_query conn (str__sql sqlCount" + t.tableName + ") with" |> omdb.w.newlineIndent 1
+        "| Some v ->" |> omdb.w.newlineIndent 1
+        "" + t.typeName + "_count.Value <-" |> omdb.w.newlineIndent 2
+        "match rdbms with" |> omdb.w.newlineIndent 3
+        "| Rdbms.SqlServer -> v :?> int32" |> omdb.w.newlineIndent 3
+        "| Rdbms.PostgreSql -> v :?> int64 |> int32" |> omdb.w.newlineIndent 3
+        "| None -> ()" |> omdb.w.newlineIndent 1)
+    "()" |> omdb.w.newlineIndent 1
 
 let buildType ns src t = 
 
@@ -1031,6 +1089,41 @@ let prepareRobot output config=
     let om = 
         config.mainDir + "\OrmMor.fs"
         |> create__Src
+    let omdb = 
+        // Native 全量 ORM 必须落到 {code}.Shared.Native 项目内（与 {code}.Shared 为兄弟目录），
+        // 而非 {code}.Shared/Native/（游离、未被任何项目编译）。
+        // 目录名随 project code 动态派生，避免跨项目写错（如 WYI 误写入 Aiarwa.Shared.Native）。
+        let sharedName = Path.GetFileName(config.mainDir)   // 形如 "WYI.Shared"
+        let code = sharedName.Replace(".Shared", "")        // 形如 "WYI"
+        let nativeDir = Path.Combine(config.mainDir, "..", sharedName + ".Native", "Native")
+        if not (Directory.Exists nativeDir) then Directory.CreateDirectory nativeDir |> ignore
+        // 自动生成 Native 项目的 fsproj（与 Aiarwa.Shared.Native.fsproj 同构），
+        // 保证新项目（如 WYI）生成后拥有可编译的项目文件。
+        let nativeFsproj =
+            Path.Combine(config.mainDir, "..", sharedName + ".Native", code + ".Shared.Native.fsproj")
+        if not (File.Exists nativeFsproj) then
+            [|  "<Project Sdk=\"Microsoft.NET.Sdk\">"
+                ""
+                "  <PropertyGroup>"
+                "    <TargetFramework>net10.0</TargetFramework>"
+                "    <DisableImplicitFSharpCoreReference>true</DisableImplicitFSharpCoreReference>"
+                "    <GenerateDocumentationFile>true</GenerateDocumentationFile>"
+                "  </PropertyGroup>"
+                ""
+                "  <ItemGroup>"
+                "    <Compile Include=\"Native\\OrmMor.Native.fs\" />"
+                "  </ItemGroup>"
+                ""
+                "  <ItemGroup>"
+                "    <ProjectReference Include=\"..\\..\\Common\\Util\\Util.fsproj\" />"
+                "    <ProjectReference Include=\"..\\" + sharedName + "\\" + sharedName + ".fsproj\" />"
+                "  </ItemGroup>"
+                ""
+                "</Project>" |]
+            |> String.concat "\r\n"
+            |> fun c -> File.WriteAllText(nativeFsproj, c)
+        Path.Combine(nativeDir, "OrmMor.Native.fs")
+        |> create__Src
     let omTypeScript = 
         config.JsDir + "\OrmMor.ts"
         |> create__Src
@@ -1052,15 +1145,17 @@ let prepareRobot output config=
                 ot 
                 otTypeScript
                 om
+                omdb
                 omTypeScript
                 cm
                 typeTypeScript
                 cmTypeScript |]
         sqlSQLServer = sqlSQLServer
-        sqlPostegreSQL = sqlPostgreSQL
+        sqlPostgreSQL = sqlPostgreSQL
         ot = ot
         otTypeScript = otTypeScript
         om = om
+        omdb = omdb
         omTypeScript = omTypeScript
         cm = cm
         typeTypeScript = typeTypeScript
@@ -1075,8 +1170,17 @@ let go output exeDir config  =
 
     let modulenames,cTypes,tc,tables = load robot
 
-    let srcs,sqlSQLServer,sqlPostgreSQL,ot,otTypeScript,om,omTypeScript,cm,typeTypeScript,cmTypeScript =
-        robot__srcs robot
+    let srcs = robot.srcs
+    let sqlSQLServer = robot.sqlSQLServer
+    let sqlPostgreSQL = robot.sqlPostgreSQL
+    let ot = robot.ot
+    let otTypeScript = robot.otTypeScript
+    let om = robot.om
+    let omdb = robot.omdb
+    let omTypeScript = robot.omTypeScript
+    let cm = robot.cm
+    let typeTypeScript = robot.typeTypeScript
+    let cmTypeScript = robot.cmTypeScript
 
     "USE [" + config.dbName + "]"  |> sqlSQLServer.w.newline
 
@@ -1103,14 +1207,23 @@ let go output exeDir config  =
         "" |]
     |> otTypeScript.w.multiLine
     
-    fSharpHeader ot (config.ns + ".OrmTypes") [||]
-    
+    fSharpHeader ot (config.ns + ".OrmTypes") true [||]
+
+    [|  "open System.Threading"
+        "open Util.Bin"
+        "open " + config.ns + ".PreOrm"
+        "open " + config.ns + ".OrmTypes"
+        "open " + config.ns + ".Types" |]
+    |> fSharpHeader om (config.ns + ".OrmMor") false
+
     [|  "open System.Data.SqlClient"
         "open System.Threading"
         "open Util.Bin"
+        "open " + config.ns + ".PreOrm"
         "open " + config.ns + ".OrmTypes"
-        "open " + config.ns + ".Types" |]
-    |> fSharpHeader om (config.ns + ".OrmMor")
+        "open " + config.ns + ".Types"
+        "open " + config.ns + ".OrmMor" |]
+    |> fSharpHeader omdb (config.ns + ".Native.OrmMor") true
     modulenames
     |> Array.map(fun n -> 
         "open " + config.ns + ".Types." + n)
@@ -1120,7 +1233,7 @@ let go output exeDir config  =
         "open " + config.ns + ".OrmTypes"
         "open " + config.ns + ".Types"
         "open " + config.ns + ".OrmMor" |]
-    |> fSharpHeader cm (config.ns + ".CustomMor")
+    |> fSharpHeader cm (config.ns + ".CustomMor") true
     modulenames
     |> Array.map(fun n -> 
         "open " + config.ns + ".Types." + n)
@@ -1198,8 +1311,6 @@ let go output exeDir config  =
             with 
             | _ -> ())
 
-        config.JsDir.Replace("\src\lib\shared","")
-        |> FrontendPackVue.build robot.config.mainDir
 
     "Done" |> output
         
@@ -1211,7 +1322,7 @@ let short output code deployHost =
             ns = code + ".Shared"
             rdbms = Util.Db.Rdbms.PostgreSql
             dbName = code.ToLower()
-            donmainName = ""
+            domainName = ""
             conn = @"Host=" + deployHost + ";Port=5432;Database=" + code.ToLower() + ";Username=" + code.ToLower() + ";Password=e2TpqcaTEYLfkvFMkc"
             mainDir = @"C:/Dev/" + code + "/" + code + ".Shared"
             JsDir = @"C:/Dev/" + code + "/vscode/src/lib/shared" }

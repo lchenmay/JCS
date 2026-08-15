@@ -1,4 +1,4 @@
-﻿module TypeSys.CodeRobotIIFs
+module TypeSys.CodeRobotIIFs
 
 open System
 open System.IO
@@ -20,7 +20,7 @@ open Util.DbQuery
 open Util.DbTx
 
 open TypeSys.MetaType
-open TypeSys.Common
+open TypeSys.Config
 open TypeSys.CodeRobotI
 
 

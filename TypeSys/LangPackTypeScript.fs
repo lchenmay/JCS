@@ -1,4 +1,4 @@
-﻿module TypeSys.LangPackTypeScript
+module TypeSys.LangPackTypeScript
 
 open System
 open System.Text
@@ -6,7 +6,7 @@ open System.Text
 open Util.Text
 
 open TypeSys.MetaType
-open TypeSys.Common
+open TypeSys.Config
 open TypeSys.CodeRobotI
 
 let primitiveTypeConvert name = 
