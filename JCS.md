@@ -57,6 +57,7 @@
   - [9.3 P2 — 工程 / 可维护性](#93-p2--工程--可维护性)
 - [10. 修复路线图](#10-修复路线图)
 - [11. 结论与建议](#11-结论与建议)
+- [12. 跨平台双产物规范](#12-跨平台双产物规范完整-server-引用--跨平台-mauiapp-引用)
 
 ---
 
@@ -831,4 +832,27 @@ P2 清理 + TS 类型安全
 
 ---
 
-*文档更新于 2026-08-15，反映 TypeSys **重构后**架构（`Config.fs` 从 `Common.fs` 抽出为规范模块、`Common`/`FrontendPackVue`/`Loadcfg` 移出编译图、`domainName` 拼写修正、路径改为 `C:\Dev`、移除 `FSharp.go` 副作用），并补正 B2 **Native 拆分双写**：`CodeRobot.fs` 的 `buildTableMor`（写句柄 `om` → `Aiarwa.Shared/OrmMor.fs`，跨平台子集 `Util.Orm.MetadataTypes`）+ `buildTableMorNative`（写句柄 `omdb` → `Aiarwa.Shared.Native/Native/OrmMor.Native.fs`，native 全量 `Util.Orm.MetadataTypesNative`）；`Robot` 已含 `omdb: Src`（L37），`omdb` 路径已收口到 `Aiarwa.Shared.Native/Native/`。基于对 `TypeSys` 编译图内全部 `.fs` 源码、目录残留文件及 `Aiarwa` 项目（Design-*.json 与生成产物）逐行核实。如需深挖某一文件（如完整阅读 `CodeRobotIIFs.fs` 的递归 bin 序列化细节），可继续指定。*
+---
+
+## 12. 跨平台双产物规范（完整 Server 引用 + 跨平台 MauiApp 引用）
+
+> TypeSys 2026-08-16 验证通过：跨平台项目（典型如 Aiarwa）同一套 ORM 须同时被 **Server（完整 DB 读写）** 与 **MauiApp / 跨平台 client（零 DB 驱动）** 引用 → 生成器按 `om` / `omdb` 两份产物（实现见 §6.4 B2 双写）。本规范所有 JCS 项目统一遵守。
+
+### 12.1 命名铁律（双产物）
+| 产物 | 命名 | 内容 | 引用方 |
+|------|------|------|--------|
+| 跨平台子集 | `<ns>`（无后缀，如 `Aiarwa.Shared`）| `OrmMor.fs` 纯函数 + `MetadataTypes<pX>`（**不含** `sps`/`p_create`/`sql_update`/`rcd_update`/`table`）；零 DB 驱动依赖 | **MauiApp / 跨平台 client** |
+| 完整 Server 引用 | `<ns>.Native`（如 `Aiarwa.Shared.Native`）| `OrmMor.Native.fs` + `MetadataTypesNative<pX>`（含全部 DB 写入：sps/create/update/table，引用 Npgsql）| **Server** |
+
+- Design 根目录命名 `<ns>` 即可，CodeRobot 自动产出两份（§6.4 `om`/`omdb`）；无需手工维护第二份。
+- **引用规则**：MauiApp/跨平台 client 只 `open`/引用 `<ns>`（子集）；Server 引用 `<ns>.Native`（全量）。
+- 🔴 **红线**：跨平台端**禁止**引用 `Native` 后缀模块 —— 会经 `OrmMor.Native.fs` 间接持有 `Npgsql`/`System.Data.SqlClient`，破坏 MAUI 的 AOT / 单文件 / 移动端发布。
+
+### 12.2 适用边界
+- 含 Server + 跨平台 client 的 JCS 项目（Aiarwa：Server + MAUI）→ **必须**拆两份。
+- 纯 Web SPA 项目（WYI：Clerk + Vue，无原生 client）→ 只需 `<ns>` 子集即可，但建议仍按此模板落地 `<ns>.Native`，未来若扩展桌面/移动 client 零改造成本。
+- 改表结构统一走 `Design-*.json` → 重跑 `TypeSys/Program.fs`，两份同步重生成（铁律③）。
+
+---
+
+*文档更新于 2026-08-16，反映 TypeSys **重构后**架构（B2 Native 双写已验证成功）+ 跨平台双产物规范（完整 Server 引用 `<ns>.Native` / 跨平台 MauiApp 引用 `<ns>` 子集，所有 JCS 项目统一遵守）。基于对 `TypeSys` 编译图内全部 `.fs` 源码、目录残留文件及 `Aiarwa` 项目（Design-*.json 与生成产物）逐行核实。*
