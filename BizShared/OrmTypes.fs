@@ -1,4 +1,4 @@
-module BizShared.OrmTypes
+﻿module BizShared.OrmTypes
 
 open LanguagePrimitives
 
@@ -10,11 +10,13 @@ open Util.Cat
 open Util.Perf
 open Util.Measures
 open Util.Db
+open Util.Rdbms
 open Util.DbQuery
 open Util.DbTx
 open Util.Bin
 open Util.Text
 open Util.Json
 open Util.Orm
+open Util.OrmDb
 
 open PreOrm

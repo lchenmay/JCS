@@ -1,4 +1,4 @@
-module TypeSys.Config
+﻿module TypeSys.Config
 
 open System
 open System.IO
@@ -15,9 +15,11 @@ open Util.Text
 open Util.Json
 open Util.FileSys
 open Util.Db
+open Util.Rdbms
 open Util.DbQuery
 open Util.DbTx
 open Util.Orm
+open Util.OrmDb
 
 open TypeSys.MetaType
 

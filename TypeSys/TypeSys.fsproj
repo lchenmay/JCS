@@ -26,14 +26,13 @@
     </Content>
   </ItemGroup>
 
-  <ItemGroup />
-
   <ItemGroup>
     <PackageReference Include="Npgsql" Version="10.0.2" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.1" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Common\UtilCrossPlatform\UtilCrossPlatform.fsproj" />
     <ProjectReference Include="..\..\Common\Util\Util.fsproj" />
   </ItemGroup>
 

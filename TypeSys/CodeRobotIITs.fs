@@ -1,4 +1,4 @@
-module TypeSys.CodeRobotIITs
+﻿module TypeSys.CodeRobotIITs
 
 open System
 open System.IO
@@ -16,6 +16,8 @@ open Util.Text
 open Util.Json
 open Util.FileSys
 open Util.Db
+open Util.OrmDb
+open Util.Rdbms
 open Util.DbQuery
 open Util.DbTx
 

@@ -9,6 +9,8 @@ open System.Collections.Generic
 open TypeSys.Common
 
 open Util.Db
+open Util.OrmDb
+open Util.Rdbms
 
 let output (s:string) = Console.WriteLine s
 

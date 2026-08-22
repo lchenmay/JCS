@@ -1,4 +1,4 @@
-module JCS.Shared.OrmTypes
+﻿module JCS.Shared.OrmTypes
 
 open LanguagePrimitives
 
@@ -13,12 +13,14 @@ open Util.Measures
 open Util.CollectionModDict
 open Util.Collection
 open Util.Db
+open Util.Rdbms
 open Util.DbQuery
 open Util.DbTx
 open Util.Bin
 open Util.Text
 open Util.Json
 open Util.Orm
+open Util.OrmDb
 open Util.Math
 open Util.Stat
 
@@ -263,18 +265,18 @@ let FBIND_table = "Social_FileBind"
 // [Social_Moment] (MOMENT)
 
 type momentTypeEnum = 
-| Original = 0 // 原创图文视频
-| Repost = 1 // 转发
-| Thread = 2 // 文章
-| Forum = 3 // 论坛
-| Question = 4 // 问题
-| Answer = 5 // 回答
-| BookmarkList = 6 // 收藏夹
-| Poll = 7 // 投票
-| Miles = 8 // 文贵直播文字版
-| Dict = 9 // 辞典
-| WebPage = 10 // 页面
-| MediaFile = 11 // 媒体文件
+| Original = 0 // 鍘熷垱鍥炬枃瑙嗛
+| Repost = 1 // 杞彂
+| Thread = 2 // 鏂囩珷
+| Forum = 3 // 璁哄潧
+| Question = 4 // 闂
+| Answer = 5 // 鍥炵瓟
+| BookmarkList = 6 // 鏀惰棌澶?
+| Poll = 7 // 鎶曠エ
+| Miles = 8 // 鏂囪吹鐩存挱鏂囧瓧鐗?
+| Dict = 9 // 杈炲吀
+| WebPage = 10 // 椤甸潰
+| MediaFile = 11 // 濯掍綋鏂囦欢
 
 let momentTypeEnums = [| momentTypeEnum.Original; momentTypeEnum.Repost; momentTypeEnum.Thread; momentTypeEnum.Forum; momentTypeEnum.Question; momentTypeEnum.Answer; momentTypeEnum.BookmarkList; momentTypeEnum.Poll; momentTypeEnum.Miles; momentTypeEnum.Dict; momentTypeEnum.WebPage; momentTypeEnum.MediaFile |]
 let momentTypeEnumstrs = [| "momentTypeEnum"; "momentTypeEnum"; "momentTypeEnum"; "momentTypeEnum"; "momentTypeEnum"; "momentTypeEnum"; "momentTypeEnum"; "momentTypeEnum"; "momentTypeEnum"; "momentTypeEnum"; "momentTypeEnum"; "momentTypeEnum" |]
@@ -314,24 +316,24 @@ let str__momentTypeEnum (s:string) =
 
 let momentTypeEnum__caption e =
     match e with
-    | momentTypeEnum.Original -> "原创图文视频"
-    | momentTypeEnum.Repost -> "转发"
-    | momentTypeEnum.Thread -> "文章"
-    | momentTypeEnum.Forum -> "论坛"
-    | momentTypeEnum.Question -> "问题"
-    | momentTypeEnum.Answer -> "回答"
-    | momentTypeEnum.BookmarkList -> "收藏夹"
-    | momentTypeEnum.Poll -> "投票"
-    | momentTypeEnum.Miles -> "文贵直播文字版"
-    | momentTypeEnum.Dict -> "辞典"
-    | momentTypeEnum.WebPage -> "页面"
-    | momentTypeEnum.MediaFile -> "媒体文件"
+    | momentTypeEnum.Original -> "鍘熷垱鍥炬枃瑙嗛"
+    | momentTypeEnum.Repost -> "杞彂"
+    | momentTypeEnum.Thread -> "鏂囩珷"
+    | momentTypeEnum.Forum -> "璁哄潧"
+    | momentTypeEnum.Question -> "闂"
+    | momentTypeEnum.Answer -> "鍥炵瓟"
+    | momentTypeEnum.BookmarkList -> "鏀惰棌澶?
+    | momentTypeEnum.Poll -> "鎶曠エ"
+    | momentTypeEnum.Miles -> "鏂囪吹鐩存挱鏂囧瓧鐗?
+    | momentTypeEnum.Dict -> "杈炲吀"
+    | momentTypeEnum.WebPage -> "椤甸潰"
+    | momentTypeEnum.MediaFile -> "濯掍綋鏂囦欢"
     | _ -> ""
 
 type momentStateEnum = 
-| Normal = 0 // 正常
-| Deleted = 1 // 标记删除
-| Scratch = 2 // 草稿
+| Normal = 0 // 姝ｅ父
+| Deleted = 1 // 鏍囪鍒犻櫎
+| Scratch = 2 // 鑽夌
 
 let momentStateEnums = [| momentStateEnum.Normal; momentStateEnum.Deleted; momentStateEnum.Scratch |]
 let momentStateEnumstrs = [| "momentStateEnum"; "momentStateEnum"; "momentStateEnum" |]
@@ -353,15 +355,15 @@ let str__momentStateEnum (s:string) =
 
 let momentStateEnum__caption e =
     match e with
-    | momentStateEnum.Normal -> "正常"
-    | momentStateEnum.Deleted -> "标记删除"
-    | momentStateEnum.Scratch -> "草稿"
+    | momentStateEnum.Normal -> "姝ｅ父"
+    | momentStateEnum.Deleted -> "鏍囪鍒犻櫎"
+    | momentStateEnum.Scratch -> "鑽夌"
     | _ -> ""
 
 type momentMediaTypeEnum = 
-| None = 0 // 无
-| Video = 1 // 视频
-| Audio = 2 // 音频
+| None = 0 // 鏃?
+| Video = 1 // 瑙嗛
+| Audio = 2 // 闊抽
 
 let momentMediaTypeEnums = [| momentMediaTypeEnum.None; momentMediaTypeEnum.Video; momentMediaTypeEnum.Audio |]
 let momentMediaTypeEnumstrs = [| "momentMediaTypeEnum"; "momentMediaTypeEnum"; "momentMediaTypeEnum" |]
@@ -383,9 +385,9 @@ let str__momentMediaTypeEnum (s:string) =
 
 let momentMediaTypeEnum__caption e =
     match e with
-    | momentMediaTypeEnum.None -> "无"
-    | momentMediaTypeEnum.Video -> "视频"
-    | momentMediaTypeEnum.Audio -> "音频"
+    | momentMediaTypeEnum.None -> "鏃?
+    | momentMediaTypeEnum.Video -> "瑙嗛"
+    | momentMediaTypeEnum.Audio -> "闊抽"
     | _ -> ""
 
 type pMOMENT = {
@@ -435,9 +437,9 @@ let pMOMENT_fields() =
             Text("Tags")
             Text("PreviewImgUrl")
             Text("Link")
-            SelectLines("Type", [| ("Original","原创图文视频");("Repost","转发");("Thread","文章");("Forum","论坛");("Question","问题");("Answer","回答");("BookmarkList","收藏夹");("Poll","投票");("Miles","文贵直播文字版");("Dict","辞典");("WebPage","页面");("MediaFile","媒体文件") |])
-            SelectLines("State", [| ("Normal","正常");("Deleted","标记删除");("Scratch","草稿") |])
-            SelectLines("MediaType", [| ("None","无");("Video","视频");("Audio","音频") |]) |]
+            SelectLines("Type", [| ("Original","鍘熷垱鍥炬枃瑙嗛");("Repost","杞彂");("Thread","鏂囩珷");("Forum","璁哄潧");("Question","闂");("Answer","鍥炵瓟");("BookmarkList","鏀惰棌澶?);("Poll","鎶曠エ");("Miles","鏂囪吹鐩存挱鏂囧瓧鐗?);("Dict","杈炲吀");("WebPage","椤甸潰");("MediaFile","濯掍綋鏂囦欢") |])
+            SelectLines("State", [| ("Normal","姝ｅ父");("Deleted","鏍囪鍒犻櫎");("Scratch","鑽夌") |])
+            SelectLines("MediaType", [| ("None","鏃?);("Video","瑙嗛");("Audio","闊抽") |]) |]
     | Rdbms.PostgreSql ->
         [|
             Text("title")
@@ -446,9 +448,9 @@ let pMOMENT_fields() =
             Text("tags")
             Text("previewimgurl")
             Text("link")
-            SelectLines("type", [| ("Original","原创图文视频");("Repost","转发");("Thread","文章");("Forum","论坛");("Question","问题");("Answer","回答");("BookmarkList","收藏夹");("Poll","投票");("Miles","文贵直播文字版");("Dict","辞典");("WebPage","页面");("MediaFile","媒体文件") |])
-            SelectLines("state", [| ("Normal","正常");("Deleted","标记删除");("Scratch","草稿") |])
-            SelectLines("mediatype", [| ("None","无");("Video","视频");("Audio","音频") |]) |]
+            SelectLines("type", [| ("Original","鍘熷垱鍥炬枃瑙嗛");("Repost","杞彂");("Thread","鏂囩珷");("Forum","璁哄潧");("Question","闂");("Answer","鍥炵瓟");("BookmarkList","鏀惰棌澶?);("Poll","鎶曠エ");("Miles","鏂囪吹鐩存挱鏂囧瓧鐗?);("Dict","杈炲吀");("WebPage","椤甸潰");("MediaFile","濯掍綋鏂囦欢") |])
+            SelectLines("state", [| ("Normal","姝ｅ父");("Deleted","鏍囪鍒犻櫎");("Scratch","鑽夌") |])
+            SelectLines("mediatype", [| ("None","鏃?);("Video","瑙嗛");("Audio","闊抽") |]) |]
 
 let pMOMENT_empty(): pMOMENT = {
     Title = ""

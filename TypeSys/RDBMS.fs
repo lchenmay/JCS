@@ -1,4 +1,4 @@
-module TypeSys.RDBMS
+﻿module TypeSys.RDBMS
 
 open System
 open System.IO
@@ -11,6 +11,8 @@ open System.Text.RegularExpressions
 open Util.Cat
 open Util.Text
 open Util.Db
+open Util.OrmDb
+open Util.Rdbms
 open Util.DbQuery
 open Util.DbTx
 open Util.Collection
@@ -97,7 +99,7 @@ let tableCheckExistOrCreateSQLServer (w:TextBlockWriter) table tname =
 
 let tableCheckExistOrCreatePostgreSQL (w:TextBlockWriter) table tname = 
     let pkName = "pk_" + tname
-    // 获取所有合法字段名列表，用于 ARRAY[...] 过滤
+    // 鑾峰彇鎵€鏈夊悎娉曞瓧娈靛悕鍒楄〃锛岀敤浜?ARRAY[...] 杩囨护
     let fieldNames = 
         table.fields.Values 
         |> Seq.map (fun (_, fname, _, _) -> "'" + fname.ToLower() + "'")
@@ -126,7 +128,7 @@ let tableCheckExistOrCreatePostgreSQL (w:TextBlockWriter) table tname =
         "            ,sort BIGINT NOT NULL" |]
     |> w.multiLine
 
-    // 1. 动态生成建表字段
+    // 1. 鍔ㄦ€佺敓鎴愬缓琛ㄥ瓧娈?
     table.fields.Values
     |> Seq.toArray
     |> Array.map (sqlField Rdbms.PostgreSql)
@@ -189,7 +191,7 @@ let tableDropUndefinedColumnsSQLServer (w:TextBlockWriter) tname fns =
     |> w.multiLine
 
 let tableDropUndefinedColumnsPostgreSQL (w:TextBlockWriter) tname fns = 
-    // 1. 将输入的 fns 转换为 PostgreSQL 的字符串数组格式
+    // 1. 灏嗚緭鍏ョ殑 fns 杞崲涓?PostgreSQL 鐨勫瓧绗︿覆鏁扮粍鏍煎紡
     let excludesArray = 
         fns 
         |> Array.map (sprintf "'%s'") 
@@ -209,10 +211,10 @@ let tableDropUndefinedColumnsPostgreSQL (w:TextBlockWriter) tname fns =
         "          AND table_schema = 'public' "
         "          AND column_name <> ALL(" + excludesArray + ")"
         "    LOOP"
-        "        -- 对应 PRINT 'Dropping ' + @tname + '.' + @fn"
+        "        -- 瀵瑰簲 PRINT 'Dropping ' + @tname + '.' + @fn"
         //"        RAISE NOTICE 'Dropping %.%%', '" + tname + "', fn;"
         "        "
-        "        -- 对应 EXEC sp_executesql @sql (format %I 对应 QUOTENAME)"
+        "        -- 瀵瑰簲 EXEC sp_executesql @sql (format %I 瀵瑰簲 QUOTENAME)"
         "        EXECUTE format('ALTER TABLE %I DROP COLUMN %I', '" + tname + "', fn);"
         "    END LOOP;"
         "END $$;"

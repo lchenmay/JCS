@@ -6,8 +6,10 @@ open System.Collections.Concurrent
 
 open Util.Cat
 open Util.Db
+open Util.Rdbms
 open Util.DbTx
 open Util.Orm
+open Util.OrmDb
 
 open UtilKestrel.Types
 open UtilKestrel.Ctx

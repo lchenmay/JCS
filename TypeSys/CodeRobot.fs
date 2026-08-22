@@ -1,4 +1,4 @@
-module TypeSys.CodeRobot
+﻿module TypeSys.CodeRobot
 
 open System
 open System.IO
@@ -15,9 +15,11 @@ open Util.Text
 open Util.Json
 open Util.FileSys
 open Util.Db
+open Util.Rdbms
 open Util.DbQuery
 open Util.DbTx
 open Util.Orm
+open Util.OrmDb
 
 open TypeSys.MetaType
 open TypeSys.Config
@@ -146,8 +148,8 @@ let buildTypeCat output
         | _ ->  c.tEnum <- TypeEnum.Product [||]
         ())
 
-    // 类型定义详细输出（默认关闭，减少日志噪音）
-    // 设置环境变量 TYPESYS_VERBOSE_DUMP=1 可启用
+    // 绫诲瀷瀹氫箟璇︾粏杈撳嚭锛堥粯璁ゅ叧闂紝鍑忓皯鏃ュ織鍣煶锛?
+    // 璁剧疆鐜鍙橀噺 TYPESYS_VERBOSE_DUMP=1 鍙惎鐢?
     if System.Environment.GetEnvironmentVariable("TYPESYS_VERBOSE_DUMP") = "1" then
         cTypesSorted
         |> Array.iter(type__str output 0)
@@ -316,18 +318,20 @@ let fSharpHeader src m includeDb opens =
         "open Util.Collection" |]
     |> src.w.multiLine
 
-    // 仅 Native（omdb）/自定义 ORM（cm）需要 DB 驱动命名空间；跨平台子集（ot/om）不引入，
-    // 否则生成的 Aiarwa.Shared.OrmMor / OrmTypes 会间接持有 System.Data.SqlClient。
+    // 浠?Native锛坥mdb锛?鑷畾涔?ORM锛坈m锛夐渶瑕?DB 椹卞姩鍛藉悕绌洪棿锛涜法骞冲彴瀛愰泦锛坥t/om锛変笉寮曞叆锛?
+    // 鍚﹀垯鐢熸垚鐨?Aiarwa.Shared.OrmMor / OrmTypes 浼氶棿鎺ユ寔鏈?System.Data.SqlClient銆?
     if includeDb then
         [|  "open Util.Db"
             "open Util.DbQuery"
-            "open Util.DbTx" |]
+            "open Util.DbTx"
+            "open Util.OrmDb" |]
         |> src.w.multiLine
 
     [|  "open Util.Bin"
         "open Util.Text"
         "open Util.Json"
         "open Util.Orm"
+        "open Util.Rdbms"
         "open Util.Math"
         "open Util.Stat"
         "" |]
@@ -604,7 +608,7 @@ let buildTableType robot (t:Table) (fieldNames:string[],fields) =
 
     ot.w.newlineBlank()
 
-// —— 跨平台子集（无后缀，默认）：纯函数 + 子集 _metadata，零 DB 依赖 ——
+// 鈥斺€?璺ㄥ钩鍙板瓙闆嗭紙鏃犲悗缂€锛岄粯璁わ級锛氱函鍑芥暟 + 瀛愰泦 _metadata锛岄浂 DB 渚濊禆 鈥斺€?
 let buildTableMor om (t:Table) (fieldNames:string[],fields) =
 
     om.w.newlineBlank()
@@ -691,7 +695,7 @@ let buildTableMor om (t:Table) (fieldNames:string[],fields) =
     "shorthand = \"" + t.typeName.ToLower() + "\"" |> om.w.newlineIndent 1
     " }" |> om.w.appendEnd
 
-// —— native 全量（强调 .Native）：含 DB 驱动 + 自包含纯函数（避免消费者同名遮蔽）——
+// 鈥斺€?native 鍏ㄩ噺锛堝己璋?.Native锛夛細鍚?DB 椹卞姩 + 鑷寘鍚函鍑芥暟锛堥伩鍏嶆秷璐硅€呭悓鍚嶉伄钄斤級鈥斺€?
 let buildTableMorNative omdb (t:Table) (fieldNames:string[],fields) =
 
     omdb.w.newlineBlank()
@@ -769,7 +773,7 @@ let buildTableMorNative omdb (t:Table) (fieldNames:string[],fields) =
     "let id__" + t.typeName + "o id: " + t.typeName + " option = id__rcd(conn," + t.typeName + "_fieldorders()," + t.typeName + "_table,db__" + t.typeName + ") id" |> omdb.w.newline
 
     omdb.w.newlineBlank()
-    "let " + t.typeName + "_metadata : Util.Orm.MetadataTypesNative<p" + t.typeName + "> = {" |> omdb.w.newline
+    "let " + t.typeName + "_metadata : Util.OrmDb.MetadataTypesNative<p" + t.typeName + "> = {" |> omdb.w.newline
     "fieldorders = " + t.typeName + "_fieldorders" |> omdb.w.newlineIndent 1
     "db__rcd = db__" + t.typeName + " " |> omdb.w.newlineIndent 1
     "wrapper = " + t.typeName + "_wrapper" |> omdb.w.newlineIndent 1
@@ -1090,15 +1094,15 @@ let prepareRobot output config=
         config.mainDir + "\OrmMor.fs"
         |> create__Src
     let omdb = 
-        // Native 全量 ORM 必须落到 {code}.Shared.Native 项目内（与 {code}.Shared 为兄弟目录），
-        // 而非 {code}.Shared/Native/（游离、未被任何项目编译）。
-        // 目录名随 project code 动态派生，避免跨项目写错（如 WYI 误写入 Aiarwa.Shared.Native）。
-        let sharedName = Path.GetFileName(config.mainDir)   // 形如 "WYI.Shared"
-        let code = sharedName.Replace(".Shared", "")        // 形如 "WYI"
+        // Native 鍏ㄩ噺 ORM 蹇呴』钀藉埌 {code}.Shared.Native 椤圭洰鍐咃紙涓?{code}.Shared 涓哄厔寮熺洰褰曪級锛?
+        // 鑰岄潪 {code}.Shared/Native/锛堟父绂汇€佹湭琚换浣曢」鐩紪璇戯級銆?
+        // 鐩綍鍚嶉殢 project code 鍔ㄦ€佹淳鐢燂紝閬垮厤璺ㄩ」鐩啓閿欙紙濡?WYI 璇啓鍏?Aiarwa.Shared.Native锛夈€?
+        let sharedName = Path.GetFileName(config.mainDir)   // 褰㈠ "WYI.Shared"
+        let code = sharedName.Replace(".Shared", "")        // 褰㈠ "WYI"
         let nativeDir = Path.Combine(config.mainDir, "..", sharedName + ".Native", "Native")
         if not (Directory.Exists nativeDir) then Directory.CreateDirectory nativeDir |> ignore
-        // 自动生成 Native 项目的 fsproj（与 Aiarwa.Shared.Native.fsproj 同构），
-        // 保证新项目（如 WYI）生成后拥有可编译的项目文件。
+        // 鑷姩鐢熸垚 Native 椤圭洰鐨?fsproj锛堜笌 Aiarwa.Shared.Native.fsproj 鍚屾瀯锛夛紝
+        // 淇濊瘉鏂伴」鐩紙濡?WYI锛夌敓鎴愬悗鎷ユ湁鍙紪璇戠殑椤圭洰鏂囦欢銆?
         let nativeFsproj =
             Path.Combine(config.mainDir, "..", sharedName + ".Native", code + ".Shared.Native.fsproj")
         if not (File.Exists nativeFsproj) then
@@ -1207,7 +1211,7 @@ let go output exeDir config  =
         "" |]
     |> otTypeScript.w.multiLine
     
-    fSharpHeader ot (config.ns + ".OrmTypes") true [||]
+    fSharpHeader ot (config.ns + ".OrmTypes") false [||]
 
     [|  "open System.Threading"
         "open Util.Bin"
@@ -1233,7 +1237,7 @@ let go output exeDir config  =
         "open " + config.ns + ".OrmTypes"
         "open " + config.ns + ".Types"
         "open " + config.ns + ".OrmMor" |]
-    |> fSharpHeader cm (config.ns + ".CustomMor") true
+    |> fSharpHeader cm (config.ns + ".CustomMor") false
     modulenames
     |> Array.map(fun n -> 
         "open " + config.ns + ".Types." + n)
@@ -1320,7 +1324,7 @@ let short output code deployHost =
         @"C:\Dev\JCS\TypeSys\bin\Debug\net10.0"
         {
             ns = code + ".Shared"
-            rdbms = Util.Db.Rdbms.PostgreSql
+            rdbms = Util.Rdbms.Rdbms.PostgreSql
             dbName = code.ToLower()
             domainName = ""
             conn = @"Host=" + deployHost + ";Port=5432;Database=" + code.ToLower() + ";Username=" + code.ToLower() + ";Password=e2TpqcaTEYLfkvFMkc"

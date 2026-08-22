@@ -14,9 +14,11 @@ open Util.Text
 open Util.Json
 open Util.FileSys
 open Util.Db
+open Util.Rdbms
 open Util.DbQuery
 open Util.DbTx
 open Util.Orm
+open Util.OrmDb
 
 type ProgrammingLang = 
 | FSharp

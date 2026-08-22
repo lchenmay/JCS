@@ -11,8 +11,10 @@ open Util.CollectionModDict
 open Util.Bin
 open Util.Json
 open Util.Db
+open Util.Rdbms
 open Util.DbTx
 open Util.Orm
+open Util.OrmDb
 
 open UtilKestrel.Constants
 open UtilKestrel.Db

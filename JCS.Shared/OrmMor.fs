@@ -1,4 +1,4 @@
-module JCS.Shared.OrmMor
+﻿module JCS.Shared.OrmMor
 
 open LanguagePrimitives
 
@@ -13,12 +13,14 @@ open Util.Measures
 open Util.CollectionModDict
 open Util.Collection
 open Util.Db
+open Util.Rdbms
 open Util.DbQuery
 open Util.DbTx
 open Util.Bin
 open Util.Text
 open Util.Json
 open Util.Orm
+open Util.OrmDb
 open Util.Math
 open Util.Stat
 

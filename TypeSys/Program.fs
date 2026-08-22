@@ -1,4 +1,4 @@
-module TypeSys.Program
+﻿module TypeSys.Program
 
 open System
 open System.IO
@@ -6,6 +6,8 @@ open System.IO
 open TypeSys.Config
 
 open Util.Db
+open Util.OrmDb
+open Util.Rdbms
 
 
 Console.OutputEncoding <- System.Text.Encoding.Unicode

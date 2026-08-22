@@ -11,8 +11,10 @@ open Util.Perf
 open Util.Crypto
 open Util.CollectionModDict
 open Util.Db
+open Util.Rdbms
 open Util.DbTx
 open Util.Orm
+open Util.OrmDb
 
 open JCS.Shared.OrmTypes
 open JCS.Shared.Types

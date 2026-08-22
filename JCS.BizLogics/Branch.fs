@@ -186,7 +186,7 @@ let branching (x:X) =
     //    match x.api with
     //    | "plogs" -> (fun x -> 
     //        let metadata = PLOG_metadata
-    //        match "ORDER BY ID DESC" |> Util.Orm.loadall conn (metadata.table,metadata.fieldorders(),metadata.db__rcd) with
+    //        match "ORDER BY ID DESC" |> Util.OrmDb.loadall conn (metadata.table,metadata.fieldorders(),metadata.db__rcd) with
     //        | Some items ->
     //            items
     //            |> Array.filter(fun i -> (UtilKestrel.PageLog.req__fromo i.p.Request).IsSome)
@@ -198,7 +198,7 @@ let branching (x:X) =
     //        let metadata = BOOK_metadata
     //        match 
     //            "ORDER BY ID DESC"
-    //            |> Util.Orm.loadall conn
+    //            |> Util.OrmDb.loadall conn
     //                (metadata.table,metadata.fieldorders(),metadata.db__rcd) with
     //        | Some items ->
     //            if items.Length > 200 then
