@@ -1,4 +1,16 @@
-# JCS 项目架构文档
+﻿# JCS 项目架构文档
+
+---
+
+> **本文档为路由式权威实现文档**（源码核实）：TypeSys 代码生成器的目录/类型系统/编排/跨平台规范/Aiarwa 实例/已知问题。
+> - **生成代码围栏（哪些文件禁手改）** → `topics/typesys.md`
+> - **理论背景（RPC as a Functor）** → `topics/jcs.md`
+
+## 🔴 红线速查
+- TypeSys 生成文件禁手改 → 保留文件清单见 `topics/typesys.md`
+- 跨平台：`*.Shared` 不得引用 `*.Shared.Native` → §12.1
+
+---
 
 > 本文档聚焦 `JCS/TypeSys`——JCS 体系下的**类型驱动跨平台代码生成器**（"设计即真相 / Design-as-Truth"）。
 > 它以 `Design-*.json` 领域模型声明为唯一输入，自动生成 F# 后端 ORM、TypeScript 前端类型/序列化、SQL 建表脚本三套产物。
@@ -69,11 +81,13 @@
 
 ### 1.2 四套产物
 
-| 产物 | 落盘文件 | 内容 |
+| 产物 | 落盘文件（保留文件清单见 `topics/typesys.md`） | 内容 |
 |---|---|---|
-| F# 后端 ORM | `OrmTypes.fs` / `OrmMor.fs` / `Types.fs` | 记录类型 + bin/json 序列化 + DB 读写 S/D + DML 增删改查 + 枚举（见 §6.4：其中 DB 写操作 `sps`/`create`/`update`/`table` 另拆入 `Aiarwa.Shared.Native/Native/OrmMor.Native.fs`，供移动端引用时不间接持有 `Npgsql`/`System.Data.SqlClient`） |
-| TypeScript 前端 | `OrmTypes.d.ts` / `marshall.ts` / `OrmMor.ts` | 类型定义 + 二进制/json 序列化 + API 通信 |
-| SQL | `sqlSQLServer.sql` / `sqlPostgreSQL.sql` | SqlServer + PostgreSQL 双方言建表 + 增量迁移 |
+| F# 后端 ORM（纯/类型+默认仓储） | `OrmTypes.fs` / `OrmMor.fs` / `CustomMor.fs` | 记录类型 + bin/json 序列化 + DB 读写 S/D + DML 增删改查 + 枚举（见 §6.4：其中 DB 写操作 `sps`/`create`/`update`/`table` 另拆入 `Aiarwa.Shared.Native/Native/OrmMor.Native.fs`，供移动端引用时不间接持有 `Npgsql`/`System.Data.SqlClient`） |
+| F# 后端 Native 全量 ORM | `Aiarwa.Shared.Native/Native/OrmMor.Native.fs` | 含全部 DB 写入（sps/create/update/table），由生成器随纯 `OrmMor.fs` 投影生成，并顺带生成 `<Proj>.Shared.Native.fsproj` |
+| TypeScript 前端 | `OrmTypes.d.ts` / `OrmMor.ts` / `Types.d.ts` / `CustomMor.ts` | 类型定义 + 二进制/json 序列化 + API 通信（`marshall.ts` 等 `util/*.ts` 工具由 `VsCodeTemplate` 拷贝，非生成） |
+| SQL DDL | `sqlSQLServer.sql` / `sqlPostgreSQL.sql` | SqlServer + PostgreSQL 双方言建表 + 增量迁移 |
+| ⚠️ 手写输入（非生成） | `Types.fs`（F#）/ `PreOrm.fs` | 生成器**读取** `Types.fs` 的 `//[TypeManaged]` 块作输入，自身不写；二者可编辑 |
 | Vue（半成品） | （当前不落盘） | 从 `Design.json` 的 `vue.components` 生成 `.vue` 骨架 |
 
 ### 1.3 处理链路图
@@ -305,7 +319,7 @@ F# 与 TS 各有一套并行的递归生成器（`t__binImpl`/`bin__tImpl`/`t__j
 
 `go`（`CodeRobot.fs:1102`）流程：
 
-1. `prepareRobot`：按 `config.mainDir` / `config.JsDir` 创建 9 个 `Src`（含文件名）。
+1. `prepareRobot`：按 `config.mainDir` / `config.JsDir` 创建 10 个 `Src`（含文件名，保留文件清单见 `topics/typesys.md`）。
 2. `load`：得到 `modulenames, cTypes, tc, tables`。
 3. 写 SQL 头 `USE [dbName]`，逐表 `table__sql`。
 4. 写 TS `OrmMor.ts` / `CustomMor.ts` 的 import 头与 `marshall` 合并。
@@ -315,7 +329,7 @@ F# 与 TS 各有一套并行的递归生成器（`t__binImpl`/`bin__tImpl`/`t__j
    - `OrmRcd` → `buildType` 写入 `OrmMor.fs` + `OrmMor.ts`
    - `Structure`/`Sum` → `buildType` 写入 `CustomMor.fs` + `CustomMor.ts`
 8. `filter<Type,Table> matchOrm |> buildTables`：生成所有 ORM 表的 DML 与 `init()`。
-9. `save srcs`：9 个文件落盘。
+9. `save srcs`：10 个文件落盘（mainDir 6 + JsDir 4）。
 10. 若 `JsDir` 存在：从 `VsCodeTemplate` 拷贝若干 `util/*.ts` 工具文件；调用 `FrontendPackVue.build`（默认不落盘）。
 11. 输出 `"Done"` → `halt`。
 
@@ -440,7 +454,7 @@ Aiarwa 是 `TypeSys` **当前唯一激活的 target（target 20）**，其生成
 ```
 
 实际源码位于 `c:/Dev/Aiarwa/Aiarwa.Shared/`（跨平台子集）与 `c:/Dev/Aiarwa/Aiarwa.Shared.Native/`（native 全量），输入是 10 份 `Design-*.json`，输出落盘于：
-- `Aiarwa.Shared/OrmTypes.fs`、`OrmMor.fs`、`Types.fs`、`CustomMor.fs`、`PreOrm.fs`（跨平台子集，零 DB 驱动依赖）
+- `Aiarwa.Shared/OrmTypes.fs`、`OrmMor.fs`、`CustomMor.fs`（跨平台子集，零 DB 驱动依赖；`Types.fs`/`PreOrm.fs` 为手写输入，生成器只读取，见 `topics/typesys.md`）
 - `Aiarwa.Shared.Native/Native/OrmMor.Native.fs`（native 全量，含 SQL 写操作，引 `Util.Db`/`Npgsql`）
 - `Aiarwa.Shared/sqlPostgreSQL.sql`、`sqlSQLServer.sql`、`OrmTypes.sql`
 - `Aiarwa/vscode/src/lib/shared/OrmTypes.d.ts`、`OrmMor.ts`、`CustomMor.ts`、`Types.d.ts`
@@ -851,7 +865,7 @@ P2 清理 + TS 类型安全
 ### 12.2 适用边界
 - 含 Server + 跨平台 client 的 JCS 项目（Aiarwa：Server + MAUI）→ **必须**拆两份。
 - 纯 Web SPA 项目（WYI：Clerk + Vue，无原生 client）→ 只需 `<ns>` 子集即可，但建议仍按此模板落地 `<ns>.Native`，未来若扩展桌面/移动 client 零改造成本。
-- 改表结构统一走 `Design-*.json` → 重跑 `TypeSys/Program.fs`，两份同步重生成（铁律③）。
+- 改表结构统一走 `Design-*.json` → 重跑 `TypeSys/Program.fs`，两份同步重生成（铁律③，完整保留文件清单见 `topics/typesys.md`）。
 
 ---
 
