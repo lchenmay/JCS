@@ -44,24 +44,24 @@ let private parseArguments (args: string array) =
                 failwith $"Unexpected argument: {value}."
     loop 0 false Map.empty
 
-let private requireOption name options =
+let private requireOption (name: string) (options: Map<string, string>) =
     match Map.tryFind name options with
     | Some value when not (String.IsNullOrWhiteSpace value) -> value.Trim()
     | _ -> failwith $"Required option {name} is missing."
 
-let private existingDirectory optionName value =
+let private existingDirectory (optionName: string) (value: string) =
     let path = Path.GetFullPath value
     if not (Directory.Exists path) then
         failwith $"{optionName} does not resolve to an existing directory: {path}"
     path
 
-let private parseRdbms value =
+let private parseRdbms (value: string) =
     match value.Trim().ToLowerInvariant() with
     | "postgresql" | "postgres" -> Rdbms.PostgreSql
     | "sqlserver" | "mssql" -> Rdbms.SqlServer
     | _ -> failwith "--rdbms must be postgresql or sqlserver."
 
-let private connectionString options =
+let private connectionString (options: Map<string, string>) =
     match Map.tryFind "--connection-env" options with
     | None -> ""
     | Some variableName ->
