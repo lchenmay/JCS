@@ -146,8 +146,8 @@ let json__BOOKo (json:Json):BOOK option =
 
     let ID = checkfield fields "id" |> parse_int64
     let Sort = checkfield fields "sort" |> parse_int64
-    let Createdat = checkfield fields "createdat" |> parse_int64 |> DateTime.FromBinary
-    let Updatedat = checkfield fields "updatedat" |> parse_int64 |> DateTime.FromBinary
+    let Createdat = checkfield fields "createdat" |> parse_int64 |> Util.Time.unixtime__wintime
+    let Updatedat = checkfield fields "updatedat" |> parse_int64 |> Util.Time.unixtime__wintime
     
     let o  =
         match
@@ -271,8 +271,8 @@ let json__EUo (json:Json):EU option =
 
     let ID = checkfield fields "id" |> parse_int64
     let Sort = checkfield fields "sort" |> parse_int64
-    let Createdat = checkfield fields "createdat" |> parse_int64 |> DateTime.FromBinary
-    let Updatedat = checkfield fields "updatedat" |> parse_int64 |> DateTime.FromBinary
+    let Createdat = checkfield fields "createdat" |> parse_int64 |> Util.Time.unixtime__wintime
+    let Updatedat = checkfield fields "updatedat" |> parse_int64 |> Util.Time.unixtime__wintime
     
     let o  =
         match
@@ -437,8 +437,8 @@ let json__FILEo (json:Json):FILE option =
 
     let ID = checkfield fields "id" |> parse_int64
     let Sort = checkfield fields "sort" |> parse_int64
-    let Createdat = checkfield fields "createdat" |> parse_int64 |> DateTime.FromBinary
-    let Updatedat = checkfield fields "updatedat" |> parse_int64 |> DateTime.FromBinary
+    let Createdat = checkfield fields "createdat" |> parse_int64 |> Util.Time.unixtime__wintime
+    let Updatedat = checkfield fields "updatedat" |> parse_int64 |> Util.Time.unixtime__wintime
     
     let o  =
         match
@@ -570,8 +570,8 @@ let json__FBINDo (json:Json):FBIND option =
 
     let ID = checkfield fields "id" |> parse_int64
     let Sort = checkfield fields "sort" |> parse_int64
-    let Createdat = checkfield fields "createdat" |> parse_int64 |> DateTime.FromBinary
-    let Updatedat = checkfield fields "updatedat" |> parse_int64 |> DateTime.FromBinary
+    let Createdat = checkfield fields "createdat" |> parse_int64 |> Util.Time.unixtime__wintime
+    let Updatedat = checkfield fields "updatedat" |> parse_int64 |> Util.Time.unixtime__wintime
     
     let o  =
         match
@@ -771,8 +771,8 @@ let json__MOMENTo (json:Json):MOMENT option =
 
     let ID = checkfield fields "id" |> parse_int64
     let Sort = checkfield fields "sort" |> parse_int64
-    let Createdat = checkfield fields "createdat" |> parse_int64 |> DateTime.FromBinary
-    let Updatedat = checkfield fields "updatedat" |> parse_int64 |> DateTime.FromBinary
+    let Createdat = checkfield fields "createdat" |> parse_int64 |> Util.Time.unixtime__wintime
+    let Updatedat = checkfield fields "updatedat" |> parse_int64 |> Util.Time.unixtime__wintime
     
     let o  =
         match
@@ -912,8 +912,8 @@ let json__LOGo (json:Json):LOG option =
 
     let ID = checkfield fields "id" |> parse_int64
     let Sort = checkfield fields "sort" |> parse_int64
-    let Createdat = checkfield fields "createdat" |> parse_int64 |> DateTime.FromBinary
-    let Updatedat = checkfield fields "updatedat" |> parse_int64 |> DateTime.FromBinary
+    let Createdat = checkfield fields "createdat" |> parse_int64 |> Util.Time.unixtime__wintime
+    let Updatedat = checkfield fields "updatedat" |> parse_int64 |> Util.Time.unixtime__wintime
     
     let o  =
         match
@@ -1041,8 +1041,8 @@ let json__PLOGo (json:Json):PLOG option =
 
     let ID = checkfield fields "id" |> parse_int64
     let Sort = checkfield fields "sort" |> parse_int64
-    let Createdat = checkfield fields "createdat" |> parse_int64 |> DateTime.FromBinary
-    let Updatedat = checkfield fields "updatedat" |> parse_int64 |> DateTime.FromBinary
+    let Createdat = checkfield fields "createdat" |> parse_int64 |> Util.Time.unixtime__wintime
+    let Updatedat = checkfield fields "updatedat" |> parse_int64 |> Util.Time.unixtime__wintime
     
     let o  =
         match
@@ -1166,8 +1166,8 @@ let json__APIo (json:Json):API option =
 
     let ID = checkfield fields "id" |> parse_int64
     let Sort = checkfield fields "sort" |> parse_int64
-    let Createdat = checkfield fields "createdat" |> parse_int64 |> DateTime.FromBinary
-    let Updatedat = checkfield fields "updatedat" |> parse_int64 |> DateTime.FromBinary
+    let Createdat = checkfield fields "createdat" |> parse_int64 |> Util.Time.unixtime__wintime
+    let Updatedat = checkfield fields "updatedat" |> parse_int64 |> Util.Time.unixtime__wintime
     
     let o  =
         match
@@ -1339,8 +1339,8 @@ let json__FIELDo (json:Json):FIELD option =
 
     let ID = checkfield fields "id" |> parse_int64
     let Sort = checkfield fields "sort" |> parse_int64
-    let Createdat = checkfield fields "createdat" |> parse_int64 |> DateTime.FromBinary
-    let Updatedat = checkfield fields "updatedat" |> parse_int64 |> DateTime.FromBinary
+    let Createdat = checkfield fields "createdat" |> parse_int64 |> Util.Time.unixtime__wintime
+    let Updatedat = checkfield fields "updatedat" |> parse_int64 |> Util.Time.unixtime__wintime
     
     let o  =
         match
@@ -1520,8 +1520,8 @@ let json__HOSTCONFIGo (json:Json):HOSTCONFIG option =
 
     let ID = checkfield fields "id" |> parse_int64
     let Sort = checkfield fields "sort" |> parse_int64
-    let Createdat = checkfield fields "createdat" |> parse_int64 |> DateTime.FromBinary
-    let Updatedat = checkfield fields "updatedat" |> parse_int64 |> DateTime.FromBinary
+    let Createdat = checkfield fields "createdat" |> parse_int64 |> Util.Time.unixtime__wintime
+    let Updatedat = checkfield fields "updatedat" |> parse_int64 |> Util.Time.unixtime__wintime
     
     let o  =
         match
@@ -1661,8 +1661,8 @@ let json__PROJECTo (json:Json):PROJECT option =
 
     let ID = checkfield fields "id" |> parse_int64
     let Sort = checkfield fields "sort" |> parse_int64
-    let Createdat = checkfield fields "createdat" |> parse_int64 |> DateTime.FromBinary
-    let Updatedat = checkfield fields "updatedat" |> parse_int64 |> DateTime.FromBinary
+    let Createdat = checkfield fields "createdat" |> parse_int64 |> Util.Time.unixtime__wintime
+    let Updatedat = checkfield fields "updatedat" |> parse_int64 |> Util.Time.unixtime__wintime
     
     let o  =
         match
@@ -1798,8 +1798,8 @@ let json__TABLEo (json:Json):TABLE option =
 
     let ID = checkfield fields "id" |> parse_int64
     let Sort = checkfield fields "sort" |> parse_int64
-    let Createdat = checkfield fields "createdat" |> parse_int64 |> DateTime.FromBinary
-    let Updatedat = checkfield fields "updatedat" |> parse_int64 |> DateTime.FromBinary
+    let Createdat = checkfield fields "createdat" |> parse_int64 |> Util.Time.unixtime__wintime
+    let Updatedat = checkfield fields "updatedat" |> parse_int64 |> Util.Time.unixtime__wintime
     
     let o  =
         match
@@ -1935,8 +1935,8 @@ let json__COMPo (json:Json):COMP option =
 
     let ID = checkfield fields "id" |> parse_int64
     let Sort = checkfield fields "sort" |> parse_int64
-    let Createdat = checkfield fields "createdat" |> parse_int64 |> DateTime.FromBinary
-    let Updatedat = checkfield fields "updatedat" |> parse_int64 |> DateTime.FromBinary
+    let Createdat = checkfield fields "createdat" |> parse_int64 |> Util.Time.unixtime__wintime
+    let Updatedat = checkfield fields "updatedat" |> parse_int64 |> Util.Time.unixtime__wintime
     
     let o  =
         match
@@ -2128,8 +2128,8 @@ let json__PAGEo (json:Json):PAGE option =
 
     let ID = checkfield fields "id" |> parse_int64
     let Sort = checkfield fields "sort" |> parse_int64
-    let Createdat = checkfield fields "createdat" |> parse_int64 |> DateTime.FromBinary
-    let Updatedat = checkfield fields "updatedat" |> parse_int64 |> DateTime.FromBinary
+    let Createdat = checkfield fields "createdat" |> parse_int64 |> Util.Time.unixtime__wintime
+    let Updatedat = checkfield fields "updatedat" |> parse_int64 |> Util.Time.unixtime__wintime
     
     let o  =
         match
@@ -2265,8 +2265,8 @@ let json__TEMPLATEo (json:Json):TEMPLATE option =
 
     let ID = checkfield fields "id" |> parse_int64
     let Sort = checkfield fields "sort" |> parse_int64
-    let Createdat = checkfield fields "createdat" |> parse_int64 |> DateTime.FromBinary
-    let Updatedat = checkfield fields "updatedat" |> parse_int64 |> DateTime.FromBinary
+    let Createdat = checkfield fields "createdat" |> parse_int64 |> Util.Time.unixtime__wintime
+    let Updatedat = checkfield fields "updatedat" |> parse_int64 |> Util.Time.unixtime__wintime
     
     let o  =
         match
@@ -2430,8 +2430,8 @@ let json__VARTYPEo (json:Json):VARTYPE option =
 
     let ID = checkfield fields "id" |> parse_int64
     let Sort = checkfield fields "sort" |> parse_int64
-    let Createdat = checkfield fields "createdat" |> parse_int64 |> DateTime.FromBinary
-    let Updatedat = checkfield fields "updatedat" |> parse_int64 |> DateTime.FromBinary
+    let Createdat = checkfield fields "createdat" |> parse_int64 |> Util.Time.unixtime__wintime
+    let Updatedat = checkfield fields "updatedat" |> parse_int64 |> Util.Time.unixtime__wintime
     
     let o  =
         match
