@@ -821,8 +821,8 @@ let rec json__tImpl (w:TextBlockWriter) indent t =
 
         [|  "let ID = checkfield fields \"id\" |> parse_int64"
             "let Sort = checkfield fields \"sort\" |> parse_int64"
-            "let Createdat = checkfield fields \"createdat\" |> parse_int64 |> DateTime.FromBinary"
-            "let Updatedat = checkfield fields \"updatedat\" |> parse_int64 |> DateTime.FromBinary"
+            "let Createdat = checkfield fields \"createdat\" |> parse_int64 |> Util.Time.unixtime__wintime"
+            "let Updatedat = checkfield fields \"updatedat\" |> parse_int64 |> Util.Time.unixtime__wintime"
             ""
             "let p = p" + t.name + "_empty()" |]
         |> Array.iter (w.newlineIndent (indent + 1))
