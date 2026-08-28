@@ -570,7 +570,8 @@ let rec t__jsonImpl (w:TextBlockWriter) indent t =
     match t.tEnum with
     | TypeEnum.Structure items ->
 
-        "[|  " |> w.newlineIndent (indent + 1)
+        "[|" |> w.newlineIndent (indent + 1)
+        w.newlineIndent (indent + 2)
 
         items
         |> Array.iter(fun (name,tt) -> 
@@ -637,7 +638,8 @@ let rec t__jsonImpl (w:TextBlockWriter) indent t =
             "" |]
         |> w.multiLineIndent 1
 
-        "[|  (\"id\",v.ID.ToString() |> Json.Num)" |> w.newlineIndent (indent + 1)
+        "[|" |> w.newlineIndent (indent + 1)
+        "(\"id\",v.ID.ToString() |> Json.Num)" |> w.newlineIndent (indent + 2)
         "(\"sort\",v.Sort.ToString() |> Json.Num)" |> w.newlineIndent (indent + 2)
         "(\"createdat\",(v.Createdat |> Util.Time.wintime__unixtime).ToString() |> Json.Num)" |> w.newlineIndent (indent + 2)
         "(\"updatedat\",(v.Updatedat |> Util.Time.wintime__unixtime).ToString() |> Json.Num)" |> w.newlineIndent (indent + 2)
