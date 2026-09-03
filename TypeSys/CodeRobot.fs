@@ -1318,22 +1318,15 @@ let go output exeDir config  =
 
     "Done" |> output
         
-// 部署路径支持环境变量覆盖：本地开发不设置时回退到 Windows 默认路径，
-// 部署到 Linux（如阿里云 ECS）时通过 AIARWA_SHARED_DIR / AIARWA_JS_DIR /
-// AIARWA_EXE_DIR 指向真实目录，避免把 Windows 绝对路径拼到 exeDir 之后。
-let private envOr (name:string) (fallback:string) =
-    let v = System.Environment.GetEnvironmentVariable(name)
-    if System.String.IsNullOrEmpty(v) then fallback else v
-
 let short output code deployHost = 
     go 
         output 
-        (envOr "AIARWA_EXE_DIR" @"C:\Dev\JCS\TypeSys\bin\Debug\net10.0")
+        @"C:\Dev\JCS\TypeSys\bin\Debug\net10.0"
         {
             ns = code + ".Shared"
             rdbms = Util.Rdbms.Rdbms.PostgreSql
             dbName = code.ToLower()
             domainName = ""
             conn = @"Host=" + deployHost + ";Port=5432;Database=" + code.ToLower() + ";Username=" + code.ToLower() + ";Password=e2TpqcaTEYLfkvFMkc"
-            mainDir = envOr "AIARWA_SHARED_DIR" (@"C:/Dev/" + code + "/" + code + ".Shared")
-            JsDir = envOr "AIARWA_JS_DIR" (@"C:/Dev/" + code + "/vscode/src/lib/shared") }
+            mainDir = @"C:/Dev/" + code + "/" + code + ".Shared"
+            JsDir = @"C:/Dev/" + code + "/vscode/src/lib/shared" }
