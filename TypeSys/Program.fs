@@ -90,6 +90,14 @@ let target__config target =
             conn = "Host=localhost;Port=5432;Database=aiarwa;Username=aiarwa;Password=e2TpqcaTEYLfkvFMkc"
             mainDir = @"C:\Dev\Aiarwa\Aiarwa.Shared"
             JsDir = @"C:\Dev\Aiarwa\vscode\src\lib\shared" }
+    | 21 ->
+        {   ns = "jCopilot.Shared"
+            rdbms = Rdbms.PostgreSql
+            dbName = "jcopilot"
+            domainName = ""
+            conn = "Host=localhost;Port=5432;Database=jcopilot;Username=jcopilot;Password=e2TpqcaTEYLfkvFMkc"
+            mainDir = @"C:\Dev\jCopilot\jCopilot.Shared"
+            JsDir = @"C:\Dev\jCopilot\vscode\src\lib\shared" }
     | 10 ->
         {   ns = "Game.Shared"
             rdbms = Rdbms.SqlServer
@@ -173,6 +181,7 @@ let runMultiple exeDir =
         //6 // JCS
         //7 // J-7
         20 // Aiarwa
+        21 // jCopilot
         //16 // studio
         //17 // J
         //18 // FA
