@@ -680,8 +680,12 @@ let rec json__tImpl (w:TextBlockWriter) indent t =
             if type__supportMarshall tt then
                 "match json__tryFindByName json \"" + name + "\" with" |> w.newlineIndent (indent + 2) 
                 "| None ->" |> w.newlineIndent (indent + 2) 
-                "passOptions <- false" |> w.newlineIndent (indent + 3) 
-                "None" |> w.newlineIndent (indent + 3) 
+                let isOption = match tt.tEnum with TypeEnum.Option _ -> true | _ -> false
+                if isOption then
+                    "None" |> w.newlineIndent (indent + 3) 
+                else
+                    "passOptions <- false" |> w.newlineIndent (indent + 3) 
+                    "None" |> w.newlineIndent (indent + 3) 
                 "| Some v -> " |> w.newlineIndent (indent + 2) 
                 "match v |> " |> w.newlineIndent (indent + 3) 
                 (json__tCall w (indent + 3) tt)
@@ -701,7 +705,11 @@ let rec json__tImpl (w:TextBlockWriter) indent t =
         "({" |> w.newlineIndent (indent + 2)
         items
         |> Array.iter(fun (name,tt) -> 
-            name + " = " + name + "o.Value" |> w.newlineIndent (indent + 3))
+            let isOption = match tt.tEnum with TypeEnum.Option _ -> true | _ -> false
+            if isOption then
+                name + " = (if " + name + "o.IsSome then " + name + "o.Value else None)" |> w.newlineIndent (indent + 3) 
+            else
+                name + " = " + name + "o.Value" |> w.newlineIndent (indent + 3))
         " }:" + t.name + ") |> Some" |> w.appendEnd
 
         "else" |> w.newlineIndent (indent + 1) 
