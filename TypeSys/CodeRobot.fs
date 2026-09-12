@@ -291,15 +291,33 @@ let load robot =
 
     modulenames.ToArray(),cTypes,buildTypeCat robot.output tables cTypes,tableArray
 
+let preserveReserved (oldText:string) (newText:string) =
+    let r = new Regex(@"//\[Reserved\]\{(.*?)//\}", RegexOptions.Singleline)
+    if not (r.IsMatch oldText) then newText
+    else
+        let oldInner = (r.Match oldText).Groups.[1].Value
+        if oldInner.Trim() = "" then newText
+        else r.Replace(newText, fun _ -> "//[Reserved]{" + oldInner + "//}")
+
 let save srcs = 
     srcs
     |> Array.iter(fun src ->
-        src
-        |> src__txt crlf
-        |> try_write_text (src.filename)
-        |> ignore)
+        let newText = src |> src__txt crlf
+        let finalText =
+            if File.Exists src.filename then
+                preserveReserved (File.ReadAllText src.filename) newText
+            else newText
+        finalText |> try_write_text (src.filename) |> ignore)
 
 let addMulti line = Array.iter(fun src -> src.buffer.Add line)
+
+let reservedBlock src =
+    [|  ""
+        "//[Reserved]{"
+        ""
+        "//}"
+        "" |]
+    |> src.w.multiLine
 
 let fSharpHeader src m includeDb opens = 
     [|  "module " + m
@@ -1213,6 +1231,8 @@ let go output exeDir config  =
     
     fSharpHeader ot (config.ns + ".OrmTypes") false [||]
 
+    reservedBlock ot
+
     [|  "open System.Threading"
         "open Util.Bin"
         "open " + config.ns + ".PreOrm"
@@ -1228,10 +1248,15 @@ let go output exeDir config  =
         "open " + config.ns + ".Types"
         "open " + config.ns + ".OrmMor" |]
     |> fSharpHeader omdb (config.ns + ".Native.OrmMor") true
+
+    reservedBlock omdb
+
     modulenames
     |> Array.map(fun n -> 
         "open " + config.ns + ".Types." + n)
     |> om.w.multiLine
+
+    reservedBlock om
 
     [|  "open Util.Bin"
         "open " + config.ns + ".OrmTypes"
@@ -1242,6 +1267,8 @@ let go output exeDir config  =
     |> Array.map(fun n -> 
         "open " + config.ns + ".Types." + n)
     |> cm.w.multiLine
+
+    reservedBlock cm
 
     //let rdbms = 
     //    match config.rdbms with
