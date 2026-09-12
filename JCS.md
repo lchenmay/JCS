@@ -33,8 +33,9 @@
 - [4. 配置与入口](#4-配置与入口)
   - [4.1 RobotConfig 结构](#41-robotconfig-结构)
   - [4.2 Program.fs 入口编排](#42-programfs-入口编排)
-  - [4.3 多 target 配置（当前仅激活 20=Aiarwa）](#43-多-target-配置当前仅激活-20aiarwa)
-  - [4.4 Loadcfg.fs 与 set.json（当前为孤儿）](#44-loadcfgfs-与-setjson当前为孤儿)
+  - [4.3 多 target 配置（当前激活 20=Aiarwa / 21=jCopilot）](#s43)
+  - [4.4 Loadcfg.fs 与 set.json（已孤儿化 + 移出编译图）](#s44)
+  - [4.5 Runner.fsx：AI / 外部项目执行生成的唯一入口](#s45)
 - [5. 加载阶段：Design-*.json → 内存模型](#5-加载阶段design-json--内存模型)
   - [5.1 文件发现与聚合](#51-文件发现与聚合)
   - [5.2 shorthand 推导](#52-shorthand-推导)
@@ -44,7 +45,7 @@
   - [6.1 分层设计](#61-分层设计)
   - [6.2 CodeRobot.go 总编排](#62-coderobotgo-总编排)
   - [6.3 F# 记录类型生成（OrmTypes.fs）](#63-f-记录类型生成ormtypesfs)
-  - [6.4 F# ORM 读写层（OrmMor.fs）](#64-f-orm-读写层ormmorfs)
+  - [6.4 F# ORM 读写层（双写：跨平台子集 `OrmMor.fs` + native 全量 `OrmMor.Native.fs`）](#s64)
   - [6.5 二进制序列化（CodeRobotIIFs）](#65-二进制序列化coderototiifs)
   - [6.6 JSON 序列化（CodeRobotI.fs 内 fdef__tjson/fdef__jsont）](#66-json-序列化coderototifs-内-fdef__tjsonfdef__jsont)
   - [6.7 TypeScript 生成（OrmTypes.d.ts / OrmMor.ts / marshall）](#67-typescript-生成ormtypesdts--ormmorts--marshall)
@@ -117,7 +118,7 @@ CodeRobot.go target
 
 | 文件 | 职责 |
 |---|---|
-| `Program.fs` | 入口。定义 `target__config`（魔术整数→RobotConfig）、`runMultiple`（当前只跑 20）。`[<EntryPoint>]` 等价逻辑：`BaseDirectory → runMultiple → halt`。 |
+| `Program.fs` | 入口。定义 `target__config`（魔术整数→RobotConfig）、`runMultiple`（当前跑 **20 与 21**）。`[<EntryPoint>]` 等价逻辑：`BaseDirectory → runMultiple → halt`。AI 切项目请走 [§4.5 Runner.fsx](#s45)，勿改此数组。 |
 | `MetaType.fs` | 领域模型类型定义：`Table` / `Field` / `FieldDef` / `Type` / `TypeEnum` / `ProgrammingLang`。 |
 | `Config.fs` | **重构后新增（规范模块）**：`RobotConfig`（`domainName`，已修正旧 `donmainName` 拼写）/ `Src` / `src__txt` / `productItems__term` / `table__fieldKeys` / `table__typeName`。活跃模块均 `open TypeSys.Config`。 |
 | `CodeRobot.fs` | 总编排：`load` / `go` / `prepareRobot` / `buildTable*` / `buildType*` / `buildCustomTypes`。 |
@@ -215,7 +216,7 @@ type RobotConfig = {
 ```
 System.AppContext.BaseDirectory.TrimEnd(...)  ──▶  runMultiple exeDir
         │
-        │  [| 20 |]  (其余 target 全注释)
+        │  [| 20; 21 |]  (20=Aiarwa, 21=jCopilot；其余 target 以注释形式保留)
         ▼
 Array.map target__config   ──▶  每个 target → RobotConfig
         │
@@ -226,9 +227,10 @@ Array.iter (CodeRobot.go output exeDir)
 Util.Runtime.halt output "" ""
 ```
 
-### 4.3 多 target 配置（当前仅激活 20=Aiarwa）
+<a id="s43"></a>
+### 4.3 多 target 配置（当前激活 20=Aiarwa / 21=jCopilot）
 
-`target__config`（`Program.fs:15`）是一个 `match target` 的魔术整数分发器，支持约十几个项目：
+`target__config`（`Program.fs:16`）是一个 `match target` 的魔术整数分发器，支持约十几个项目：
 
 | target | 项目 | ns | rdbms | 路径 |
 |---|---|---|---|---|
@@ -240,20 +242,50 @@ Util.Runtime.halt output "" ""
 | 16 | Studio | `Studio.Shared` | SqlServer | `C:\Dev\Studio\...` |
 | 18 | FA | `FA.Shared` | SqlServer | `C:\Dev\FA\...` |
 | 19 | JA | `JA.Shared` | SqlServer | `C:\Dev\JA\...` |
-| **20** | **Aiarwa** | `Aiarwa.Shared` | **PostgreSql** | **`C:\Dev\Aiarwa\Shared`** |
+| **20** | **Aiarwa** | `Aiarwa.Shared` | **PostgreSql** | **`C:\Dev\Aiarwa\Aiarwa.Shared`** |
+| **21** | **jCopilot** | `jCopilot.Shared` | **PostgreSql** | **`C:\Dev\jCopilot\jCopilot.Shared`** |
 | 0/5 | CTC | `Shared` | PG/SqlServer | `C:\Dev\GCHAIN2024\...` |
 | 8 | GenVI | `Shared` | SqlServer | `C:\Dev\DevCoop\...` |
 | 1 | GCHAIN | `Shared` | SqlServer | `C:\Dev\GCHAIN2024\...` |
 | 2 | Personal | `BizType` | SqlServer | `C:\Dev\Personal\...` |
 | `_`(默认) | BizShared | `BizShared` | SqlServer | `C:\Dev\JCS\BizShared` |
 
-> ⚠️ **问题**：target 是魔术整数无枚举；15 与 17 都对应 "J"、9 与 10 都对应 "Game"（重复）。`runMultiple` 当前只跑 `20`（其余 target 仅历史残留，见下方说明）。
+> ⚠️ **问题**：target 是魔术整数无枚举；15 与 17 都对应 "J"、9 与 10 都对应 "Game"（重复）。`runMultiple` 当前**实际启用 20 与 21**（Aiarwa + jCopilot）；更早文档写「只跑 20」已不符源码（2026-09-12 复核）。
 
-> **重构现状**：`target__config` 实际**只内联了 target 20**（Aiarwa）的真实配置（见 [§8.1](#81-项目背景与-target-20-配置)），路径已修正为 `C:\Dev\Aiarwa\...`、`domainName` 拼写 `donmainName`→`domainName` 已修正；表中其余 target（6/7/9/10/…）为历史残留、当前并未被 `target__config` 引用，跑 `runMultiple` 只会生成 Aiarwa。`RobotConfig` 现定义于 `Config.fs`（规范模块），`Common.fs` 的旧副本已移出编译图。
+> **重构现状（2026-09-12 源码复核更正）**：`target__config` 中**所有 target 分支都真实存在**（6/7/9/10/11/15/16/17/18/19/20/21/0/5/8/1/2 全有内联配置，非历史残留）；旧版此节称「只内联了 target 20」是错的。Aiarwa 路径为 `C:\Dev\Aiarwa\Aiarwa.Shared`、`domainName` 拼写 `donmainName`→`domainName` 已修正（见 [§8.1](#81-项目背景与-target-20-配置)）。`RobotConfig` 现定义于 `Config.fs`（规范模块），`Common.fs` 的旧副本已移出编译图。
+>
+> 🔴 **但 AI 不应靠增删 `runMultiple` 数组来切项目**——改走 [§4.5 Runner.fsx](#s45)。
 
+<a id="s44"></a>
 ### 4.4 Loadcfg.fs 与 set.json（已孤儿化 + 移出编译图）
 
 `Program.fs` 配置走 `target__config` 内联硬编码，`Loadcfg.fs` 从未被调用。它与 `Common.fs`/`FrontendPackVue.fs` 一并**未列入 `TypeSys.fsproj`**，不参与构建——改动对当前运行无任何效果（"假配置"陷阱）。`Loadcfg.fs` 仍 `open TypeSys.Common` 并用 `System.Text.Json`（非项目统一的 `Util.Json`），保留旧 `donmainName` 读取逻辑，与 `Config.fs` 的新 `domainName` 脱节。
+
+> 2026-09-12 复核确认：`TypeSys.fsproj` 的 `Compile` 列表确实只有 `FSharp.fs`/`MetaType.fs`/`Config.fs`/`RDBMS.fs`/`CodeRobotI.fs`/`LangPackTypeScript.fs`/`CodeRobotIIFs.fs`/`CodeRobotIITs.fs`/`CodeRobot.fs`/`Program.fs`——**`Loadcfg.fs` 与 `FrontendPackVue.fs` 不在其中**，故配置只能经 `RobotConfig` 直给。
+
+<a id="s45"></a>
+### 4.5 Runner.fsx：AI / 外部项目执行生成的唯一入口
+
+`c:/Dev/JCS/TypeSys/Runner.fsx`（2026-09-12 新增）是给 **AI 与其它项目**用的生成入口，用来替代「手工改 `Program.fs` 的 `runMultiple` 再 `dotnet run`」这条老路。
+
+```
+dotnet fsi c:/Dev/JCS/TypeSys/Runner.fsx --proj=WYI
+dotnet fsi c:/Dev/JCS/TypeSys/Runner.fsx --proj=Aiarwa
+dotnet fsi c:/Dev/JCS/TypeSys/Runner.fsx --proj=jCopilot
+```
+
+设计要点：
+
+- **只暴露 `shortcut`**：脚本是 `CodeRobot.short`（`CodeRobot.fs:1348`）的薄封装——`ns` / `dbName` / `mainDir` / `JsDir` 全部由 `<Code>` 按约定推导，脚本内**不重复实现**生成逻辑（复用既有实现，禁建平行实现）。
+- **Code 即约定，无需 target ID**：`ns=<Code>.Shared`、`dbName` 小写、`mainDir=C:/Dev/<Code>/<Code>.Shared`、`JsDir=C:/Dev/<Code>/vscode/src/lib/shared`。
+- **不连库**：`conn` 恒留空——生成的唯一输入是 `<Code>.Shared/Design-*.json`。
+- **`domainName` 是死字段**：全仓只被写入、从不被读取（无消费点），Runner 侧无需暴露。
+- 也可 `#load` 后直接调 `shortcut "<Code>"`。
+- 前置：`dotnet build JCS/TypeSys/TypeSys.fsproj`（`#I` 指向其输出目录）。
+
+> ⚠️ **适用边界**：底层 `CodeRobot.short` 固定写死 `rdbms = PostgreSql`，故 `Runner.fsx` 当前**只适用于 PostgreSQL 项目**（WYI / Aiarwa / jCopilot / AIO…）。**SQL Server 项目（J7 / Game / JCS）暂不适用**，仍需走 §4.3 的 `target__config`。
+>
+> ⚠️ **执行即就地覆写** `topics/typesys.md` 所列 10 个保留文件（+1 单测）；跑前确认 `Design-*.json`，跑后 `git diff` 复核。
 
 ---
 
@@ -341,6 +373,7 @@ F# 与 TS 各有一套并行的递归生成器（`t__binImpl`/`bin__tImpl`/`t__j
 - `buildTableEnums`（`CodeRobot.fs:332`）：为每个 SelectLines 枚举生成 F# 判别联合 + `int__*` / `str__*` / `*__caption` 互转函数。**TS 枚举生成块被注释**（约 40 行 `//export const enum...`）。
 - `buildTableType`（`CodeRobot.fs:449`）：生成 `type <TypeName> = Rcd<p<TypeName>>`、字段顺序 `fieldorders()`（双方言）、`sql_update()`、`fields()`、`empty()`、ID/Count/Table 常量。
 
+<a id="s64"></a>
 ### 6.4 F# ORM 读写层（双写：跨平台子集 `OrmMor.fs` + native 全量 `OrmMor.Native.fs`）
 
 > **B2 双写（Native 拆分）**：为让移动端（MauiApp）能直接引用 `Aiarwa.Shared` 而不间接持有 `Npgsql`/`System.Data.SqlClient`，单表 `metadata` 被拆为两份，由 **两个写句柄** 分流（命名铁律：不能跨平台用 `Native` 后缀）：
@@ -447,10 +480,10 @@ Aiarwa 是 `TypeSys` **当前唯一激活的 target（target 20）**，其生成
     {   ns = "Aiarwa.Shared"
         rdbms = Rdbms.PostgreSql
         dbName = "Aiarwa"
-        domainName = "whatsyourideal.com"   // ✅ 原 donmainName 拼写已修正
+        domainName = "wigaoil.com"   // 字段名拼写 donmainName→domainName 已修正；值仍为 wigaoil.com
         conn = "Host=localhost;Port=5432;Database=aiarwa;Username=aiarwa;Password=e2TpqcaTEYLfkvFMkc"
-        mainDir = @"C:\Dev\Aiarwa\Shared"
-        JsDir = @"C:\Dev\Aiarwa\Vue\src\lib" }
+        mainDir = @"C:\Dev\Aiarwa\Aiarwa.Shared"
+        JsDir = @"C:\Dev\Aiarwa\vscode\src\lib\shared" }
 ```
 
 实际源码位于 `c:/Dev/Aiarwa/Aiarwa.Shared/`（跨平台子集）与 `c:/Dev/Aiarwa/Aiarwa.Shared.Native/`（native 全量），输入是 10 份 `Design-*.json`，输出落盘于：
@@ -459,7 +492,7 @@ Aiarwa 是 `TypeSys` **当前唯一激活的 target（target 20）**，其生成
 - `Aiarwa.Shared/sqlPostgreSQL.sql`、`sqlSQLServer.sql`、`OrmTypes.sql`
 - `Aiarwa/vscode/src/lib/shared/OrmTypes.d.ts`、`OrmMor.ts`、`CustomMor.ts`、`Types.d.ts`
 
-> ✅ 路径已从旧文档记载的 `E:\DEV\Aiarwa\...` 修正为 `C:\Dev\Aiarwa\...`、`domainName` 拼写也已修正（原 `donmainName`/`wigaoil.com` 错配已解决，见 [§9.1](#91-p0--阻断--安全)）。**但密码仍明文写死源码**（§9.1-P0-①），且 `runMultiple` 仅支持 target 20（魔术整数，§9.1-P0-④）——这些尚未修复。
+> ✅ **2026-09-12 按 `Program.fs:85-92` 源码复核更正**：`mainDir`=`C:\Dev\Aiarwa\Aiarwa.Shared`、`JsDir`=`C:\Dev\Aiarwa\vscode\src\lib\shared`（旧文档误记为 `…\Aiarwa\Shared` 与 `…\Vue\src\lib`）；`E:\DEV\Aiarwa\...` 距今已两次修正。字段名拼写 `donmainName`→`domainName` 已修正，但 `domainName` 的**值**仍为 `wigaoil.com`——旧文档称「`wigaoil.com` 错配已解决」与源码不符（见 [§9.1](#91-p0--阻断--安全)）。**但密码仍明文写死源码**（§9.1-P0-①），且 `runMultiple` 当前启用 target 20 与 21、target 仍是魔术整数（§9.1-P0-④）——这些尚未修复。
 
 ### 8.2 输入：Design-*.json 切片
 
@@ -790,8 +823,8 @@ Aiarwa 运行时：RuntimeData 内存优先加载全量 ORM 表，API 字典分�
 
 1. **明文数据库密码写死源码**（`Program.fs:199`，**未解决**）：Aiarwa 连接串 `Password=e2TpqcaTEYLfkvFMkc` 直接进仓库 → 密钥泄露。`set.json` 的 `Game.Password` 同为明文（且 `set.json` 已移出编译图，见 §2）。
 2. **`target__config` 混入非法副作用**（`Program.fs` 旧代码曾对硬编码 `E:\DEV\JCS\BizShared\Types.fs` 调 `TypeSys.FSharp.go`，**已修复**）：当前 `runMultiple` 仅 `Array.map target__config |> Array.iter(CodeRobot.go ...)`，不再调用 `FSharp.go`；空的 `FSharp.fs` 仍保留在编译图但无调用方。
-3. **路径错配**（旧 `E:\DEV\Aiarwa\...`，**已修复**）：target 20 现已写向 `C:\Dev\Aiarwa\Shared` 与 `C:\Dev\Aiarwa\Vue\src\lib`（见 [§8.1](#81-项目背景与-target-20-配置)），与真实仓库一致，可就地重生成。
-4. **`runMultiple` 只跑 target 20**（`Program.fs`，**未解决**）：`target__config` 仅内联 20，其余 target 为历史残留（见 §4.3），且 target 仍是魔术整数。
+3. **路径错配**（旧 `E:\DEV\Aiarwa\...`，**已修复**）：target 20 现写向 `C:\Dev\Aiarwa\Aiarwa.Shared` 与 `C:\Dev\Aiarwa\vscode\src\lib\shared`（见 [§8.1](#81-项目背景与-target-20-配置)），与真实仓库一致，可就地重生成（2026-09-12 按源码复核更正路径名）。
+4. **target 是魔术整数、无枚举**（`Program.fs`，**未解决**）：`runMultiple` 当前跑 20 与 21；`target__config` 中**各 target 分支均真实存在**（并非「仅内联 20 / 其余为历史残留」——2026-09-12 复核更正），但 15 与 17 都映射 "J"、9 与 10 都映射 "Game"，语义重复。
 
 ### 9.2 P1 — 正确性隐患
 

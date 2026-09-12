@@ -19,6 +19,8 @@
 
     <Compile Include="CodeRobot.fs" />
 
+    <Compile Include="Deploy.fs" />
+
     <Compile Include="Program.fs" />
     <Content Include="set.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
