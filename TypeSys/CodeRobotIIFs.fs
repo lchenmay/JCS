@@ -507,7 +507,7 @@ let rec t__jsonImpl (w:TextBlockWriter) indent t =
         let items = items |> Array.filter(snd >> type__supportMarshall)
 
         "[|" |> w.newlineIndent (indent + 1)
-        w.newlineIndent (indent + 2)
+        w.newlineIndent (indent + 2) ""
 
         items
         |> Array.iter(fun (name,tt) -> 

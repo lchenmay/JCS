@@ -571,7 +571,7 @@ let rec t__jsonImpl (w:TextBlockWriter) indent t =
     | TypeEnum.Structure items ->
 
         "[|" |> w.newlineIndent (indent + 1)
-        w.newlineIndent (indent + 2)
+        w.newlineIndent (indent + 2) ""
 
         items
         |> Array.iter(fun (name,tt) -> 
