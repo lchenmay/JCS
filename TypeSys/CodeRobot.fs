@@ -276,7 +276,7 @@ let load robot =
     let modulenames = new List<string>()
     let cTypes = 
         let dict = new Dictionary<string,Type>()
-        robot.config.mainDir + @"\Types.fs"
+        robot.config.mainDir + "/Types.fs"
         |> Util.FileSys.filename__lines
         |> findInLines("//[TypeManaged]{","//}")
         |> Array.map(fun line -> 
@@ -1096,20 +1096,20 @@ let buildCustomTypes config tc src srcTypeScript (cTypes:Dictionary<string,Type>
 let prepareRobot output config= 
 
     let sqlSQLServer =
-        config.mainDir + "\sqlSQLServer.sql"
+        config.mainDir + "/sqlSQLServer.sql"
         |> create__Src
     let sqlPostgreSQL =
-        config.mainDir + "\sqlPostgreSQL.sql"
+        config.mainDir + "/sqlPostgreSQL.sql"
         |> create__Src
     let ot =
-        config.mainDir + "\OrmTypes.fs"
+        config.mainDir + "/OrmTypes.fs"
         |> create__Src
     let otTypeScript = 
-        config.JsDir + "\OrmTypes.d.ts"
+        config.JsDir + "/OrmTypes.d.ts"
         |> create__Src
 
     let om = 
-        config.mainDir + "\OrmMor.fs"
+        config.mainDir + "/OrmMor.fs"
         |> create__Src
     let omdb = 
         // Native 鍏ㄩ噺 ORM 蹇呴』钀藉埌 {code}.Shared.Native 椤圭洰鍐咃紙涓?{code}.Shared 涓哄厔寮熺洰褰曪級锛?
@@ -1133,12 +1133,12 @@ let prepareRobot output config=
                 "  </PropertyGroup>"
                 ""
                 "  <ItemGroup>"
-                "    <Compile Include=\"Native\\OrmMor.Native.fs\" />"
+                "    <Compile Include=\"Native/OrmMor.Native.fs\" />"
                 "  </ItemGroup>"
                 ""
                 "  <ItemGroup>"
-                "    <ProjectReference Include=\"..\\..\\Common\\Util\\Util.fsproj\" />"
-                "    <ProjectReference Include=\"..\\" + sharedName + "\\" + sharedName + ".fsproj\" />"
+                "    <ProjectReference Include=\"../../Common/Util/Util.fsproj\" />"
+                "    <ProjectReference Include=\"../" + sharedName + "/" + sharedName + ".fsproj\" />"
                 "  </ItemGroup>"
                 ""
                 "</Project>" |]
@@ -1147,17 +1147,17 @@ let prepareRobot output config=
         Path.Combine(nativeDir, "OrmMor.Native.fs")
         |> create__Src
     let omTypeScript = 
-        config.JsDir + "\OrmMor.ts"
+        config.JsDir + "/OrmMor.ts"
         |> create__Src
 
     let cm = 
-        config.mainDir + "\CustomMor.fs"
+        config.mainDir + "/CustomMor.fs"
         |> create__Src
     let typeTypeScript = 
-        config.JsDir + "\Types.d.ts"
+        config.JsDir + "/Types.d.ts"
         |> create__Src
     let cmTypeScript = 
-        config.JsDir + "\CustomMor.ts"
+        config.JsDir + "/CustomMor.ts"
         |> create__Src
 
     {
@@ -1344,16 +1344,19 @@ let go output exeDir config  =
 
 
     "Done" |> output
+
+/// TypeSys 按 `<DevRoot>/<Code>` 约定定位工程根：Windows 在 C:/Dev，Linux 开发机无 C: 盘走 /home/sa/Dev。
+let devRoot = if OperatingSystem.IsLinux() then "/home/sa/Dev/" else @"C:/Dev/"
         
 let short output code = 
     go 
         output 
-        @"C:\Dev\JCS\TypeSys\bin\Debug\net10.0"
+        (devRoot + "JCS/TypeSys/bin/Debug/net10.0")
         {
             ns = code + ".Shared"
             rdbms = Util.Rdbms.Rdbms.PostgreSql
             dbName = code.ToLower()
             domainName = ""
             conn = @"Host=localhost;Port=5432;Database=" + code.ToLower() + ";Username=" + code.ToLower() + ";Password=e2TpqcaTEYLfkvFMkc"
-            mainDir = @"C:/Dev/" + code + "/" + code + ".Shared"
-            JsDir = @"C:/Dev/" + code + "/vscode/src/lib/shared" }
+            mainDir = devRoot + code + "/" + code + ".Shared"
+            JsDir = devRoot + code + "/vscode/src/lib/shared" }
