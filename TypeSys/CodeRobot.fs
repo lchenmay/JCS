@@ -1349,14 +1349,20 @@ let go output exeDir config  =
 let devRoot = if OperatingSystem.IsLinux() then "/home/sa/Dev/" else @"C:/Dev/"
         
 let short output code = 
+    /// SQL Server 项目按库类型选对 rdbms 与连接串；其余走 PostgreSQL（对齐 Program.fs target__config）。
+    let ss = code = "J7" || code = "Game" || code = "JCS"
+    let rdbms = if ss then Util.Rdbms.Rdbms.SqlServer else Util.Rdbms.Rdbms.PostgreSql
+    let conn =
+        if ss then sprintf "server=127.0.0.1; user=sa; database=%s" code
+        else sprintf @"Host=localhost;Port=5432;Database=%s;Username=%s;Password=e2TpqcaTEYLfkvFMkc" (code.ToLower()) (code.ToLower())
     go 
         output 
         (devRoot + "JCS/TypeSys/bin/Debug/net10.0")
         {
             ns = code + ".Shared"
-            rdbms = Util.Rdbms.Rdbms.PostgreSql
+            rdbms = rdbms
             dbName = code.ToLower()
             domainName = ""
-            conn = @"Host=localhost;Port=5432;Database=" + code.ToLower() + ";Username=" + code.ToLower() + ";Password=e2TpqcaTEYLfkvFMkc"
+            conn = conn
             mainDir = devRoot + code + "/" + code + ".Shared"
             JsDir = devRoot + code + "/vscode/src/lib/shared" }
