@@ -440,6 +440,12 @@ let buildTableEnums robot (t:Table) (name,lines:(string * string)[]) =
             let a,b = lines[i]
             "export const " + enumName + "_" + a + " = " + i.ToString() + " // " + b |> w.newline)
 
+        // 中文标题表（按枚举值下标），供 jcs-common registerOrm / enumCaption 读取
+        lines
+        |> Array.map(fun (_,b) -> "'" + b.Replace("\\", "\\\\").Replace("'", "\\'") + "'")
+        |> String.concat ", "
+        |> fun items -> "export const " + enumName + "__captions = [" + items + "]" |> w.newline
+
         w.newlineBlank()
 
         //"const enum " + enumName + " {" |> w.newline
@@ -547,7 +553,8 @@ let buildTableType robot (t:Table) (fieldNames:string[],fields) =
     "\"" |> ot.w.appendEnd
     "| Rdbms.PostgreSql -> \"" |> ot.w.newlineIndent 1
     fieldNames
-    |> Array.map(fun i -> i.ToLower() + "=@" + i.ToLower())
+    // 列名加引号：PostgreSQL 保留字（group、user 等）作列名时不加引号会出错；与 _fieldorders 一致
+    |> Array.map(fun i -> "\\\"" + i.ToLower() + "\\\"=@" + i.ToLower())
     |> String.concat "," |> ot.w.appendEnd
     "\"" |> ot.w.appendEnd
 
