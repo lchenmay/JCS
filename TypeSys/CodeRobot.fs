@@ -1193,7 +1193,7 @@ let prepareRobot output config=
         output = output }
 
 
-let go output exeDir config  = 
+let internal go output exeDir config  = 
 
     let robot = prepareRobot output config
 
@@ -1352,10 +1352,10 @@ let go output exeDir config  =
 
     "Done" |> output
 
-/// TypeSys 按 `<DevRoot>/<Code>` 约定定位工程根：Windows 在 C:/Dev，Linux 开发机无 C: 盘走 /home/sa/Dev。
-let devRoot = if OperatingSystem.IsLinux() then "/home/sa/Dev/" else @"C:/Dev/"
-        
-let short output code = 
+/// TypeSys 唯一对外入口。
+/// devRoot 为布局根：Aiarwa / Common / JCS 平行其上（产线 /root/Dev、开发机 ~/Dev、Windows C:/Dev），由调用方传入。
+let short output devRoot (code:string) =
+    let devRoot = devRoot.TrimEnd('/', '\\') + "/"
     /// SQL Server 项目按库类型选对 rdbms 与连接串；其余走 PostgreSQL（对齐 Program.fs target__config）。
     let ss = code = "J7" || code = "Game" || code = "JCS"
     let rdbms = if ss then Util.Rdbms.Rdbms.SqlServer else Util.Rdbms.Rdbms.PostgreSql
