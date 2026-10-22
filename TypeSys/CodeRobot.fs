@@ -1354,7 +1354,7 @@ let internal go output exeDir config  =
 
 /// TypeSys 唯一对外入口。
 /// devRoot 为布局根：Aiarwa / Common / JCS 平行其上（产线 /root/Dev、开发机 ~/Dev、Windows C:/Dev），由调用方传入。
-let short output devRoot (code:string) =
+let short output (devRoot:string) (code:string) =
     let devRoot = devRoot.TrimEnd('/', '\\') + "/"
     /// SQL Server 项目按库类型选对 rdbms 与连接串；其余走 PostgreSQL（对齐 Program.fs target__config）。
     let ss = code = "J7" || code = "Game" || code = "JCS"
