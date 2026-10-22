@@ -228,11 +228,11 @@ let load robot =
             items[i]
             |> Util.Json.json__items
             |> items__fieldo
-            |> Util.Cat.processOption (fun (fname,fdef,items) -> 
-                // 容忍同一表内重复字段名：配置若重复定义同一字段，跳过重复项、保留首项，避免启动崩溃（ArgumentException: same key）
+            |> Util.Cat.processOption (fun (fname, fdef, items) ->
                 match t.fields.TryGetValue fname with
                 | true, _ -> ()
-                | false, _ -> t.fields.Add(fname,(i,fname,fdef,items)))))
+                | false, _ ->
+                    t.fields.Add(fname, (i, fname, fdef, items))))
 
         tables.Add(name,t))
 
