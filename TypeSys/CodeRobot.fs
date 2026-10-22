@@ -214,12 +214,13 @@ let load robot =
                 if shorthand.Length > 0 then
                     shorthand
                 else
+                    let a = name.ToUpper()
                     let cs = 
-                        let a = name.ToUpper()
-                        [| 0 .. name.Length - 1|]
+                        [| 0 .. name.Length - 1 |]
                         |> Array.filter(fun i -> name[i] = a[i])
                         |> Array.map(fun i -> name[i])
-                    new string(cs) }
+                    new string(cs)
+        }
 
         let items = name__array item "fields"
         [| 0 .. items.Length - 1 |]
