@@ -434,7 +434,9 @@ let buildTableEnums robot (t:Table) (name,lines:(string * string)[]) =
         let a,b = lines[i]
         "| " + enumName + "." + a + " -> \"" + b + "\"")
     |> Array.iter (ot.w.newlineIndent 1)
-    "| _ -> \"\"" |> ot.w.newlineIndent 1
+    // 兜底分支：.NET 枚举是开放类型，运行期可能取到范围外值；回退到第 0 个枚举项的标题，
+    // 而非空串——既消除 FS0104，又对未知枚举值给出确定性的默认展示。
+    "| _ -> \"" + (snd lines[0]) + "\"" |> ot.w.newlineIndent 1
 
 
     (fun (w:TextBlockWriter) -> 
