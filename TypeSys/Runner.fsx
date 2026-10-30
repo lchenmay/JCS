@@ -29,7 +29,7 @@ open TypeSys.CodeRobot
 
 let output (s: string) = Console.WriteLine s
 
-let shortcut code = short output code
+let shortcut code = short output "c:/Dev" code
 
 match fsi.CommandLineArgs |> Array.skip 1 with
 | [| a |] when a.StartsWith "--proj=" -> shortcut (a.Substring 7) |> ignore
