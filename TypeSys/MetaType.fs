@@ -33,14 +33,13 @@ type FieldDef =
 | Link of int
 | Text
 | Bin
-| Integer
-| Float
+| Integer of string * string
+| Float of string * string
 | Boolean
 | SelectLines of (string * string)[]
 | Timestamp
 | TimeSeries
 | Other
-| Measure of FieldDef * string
 
 // Sort, Name, Def, Json
 and Field = int * string * FieldDef * Dictionary<string,string>

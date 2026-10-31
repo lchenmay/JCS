@@ -35,17 +35,12 @@ let sqlField rdbms f =
             | FieldDef.Link length -> "NVARCHAR(" + length.ToString() + ") COLLATE Chinese_PRC_CI_AS"
             | FieldDef.Text -> "NVARCHAR(MAX)"
             | FieldDef.Timestamp
-            | FieldDef.Integer -> "BIGINT"
-            | FieldDef.Float -> "FLOAT"
+            | FieldDef.Integer(_, _) -> "BIGINT"
+            | FieldDef.Float(_, _) -> "FLOAT"
             | FieldDef.Boolean -> "BIT"
             | FieldDef.SelectLines v -> "INT"
             | FieldDef.TimeSeries -> "VARBINARY(MAX)"
             | FieldDef.Bin -> "VARBINARY(MAX)"
-            | FieldDef.Measure(b,_) ->
-                match b with
-                | FieldDef.Float -> "FLOAT"
-                | FieldDef.Integer -> "BIGINT"
-                | _ -> "FLOAT"
             | _ -> ""
         "[" + n + "] " + s
 
@@ -58,17 +53,12 @@ let sqlField rdbms f =
             | FieldDef.Link length -> "VARCHAR(" + length.ToString() + ")"
             | FieldDef.Text -> "TEXT"
             | FieldDef.Timestamp
-            | FieldDef.Integer -> "BIGINT"
-            | FieldDef.Float -> "FLOAT"
+            | FieldDef.Integer(_, _) -> "BIGINT"
+            | FieldDef.Float(_, _) -> "FLOAT"
             | FieldDef.Boolean -> "BOOLEAN"//"BIT"
             | FieldDef.SelectLines v -> "INT"
             | FieldDef.TimeSeries -> "VARBINARY(MAX)"
             | FieldDef.Bin -> "BYTEA"
-            | FieldDef.Measure(b,_) ->
-                match b with
-                | FieldDef.Float -> "FLOAT"
-                | FieldDef.Integer -> "BIGINT"
-                | _ -> "FLOAT"
             | _ -> ""
 
         "\"" + n.ToLower() + "\" " + s

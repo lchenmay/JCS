@@ -32,13 +32,12 @@ let rec fdef__str def =
     | Link length -> "Link Length = " + length.ToString()
     | Text -> "Text"
     | Bin -> "Bin"
-    | Integer -> "Integer"
-    | Float -> "Float"
+    | Integer(_, _) -> "Integer"
+    | Float(_, _) -> "Float"
     | Boolean -> "Boolean"
     | SelectLines lines -> "SelectLines"
     | Timestamp -> "Timestamp"
     | TimeSeries -> "TimeSeries"
-    | Measure(b,_) -> fdef__str b
     | Other -> "N/A"
 
 let rec fdef__srcTypes (table,name,def) = 
@@ -49,22 +48,16 @@ let rec fdef__srcTypes (table,name,def) =
     | Link length -> "Link","string","string"
     | Text -> "Text","string","string"
     | Bin -> "Bin","byte[]","array"
-    | Integer -> "Integer","int64","number"
-    | Float -> "Float","double","number"
+    | Integer(_, m) ->
+        if m.Length > 0 then ("int64 * string","long","number") else ("Integer","long","number")
+    | Float(_, m) ->
+        if m.Length > 0 then ("float * string","double","number") else ("Float","double","number")
     | Boolean -> "Boolean","bool","boolean"
     | SelectLines lines -> 
         let enumType = table.typeName.ToLower() + name + "Enum"
         enumType,enumType,"number"
     | Timestamp -> "Timestamp","DateTime","Date"
     | TimeSeries -> "TimeSeries","TimeSpan","Date"
-    | Measure(b,m) ->
-        let _,cs0,ts0 = fdef__srcTypes(table, name, b)
-        let fs =
-            match b with
-            | Float -> "float<" + m + ">"
-            | Integer -> "int64<" + m + ">"
-            | _ -> "float<" + m + ">"
-        fs,cs0,ts0
     | Other -> "","Object","any"
 
 let parseSelectLines (items:Dictionary<string,string>) = 
@@ -83,6 +76,7 @@ let items__fieldo items =
                 let close = e.IndexOf('>', i)
                 e.Substring(0, i), Some (e.Substring(i + 1, close - i - 1))
             else e, None
+        let m = match measure with Some x -> x | None -> ""
         match baseEnum with
         | "FK" -> (fieldname, FieldDef.Other, items) |> Some
         | "Caption" -> (fieldname, FieldDef.Caption(checkfield items "length" |> parse_int32), items) |> Some
@@ -90,17 +84,13 @@ let items__fieldo items =
         | "Link" -> (fieldname, FieldDef.Link(checkfield items "length" |> parse_int32), items) |> Some
         | "Text" -> (fieldname, FieldDef.Text, items) |> Some
         | "Bin" -> (fieldname, FieldDef.Bin, items) |> Some
-        | "Integer" -> (fieldname, FieldDef.Integer, items) |> Some
-        | "Float" -> (fieldname, FieldDef.Float, items) |> Some
+        | "Integer" -> (fieldname, FieldDef.Integer(fieldname, m), items) |> Some
+        | "Float" -> (fieldname, FieldDef.Float(fieldname, m), items) |> Some
         | "Boolean" -> (fieldname, FieldDef.Boolean, items) |> Some
         | "SelectLines" -> (fieldname, FieldDef.SelectLines(parseSelectLines items), items) |> Some
         | "Timestamp" -> (fieldname, FieldDef.Timestamp, items) |> Some
         | "TimeSeries" -> (fieldname, FieldDef.TimeSeries, items) |> Some
         | _ -> None
-        |> Option.map(fun (fn, baseDef, its) ->
-            match measure with
-            | Some m when baseEnum <> "FK" -> (fn, FieldDef.Measure(baseDef, m), its)
-            | _ -> (fn, baseDef, its))
     else
         None
 
@@ -159,12 +149,12 @@ let fdef__tbin table l field =
 
         let measureFloat() =
             [|  ""
-                "(float p." + name + ") |> BitConverter.GetBytes |> bb.append" |]
+                "fst p." + name + " |> BitConverter.GetBytes |> bb.append" |]
             |> t__bin.AddRange
 
         let measureInt64() =
             [|  ""
-                "(int64 p." + name + ") |> BitConverter.GetBytes |> bb.append" |]
+                "fst p." + name + " |> BitConverter.GetBytes |> bb.append" |]
             |> t__bin.AddRange
 
         match def with
@@ -174,16 +164,12 @@ let fdef__tbin table l field =
         | Link length -> string()
         | Text -> string()
         | Bin -> bytes()
-        | Integer ->  int64()
-        | Float -> float()
+        | Integer(_, m) -> if m.Length > 0 then measureInt64() else int64()
+        | Float(_, m) -> if m.Length > 0 then measureFloat() else float()
         | Boolean -> boolean()
         | SelectLines lines -> enum()
         | Timestamp -> timestamp()
         //| TimeSeries -> "TimeSeries","TimeSpan","Date"
-        | Measure(b,_) ->
-            match b with
-            | Integer -> measureInt64()
-            | _ -> measureFloat()
         | _ -> ()
 
     | ProgrammingLang.TypeScript -> 
@@ -232,16 +218,12 @@ let fdef__tbin table l field =
         | Link length -> string()
         | Text -> string()
         | Bin -> bytes()
-        | Integer ->  int64()
-        | Float -> float()
+        | Integer(_, _) -> int64()
+        | Float(_, _) -> float()
         | Boolean -> boolean()
         | SelectLines lines -> enum()
         | Timestamp -> timestamp()
         //| TimeSeries -> "TimeSeries","TimeSpan","Date"
-        | Measure(b,_) ->
-            match b with
-            | Integer -> int64()
-            | _ -> float()
         | _ -> ()
 
     | _ -> ()
@@ -305,13 +287,13 @@ let fdef__bint table l field =
 
         let measureFloat m = 
             [|  ""
-                "p." + name + " <- BitConverter.ToDouble(bin,index.Value) |> FloatWithMeasure<" + m + ">"
+                "p." + name + " <- (BitConverter.ToDouble(bin,index.Value), \"" + m + "\")"
                 "index.Value <- index.Value + 8" |]
             |> bin__t.AddRange
 
         let measureInt64 m = 
             [|  ""
-                "p." + name + " <- BitConverter.ToInt64(bin,index.Value) |> Int64WithMeasure<" + m + ">"
+                "p." + name + " <- (BitConverter.ToInt64(bin,index.Value), \"" + m + "\")"
                 "index.Value <- index.Value + 8" |]
             |> bin__t.AddRange
 
@@ -322,16 +304,12 @@ let fdef__bint table l field =
         | Link length -> string()
         | Text -> string()
         | Bin -> bytes()
-        | Integer ->  int64()
-        | Float -> float()
+        | Integer(_, m) -> if m.Length > 0 then measureInt64 m else int64()
+        | Float(_, m) -> if m.Length > 0 then measureFloat m else float()
         | Boolean -> boolean()
         | SelectLines lines -> enum()
         | Timestamp -> timestamp()
         //| TimeSeries -> "TimeSeries","TimeSpan","Date"
-        | Measure(b,m) ->
-            match b with
-            | Integer -> measureInt64 m
-            | _ -> measureFloat m
         | _ -> ()
 
     | ProgrammingLang.TypeScript -> 
@@ -376,16 +354,12 @@ let fdef__bint table l field =
         | Link length -> string()
         | Text -> string()
         | Bin -> bytes()
-        | Integer ->  int64()
-        | Float -> float()
+        | Integer(_, _) -> int64()
+        | Float(_, _) -> float()
         | Boolean -> boolean()
         | SelectLines lines -> enum()
         | Timestamp -> timestamp()
         //| TimeSeries -> "TimeSeries","TimeSpan","Date"
-        | Measure(b,_) ->
-            match b with
-            | Integer -> int64()
-            | _ -> float()
         | _ -> ()
 
     | _ -> ()
@@ -415,13 +389,12 @@ let fdef__tjson field =
     | Link length -> str()
     | Text -> str()
     | Bin -> bytes()
-    | Integer ->  tostr()
-    | Float -> tostr()
+    | Integer(_, m) -> if m.Length > 0 then "(fst p." + name + ").ToString() |> Json.Num" else tostr()
+    | Float(_, m) -> if m.Length > 0 then "(fst p." + name + ").ToString() |> Json.Num" else tostr()
     | Boolean -> bool()
     | SelectLines lines -> enum()
     | Timestamp -> timestamp()
     //| TimeSeries -> "TimeSeries","TimeSpan","Date"
-    | Measure(b,_) -> tostr()
     | _ -> ""
 
 
@@ -477,12 +450,12 @@ let fdef__jsont field =
 
     let measureFloat m = 
         [|  ""
-            "p." + name + " <- checkfield fields \"" + name + "\" |> parse_float |> FloatWithMeasure<" + m + ">" |]
+            "p." + name + " <- (checkfield fields \"" + name + "\" |> parse_float, \"" + m + "\")" |]
         |> buffer.AddRange
 
     let measureInt64 m = 
         [|  ""
-            "p." + name + " <- checkfield fields \"" + name + "\" |> parse_int64 |> Int64WithMeasure<" + m + ">" |]
+            "p." + name + " <- (checkfield fields \"" + name + "\" |> parse_int64, \"" + m + "\")" |]
         |> buffer.AddRange
 
     match def with
@@ -492,16 +465,12 @@ let fdef__jsont field =
     | Link length -> stringLength length
     | Text -> string()
     | Bin -> bytes()
-    | Integer ->  int64()
-    | Float -> float()
+    | Integer(_, m) -> if m.Length > 0 then measureInt64 m else int64()
+    | Float(_, m) -> if m.Length > 0 then measureFloat m else float()
     | Boolean -> boolean()
     | SelectLines lines -> enum()
     | Timestamp -> timestamp()
     //| TimeSeries -> "TimeSeries","TimeSpan","Date"
-    | Measure(b,m) ->
-        match b with
-        | Integer -> measureInt64 m
-        | _ -> measureFloat m
     | _ -> ()
 
     buffer
@@ -517,16 +486,12 @@ let rec fdef__empty lang t name def =
         | Link length -> "\"\""
         | Text -> "\"\""
         | Bin -> "[||]"
-        | Integer -> "0L"
-        | Float -> "0.0"
+        | Integer(_, m) -> if m.Length > 0 then "(0L, \"" + m + "\")" else "0L"
+        | Float(_, m) -> if m.Length > 0 then "(0.0, \"" + m + "\")" else "0.0"
         | Boolean -> "true"
         | SelectLines lines -> "EnumOfValue 0"
         | Timestamp -> "DateTime.MinValue"
         | TimeSeries -> "TimeSpan.MinValue"
-        | Measure(b,m) ->
-            match b with
-            | Integer -> "0L<" + m + ">"
-            | _ -> "0.0<" + m + ">"
         | Other -> ""
 
     | _ -> 
@@ -537,13 +502,12 @@ let rec fdef__empty lang t name def =
         | Link length -> "\"\""
         | Text -> "\"\""
         | Bin -> "[]"
-        | Integer -> "0"
-        | Float -> "0.0"
+        | Integer(_, _) -> "0"
+        | Float(_, _) -> "0.0"
         | Boolean -> "true"
         | SelectLines lines -> "0"
         | Timestamp -> "new Date()"
         | TimeSeries -> "0"
-        | Measure(b,_) -> fdef__empty lang t name b
         | Other -> ""
 
         

@@ -578,8 +578,8 @@ let buildTableType robot (t:Table) (fieldNames:string[],fields) =
         | Link v -> "Link" + "(\"" + name + "\", " + v.ToString() + ")"
         | Text -> "Text" + "(\"" + name + "\")"
         | Bin -> "Bin" + "(\"" + name + "\")"
-        | Integer -> "Integer" + "(\"" + name + "\")"
-        | Float -> "Float" + "(\"" + name + "\")"
+        | Integer(_, m) -> "Integer" + "(\"" + name + "\", \"" + m + "\")"
+        | Float(_, m) -> "Float" + "(\"" + name + "\", \"" + m + "\")"
         | Boolean -> "Boolean" + "(\"" + name + "\")"
         | SelectLines lines -> 
             let a = 
@@ -589,13 +589,7 @@ let buildTableType robot (t:Table) (fieldNames:string[],fields) =
             "SelectLines" + "(\"" + name + "\", [| " + a + " |])"
         | Timestamp -> "Timestamp" + "(\"" + name + "\")"
         | TimeSeries -> "TimeSeries" + "(\"" + name + "\")"
-        | Measure(b,m) ->
-            let baseCtor =
-                match b with
-                | Float -> "Float(\"" + name + "\")"
-                | Integer -> "Integer(\"" + name + "\")"
-                | _ -> "Float(\"" + name + "\")"
-            "Measure(" + baseCtor + ", \"" + m + "\")"
+
         | Other -> "")
     |> Array.iter (ot.w.newlineIndent 3)
     " |]" |> ot.w.appendEnd
@@ -611,8 +605,8 @@ let buildTableType robot (t:Table) (fieldNames:string[],fields) =
         | Link v -> "Link" + "(\"" + name + "\", " + v.ToString() + ")"
         | Text -> "Text" + "(\"" + name + "\")"
         | Bin -> "Bin" + "(\"" + name + "\")"
-        | Integer -> "Integer" + "(\"" + name + "\")"
-        | Float -> "Float" + "(\"" + name + "\")"
+        | Integer(_, m) -> "Integer" + "(\"" + name + "\", \"" + m + "\")"
+        | Float(_, m) -> "Float" + "(\"" + name + "\", \"" + m + "\")"
         | Boolean -> "Boolean" + "(\"" + name + "\")"
         | SelectLines lines -> 
             let a = 
@@ -622,13 +616,7 @@ let buildTableType robot (t:Table) (fieldNames:string[],fields) =
             "SelectLines" + "(\"" + name + "\", [| " + a + " |])"
         | Timestamp -> "Timestamp" + "(\"" + name + "\")"
         | TimeSeries -> "TimeSeries" + "(\"" + name + "\")"
-        | Measure(b,m) ->
-            let baseCtor =
-                match b with
-                | Float -> "Float(\"" + name + "\")"
-                | Integer -> "Integer(\"" + name + "\")"
-                | _ -> "Float(\"" + name + "\")"
-            "Measure(" + baseCtor + ", \"" + m + "\")"
+
         | Other -> "")
     |> Array.iter (ot.w.newlineIndent 3)
     " |]" |> ot.w.appendEnd
@@ -675,16 +663,20 @@ let buildTableMor om (t:Table) (fieldNames:string[],fields) =
         | Link v -> "string(" + item + ").TrimEnd()"
         | Text -> "string(" + item + ").TrimEnd()"
         | Bin -> "if Convert.IsDBNull(" + item + ") then [| |] else " + item + " :?> byte[]"
-        | Integer -> "if Convert.IsDBNull(" + item + ") then 0L else " + item + " :?> int64"
-        | Float -> "if Convert.IsDBNull(" + item + ") then 0.0 else " + item + " :?> float"
+        | Integer(_, m) ->
+            if m.Length > 0 then
+                "if Convert.IsDBNull(" + item + ") then (0L, \"" + m + "\") else ((" + item + " :?> int64), \"" + m + "\")"
+            else
+                "if Convert.IsDBNull(" + item + ") then 0L else " + item + " :?> int64"
+        | Float(_, m) ->
+            if m.Length > 0 then
+                "if Convert.IsDBNull(" + item + ") then (0.0, \"" + m + "\") else ((" + item + " :?> float), \"" + m + "\")"
+            else
+                "if Convert.IsDBNull(" + item + ") then 0.0 else " + item + " :?> float"
         | Boolean -> "if Convert.IsDBNull(" + item + ") then false else " + item + " :?> bool"
         | SelectLines lines -> "EnumOfValue(if Convert.IsDBNull(" + item + ") then 0 else " + item + " :?> int)"
         | Timestamp -> "DateTime.FromBinary(if Convert.IsDBNull(" + item + ") then DateTime.MinValue.Ticks else " + item + " :?> int64)"
         | TimeSeries -> "TimeSeries" + "(\"" + name + "\")"
-        | Measure(b,m) ->
-            match b with
-            | Integer -> "if Convert.IsDBNull(" + item + ") then 0L<" + m + "> else (" + item + " :?> int64) |> Int64WithMeasure<" + m + ">"
-            | _ -> "if Convert.IsDBNull(" + item + ") then 0.0<" + m + "> else (" + item + " :?> float) |> FloatWithMeasure<" + m + ">"
         | Other -> ""
         |> om.w.appendEnd)
     om.w.newlineBlank()
