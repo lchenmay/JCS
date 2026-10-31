@@ -589,6 +589,13 @@ let buildTableType robot (t:Table) (fieldNames:string[],fields) =
             "SelectLines" + "(\"" + name + "\", [| " + a + " |])"
         | Timestamp -> "Timestamp" + "(\"" + name + "\")"
         | TimeSeries -> "TimeSeries" + "(\"" + name + "\")"
+        | Measure(b,m) ->
+            let baseCtor =
+                match b with
+                | Float -> "Float(\"" + name + "\")"
+                | Integer -> "Integer(\"" + name + "\")"
+                | _ -> "Float(\"" + name + "\")"
+            "Measure(" + baseCtor + ", \"" + m + "\")"
         | Other -> "")
     |> Array.iter (ot.w.newlineIndent 3)
     " |]" |> ot.w.appendEnd
@@ -615,6 +622,13 @@ let buildTableType robot (t:Table) (fieldNames:string[],fields) =
             "SelectLines" + "(\"" + name + "\", [| " + a + " |])"
         | Timestamp -> "Timestamp" + "(\"" + name + "\")"
         | TimeSeries -> "TimeSeries" + "(\"" + name + "\")"
+        | Measure(b,m) ->
+            let baseCtor =
+                match b with
+                | Float -> "Float(\"" + name + "\")"
+                | Integer -> "Integer(\"" + name + "\")"
+                | _ -> "Float(\"" + name + "\")"
+            "Measure(" + baseCtor + ", \"" + m + "\")"
         | Other -> "")
     |> Array.iter (ot.w.newlineIndent 3)
     " |]" |> ot.w.appendEnd
@@ -667,6 +681,10 @@ let buildTableMor om (t:Table) (fieldNames:string[],fields) =
         | SelectLines lines -> "EnumOfValue(if Convert.IsDBNull(" + item + ") then 0 else " + item + " :?> int)"
         | Timestamp -> "DateTime.FromBinary(if Convert.IsDBNull(" + item + ") then DateTime.MinValue.Ticks else " + item + " :?> int64)"
         | TimeSeries -> "TimeSeries" + "(\"" + name + "\")"
+        | Measure(b,m) ->
+            match b with
+            | Integer -> "if Convert.IsDBNull(" + item + ") then 0L<" + m + "> else (" + item + " :?> int64) |> Int64WithMeasure<" + m + ">"
+            | _ -> "if Convert.IsDBNull(" + item + ") then 0.0<" + m + "> else (" + item + " :?> float) |> FloatWithMeasure<" + m + ">"
         | Other -> ""
         |> om.w.appendEnd)
     om.w.newlineBlank()
@@ -1242,7 +1260,7 @@ let internal go output exeDir config  =
         "" |]
     |> otTypeScript.w.multiLine
     
-    fSharpHeader ot (config.ns + ".OrmTypes") false [||]
+    fSharpHeader ot (config.ns + ".OrmTypes") false [| "open " + config.ns + ".PreOrm" |]
 
     reservedBlock ot
 
@@ -1272,6 +1290,7 @@ let internal go output exeDir config  =
     reservedBlock om
 
     [|  "open Util.Bin"
+        "open " + config.ns + ".PreOrm"
         "open " + config.ns + ".OrmTypes"
         "open " + config.ns + ".Types"
         "open " + config.ns + ".OrmMor" |]

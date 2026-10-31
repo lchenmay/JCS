@@ -41,6 +41,11 @@ let sqlField rdbms f =
             | FieldDef.SelectLines v -> "INT"
             | FieldDef.TimeSeries -> "VARBINARY(MAX)"
             | FieldDef.Bin -> "VARBINARY(MAX)"
+            | FieldDef.Measure(b,_) ->
+                match b with
+                | FieldDef.Float -> "FLOAT"
+                | FieldDef.Integer -> "BIGINT"
+                | _ -> "FLOAT"
             | _ -> ""
         "[" + n + "] " + s
 
@@ -59,6 +64,11 @@ let sqlField rdbms f =
             | FieldDef.SelectLines v -> "INT"
             | FieldDef.TimeSeries -> "VARBINARY(MAX)"
             | FieldDef.Bin -> "BYTEA"
+            | FieldDef.Measure(b,_) ->
+                match b with
+                | FieldDef.Float -> "FLOAT"
+                | FieldDef.Integer -> "BIGINT"
+                | _ -> "FLOAT"
             | _ -> ""
 
         "\"" + n.ToLower() + "\" " + s

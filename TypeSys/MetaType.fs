@@ -40,6 +40,7 @@ type FieldDef =
 | Timestamp
 | TimeSeries
 | Other
+| Measure of FieldDef * string
 
 // Sort, Name, Def, Json
 and Field = int * string * FieldDef * Dictionary<string,string>
