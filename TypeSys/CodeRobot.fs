@@ -665,12 +665,12 @@ let buildTableMor om (t:Table) (fieldNames:string[],fields) =
         | Bin -> "if Convert.IsDBNull(" + item + ") then [| |] else " + item + " :?> byte[]"
         | Integer(_, m) ->
             if m.Length > 0 then
-                "if Convert.IsDBNull(" + item + ") then (0L, \"" + m + "\") else ((" + item + " :?> int64), \"" + m + "\")"
+                "if Convert.IsDBNull(" + item + ") then 0L<" + m + "> else (" + item + " :?> int64) |> Int64WithMeasure<" + m + ">"
             else
                 "if Convert.IsDBNull(" + item + ") then 0L else " + item + " :?> int64"
         | Float(_, m) ->
             if m.Length > 0 then
-                "if Convert.IsDBNull(" + item + ") then (0.0, \"" + m + "\") else ((" + item + " :?> float), \"" + m + "\")"
+                "if Convert.IsDBNull(" + item + ") then 0.0<" + m + "> else (" + item + " :?> float) |> FloatWithMeasure<" + m + ">"
             else
                 "if Convert.IsDBNull(" + item + ") then 0.0 else " + item + " :?> float"
         | Boolean -> "if Convert.IsDBNull(" + item + ") then false else " + item + " :?> bool"

@@ -49,9 +49,9 @@ let rec fdef__srcTypes (table,name,def) =
     | Text -> "Text","string","string"
     | Bin -> "Bin","byte[]","array"
     | Integer(_, m) ->
-        if m.Length > 0 then ("int64 * string","long","number") else ("Integer","long","number")
+        if m.Length > 0 then ("int64<" + m + ">","long","number") else ("Integer","long","number")
     | Float(_, m) ->
-        if m.Length > 0 then ("float * string","double","number") else ("Float","double","number")
+        if m.Length > 0 then ("float<" + m + ">","double","number") else ("Float","double","number")
     | Boolean -> "Boolean","bool","boolean"
     | SelectLines lines -> 
         let enumType = table.typeName.ToLower() + name + "Enum"
@@ -149,12 +149,12 @@ let fdef__tbin table l field =
 
         let measureFloat() =
             [|  ""
-                "fst p." + name + " |> BitConverter.GetBytes |> bb.append" |]
+                "(float p." + name + ") |> BitConverter.GetBytes |> bb.append" |]
             |> t__bin.AddRange
 
         let measureInt64() =
             [|  ""
-                "fst p." + name + " |> BitConverter.GetBytes |> bb.append" |]
+                "(int64 p." + name + ") |> BitConverter.GetBytes |> bb.append" |]
             |> t__bin.AddRange
 
         match def with
@@ -287,13 +287,13 @@ let fdef__bint table l field =
 
         let measureFloat m = 
             [|  ""
-                "p." + name + " <- (BitConverter.ToDouble(bin,index.Value), \"" + m + "\")"
+                "p." + name + " <- BitConverter.ToDouble(bin,index.Value) |> FloatWithMeasure<" + m + ">"
                 "index.Value <- index.Value + 8" |]
             |> bin__t.AddRange
 
         let measureInt64 m = 
             [|  ""
-                "p." + name + " <- (BitConverter.ToInt64(bin,index.Value), \"" + m + "\")"
+                "p." + name + " <- BitConverter.ToInt64(bin,index.Value) |> Int64WithMeasure<" + m + ">"
                 "index.Value <- index.Value + 8" |]
             |> bin__t.AddRange
 
@@ -389,8 +389,8 @@ let fdef__tjson field =
     | Link length -> str()
     | Text -> str()
     | Bin -> bytes()
-    | Integer(_, m) -> if m.Length > 0 then "(fst p." + name + ").ToString() |> Json.Num" else tostr()
-    | Float(_, m) -> if m.Length > 0 then "(fst p." + name + ").ToString() |> Json.Num" else tostr()
+    | Integer(_, m) -> tostr()
+    | Float(_, m) -> tostr()
     | Boolean -> bool()
     | SelectLines lines -> enum()
     | Timestamp -> timestamp()
@@ -450,12 +450,12 @@ let fdef__jsont field =
 
     let measureFloat m = 
         [|  ""
-            "p." + name + " <- (checkfield fields \"" + name + "\" |> parse_float, \"" + m + "\")" |]
+            "p." + name + " <- checkfield fields \"" + name + "\" |> parse_float |> FloatWithMeasure<" + m + ">" |]
         |> buffer.AddRange
 
     let measureInt64 m = 
         [|  ""
-            "p." + name + " <- (checkfield fields \"" + name + "\" |> parse_int64, \"" + m + "\")" |]
+            "p." + name + " <- checkfield fields \"" + name + "\" |> parse_int64 |> Int64WithMeasure<" + m + ">" |]
         |> buffer.AddRange
 
     match def with
@@ -486,8 +486,8 @@ let rec fdef__empty lang t name def =
         | Link length -> "\"\""
         | Text -> "\"\""
         | Bin -> "[||]"
-        | Integer(_, m) -> if m.Length > 0 then "(0L, \"" + m + "\")" else "0L"
-        | Float(_, m) -> if m.Length > 0 then "(0.0, \"" + m + "\")" else "0.0"
+        | Integer(_, m) -> if m.Length > 0 then "0L<" + m + ">" else "0L"
+        | Float(_, m) -> if m.Length > 0 then "0.0<" + m + ">" else "0.0"
         | Boolean -> "true"
         | SelectLines lines -> "EnumOfValue 0"
         | Timestamp -> "DateTime.MinValue"
