@@ -48,13 +48,7 @@ let rec t__binImpl (w:TextBlockWriter) indent t =
         |> Array.iter(fun (name,tt) -> 
             w.newlineBlankIndent (indent + 1)
             t__binCall w (indent + 1) tt
-            match typeMeasure tt.name with
-            | None -> " bb v." + name
-            | Some _ ->
-                match typeBase tt.name with
-                | "float" | "float32" -> " bb (float v." + name + ")"
-                | "int" | "int32" | "int64" -> " bb (int v." + name + ")"
-                | _ -> " bb v." + name
+            " bb v." + name
             |> w.appendEnd)
 
     | TypeEnum.Product items -> 
@@ -142,7 +136,16 @@ and t__binCall w indent t =
         | "int" -> "int32__bin"
         | "Boolean" -> "bool__bin"
         | "Json" -> "json__bin"
-        | _ -> typeBase t.name + "__bin"
+        | _ ->
+            match typeMeasure t.name with
+            | None -> typeBase t.name + "__bin"
+            | Some _ ->
+                match typeBase t.name with
+                | "float" -> "(fun bb x -> float__bin bb (float x))"
+                | "float32" -> "(fun bb x -> float32__bin bb (float32 x))"
+                | "int" | "int32" -> "(fun bb x -> int32__bin bb (int x))"
+                | "int64" -> "(fun bb x -> int64__bin bb (int64 x))"
+                | _ -> typeBase t.name + "__bin"
         |> w.appendEnd
     | TypeEnum.Structure items -> t.name + "__bin" |> w.appendEnd
     | TypeEnum.Product items -> 
@@ -214,21 +217,9 @@ let rec bin__tImpl (w:TextBlockWriter) indent t =
         |> Array.iter(fun (name,tt) -> 
             name + " = " |> w.newlineIndent (indent + 2)
             if type__supportMarshall tt then
-                match typeMeasure tt.name with
-                | None ->
-                    "bi" |> w.newlineIndent (indent + 3)
-                    "|> " |> w.newlineIndent (indent + 3)
-                    (bin__tCall w (indent + 3) tt)
-                | Some m ->
-                    let ctor =
-                        match typeBase tt.name with
-                        | "float" -> "FloatWithMeasure" | "float32" -> "Float32WithMeasure"
-                        | "int" | "int32" -> "Int32WithMeasure" | "int64" -> "Int64WithMeasure"
-                        | _ -> "FloatWithMeasure"
-                    "bi" |> w.newlineIndent (indent + 3)
-                    "|> " |> w.newlineIndent (indent + 3)
-                    (bin__tCall w (indent + 3) tt)
-                    "|> " + ctor + "<" + m + ">" |> w.newlineIndent (indent + 3)
+                "bi" |> w.newlineIndent (indent + 3)
+                "|> " |> w.newlineIndent (indent + 3)
+                (bin__tCall w (indent + 3) tt)
              else
                 t__emptyCall w indent tt)
         "}" |> w.newlineIndent (indent + 1)
@@ -338,7 +329,19 @@ and bin__tCall w indent t =
         | "int" -> "bin__int32"
         | "Boolean" -> "bin__bool"
         | "Json" -> "bin__json"
-        | _ -> "bin__" + typeBase t.name
+        | _ ->
+            match typeMeasure t.name with
+            | None -> "bin__" + typeBase t.name
+            | Some m ->
+                let bn =
+                    match typeBase t.name with
+                    | "int" -> "int32" | "int64" -> "int64" | other -> other
+                let ctor =
+                    match typeBase t.name with
+                    | "float" -> "FloatWithMeasure" | "float32" -> "Float32WithMeasure"
+                    | "int" | "int32" -> "Int32WithMeasure" | "int64" -> "Int64WithMeasure"
+                    | _ -> "FloatWithMeasure"
+                "(fun bi -> bin__" + bn + " bi |> " + ctor + "<" + m + ">)"
         |> w.appendEnd
     | TypeEnum.Structure items -> "bin__" + t.name |> w.appendEnd
     | TypeEnum.Product items -> 
@@ -496,17 +499,11 @@ and t__emptyCall w indent t =
         |> w.appendEnd
     | TypeEnum.Structure items -> t.name + "_empty()" |> w.appendEnd
     | TypeEnum.Product items -> 
-        "(fun bi ->" |> w.appendEnd
-        let var = productItems__term "v" "" "," items 
+        "(" |> w.appendEnd
         [| 0 .. items.Length - 1 |]
         |> Array.iter(fun i -> 
-            w.newlineBlankIndent (indent + 2)
-            "let v" + i.ToString() + " = " |> w.appendEnd
-            "bi" |> w.newlineIndent (indent + 3)
-            "|> " |> w.newlineIndent (indent + 3)
-            t__emptyCall w (indent + 3) items[i])
-        "" |> w.newlineIndent indent
-        var |> w.newlineIndent(indent + 2)
+            if i > 0 then ", " |> w.appendEnd
+            t__emptyCall w indent items[i])
         ")" |> w.appendEnd
     | TypeEnum.Sum v -> t.name + "_empty()" |> w.appendEnd
     | TypeEnum.Enum v -> ()
@@ -555,13 +552,7 @@ let rec t__jsonImpl (w:TextBlockWriter) indent t =
         |> Array.iter(fun (name,tt) -> 
             "(\"" + name + "\"," |> w.appendEnd
             t__jsonCall w (indent + 2) tt
-            match typeMeasure tt.name with
-            | None -> " v." + name
-            | Some _ ->
-                match typeBase tt.name with
-                | "float" | "float32" -> " (float v." + name + ")"
-                | "int" | "int32" | "int64" -> " (int v." + name + ")"
-                | _ -> " v." + name
+            " v." + name
             |> w.appendEnd
             ")" |> w.appendEnd
             w.newlineBlankIndent (indent + 2))
@@ -655,7 +646,16 @@ and t__jsonCall w indent t =
         | "int" -> "int32__json"
         | "Boolean" -> "bool__json"
         | "Json" -> ""
-        | _ -> typeBase t.name + "__json"
+        | _ ->
+            match typeMeasure t.name with
+            | None -> typeBase t.name + "__json"
+            | Some _ ->
+                match typeBase t.name with
+                | "float" -> "(fun x -> float__json (float x))"
+                | "float32" -> "(fun x -> float32__json (float32 x))"
+                | "int" | "int32" -> "(fun x -> int32__json (int x))"
+                | "int64" -> "(fun x -> int64__json (int64 x))"
+                | _ -> typeBase t.name + "__json"
         |> w.appendEnd
     | TypeEnum.Product items -> 
         "(fun v -> " |> w.appendEnd
@@ -726,7 +726,7 @@ let rec json__tImpl (w:TextBlockWriter) indent t =
         items
         |> Array.iter(fun (name,tt) -> 
 
-            "let " + name + "o =" |> w.newlineIndent (indent + 1) 
+            "let " + name + "_o =" |> w.newlineIndent (indent + 1) 
             if type__supportMarshall tt then
                 "match json__tryFindByName json \"" + name + "\" with" |> w.newlineIndent (indent + 2) 
                 "| None ->" |> w.newlineIndent (indent + 2) 
@@ -740,16 +740,7 @@ let rec json__tImpl (w:TextBlockWriter) indent t =
                 "match v |> " |> w.newlineIndent (indent + 3) 
                 (json__tCall w (indent + 3) tt)
                 " with" |> w.appendEnd 
-                match typeMeasure tt.name with
-                | None ->
-                    "| Some res -> Some res" |> w.newlineIndent (indent + 3) 
-                | Some m ->
-                    let ctor =
-                        match typeBase tt.name with
-                        | "float" -> "FloatWithMeasure" | "float32" -> "Float32WithMeasure"
-                        | "int" | "int32" -> "Int32WithMeasure" | "int64" -> "Int64WithMeasure"
-                        | _ -> "FloatWithMeasure"
-                    "| Some res -> Some (res |> " + ctor + "<" + m + ">)" |> w.newlineIndent (indent + 3) 
+                "| Some res -> Some res" |> w.newlineIndent (indent + 3) 
                 "| None ->" |> w.newlineIndent (indent + 3) 
                 "passOptions <- false" |> w.newlineIndent (indent + 4) 
                 "None" |> w.newlineIndent (indent + 4) 
@@ -766,9 +757,9 @@ let rec json__tImpl (w:TextBlockWriter) indent t =
         |> Array.iter(fun (name,tt) -> 
             let isOption = match tt.tEnum with TypeEnum.Option _ -> true | _ -> false
             if isOption then
-                name + " = (if " + name + "o.IsSome then " + name + "o.Value else None)" |> w.newlineIndent (indent + 3) 
+                name + " = (if " + name + "_o.IsSome then " + name + "_o.Value else None)" |> w.newlineIndent (indent + 3) 
             else
-                name + " = " + name + "o.Value" |> w.newlineIndent (indent + 3))
+                name + " = " + name + "_o.Value" |> w.newlineIndent (indent + 3))
         " }:" + t.name + ") |> Some" |> w.appendEnd
 
         "else" |> w.newlineIndent (indent + 1) 
@@ -906,7 +897,19 @@ and json__tCall (w:TextBlockWriter)indent t =
         | "int" -> "json__int32o"
         | "Boolean" -> "json__boolo"
         | "Json" -> "Some"
-        | _ -> "json__" + typeBase t.name + "o"
+        | _ ->
+            match typeMeasure t.name with
+            | None -> "json__" + typeBase t.name + "o"
+            | Some m ->
+                let bn =
+                    match typeBase t.name with
+                    | "int" -> "int32" | "int64" -> "int64" | other -> other
+                let ctor =
+                    match typeBase t.name with
+                    | "float" -> "FloatWithMeasure" | "float32" -> "Float32WithMeasure"
+                    | "int" | "int32" -> "Int32WithMeasure" | "int64" -> "Int64WithMeasure"
+                    | _ -> "FloatWithMeasure"
+                "(fun j -> json__" + bn + "o j |> Option.map (" + ctor + "<" + m + ">))"
         |> w.appendEnd
     | TypeEnum.Structure items -> "json__" + t.name + "o" |> w.appendEnd
     | TypeEnum.Product items -> 

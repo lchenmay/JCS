@@ -71,6 +71,7 @@
 - [10. 修复路线图](#10-修复路线图)
 - [11. 结论与建议](#11-结论与建议)
 - [12. 跨平台双产物规范](#12-跨平台双产物规范完整-server-引用--跨平台-mauiapp-引用)
+- [13. 规划待办：泛型与量纲泛型升级](#13-规划待办泛型与量纲泛型升级)
 
 ---
 
@@ -902,4 +903,76 @@ P2 清理 + TS 类型安全
 
 ---
 
-*文档更新于 2026-08-16，反映 TypeSys **重构后**架构（B2 Native 双写已验证成功）+ 跨平台双产物规范（完整 Server 引用 `<ns>.Native` / 跨平台 MauiApp 引用 `<ns>` 子集，所有 JCS 项目统一遵守）。基于对 `TypeSys` 编译图内全部 `.fs` 源码、目录残留文件及 `Aiarwa` 项目（Design-*.json 与生成产物）逐行核实。*
+---
+
+## 13. 规划待办：泛型与量纲泛型升级
+
+> **状态：规划中（待办，尚未动源码）**。背景：当前 `//[TypeManaged]` 自定义类型（`Types.fs`，见 §5.4）只能是非泛型 `Structure`/`Enum`/`Sum`；我们希望支持形如 `type Plot<'Measure>`、`type Tick<'T>` 的泛型自定义类型，并让生成器（`CodeRobotIIFs` 等）产出正确的 marshal 族。本节记录已对齐的设计结论，供后续实施。
+
+### 13.1 两种泛型必须区分（核心判定）
+
+| 泛型种类 | 例子 | 底层本质 | marshal 是否需 curry 传未知 marshal |
+|----------|------|----------|--------------------------------------|
+| **量纲泛型** | `Plot<'Measure>`（`float<'Measure>`） | 带量纲标注的**具体 Primitive**（`float`），量纲运行期擦除 | **不需要** |
+| **值泛型** | `Tick<'T>`（`data: 'T`） | **不透明载荷**，其 marshal 未知 | **需要**（curry 传 `data__bin` 等） |
+
+**分类规则（按用法自动判别，无需在 `Types.fs` 写 `[<Measure>]`）**：
+- 某 gparam 作为字段**自身类型**的 `Generic` 节点出现（如 `data: 'T`，或 `List<'T>` 的元素）→ **值参数** → 需要 currying。
+- 某 gparam **只出现在量纲字符串内**（`float<'Measure>` 的 `< >` 里）→ **量纲参数** → 走 Primitive 量纲分支。
+
+### 13.2 量纲泛型可退化为"非泛型处理"（关键简化）
+
+量纲参数 `'Measure` 本质上就是量纲字符串里的一个**占位名**，与今天的 `float<Price>` 写法只差"量纲名是参数而非具体串"：
+- `empty`：`0.0<Price>` ↔ `0.0<Measure>`，仅量纲名不同；
+- marshal 写：`(float x)` 剥量纲；读：`FloatWithMeasure<Price>` ↔ `FloatWithMeasure<Measure>`，仅量纲名不同。
+
+因此**量纲泛型不构成真正的类型级泛型**——它不走"未知 marshal 函数"的 currying 机制，而是复用现有 `Primitive` + `typeMeasure` 量纲分支（`CodeRobotIIFs` `bin__tCall` L333-344 本就按字符串 `m` 拼 `FloatWithMeasure<`+m+`>`，`m="'Measure"` 时自然变 `FloatWithMeasure<'Measure>`，只要该 lambda 处在 `bin__Plot<'Measure>` 体内即可闭包到参数）。
+
+**生成器对量纲泛型真正只需两件事**：
+1. `parseCustomTypes` 从 `type Plot<'Measure>` 抽出 gparam，仅为 9 族 marshal 头部追加 `<[<Measure>] 'Measure>` 后缀（让 `float<'Measure>` 字段类型合法、`0.0<'Measure>`/`FloatWithMeasure<'Measure>` 能闭包）；
+2. 字段/容器 emit **完全复用现有 Primitive 量纲分支**——`SortedDictionary<string,float<'Measure>>` 经 `str__type` 解析为 `Dictionary(String, Primitive "float<'Measure>")`，`Dictionary__bin`/`bin__Dictionary` 递归 emit 元素 marshal，lambda 自动闭包到 `'Measure`；**嵌套免费、容器不用动**。
+
+> 结论：量纲泛型**不需要** `Generic` 节点、不需要 currying、不需要 thread 参数表；"复杂的泛型 marshaling 机制"专为值泛型保留。
+
+### 13.3 九族 marshal 签名矩阵（量纲泛型 = 仅加 `<[<Measure>] 'M>`）
+
+以 `Plot` 为例，生成器应产出（量纲泛型下 `_marshall` 仍是值，非工厂函数）：
+
+| # | 族 | 量纲泛型头部 |
+|---|----|--------------|
+| 1 | `_empty` | `let Plot_empty<[<Measure>] 'M>(): Plot<'M> = { … new SortedDictionary<string,float<'M>>() … }` |
+| 2 | `__bin` | `let Plot__bin<[<Measure>] 'M> (bb) (v:Plot<'M>) =` |
+| 3 | `bin__` | `let bin__Plot<[<Measure>] 'M> (bi): Plot<'M> =` |
+| 4 | `__json` | `let Plot__json<[<Measure>] 'M> (v:Plot<'M>) =` |
+| 5 | `json__o` | `let json__Ploto<[<Measure>] 'M> (json): Plot<'M> option =` |
+| 6 | `__jsonTbw` | `let Plot__jsonTbw<[<Measure>] 'M> w (v) = json__str w (Plot__json v)` |
+| 7 | `__jsonStr` | `let Plot__jsonStr<[<Measure>] 'M> v = json__strFinal (Plot__json v)` |
+| 8 | `_clone` | `let Plot_clone<[<Measure>] 'M> src = … Plot__bin bb src; bin__Plot (…)` |
+| 9 | `_marshall` | `let Plot_marshall<[<Measure>] 'M> = { clone=…; empty__data=Plot_empty; data__bin=Plot__bin; bin__data=bin__Plot; data__json=Plot__json; json__datao=json__Ploto }` |
+
+值泛型（`Tick<'T>`）对应头部形如 `let Tick__bin<'T> (data__bin: BytesBuilder->'T->unit) (bb) (v:Tick<'T>) =`，且每个值参数按方向 thread 一份 marshal（写 `BytesBuilder->'T->unit` / 读 `BinIndexed->'T` / json 写 `'T->Json` / json 读 `Json->'T option` / empty `unit->'T`；`_clone` 写+读双份；`_marshall` 变工厂函数）。
+
+### 13.4 首个真实实例
+
+`J7.Shared/Types.fs` 的 `type Plot<'Measure>`（`module Viz`），其 `timekey__value: SortedDictionary<string, float<'Measure>>`——量纲参数嵌套进容器元素类型，正是量纲泛型 + 嵌套的标准样例。
+
+### 13.5 生成器改造清单（待实施）
+
+**`MetaType.fs`**
+- `parseCustomTypes`：从 `type X<...>` 抽 gparams；字段类型若命中 gparam 且为独立类型 → `Generic(name)`（值参数专用，量纲参数不建模）；按 §13.1 用法规则分类 value/measure。
+- `Type` 记录增 `gparams`（若需要追踪；量纲泛型可仅用于头部后缀，不一定要存）。
+
+**`CodeRobotIIFs.fs`**
+- 新增 `headerFor(family, t)`：按 `t.gparams` 与分类产出 9 族头部（非泛型 / 量纲 `<[<Measure>] 'M>` / 值 `<'T>`+thread）。
+- 量纲泛型：仅改头部，字段/容器 emit 不改（现有 measure 分支闭包到 `'M`）。
+
+### 13.6 边界与风险
+
+- 🔴 **保留文件禁手改**：`CustomMor.fs` 等由生成器产出，实施方案须改生成器 + 重跑 `Runner.fsx --proj=<Code>`，不得手改落盘文件。
+- **Breaking change（不在生成器内）**：`Plot`/`Tick` 改成泛型后，全仓无参用法（如 `LogBook.key__plots: Dictionary<string,Plot>`）须补 concrete 类型参数并定下量纲/载荷 concrete 类型——属业务侧迁移，需先拍板。
+- **回归面**：改 `MetaType`/`CodeRobotIIFs` 核心 IR 后，须重建 `TypeSys.fsproj` + 重跑 `Runner` 全体下游（J7/WYI/Aiarwa/jCopilot 等 12 项目）+ 全量构建。
+- **分阶段**：Phase 1 = 量纲泛型（`Plot<'Measure>`，改动最小、风险最低、命中首个真实实例）；Phase 2 = 值泛型（`Tick<'T>`，currying 扩展）。
+
+---
+
+*文档更新于 2026-11-03，新增 §13 规划待办：TypeSys 泛型与量纲泛型升级（区分值泛型/量纲泛型，量纲泛型退化为 Primitive 量纲分支处理、无需 currying，首个真实实例 `Plot<'Measure>`）。基于对 `TypeSys` 源码与 `J7.Shared/Types.fs` 的当前设计对齐。*

@@ -227,6 +227,35 @@ let appendType tc t =
     tc.types.Add(t.name,t)
     t
 
+// 从首个 '<' 起，按括号深度找到与之配平的 '>'，返回内部内容（不含两端括号）
+// 处理形如 List<float<b/a>> 中尾部的 '>>'：取最外层的配平 '>'，避免量纲的 '>' 被误当泛型闭合
+let genericInner (s:string) =
+    let i = s.IndexOf '<'
+    if i < 0 then s
+    else
+        let rec loop j depth =
+            if j >= s.Length then s.Substring(i + 1)
+            elif s.[j] = '<' then loop (j + 1) (depth + 1)
+            elif s.[j] = '>' then
+                if depth = 1 then s.Substring(i + 1, j - i - 1)
+                else loop (j + 1) (depth - 1)
+            else loop (j + 1) depth
+        loop (i + 1) 1
+
+// 在 '<>' 深度为 0 的位置按分隔符切分（用于 Dictionary 的 k,v，避免量纲括号干扰）
+let splitTopLevel (sep:char) (s:string) =
+    let parts = ResizeArray<string>()
+    let mutable depth = 0
+    let mutable start = 0
+    for i in 0 .. s.Length - 1 do
+        if s.[i] = '<' then depth <- depth + 1
+        elif s.[i] = '>' then depth <- depth - 1
+        elif s.[i] = sep && depth = 0 then
+            parts.Add(s.Substring(start, i - start))
+            start <- i + 1
+    parts.Add(s.Substring(start))
+    parts.ToArray()
+
 let rec str__type tc s = 
     if tc.types.ContainsKey s then
         tc.types[s]
@@ -275,7 +304,7 @@ let rec str__type tc s =
                     custom =  false
                     src = [| |] }
             else if s.StartsWith "List<" then
-                let tt = (find ("<",">") s).Trim() |> str__type tc
+                let tt = genericInner s |> str__type tc
                 { 
                     name = s 
                     sort = 0
@@ -283,8 +312,9 @@ let rec str__type tc s =
                     custom =  false
                     src = [| |] }
             else if s.StartsWith "ConcurrentDictionary<" then
-                let k = find ("<",",") s |> str__type tc
-                let v = (findBidirectional (",",">") s).Trim() |> str__type tc
+                let parts = genericInner s |> splitTopLevel ','
+                let k = str__type tc (parts.[0].Trim())
+                let v = str__type tc (parts.[1].Trim())
                 { 
                     name = s 
                     sort = 0
@@ -292,8 +322,9 @@ let rec str__type tc s =
                     custom =  false
                     src = [| |] }
             else if s.StartsWith "SortedDictionary<" then
-                let k = find ("<",",") s |> str__type tc
-                let v = (findBidirectional (",",">") s).Trim() |> str__type tc
+                let parts = genericInner s |> splitTopLevel ','
+                let k = str__type tc (parts.[0].Trim())
+                let v = str__type tc (parts.[1].Trim())
                 { 
                     name = s 
                     sort = 0
@@ -301,8 +332,9 @@ let rec str__type tc s =
                     custom =  false
                     src = [| |] }
             else if s.StartsWith "Dictionary<" then
-                let k = find ("<",",") s |> str__type tc
-                let v = (findBidirectional (",",">") s).Trim() |> str__type tc
+                let parts = genericInner s |> splitTopLevel ','
+                let k = str__type tc (parts.[0].Trim())
+                let v = str__type tc (parts.[1].Trim())
                 { 
                     name = s 
                     sort = 0
@@ -310,7 +342,7 @@ let rec str__type tc s =
                     custom =  false
                     src = [| |] }
             else if s.StartsWith "ModDictInt64<" then
-                let tt = (find ("<",">") s).Trim() |> str__type tc
+                let tt = genericInner s |> str__type tc
                 { 
                     name = s 
                     sort = 0
@@ -318,7 +350,7 @@ let rec str__type tc s =
                     custom =  false
                     src = [| |] }
             else if s.StartsWith "ModDictStr<" then
-                let tt = (find ("<",">") s).Trim() |> str__type tc
+                let tt = genericInner s |> str__type tc
                 { 
                     name = s 
                     sort = 0

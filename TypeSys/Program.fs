@@ -179,9 +179,9 @@ let runMultiple exeDir =
 
     [|  
         //6 // JCS
-        //7 // J-7
-        20 // Aiarwa
-        21 // jCopilot
+        7 // J-7 (临时：measure-in-generic 验证)
+        //20 // Aiarwa
+        //21 // jCopilot
         //16 // studio
         //17 // J
         //18 // FA
