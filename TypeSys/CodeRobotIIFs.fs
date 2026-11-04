@@ -38,8 +38,6 @@ let typeMeasure (n:string) =
         | "float" | "float32" | "int" | "int32" | "int64" -> Some (n.Substring(i + 1, n.Length - i - 2))   // 去掉包围的 < >
         | _ -> None
 
-// §13 量纲泛型：外置量纲泛型自定义类型（如 Stat<Price> / IncrementalMA<Price>）在 t.name 中携带具体量纲；
-// 返回 "<Price>" 形式的类型实参串，供读取/写入 marshal 显式透传；无量纲或量纲为类型参数（'M）时返回空串。
 let measureArgOf (n:string) =
     let i = n.IndexOf('<')
     if i < 0 then ""
