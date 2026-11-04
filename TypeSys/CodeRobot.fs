@@ -948,6 +948,11 @@ let buildType ns src t =
 
     let tbw = new TextBlockWriter(src.buffer)
 
+    // §13 量纲泛型：若本类型为量纲泛型（如 Plot<'Measure>），9 族头部追加 <[<Measure>] 'M>，类型注解追加 <'M>
+    let mg = MetaType.measureGparamOf t
+    let gpH = match mg with Some m -> "<[<Measure>] " + m + ">" | None -> ""
+    let gpT = match mg with Some m -> "<" + m + ">" | None -> ""
+
     tbw.newlineBlank()
     "// [" + t.name + "] Structure" |> tbw.newline
     tbw.newlineBlank()
@@ -968,7 +973,7 @@ let buildType ns src t =
         [|  ""; 
             match src.lang with
             | ProgrammingLang.FSharp -> 
-                "let " + t.name + "__bin (bb:BytesBuilder) (v:" + t.name + ") ="
+                "let " + t.name + "__bin" + gpH + " (bb:BytesBuilder) (v:" + t.name + gpT + ") ="
             | ProgrammingLang.TypeScript -> 
                 //"export const " + t.name + "__bin = (bb:BytesBuilder) => (v:" + t.name + ") => {"
                 "export const " + t.name + "__bin = (bb:BytesBuilder) => (v:any) => {"
@@ -991,7 +996,7 @@ let buildType ns src t =
         match src.lang with
         | ProgrammingLang.FSharp -> 
             [|  ""
-                "let bin__" + t.name + " (bi:BinIndexed):" + t.name + " =" 
+                "let bin__" + t.name + gpH + " (bi:BinIndexed):" + t.name + gpT + " =" 
                 tab + "let bin,index = bi"
                 "" |]
         | ProgrammingLang.TypeScript -> 
@@ -1016,7 +1021,7 @@ let buildType ns src t =
         match src.lang with
         | ProgrammingLang.FSharp -> 
             [|  ""; 
-                "let " + t.name + "__json (v:" + t.name + ") ="
+                "let " + t.name + "__json" + gpH + " (v:" + t.name + gpT + ") ="
                 "" |] 
             |> tbw.multiLine
         | _ -> ()
@@ -1032,10 +1037,10 @@ let buildType ns src t =
     match src.lang with
     | ProgrammingLang.FSharp -> 
         [|  ""; 
-            "let " + t.name + "__jsonTbw (w:TextBlockWriter) (v:" + t.name + ") ="
+            "let " + t.name + "__jsonTbw" + gpH + " (w:TextBlockWriter) (v:" + t.name + gpT + ") ="
             tab + "json__str w (" + t.name + "__json v)"
             ""
-            "let " + t.name + "__jsonStr (v:" + t.name + ") ="
+            "let " + t.name + "__jsonStr" + gpH + " (v:" + t.name + gpT + ") ="
             tab + "(" + t.name + "__json v) |> json__strFinal"
             "" |] 
         |> tbw.multiLine
@@ -1047,7 +1052,7 @@ let buildType ns src t =
         match src.lang with
         | ProgrammingLang.FSharp -> 
             [|  ""
-                "let json__" + t.name + "o (json:Json):" + t.name + " option =" 
+                "let json__" + t.name + "o" + gpH + " (json:Json):" + t.name + gpT + " option =" 
                 tab + "let fields = json |> json__items"
                 "" |]
             |> tbw.multiLine
@@ -1075,7 +1080,7 @@ let buildType ns src t =
         | ProgrammingLang.FSharp -> 
 
             tbw.newlineBlank()
-            "let " + t.name + "_marshall = {" |> tbw.newline
+            "let " + t.name + "_marshall" + gpH + " = {" |> tbw.newline
             "clone = " + t.name + "_clone" |> tbw.newlineIndent 1
             "empty__data = " + t.name + "_empty" |> tbw.newlineIndent 1
             "data__bin = " + t.name + "__bin" |> tbw.newlineIndent 1

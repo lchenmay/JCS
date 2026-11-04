@@ -227,6 +227,35 @@ let appendType tc t =
     tc.types.Add(t.name,t)
     t
 
+// §13 量纲泛型支持：判定自定义类型是否为“量纲泛型”类型
+// 量纲参数（如 'Measure）：仅出现在基元量纲字符串内（float<'Measure> 的 < > 里）；
+// 值参数（如 'Ctx）：作为字段自身类型出现 → 返回 None（值泛型属 Phase 2，本阶段不处理）
+let measureGparamOf (t:Type) : string option =
+    if t.src.Length = 0 then None
+    else
+        let head = t.src[0].Trim()
+        let i = head.IndexOf '<'
+        if i < 0 then None
+        else
+            let close = head.IndexOf('>', i)
+            if close < 0 then None
+            else
+                let g = head.Substring(i + 1, close - i - 1).Trim()
+                if g.Length = 0 || g.[0] <> ''' then None
+                else
+                    let body =
+                        t.src
+                        |> Array.skip 1
+                        |> Array.fold (fun s l -> s + " " + l) ""
+                    let inMeasure =
+                        body.Contains("float<" + g + ">")
+                        || body.Contains("float32<" + g + ">")
+                        || body.Contains("int<" + g + ">")
+                        || body.Contains("int32<" + g + ">")
+                        || body.Contains("int64<" + g + ">")
+                    let asValue = body.Contains(" " + g)
+                    if inMeasure && not asValue then Some g else None
+
 // 从首个 '<' 起，按括号深度找到与之配平的 '>'，返回内部内容（不含两端括号）
 // 处理形如 List<float<b/a>> 中尾部的 '>>'：取最外层的配平 '>'，避免量纲的 '>' 被误当泛型闭合
 let genericInner (s:string) =

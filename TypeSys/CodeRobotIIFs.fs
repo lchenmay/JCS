@@ -38,6 +38,15 @@ let typeMeasure (n:string) =
         | "float" | "float32" | "int" | "int32" | "int64" -> Some (n.Substring(i + 1, n.Length - i - 2))   // 去掉包围的 < >
         | _ -> None
 
+// §13 量纲泛型：外置量纲泛型自定义类型（如 Stat<Price> / IncrementalMA<Price>）在 t.name 中携带具体量纲；
+// 返回 "<Price>" 形式的类型实参串，供读取/写入 marshal 显式透传；无量纲或量纲为类型参数（'M）时返回空串。
+let measureArgOf (n:string) =
+    let i = n.IndexOf('<')
+    if i < 0 then ""
+    else
+        let m = n.Substring(i + 1, n.Length - i - 2)
+        if m.StartsWith "'" || m = "1" then "" else n.Substring(i)
+
 let rec t__binImpl (w:TextBlockWriter) indent t = 
 
     match t.tEnum with
@@ -138,8 +147,8 @@ and t__binCall w indent t =
         | "Json" -> "json__bin"
         | _ ->
             match typeMeasure t.name with
-            | None -> typeBase t.name + "__bin"
-            | Some _ ->
+            | None -> typeBase t.name + "__bin" + measureArgOf t.name
+            | Some m ->
                 match typeBase t.name with
                 | "float" -> "(fun bb x -> float__bin bb (float x))"
                 | "float32" -> "(fun bb x -> float32__bin bb (float32 x))"
@@ -331,17 +340,14 @@ and bin__tCall w indent t =
         | "Json" -> "bin__json"
         | _ ->
             match typeMeasure t.name with
-            | None -> "bin__" + typeBase t.name
+            | None -> "bin__" + typeBase t.name + measureArgOf t.name
             | Some m ->
-                let bn =
-                    match typeBase t.name with
-                    | "int" -> "int32" | "int64" -> "int64" | other -> other
-                let ctor =
-                    match typeBase t.name with
-                    | "float" -> "FloatWithMeasure" | "float32" -> "Float32WithMeasure"
-                    | "int" | "int32" -> "Int32WithMeasure" | "int64" -> "Int64WithMeasure"
-                    | _ -> "FloatWithMeasure"
-                "(fun bi -> bin__" + bn + " bi |> " + ctor + "<" + m + ">)"
+                match typeBase t.name with
+                | "float" -> "(fun bi -> bin__float bi |> FloatWithMeasure<" + m + ">)"
+                | "float32" -> "(fun bi -> bin__float32 bi |> Float32WithMeasure<" + m + ">)"
+                | "int" | "int32" -> "(fun bi -> bin__int32 bi |> Int32WithMeasure<" + m + ">)"
+                | "int64" -> "(fun bi -> bin__int64 bi |> Int64WithMeasure<" + m + ">)"
+                | _ -> "bin__" + typeBase t.name
         |> w.appendEnd
     | TypeEnum.Structure items -> "bin__" + t.name |> w.appendEnd
     | TypeEnum.Product items -> 
@@ -416,7 +422,10 @@ and bin__tCall w indent t =
 
 and t__emptyImpl (w:TextBlockWriter) indent t = 
 
-    "let " + t.name + "_empty(): " + t.name + " ="
+    let mg = measureGparamOf t
+    let gpH = match mg with Some m -> "<[<Measure>] " + m + ">" | None -> ""
+    let gpT = match mg with Some m -> "<" + m + ">" | None -> ""
+    "let " + t.name + "_empty" + gpH + "(): " + t.name + gpT + " ="
     |> w.newline
 
     match t.tEnum with
@@ -483,10 +492,10 @@ and t__emptyCall w indent t =
             | "bool" -> "true"
             | "DateTime" -> "DateTime.MinValue"
             | "Json" -> "bin__json"
-            | "Stat" -> "Stat_empty()"
-            | "SpotInStat" -> "SpotInStat_empty()"
-            | "IncrementalMA" -> "IncrementalMA_empty()"
-            | _ -> "bin__" + b
+            | "Stat" -> "Stat_empty" + measureArgOf t.name + "()"
+            | "SpotInStat" -> "SpotInStat_empty" + measureArgOf t.name + "()"
+            | "IncrementalMA" -> "IncrementalMA_empty" + measureArgOf t.name + "()"
+            | _ -> "bin__" + b + measureArgOf t.name
         match typeMeasure t.name with
         | None -> lit
         | Some m ->
@@ -648,7 +657,7 @@ and t__jsonCall w indent t =
         | "Json" -> ""
         | _ ->
             match typeMeasure t.name with
-            | None -> typeBase t.name + "__json"
+            | None -> typeBase t.name + "__json" + measureArgOf t.name
             | Some _ ->
                 match typeBase t.name with
                 | "float" -> "(fun x -> float__json (float x))"
@@ -899,7 +908,7 @@ and json__tCall (w:TextBlockWriter)indent t =
         | "Json" -> "Some"
         | _ ->
             match typeMeasure t.name with
-            | None -> "json__" + typeBase t.name + "o"
+            | None -> "json__" + typeBase t.name + "o" + measureArgOf t.name
             | Some m ->
                 let bn =
                     match typeBase t.name with
@@ -994,10 +1003,13 @@ and json__tCall (w:TextBlockWriter)indent t =
     | TypeEnum.Fun (kType,vType) -> ()
 
 let clone (w:TextBlockWriter) indent (t:Type) = 
+    let mg = measureGparamOf t
+    let gpH = match mg with Some m -> "<[<Measure>] " + m + ">" | None -> ""
+    let gpT = match mg with Some m -> "<" + m + ">" | None -> ""
     [|  ""
-        "let " + t.name + "_clone src ="
+        "let " + t.name + "_clone" + gpH + " src ="
         tab + "let bb = new BytesBuilder()"
-        tab + t.name + "__bin bb src"
-        tab + "bin__" + t.name + " (bb.bytes(),ref 0)" |]
+        tab + t.name + "__bin" + gpH + " bb src"
+        tab + "bin__" + t.name + gpH + " (bb.bytes(),ref 0)" |]
     |> w.multiLine
 
